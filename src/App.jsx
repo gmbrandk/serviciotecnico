@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/LoginPage';
 import UserRegistrationForm from './components/UserRegistrationForm';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from './components/Dashboard';
+import DashboardPage from './pages/DashboardPage';
 import NotFound from './pages/NotFound';
 
 const App = () => {
@@ -15,9 +15,9 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
+          //  <ProtectedRoute>
+              <DashboardPage />
+          //  </ProtectedRoute>
           }
         />
         {/* Ruta 404 */}
