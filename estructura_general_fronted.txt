@@ -1,0 +1,48 @@
+/src
+  /components
+    ClienteForm.jsx           // Componente para gestionar el formulario de registro del cliente.
+    EquipoForm.jsx            // Componente para gestionar el formulario de registro de equipos asociados a los clientes.
+    OrdenForm.jsx             // Componente para gestionar el formulario de creación y edición de órdenes de servicio.
+    TecnicoForm.jsx           // Componente que gestiona el perfil del técnico, permitiendo la actualización de su información (solo accesible por el administrador).
+    UserRegistrationForm.jsx  // Componente para el registro de nuevos técnicos en el sistema.
+    Dashboard.jsx             // Componente que representa el Dashboard donde los técnicos pueden ver las órdenes de servicio, clientes, equipos, etc.
+    PerfilOrden.jsx           // Componente para mostrar el perfil de una orden de servicio, con detalles completos.
+    LoginForm.jsx                 // **Nuevo Componente para la página de login del técnico.**
+
+  /styles
+    /components
+      ClienteForm.module.css  // Estilos específicos para el formulario de cliente.
+      EquipoForm.module.css   // Estilos específicos para el formulario de equipo.
+      OrdenForm.module.css    // Estilos específicos para el formulario de orden de servicio.
+      TecnicoForm.module.css  // Estilos específicos para el formulario de técnico (solo accesible por el administrador).
+      UserRegistrationForm.module.css // Estilos específicos para el formulario de registro del técnico.
+      Dashboard.module.css    // Estilos para la página del Dashboard.
+      PerfilOrden.module.css // Estilos para la página del perfil de la orden de servicio.
+      Login.module.css        // **Nuevo Estilos específicos para la página de login.**
+    
+    /general
+      forms.module.css        // Estilos generales para todos los formularios.
+      layout.module.css       // Estilos generales de layout como márgenes, fuentes, contenedores, etc.
+      buttons.module.css      // Estilos generales para botones en toda la aplicación.
+
+  /context
+    UserContext.jsx           // **Nuevo Contexto para manejar la autenticación y estado del técnico (usuario).**
+    ClienteContext.jsx        // Contexto para manejar los datos del cliente y las interacciones con el formulario de cliente.
+    EquipoContext.jsx         // Contexto para manejar los datos del equipo y las interacciones con el formulario de equipo.
+    OrdenContext.jsx          // Contexto para manejar las órdenes de servicio y su flujo.
+
+  /pages
+    Home.jsx                  // Página principal de la aplicación, con un resumen o bienvenida.
+    LoginPage.jsx             // **Nuevo Página de login donde los técnicos pueden iniciar sesión.**
+    Register.jsx              // Página de registro del técnico.
+    DashboardPage.jsx         // Página donde se muestran las órdenes, clientes, equipos, etc., en el Dashboard.
+    PerfilPage.jsx            // Página para ver y gestionar el perfil de la orden de servicio.
+
+  App.jsx                    // Componente principal de la aplicación donde se configuran las rutas y se gestiona el estado general.
+  index.jsx                  // Punto de entrada de la aplicación, donde se renderiza el componente App.
+  index.css                  // Estilos globales para la aplicación (pueden incluir reset de estilos, tipografía, etc.).
+
+/public
+  /assets
+    logo.png                 // Logo de la aplicación.
+    favicon.ico              // Favicon para la aplicación.

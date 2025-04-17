@@ -1,0 +1,32 @@
+/backend
+  /config
+    db.js                    // Configuración de la conexión a MongoDB.
+    jwtConfig.js              // Configuración de JWT (para manejo de autenticación).
+  /controllers
+    authController.js         // Controlador para la autenticación (login, registro de técnicos).
+    clienteController.js      // Controlador para gestionar los clientes.
+    equipoController.js       // Controlador para gestionar los equipos.
+    ordenController.js        // Controlador para gestionar las órdenes de servicio.
+    tecnicoController.js      // Controlador para gestionar el perfil del técnico.
+  /models
+    clienteModel.js           // Modelo de cliente (esquema de MongoDB).
+    equipoModel.js            // Modelo de equipo (esquema de MongoDB).
+    ordenModel.js             // Modelo de orden (esquema de MongoDB).
+    tecnicoModel.js           // Modelo de técnico (esquema de MongoDB).
+  /routes
+    authRoutes.js             // Rutas para la autenticación (login, registro).
+    clienteRoutes.js          // Rutas para gestionar los clientes.
+    equipoRoutes.js           // Rutas para gestionar los equipos.
+    ordenRoutes.js            // Rutas para gestionar las órdenes de servicio.
+    tecnicoRoutes.js          // Rutas para gestionar el perfil de los técnicos.
+  /middleware
+    authMiddleware.js         // Middleware para proteger rutas y verificar autenticación.
+  /utils
+    responseHandler.js        // Función para manejar respuestas de la API de manera uniforme.
+  /validators
+    authValidator.js          // Validador para el login y registro de técnicos.
+    clienteValidator.js       // Validador para los datos del cliente.
+    equipoValidator.js        // Validador para los datos del equipo.
+    ordenValidator.js         // Validador para los datos de la orden.
+  server.js                   // Archivo principal para levantar el servidor de Express.
+  package.json                // Archivo de dependencias y configuración del proyecto.

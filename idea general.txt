@@ -1,0 +1,65 @@
+🧭 Estructura de la Interfaz de Usuario
+1. Dashboard Principal
+Ruta: /dashboard
+
+Componentes:
+
+Resumen de órdenes recientes
+
+Accesos rápidos: Nueva Orden, Clientes, Equipos
+
+Estadísticas generales
+
+2. Formulario de Registro de Orden
+Ruta: /orden/nueva
+
+Componentes:
+
+Paso 1: Selección o registro de cliente
+
+Paso 2: Selección o registro de equipo
+
+Paso 3: Detalles de la orden
+
+Características:
+
+Navegación paso a paso
+
+Validaciones en tiempo real
+
+Guardado automático en localStorage para evitar pérdida de datos
+
+3. Listado de Órdenes
+Ruta: /ordenes
+
+Componentes:
+
+Tabla con todas las órdenes
+
+Filtros por estado, fecha, cliente
+
+Buscador por ID o nombre
+
+Paginación o scroll infinito
+
+4. Detalle de Orden
+Ruta: /orden/:id
+
+Componentes:
+
+Información completa de la orden
+
+Historial de cambios
+
+Botones de edición o eliminación
+
+5. Perfil de Cliente
+Ruta: /cliente/:id
+
+Componentes:
+
+Información del cliente
+
+Órdenes asociadas
+
+Equipos registrados

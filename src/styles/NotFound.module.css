@@ -1,0 +1,17 @@
+/* NotFound.module.css */
+.container {
+    text-align: center;
+    margin-top: 4rem;
+  }
+  
+  h1 {
+    font-size: 4rem;
+    color: #e74c3c;
+  }
+  
+  a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
