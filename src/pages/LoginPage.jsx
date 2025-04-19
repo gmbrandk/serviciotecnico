@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import LoginForm from '../components/LoginForm';
+import styles from '../styles/LoginPage.module.css'
 
 const LoginPage = () => {
   const handleLogin = async ({ correo, contraseña }) => {
@@ -26,7 +27,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <div className={styles.loginContainer}>
       <LoginForm onSubmit={handleLogin} />
       <p>No tienes una cuenta?</p>
       <Link to="/register" className={StyleSheet.linkButton}>

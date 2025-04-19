@@ -33,22 +33,37 @@ const login = async (req, res) => {
     // Buscar usuario por email
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      return res.status(404).json({ success: false, mensaje: 'Usuario no encontrado' });
     }
 
     // Comparar la contraseña
     const esValida = await bcrypt.compare(password, usuario.password);
     if (!esValida) {
-      return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
+      return res.status(401).json({ success: false, mensaje: 'Contraseña incorrecta' });
     }
 
     // Crear el token JWT
-    const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    const token = jwt.sign(
+      { id: usuario._id, email: usuario.email }, 
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' });
+
+    res.status(200).json({
+      success: true,
+      token,
+      usuario: {
+        _id: usuario._id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+      }
+    });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
+
+
 };
 
 module.exports = { register, login };

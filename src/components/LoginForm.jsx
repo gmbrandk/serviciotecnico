@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../styles/Login.module.css';
+import styles from '../styles/forms.module.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import AlertMessage from './shared/AlertMessage';
@@ -34,9 +34,10 @@ const LoginForm = () => {
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', formData);
       if (res.status === 200 || res.data.success) {
-        const { token } = res.data;
+        const { token,usuario } = res.data;
 
         localStorage.setItem('token', token);
+        localStorage.setItem('usuario', JSON.stringify(usuario));
 
         setMensaje('¡Bienvenido! Redirigiendo...');
         setTipoMensaje('success');

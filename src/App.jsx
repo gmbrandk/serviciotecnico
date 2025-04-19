@@ -15,13 +15,13 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
-          //  <ProtectedRoute>
+            <ProtectedRoute>
               <DashboardPage />
-          //  </ProtectedRoute>
+            </ProtectedRoute>
           }
         />
         {/* Ruta 404 */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

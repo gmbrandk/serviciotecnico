@@ -1,19 +1,21 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import DashboardHome from './DashboardHome';
 import styles from '../../styles/dashboard/DashboardLayout.module.css';
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ children }) => {
   return (
-    <div className={styles.dashboardContainer}>
+    <div className={styles.layout}>
       <Sidebar />
       <div className={styles.mainContent}>
         <Header />
-        <DashboardHome />
+        <main className={styles.content}>
+          {children}
+        </main>
       </div>
     </div>
   );
 };
 
 export default DashboardLayout;
+

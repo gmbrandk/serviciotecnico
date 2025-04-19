@@ -1,15 +1,23 @@
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center; /* centra verticalmente */
+  align-items: center;     /* centra horizontalmente */
+  height: 100vh;           /* toma toda la altura del viewport */
+  text-align: center;
+}
+
 .linkButton {
-    display: inline-block;
-    margin-top: 1rem;
-    text-decoration: none;
-    color: white;
-    background-color: #2980b9;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background 0.3s;
-  }
-  
-  .linkButton:hover {
-    background-color: #1c5d8c;
-  }
-  
+  margin-top: 10px;
+  background-color: #3498db;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.linkButton:hover {
+  background-color: #2980b9;
+}
