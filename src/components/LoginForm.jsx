@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import AlertMessage from './shared/AlertMessage';
 
-const LoginForm = () => {
+const LoginForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -12,7 +12,6 @@ const LoginForm = () => {
 
   const [mensaje, setMensaje] = useState('');
   const [tipoMensaje, setTipoMensaje] = useState('');
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,25 +30,14 @@ const LoginForm = () => {
       return;
     }
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-      if (res.status === 200 || res.data.success) {
-        const { token,usuario } = res.data;
+    const result = await onSubmit(formData); // delega al padre
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('usuario', JSON.stringify(usuario));
-
-        setMensaje('¡Bienvenido! Redirigiendo...');
-        setTipoMensaje('success');
-
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
-      }
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+    if (result?.success) {
+      setMensaje('¡Bienvenido! Redirigiendo...');
+      setTipoMensaje('success');
+    } else if (result?.error) {
+      setMensaje(result.error);
       setTipoMensaje('error');
-      setMensaje('Error al iniciar sesión. Intenta de nuevo.');
     }
   };
 

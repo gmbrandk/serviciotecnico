@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import styles from '../styles/forms.module.css';
 import AlertMessage from './shared/AlertMessage';
-import styles from '../styles/forms.module.css'; // seguimos importando tu CSS module si deseas extenderlo
 
-const UserRegistrationForm = () => {
-  const [formData, setFormData] = useState({ nombre: '', email: '', password: '' });
+const UserRegistrationForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    password: '',
+  });
+
   const [mensaje, setMensaje] = useState('');
-  const [tipoMensaje, setTipoMensaje] = useState('success');
-  const navigate = useNavigate();
+  const [tipoMensaje, setTipoMensaje] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -24,36 +26,22 @@ const UserRegistrationForm = () => {
       return;
     }
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+    const result = await onSubmit(formData);
 
-      if (res.status === 201 || res.data.success) {
-        const { token } = res.data;
-        localStorage.setItem('token', token);
-
-        setMensaje('¡Registro exitoso! Redirigiendo...');
-        setTipoMensaje('success');
-
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
-      }
-    } catch (error) {
+    if (result?.success) {
+      setMensaje('¡Registro exitoso! Redirigiendo...');
+      setTipoMensaje('success');
+    } else if (result?.error) {
+      setMensaje(result.error);
       setTipoMensaje('error');
-      if (error.response?.status === 409) {
-        setMensaje('El correo ya está registrado.');
-      } else {
-        setMensaje('Ocurrió un error al registrar. Intenta de nuevo.');
-      }
     }
   };
 
   return (
-    <div className={styles.msform}>
+    <form className={styles.msform} onSubmit={handleSubmit}>
       <fieldset>
         <h2 className={styles.fsTitle}>Registro de Técnico</h2>
-        <h3 className={styles.fsSubtitle}>Completa los campos para crear tu cuenta</h3>
-
+        <h3 className={styles.fsSubtitle}>Crea tu cuenta para comenzar</h3>
         <input
           type="text"
           name="nombre"
@@ -75,14 +63,12 @@ const UserRegistrationForm = () => {
           value={formData.password}
           onChange={handleChange}
         />
-
-        <button type="submit" className={styles.actionButton} onClick={handleSubmit}>
+        <button type="submit" className={styles.actionButton}>
           Registrarse
         </button>
-
         {mensaje && <AlertMessage type={tipoMensaje} message={mensaje} />}
       </fieldset>
-    </div>
+    </form>
   );
 };
 
