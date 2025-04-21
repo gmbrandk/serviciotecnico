@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserRegistrationForm from '../components/UserRegistrationForm';
+import { Toaster } from 'react-hot-toast';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -29,7 +30,11 @@ const RegisterPage = () => {
     }
   };
 
-  return <UserRegistrationForm onSubmit={handleRegister} />;
+  return (
+      <>
+        <UserRegistrationForm onSubmit={handleRegister} />;
+        <Toaster position='top-right'/>
+      </>)
 };
 
 export default RegisterPage;

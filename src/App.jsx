@@ -5,9 +5,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
 import NotFound from './pages/NotFound';
 import RegisterPage from './pages/RegisterPage';
+import TestingPage from './pages/TestingPage';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   return (
+    <>
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -22,8 +25,11 @@ const App = () => {
         />
         {/* Ruta 404 */}
         <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
+        <Route path='/testing' element={<TestingPage/>}></Route>
       </Routes>
     </Router>
+          <Toaster position='top-right' reverseOrder={false} />
+    </>
   );
 };
 

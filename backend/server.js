@@ -5,6 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const conectarDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const codigoRoutes = require('./routes/codigoRoutes');
 
 dotenv.config();
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json()); // Para poder leer los datos JSON
 
 // Rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/codigos', codigoRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

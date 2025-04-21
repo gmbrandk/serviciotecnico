@@ -1,7 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React from 'react';
+import axios from 'axios';
 import LoginForm from '../components/LoginForm';
 import styles from '../styles/LoginPage.module.css'
+import { Toaster } from 'react-hot-toast';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ const LoginPage = () => {
   return (
     <div className={styles.loginContainer}>
       <LoginForm onSubmit={handleLogin} />
+      <Toaster position='top-right'/>
       <p>No tienes una cuenta?</p>
       <Link to="/register" className={styles.linkButton}>
         Crear una cuenta

@@ -1,0 +1,113 @@
+@keyframes toastDuration {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+  
+  .toast {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+    --color-status: #888;
+  }
+  
+  .toastStatusIcon {
+    display: block;
+    float: left;
+    height: 3rem;
+    width: 3rem;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+  }
+  
+  .toastStatusIcon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: var(--color-status);
+  }
+  
+  .toastContent {
+    display: block;
+    float: left;
+    width: calc(100% - 5.75rem);
+    padding: 0.75rem 1rem 0.75rem 0.5rem;
+    line-height: 1.25;
+  }
+  
+  .toastContent span {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-status);
+    display: block;
+  }
+  
+  .toastContent p {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 1px;
+  }
+  
+  .toastClose {
+    display: block;
+    float: right;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-top: 0.25rem;
+    margin-right: 0.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .toastClose svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--color-status);
+  }
+  
+  .toastDuration {
+    clear: both;
+    height: 3px;
+    width: 100%;
+    background-color: #eee;
+    position: relative;
+  }
+  
+  .toastDuration::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-status);
+    animation: toastDuration 10s linear forwards;
+  }
+  
+  /* Variantes */
+  .info {
+    background-color: #e6f4fa;
+    --color-status: #2b91d0;
+  }
+  
+  .success {
+    background-color: #e7f6ed;
+    --color-status: #3aa76d;
+  }
+  
+  .error {
+    background-color: #fbeaea;
+    --color-status: #d04545;
+  }
+  
+  .alert {
+    background-color: #fff4d8;
+    --color-status: #e6a500;
+  }
+  

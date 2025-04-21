@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import styles from '../styles/forms.module.css';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import AlertMessage from './shared/AlertMessage';
+import toast from 'react-hot-toast';
+import Toast from './shared/Toast';
 
 const LoginForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
-  const [mensaje, setMensaje] = useState('');
-  const [tipoMensaje, setTipoMensaje] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,19 +21,38 @@ const LoginForm = ({ onSubmit }) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      setMensaje('Todos los campos son obligatorios.');
-      setTipoMensaje('warning');
+      toast.custom(()=> (
+        <Toast 
+          type="warning"
+          title="Advertencia"
+          message="Todos los campos son Obligatorios."
+          onClose={()=> toast.dismiss(t.id)}
+        />
+      ))
       return;
     }
 
     const result = await onSubmit(formData); // delega al padre
 
     if (result?.success) {
-      setMensaje('¡Bienvenido! Redirigiendo...');
-      setTipoMensaje('success');
+      toast.custom(()=>(
+        <Toast
+          message="¡Bienvenido! Redirigiendo..."
+          type="success"
+          title="¡Éxito!"
+          onClose={() => toast.dismiss(t.id)}
+        />
+      ))
+      
     } else if (result?.error) {
-      setMensaje(result.error);
-      setTipoMensaje('error');
+      toast.custom((t) => (
+        <Toast
+          type="error"
+          title="Error"
+          message={result.error}
+          onClose={() => toast.dismiss(t.id)}
+        />
+      ));
     }
   };
 
@@ -52,7 +67,7 @@ const LoginForm = ({ onSubmit }) => {
           placeholder="Correo"
           value={formData.email}
           onChange={handleChange}
-          required
+          
         />
         <input
           type="password"
@@ -60,12 +75,11 @@ const LoginForm = ({ onSubmit }) => {
           placeholder="Contraseña"
           value={formData.password}
           onChange={handleChange}
-          required
+          
         />
         <button type="submit" className={styles.actionButton}>
           Iniciar sesión
         </button>
-        {mensaje && <AlertMessage type={tipoMensaje} message={mensaje} />}
       </fieldset>
     </form>
   );
