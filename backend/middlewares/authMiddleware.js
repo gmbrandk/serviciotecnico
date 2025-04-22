@@ -1,7 +1,9 @@
+// backend/middlewares/authMiddleware.js
+
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 
-// Verifica el token y carga el usuario
+// ✅ Verifica el token y carga el usuario en req.usuario
 const verificarToken = async (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -24,7 +26,7 @@ const verificarToken = async (req, res, next) => {
   }
 };
 
-// Middleware para validar rol
+// ✅ Middleware para validar UN rol específico
 const roleAuth = (role) => {
   return (req, res, next) => {
     if (!req.usuario || req.usuario.role !== role) {
@@ -34,9 +36,10 @@ const roleAuth = (role) => {
   };
 };
 
+// ✅ Middleware para validar si el usuario tiene uno de los roles permitidos
 const verificarRolesPermitidos = (rolesPermitidos) => {
   return (req, res, next) => {
-    const rolUsuario = req.usuario?.role?.toLowerCase(); // Convertir a minúsculas
+    const rolUsuario = req.usuario?.role?.toLowerCase();
     const rolesPermitidosLower = rolesPermitidos.map(role => role.toLowerCase());
 
     if (!rolesPermitidosLower.includes(rolUsuario)) {
@@ -47,28 +50,4 @@ const verificarRolesPermitidos = (rolesPermitidos) => {
   };
 };
 
-const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ mensaje: 'Token no proporcionado.' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const usuario = await Usuario.findById(decoded.id);
-
-    if (!usuario) return res.status(401).json({ mensaje: 'Usuario no válido.' });
-
-    req.usuario = usuario;
-    next();
-
-  } catch (error) {
-    console.error(error);
-    res.status(401).json({ mensaje: 'Token inválido.' });
-  }
-};
-
-module.exports = { verificarToken, roleAuth, verificarRolesPermitidos, authMiddleware };
+module.exports = { verificarToken, roleAuth, verificarRolesPermitidos };

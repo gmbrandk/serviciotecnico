@@ -1,26 +1,31 @@
 // backend/routes/authRoutes.js
+
 const express = require('express');
-const { register, login } = require('../controllers/authController');
-const { roleAuth, verificarToken, authMiddleware } = require('../middlewares/authMiddleware');
+const { register, login, actualizarRolUsuario } = require('../controllers/authController');
+const { roleAuth, verificarToken, verificarRolesPermitidos } = require('../middlewares/authMiddleware');
 const { generarCodigoAcceso } = require('../controllers/codigoController');
-const { actualizarRolUsuario } = require('../controllers/authController');
+const verificarCambioRolMiddleware = require('../middlewares/verificarCambioRolMiddleware');
 
 const router = express.Router();
 
-// Rutas públicas
+// ✅ Rutas públicas
 router.post('/register', register);
 router.post('/login', login);
 
-// Rutas protegidas por rol
-/*router.post('/createSuperAdmin', auth, roleAuth('superAdministrador'), (req, res) => {
-  // Lógica para crear un super administrador (solo accesible por superAdministrador)
-  res.status(200).json({ mensaje: 'Super Administrador creado' });
-});*/
+// ✅ Ruta protegida por superAdministrador o administrador
+router.post(
+  '/generar-codigo',
+  verificarToken,
+  verificarRolesPermitidos(['superAdministrador', 'administrador']),
+  generarCodigoAcceso
+);
 
-// Solo accesible por superAdministrador
-router.post('/generar-codigo', verificarToken, roleAuth('superAdministrador'), generarCodigoAcceso);
-
-// Actualizar el rol de un usuario (requiere autenticación)
-router.put('/usuarios/:id/rol', authMiddleware, actualizarRolUsuario);
+// ✅ Ruta para actualizar el rol de usuario
+router.put(
+  '/usuarios/:id/rol',
+  verificarToken,
+  verificarCambioRolMiddleware,
+  actualizarRolUsuario
+);
 
 module.exports = router;

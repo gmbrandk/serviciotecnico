@@ -6,7 +6,9 @@ const generarCodigoAcceso = async (req, res) => {
   const usuario = req.usuario; // esto se rellena con middleware de auth
   const { usos = 1} = req.body;
 
-  if (usuario.role !== 'superAdministrador') {
+  // Aceptamos superAdministrador o administrador (sin importar mayúsculas)
+  const rolUsuario = usuario.role?.toLowerCase();
+  if (rolUsuario !== 'superadministrador' && rolUsuario !== 'administrador') {
     return res.status(403).json({ mensaje: 'Acceso denegado' });
   }
 

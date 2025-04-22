@@ -86,61 +86,22 @@ const login = async (req, res) => {
   }
 };
 
-const rolesJerarquia = {
-  'superadministrador': 1,
-  'administrador': 2,
-  'tecnico': 3
-};
-
 const actualizarRolUsuario = async (req, res) => {
-  const { id } = req.params;
+  const usuarioObjetivo = req.usuarioObjetivo;
   const { nuevoRol } = req.body;
-  const solicitante = req.usuario;
 
   try {
-    const usuarioObjetivo = await Usuario.findById(id);
-    if (!usuarioObjetivo) return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
-
-    const rolSolicitante = solicitante.role.toLowerCase();
-    const rolObjetivo = usuarioObjetivo.role.toLowerCase();
-    const nuevoRolLower = nuevoRol.toLowerCase();
-
-    if (!rolesJerarquia[nuevoRolLower]) {
-      return res.status(400).json({ mensaje: 'Rol no válido.' });
-    }
-
-    const jerarquiaSolicitante = rolesJerarquia[rolSolicitante];
-    const jerarquiaObjetivo = rolesJerarquia[rolObjetivo];
-    const jerarquiaNuevoRol = rolesJerarquia[nuevoRolLower];
-
-    // Restricciones:
-    if (jerarquiaSolicitante > 2) {
-      return res.status(403).json({ mensaje: 'No tienes permisos para realizar esta acción.' });
-    }
-
-    if (jerarquiaSolicitante >= jerarquiaObjetivo) {
-      return res.status(403).json({ mensaje: 'No puedes modificar a usuarios de igual o mayor jerarquía.' });
-    }
-
-    if (jerarquiaSolicitante >= jerarquiaNuevoRol) {
-      return res.status(403).json({ mensaje: 'No puedes asignar un rol igual o superior al tuyo.' });
-    }
-
-    // SuperAdministrador no puede bajarse de rango
-    if (usuarioObjetivo._id.toString() === solicitante.id && rolSolicitante === 'superadministrador' && nuevoRolLower !== 'superadministrador') {
-      return res.status(403).json({ mensaje: 'El superadministrador no puede bajarse de rango.' });
-    }
-
-    usuarioObjetivo.role = nuevoRolLower;
+    usuarioObjetivo.role = nuevoRol.toLowerCase();
     await usuarioObjetivo.save();
 
-    res.json({ mensaje: `Rol actualizado a ${nuevoRolLower} exitosamente.` });
+    res.json({ mensaje: `Rol actualizado a ${nuevoRol.toLowerCase()} exitosamente.` });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al actualizar el rol.' });
   }
 };
+
 
 module.exports = {
   register,
