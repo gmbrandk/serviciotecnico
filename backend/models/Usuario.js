@@ -11,10 +11,7 @@ const usuarioSchema = new mongoose.Schema({
     default: 'tecnico'
   },
   accessCode: {
-    type: String,
-    required: function () {
-      return this.role === 'superadministrador';
-    }
+    type: String
   }
 });
 

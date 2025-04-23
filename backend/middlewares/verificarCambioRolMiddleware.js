@@ -1,34 +1,38 @@
+// ../middlewares/verificarCambioRolMiddleware.js
 const Usuario = require('../models/Usuario');
-const verificarPermisoCambioRol = require('../utils/verificarPermisoCambioRol');
+const verificarPermiso = require('../utils/verificarPermiso');
 
 const verificarCambioRolMiddleware = async (req, res, next) => {
-  const { id } = req.params;
-  const { nuevoRol } = req.body;
-  const solicitante = req.usuario;
-
   try {
-    const usuarioObjetivo = await Usuario.findById(id);
+    const usuarioObjetivo = await obtenerUsuarioPorId(req.params.id);
     if (!usuarioObjetivo) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
     }
 
-    const resultado = verificarPermisoCambioRol({
-      solicitante,
+    const permiso = verificarPermiso({
+      solicitante: req.usuario,
       objetivo: usuarioObjetivo,
-      nuevoRol
+      accion: 'cambiarRol',
+      nuevoRol: req.body.nuevoRol,
     });
 
-    if (!resultado.permitido) {
-      return res.status(403).json({ mensaje: resultado.mensaje });
+    if (!permiso.permitido) {
+      return res.status(403).json({ mensaje: permiso.mensaje });
     }
 
-    // Guardamos el objetivo para que el controlador no lo vuelva a buscar
     req.usuarioObjetivo = usuarioObjetivo;
-
     next();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error en la verificación de permisos.' });
+    console.error('Error en verificación de cambio de rol:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+  }
+};
+
+const obtenerUsuarioPorId = async (id) => {
+  try {
+    return await Usuario.findById(id);
+  } catch {
+    return null;
   }
 };
 
