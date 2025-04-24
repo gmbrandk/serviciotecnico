@@ -13,7 +13,7 @@ const generarCodigoAcceso = async (req, res) => {
   }
 
   try {
-    const nuevoCodigo = crypto.randomBytes(4).toString('hex'); // ejemplo: "3f4a9c2b"
+    const nuevoCodigo = crypto.randomBytes(4).toString('hex').toUpperCase(); // ejemplo: "3F4A9C2B"
     
     const codigo = new CodigoAcceso({
       codigo: nuevoCodigo,

@@ -1,13 +1,14 @@
 // backend/server.js
+require('module-alias/register');
 
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const conectarDB = require('./config/db');
-const authRoutes = require('./routes/auth');
-const codigosRoutes = require('./routes/codigos');
-const usuariosRoutes = require('./routes/usuarios');
-const superadminRoutes = require('./routes/superadmin');
+const authRoutes = require('@routes/usuarios/auth');
+const codigosRoutes = require('@routes/usuarios/codigos');
+const usuariosRoutes = require('@routes/usuarios/usuarios');
+const superadminRoutes = require('@routes/usuarios/superadmin');
 
 dotenv.config();
 const app = express();
