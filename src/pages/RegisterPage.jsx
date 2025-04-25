@@ -23,8 +23,8 @@ const RegisterPage = () => {
       }
     } catch (error) {
       console.error('Error al registrar usuario:', error);
-      if (error.response?.status === 409) {
-        return { error: 'El correo ya está registrado.' };
+      if (error.response && error.response.data?.mensaje) {
+        return { error: error.response.data.mensaje };
       }
       return { error: 'Ocurrió un error al registrar. Intenta de nuevo.' };
     }

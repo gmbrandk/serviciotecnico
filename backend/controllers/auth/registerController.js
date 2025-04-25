@@ -11,12 +11,12 @@ const register = async (req, res) => {
 
     const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso });
     if (!codigoValido || codigoValido.usosDisponibles < 1) {
-      return res.status(403).json({ error: 'Código de acceso inválido o sin usos disponibles.' });
+      return res.status(403).json({ mensaje: 'Código de acceso inválido o sin usos disponibles.' });
     }
 
     const usuarioExistente = await Usuario.findOne({ email });
     if (usuarioExistente) {
-      return res.status(400).json({ mensaje: 'Usuario ya registrado' });
+      return res.status(400).json({ mensaje: 'El correo ya está registrado.' });
     }
 
     const usuario = new Usuario({ nombre, email, password, role, accessCode: role === 'superadministrador' ? accessCode : undefined });
@@ -29,10 +29,14 @@ const register = async (req, res) => {
       await codigoValido.save();
     }
 
-    res.status(201).json({ mensaje: 'Usuario registrado con éxito' });
-
+    res.status(201).json({ success: true, mensaje: 'Usuario registrado con éxito', token: 'fake-jwt-token' }); // ← asegúrate de enviar el token real
   } catch (error) {
-    console.error(error);
+    console.error('Error en registro:', error);
+
+    if (error.code === 11000 && error.keyValue?.email) {
+      return res.status(400).json({ mensaje: 'El correo ya está registrado.' });
+    }
+
     res.status(500).json({ mensaje: 'Error al registrar usuario' });
   }
 };
