@@ -1,12 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import LoginForm from '../components/LoginForm';
-import styles from '../styles/LoginPage.module.css';
+import LoginForm from '@components/LoginForm';
+import styles from '@styles/LoginPage.module.css';
 import { Toaster } from 'react-hot-toast';
+import { useAuth } from '@context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async ({ email, password }) => {
     try {
@@ -17,19 +19,18 @@ const LoginPage = () => {
 
       const { token, usuario } = res.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('usuario', JSON.stringify(usuario));
+      login(token, usuario); // ← ahora usamos el contexto
 
       setTimeout(() => navigate('/dashboard'), 2000);
 
-      // No es necesario mostrar toasts estáticos, lo dejamos todo en el LoginForm
       return { success: true };
     } catch (error) {
       console.error('Error en login:', error);
 
-      // Retornamos el error para que el LoginForm lo maneje y lo muestre con un toast dinámico
       if (error.response) {
-        return { error: error.response.data.mensaje || 'Error al iniciar sesión. Intenta de nuevo.' };
+        return {
+          error: error.response.data.mensaje || 'Error al iniciar sesión. Intenta de nuevo.',
+        };
       } else {
         return { error: 'Error al conectar con el servidor' };
       }

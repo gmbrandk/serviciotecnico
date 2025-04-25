@@ -8,6 +8,6 @@
         "@models/*": ["models/*"]
       }
     },
-    "include": ["backend"]
+    "include": ["backend", "src/context"]
   }
   
