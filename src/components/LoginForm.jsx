@@ -21,29 +21,28 @@ const LoginForm = ({ onSubmit }) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      toast.custom(()=> (
+      toast.custom((t) => (
         <Toast 
           type="warning"
           title="Advertencia"
           message="Todos los campos son Obligatorios."
-          onClose={()=> toast.dismiss(t.id)}
+          onClose={() => toast.dismiss(t.id)}
         />
-      ))
+      ));
       return;
     }
 
     const result = await onSubmit(formData); // delega al padre
 
     if (result?.success) {
-      toast.custom(()=>(
+      toast.custom((t) => (
         <Toast
-          message="¡Bienvenido! Redirigiendo..."
+          message={"¡Bienvenido! Redirigiendo..."}
           type="success"
           title="¡Éxito!"
           onClose={() => toast.dismiss(t.id)}
         />
-      ))
-      
+      ));
     } else if (result?.error) {
       toast.custom((t) => (
         <Toast
@@ -67,7 +66,6 @@ const LoginForm = ({ onSubmit }) => {
           placeholder="Correo"
           value={formData.email}
           onChange={handleChange}
-          
         />
         <input
           type="password"
@@ -75,7 +73,6 @@ const LoginForm = ({ onSubmit }) => {
           placeholder="Contraseña"
           value={formData.password}
           onChange={handleChange}
-          
         />
         <button type="submit" className={styles.actionButton}>
           Iniciar sesión

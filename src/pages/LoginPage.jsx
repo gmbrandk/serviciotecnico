@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import React from 'react';
 import axios from 'axios';
 import LoginForm from '../components/LoginForm';
-import styles from '../styles/LoginPage.module.css'
+import styles from '../styles/LoginPage.module.css';
 import { Toaster } from 'react-hot-toast';
 
 const LoginPage = () => {
@@ -22,17 +22,24 @@ const LoginPage = () => {
 
       setTimeout(() => navigate('/dashboard'), 2000);
 
+      // No es necesario mostrar toasts estáticos, lo dejamos todo en el LoginForm
       return { success: true };
     } catch (error) {
       console.error('Error en login:', error);
-      return { error: 'Error al iniciar sesión. Intenta de nuevo.' };
+
+      // Retornamos el error para que el LoginForm lo maneje y lo muestre con un toast dinámico
+      if (error.response) {
+        return { error: error.response.data.mensaje || 'Error al iniciar sesión. Intenta de nuevo.' };
+      } else {
+        return { error: 'Error al conectar con el servidor' };
+      }
     }
   };
 
   return (
     <div className={styles.loginContainer}>
       <LoginForm onSubmit={handleLogin} />
-      <Toaster position='top-right'/>
+      <Toaster position="top-right" />
       <p>No tienes una cuenta?</p>
       <Link to="/register" className={styles.linkButton}>
         Crear una cuenta
