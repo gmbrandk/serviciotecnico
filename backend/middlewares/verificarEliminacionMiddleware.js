@@ -1,6 +1,6 @@
 // middlewares/verificarEliminacionMiddleware.js
 const Usuario = require('../models/Usuario');
-const verificarPermiso = require('../utils/verificarPermiso');
+const verificarPermiso = require('@utils/verificarPermiso');
 
 const verificarEliminacionMiddleware = async (req, res, next) => {
   try {

@@ -5,10 +5,10 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const conectarDB = require('./config/db');
-const authRoutes = require('@routes/usuarios/auth');
-const codigosRoutes = require('@routes/usuarios/codigos');
+const authRoutes = require('@routes/auth');
+const codigosRoutes = require('@routes/codigos');
 const usuariosRoutes = require('@routes/usuarios/usuarios');
-const superadminRoutes = require('@routes/usuarios/superadmin');
+const superadminRoutes = require('@routes/superadmin');
 
 dotenv.config();
 const app = express();
