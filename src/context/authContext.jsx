@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import loginUser from '@services/authService';
 import registerUser from '@services/userService';
 import { useNavigate } from 'react-router-dom';
+import { estandarizarRol } from '@utils/formatters';
 
 const AuthContext = createContext();
 
@@ -54,8 +55,22 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('usuario');
   };
 
+   // 🚀 Función nueva para verificar roles
+   const hasRole = (rolesPermitidos = []) => {
+    if (!usuario || !usuario.role) return false;
+  
+    // Normalizamos el rol del usuario (trim + lowercase)
+    const userRole = estandarizarRol(usuario.role);
+  
+    // Normalizamos también los roles permitidos
+    const rolesNormalizados = rolesPermitidos.map(rol => estandarizarRol(rol));
+  
+    return rolesNormalizados.includes(userRole);
+  };
+  
+
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario, token, login, logout, register }}>
+    <AuthContext.Provider value={{ usuario, setUsuario, token, login, logout, register, hasRole }}>
       {children}
     </AuthContext.Provider>
   );

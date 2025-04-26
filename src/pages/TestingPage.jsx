@@ -1,32 +1,67 @@
-// src/pages/TestingPage.jsx
-import React from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import Toast from '../components/shared/Toast'; // Importa el componente Toast
-//import styles from '../styles/testing/TestingPage.module.css';
+import React, { useState } from 'react';
+import Input from '@components/shared/Input'; // Usamos el componente Input genérico
+import Spinner from '@components/shared/Spinner'; // Usamos el Spinner genérico
+import styles from '@styles/CrearCodigo.module.css';
+import { FiCopy, FiCheck } from 'react-icons/fi'; 
 
-const TestingPage = () => {
-  const showToast = (type) => {
-    toast.custom((t) => (
-        <Toast
-          type={type} // Se pasa el tipo dinámicamente
-          title="Mensaje de prueba"
-          message="Este es un mensaje de ejemplo"
-          onClose={() => toast.dismiss(t.id)}
-        />
-      ));
+const CrearCodigo = () => {
+  const [codigo, setCodigo] = useState('');
+  const [copiado, setCopiado] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerarCodigo = async () => {
+    setLoading(true);
+    setTimeout(() => {
+      const codigoMock = Math.random().toString(36).substring(2, 10).toUpperCase();
+      setCodigo(codigoMock);
+      setLoading(false);
+    }, 1000);
+  };
+
+  const handleCopiar = async () => {
+    try {
+      await navigator.clipboard.writeText(codigo);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch (error) {
+      console.error('Error al copiar', error);
+    }
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Página de Pruebas</h2>
-      <button onClick={() => showToast('info')}>Toast de Info</button>
-      <button onClick={() => showToast('success')}>Toast de Success</button>
-      <button onClick={() => showToast('warning')}>Toast de Warning</button>
-      <button onClick={() => showToast('error')}>Toast de Error</button>
-      <button onClick={() => showToast('neutral')}>Toast Neutral</button>
-      <Toaster position="top-right" />
+    <div className={styles.container}>
+      <h1 className={styles.title}>Generar Código de Acceso</h1>
+
+      <div className={styles.inputGroup}>
+        <button 
+          className={styles.generateButton}
+          onClick={handleGenerarCodigo}
+          disabled={loading}
+        >
+          {loading ? (
+            <Spinner />
+          ) : (
+            <span className={styles.fadeText}>Generar</span>
+          )}
+        </button>
+
+        <div className={styles.inputCopyWrapper}>
+          <Input value={codigo} placeholder='MUUYJEE7' readOnly disabled />
+
+          <button 
+            className={styles.copyButton}
+            onClick={handleCopiar}
+            disabled={!codigo}
+            title={copiado ? "Copiado!" : "Copiar"}
+          >
+            {copiado ? <FiCheck className={styles.icon} /> : <FiCopy className={styles.icon} />}
+          </button>
+        </div>
+      </div>
+
+      <p className={styles.helperText}>Haz click en "Generar" para obtener un nuevo código</p>
     </div>
   );
 };
 
-export default TestingPage;
+export default CrearCodigo;

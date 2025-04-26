@@ -5,7 +5,7 @@ import { FaHome, FaUsers, FaTools, FaSignOutAlt, FaBars, FaTimes } from 'react-i
 import { useAuth } from '@context/authContext'; // Importamos el contexto
 
 const Sidebar = () => {
-  const { logout } = useAuth(); // Usamos el hook para acceder al logout
+  const { logout, hasRole } = useAuth(); // Usamos el hook para acceder al logout
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -64,6 +64,20 @@ const Sidebar = () => {
               <FaTools /> <span>Equipos</span>
             </Link>
           </li>
+          {hasRole(['superadministrador', 'administrador']) && (
+            <>
+                <li onClick={closeMobileSidebar}>
+              <Link to="/dashboard/codigoacceso">
+                <FaTools /> <span>Crear codigo de Acceso</span>
+              </Link>
+            </li>
+            <li onClick={closeMobileSidebar}>
+              <Link to="/dashboard/usuarios">
+                <FaTools /> <span>Administrar Usuarios</span>
+              </Link>
+            </li>
+            </>
+          )}
           <li onClick={handleLogout}>
             <Link to="/login">
               <FaSignOutAlt /> <span>Cerrar sesión</span>
