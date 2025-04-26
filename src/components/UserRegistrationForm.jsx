@@ -28,7 +28,9 @@ const UserRegistrationForm = ({ onSubmit }) => {
           message="Todos los campos son obligatorios."
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ), {
+        duration: 1000
+      });
       return;
     }
 
@@ -40,7 +42,9 @@ const UserRegistrationForm = ({ onSubmit }) => {
           message="Debes ingresar un código de acceso válido."
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ), {
+        duration: 1000
+      });
       return;
     }
 
@@ -54,7 +58,9 @@ const UserRegistrationForm = ({ onSubmit }) => {
           message="¡Registro exitoso! Redirigiendo..."
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ), {
+        duration: 1000
+      });
     } else if (result?.error) {
       toast.custom((t) => (
         <Toast
@@ -63,7 +69,9 @@ const UserRegistrationForm = ({ onSubmit }) => {
           message={result.error}
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ),{
+        duration: 1000
+      });
     }
   };
 

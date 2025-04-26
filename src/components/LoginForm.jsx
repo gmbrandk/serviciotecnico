@@ -28,21 +28,21 @@ const LoginForm = ({ onSubmit }) => {
           message="Todos los campos son Obligatorios."
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ), { duration: 1000 });
       return;
     }
 
-    const result = await onSubmit(formData); // delega al padre
+    const result = await onSubmit(formData);
 
     if (result?.success) {
       toast.custom((t) => (
         <Toast
-          message={"¡Bienvenido! Redirigiendo..."}
           type="success"
           title="¡Éxito!"
+          message="¡Bienvenido! Redirigiendo..."
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ), { duration: 1000 });
     } else if (result?.error) {
       toast.custom((t) => (
         <Toast
@@ -51,7 +51,7 @@ const LoginForm = ({ onSubmit }) => {
           message={result.error}
           onClose={() => toast.dismiss(t.id)}
         />
-      ));
+      ), { duration: 1000 });
     }
   };
 

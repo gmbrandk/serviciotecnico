@@ -1,40 +1,32 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import UserRegistrationForm from '../components/UserRegistrationForm';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '@context/authContext';
+import UserRegistrationForm from '@components/UserRegistrationForm';
 import { Toaster } from 'react-hot-toast';
+import styles from '@styles/LoginPage.module.css';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const handleRegister = async (formData) => {
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
-
-      if (res.status === 201 || res.data.success) {
-        const { token } = res.data;
-        localStorage.setItem('token', token);
-
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
-
-        return { success: true };
-      }
-    } catch (error) {
-      console.error('Error al registrar usuario:', error);
-      if (error.response && error.response.data?.mensaje) {
-        return { error: error.response.data.mensaje };
-      }
-      return { error: 'Ocurrió un error al registrar. Intenta de nuevo.' };
+  const handleSubmit = async (formData) => {
+    const result = await register(formData);
+    if (result.success) {
+      setTimeout(() => navigate('/login'), 2000);
     }
+    return result;
   };
 
   return (
-      <>
-        <UserRegistrationForm onSubmit={handleRegister} />;
-        <Toaster position='top-right'/>
-      </>)
+    <div className={styles.loginContainer}>
+      <UserRegistrationForm onSubmit={handleSubmit} />
+      <Toaster position="top-right" />
+      <p>Ya estas registrado?</p>
+            <Link to="/login" className={styles.linkButton}>
+              Ingresa tus credenciales
+            </Link>
+    </div>
+  );
 };
 
 export default RegisterPage;

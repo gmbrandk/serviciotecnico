@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../../styles/dashboard/Sidebar.module.css';
+import styles from '@styles/dashboard/Sidebar.module.css';
 import { FaHome, FaUsers, FaTools, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import { useAuth } from '@context/authContext'; // Importamos el contexto
 
 const Sidebar = () => {
+  const { logout } = useAuth(); // Usamos el hook para acceder al logout
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
+    logout(); // Usamos la función logout del contexto
   };
 
   const toggleSidebar = () => {
@@ -64,9 +65,9 @@ const Sidebar = () => {
             </Link>
           </li>
           <li onClick={handleLogout}>
-          <Link to="/">
+            <Link to="/login">
               <FaSignOutAlt /> <span>Cerrar sesión</span>
-          </Link>
+            </Link>
           </li>
         </ul>
       </div>

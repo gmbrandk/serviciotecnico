@@ -11,9 +11,8 @@ import { Toaster } from 'react-hot-toast';
 const App = () => {
   return (
     <>
-    <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/dashboard"
@@ -27,7 +26,6 @@ const App = () => {
         <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
         <Route path='/testing' element={<TestingPage/>}></Route>
       </Routes>
-    </Router>
           <Toaster position='top-right' reverseOrder={false} />
     </>
   );

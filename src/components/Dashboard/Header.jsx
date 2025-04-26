@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from '../../styles/dashboard/Header.module.css';
+import styles from '@styles/dashboard/Header.module.css';
+import { useAuth } from '@context/authContext'; 
 
 const Header = () => {
-  const tecnico = JSON.parse(localStorage.getItem('usuario'));
-  const nombre = tecnico?.nombre || 'Técnico';
-  console.log(tecnico?.nombre);
+  const { usuario } = useAuth();
+  const nombre = usuario?.nombre || 'Tecnico';
 
   return (
     <header className={styles.header}>

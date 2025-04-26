@@ -14,9 +14,14 @@ const register = async (req, res) => {
       return res.status(403).json({ mensaje: 'Código de acceso inválido o sin usos disponibles.' });
     }
 
-    const usuarioExistente = await Usuario.findOne({ email });
-    if (usuarioExistente) {
+    const emailExistente = await Usuario.findOne({ email });
+    if (emailExistente) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado.' });
+    }
+
+    const usuarioExistente = await Usuario.findOne({ nombre });
+    if (usuarioExistente) {
+      return res.status(400).json({ mensaje: 'El nombre ya está registrado.' });
     }
 
     const usuario = new Usuario({ nombre, email, password, role, accessCode: role === 'superadministrador' ? accessCode : undefined });

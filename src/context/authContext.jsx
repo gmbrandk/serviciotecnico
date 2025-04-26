@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser } from '../services/authService'; // Asegúrate de que la ruta esté bien
+import loginUser from '@services/authService';
+import registerUser from '@services/userService';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
   const [token, setToken] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -24,9 +27,24 @@ export const AuthProvider = ({ children }) => {
       setUsuario(usuario);
       localStorage.setItem('token', token);
       localStorage.setItem('usuario', JSON.stringify(usuario));
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000); 
+      return { success: true };
     } catch (error) {
-      console.error(error);
+      return { error: error.message };
     }
+  };
+
+  const register = async (formData) => {
+    const result = await registerUser(formData);
+    if (result.success) {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+      }
+    }
+    return result;
   };
 
   const logout = () => {
@@ -37,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, token, login, logout }}>
+    <AuthContext.Provider value={{ usuario, setUsuario, token, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

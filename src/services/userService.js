@@ -17,3 +17,5 @@ export const registerUser = async (formData) => {
     return { error: 'Ocurrió un error al registrar. Intenta de nuevo.' };
   }
 };
+
+export default registerUser;
