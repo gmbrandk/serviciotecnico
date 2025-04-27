@@ -37,6 +37,15 @@
   justify-content: center;
 }
 
+/* Agregar en el archivo CrearCodigo.module.css */
+
+.generateButton:disabled {
+  background-color: #d3d3d3; /* Color gris claro para el fondo */
+  cursor: not-allowed; /* Cambiar el cursor a 'no permitido' */
+  color: #808080; /* Texto gris para indicar que está deshabilitado */
+  border-color: #808080;
+}
+
 .inputCopyWrapper {
   display: flex;
   flex: 1;
@@ -89,4 +98,25 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+.inputUsos {
+  width: 120px;
+  height: 25px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+.selectUsos {
+  width: 120px; /* o 100% si quieres que se ajuste dinámicamente */
+  height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  margin-right: 3px;
 }

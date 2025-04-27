@@ -1,6 +1,7 @@
 // backend/controllers/codigoController.js
 const CodigoAcceso = require('../models/CodigoAcceso');
 const crypto = require('crypto');
+const { logError } = require('@utils/logger');
 
 const generarCodigoAcceso = async (req, res) => {
   const usuario = req.usuario; // esto se rellena con middleware de auth
@@ -10,6 +11,11 @@ const generarCodigoAcceso = async (req, res) => {
   const rolUsuario = usuario.role?.toLowerCase();
   if (rolUsuario !== 'superadministrador' && rolUsuario !== 'administrador') {
     return res.status(403).json({ mensaje: 'Acceso denegado' });
+  }
+
+  // Validar rango de usos
+  if (typeof usos !== 'number' || usos < 1 || usos > 5) {
+    return res.status(400).json({ mensaje: 'El número de usos debe estar entre 1 y 5' });
   }
 
   try {
@@ -25,7 +31,7 @@ const generarCodigoAcceso = async (req, res) => {
 
     res.status(201).json({ success: true, codigo: nuevoCodigo });
   } catch (error) {
-    console.error(error);
+    logError(error);
     res.status(500).json({ mensaje: 'Error al generar código' });
   }
 };

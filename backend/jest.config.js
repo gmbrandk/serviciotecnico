@@ -7,6 +7,7 @@ module.exports = {
       '^@models(.*)$': '<rootDir>/models$1',
       '^@middlewares(.*)$': '<rootDir>/middlewares$1',
       '^@config(.*)$': '<rootDir>/config$1',
+      '^@utils(.*)$': '<rootDir>/utils$1',
       '^app$': '<rootDir>/app.js'
     },
     testEnvironment: 'node'

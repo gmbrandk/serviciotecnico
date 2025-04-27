@@ -50,4 +50,51 @@ describe('generarCodigoAcceso', () => {
     expect(res.status).toHaveBeenCalledWith(403);
     expect(res.json).toHaveBeenCalledWith({ mensaje: 'Acceso denegado' });
   });
+
+  it('debería rechazar si el número de usos no está entre 1 y 5', async () => {
+    req.body.usos = 10; // valor fuera de rango
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe estar entre 1 y 5' });
+  });
+  
+  it('debería responder con 500 si ocurre un error al guardar el código', async () => {
+    CodigoAcceso.mockImplementation(() => ({
+      save: jest.fn().mockRejectedValue(new Error('Fallo en la BD')),
+    }));
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ mensaje: 'Error al generar código' });
+  });
+  
+  it('debería usar 1 uso por defecto si no se envía usos en el body', async () => {
+    req.body = {}; // Sin usos
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(CodigoAcceso).toHaveBeenCalledWith(expect.objectContaining({
+      usosDisponibles: 1,
+    }));
+  });
+
+  it('debería responder con 500 si ocurre un error al guardar el código', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // silencia
+  
+    CodigoAcceso.mockImplementation(() => ({
+      save: jest.fn().mockRejectedValue(new Error('Fallo en la BD')),
+    }));
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ mensaje: 'Error al generar código' });
+  
+    consoleErrorSpy.mockRestore(); // vuelve a la normalidad después
+  });
+  
+  
 });
