@@ -10,14 +10,20 @@ const useGestionarCodigos = () => {
 
   const reducirUso = (codigo) => {
     setCodigos(prevCodigos => 
-      prevCodigos.map(item => 
-        item.codigo === codigo && item.usosDisponibles > 0
-          ? { ...item, usosDisponibles: item.usosDisponibles - 1 }
-          : item
-      )
+      prevCodigos.map(item => {
+        if (item.codigo === codigo && item.usosDisponibles > 0) {
+          const nuevosUsos = item.usosDisponibles - 1;
+          return {
+            ...item,
+            usosDisponibles: nuevosUsos,
+            estado: nuevosUsos === 0 ? 'inactivo' : 'activo'
+          };
+        }
+        return item;
+      })
     );
   };
-
+  
   return { codigos, reducirUso };
 };
 

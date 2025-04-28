@@ -1,8 +1,8 @@
 import React from 'react';
-import CodigoAccesoItem from '@components/CodigoAccesoItems'; // Importamos el item de código
-import styles from '@styles/ListaCodigosAcceso.module.css'; // Estilos para la lista completa
+import CodigoAccesoItem from '@components/CodigoAccesoItems'; 
+import styles from '@styles/ListaCodigosAcceso.module.css';
 
-const CodigoAccesoList = ({ codigos }) => {
+const CodigoAccesoList = ({ codigos, reducirUso }) => {
   return (
     <table className={styles.rwdTable}>
       <thead>
@@ -14,13 +14,13 @@ const CodigoAccesoList = ({ codigos }) => {
         </tr>
       </thead>
       <tbody>
-        {codigos.map((codigo, index) => (
+        {codigos.map((codigoItem, index) => (
           <CodigoAccesoItem
             key={index}
-            codigo={codigo.codigo}
-            usosDisponibles={codigo.usosDisponibles}
-            estado={codigo.estado}
-            reducirUsos={codigo.reducirUsos}
+            codigo={codigoItem.codigo}
+            usosDisponibles={codigoItem.usosDisponibles}
+            estado={codigoItem.estado}
+            reducirUsos={() => reducirUso(codigoItem.codigo)} // 💥 Corrección
           />
         ))}
       </tbody>

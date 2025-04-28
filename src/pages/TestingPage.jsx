@@ -1,74 +1,68 @@
-// components/CrearCodigo.jsx
 import React, { useState } from 'react';
-import Spinner from '@components/shared/Spinner';
-import styles from '@styles/CrearCodigo.module.css';
 import { FiCopy, FiCheck } from 'react-icons/fi';
-import useGenerarCodigo from '@hooks/useGenerarCodigo'; // Tu hook
-import useGestionarCodigos from '@hooks/useGestionarCodigos'
-import useClipboard from '@hooks/useClipboard'; // Nuevo nombre genérico para el hook
-import ListaCodigosAcceso from '@components/ListaCodigosAcceso'; // Nuevo componente
+import Spinner from '@components/shared/Spinner';
+import useCodigosAcceso from '@hooks/useCodigosAcceso';
+import useClipboard from '@hooks/useClipboard';
+import useLoading from '@hooks/useLoading';
+import ListaCodigosAcceso from '@components/ListaCodigosAcceso';
+import styles from '@styles/CrearCodigo.module.css';
 
 const CrearCodigo = () => {
-  const { codigo, usosDisponibles, estado, loading, generarCodigo, reducirUsos } = useGenerarCodigo();
-  const { copiado, handleCopiar } = useClipboard(codigo);
+  const { codigos, generarNuevoCodigo, reducirUso, hayCodigoActivo } = useCodigosAcceso();
   const [usosSeleccionados, setUsosSeleccionados] = useState(1);
-  const { codigos, reducirUso } = useGestionarCodigos(); // Usamos el hook
+  const { loading, startLoading, stopLoading } = useLoading(); // 🚀 Hook de loading
+  
+  // Obtener el código activo actual (si existe)
+  const codigoActivo = codigos.find(codigo => codigo.estado === 'activo');
+  
+  const { copiado, handleCopiar } = useClipboard(codigoActivo?.codigo || '');
 
-  const handleUsosChange = (e) => {
-    setUsosSeleccionados(parseInt(e.target.value, 10));
-  };
-
-  const handleGenerarCodigo = () => {
-    generarCodigo(usosSeleccionados);
+  const handleGenerar = () => {
+    startLoading();
+    setTimeout(() => { // Simulamos un delay (luego será real cuando llames al backend)
+      generarNuevoCodigo(usosSeleccionados);
+      stopLoading();
+    }, 1000);
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Generar Código de Acceso</h1>
-      {/* Generar Código de Acceso */}
+
+      {/* Bloquear generación si hay código activo */}
       <div className={styles.inputGroup}>
         <select
           value={usosSeleccionados}
-          onChange={handleUsosChange}
+          onChange={(e) => setUsosSeleccionados(parseInt(e.target.value, 10))}
           className={styles.selectUsos}
-          disabled={usosDisponibles > 0}
+          disabled={hayCodigoActivo}
         >
-          <option value={1}>1 uso</option>
-          <option value={2}>2 usos</option>
-          <option value={3}>3 usos</option>
-          <option value={4}>4 usos</option>
-          <option value={5}>5 usos</option>
+          {[1, 2, 3, 4, 5].map(num => <option key={num} value={num}>{num} uso</option>)}
         </select>
 
         <button
           className={styles.generateButton}
-          onClick={handleGenerarCodigo}
-          disabled={usosDisponibles > 0 || loading}
+          onClick={handleGenerar}
+          disabled={hayCodigoActivo || loading}
         >
-          {loading ? <Spinner /> : <span className={styles.fadeText}>Generar</span>}
+          {loading ? <Spinner size={20} /> : hayCodigoActivo ? 'Código Activo' : 'Generar'}
         </button>
 
-        {/* Botón copiar */}
+        {/* Botón copiar solo si hay código activo */}
         <div className={styles.inputCopyWrapper}>
-          <input value={codigo} placeholder="MUUYJEE7" readOnly disabled className={styles.inputField} />
+          <input value={codigoActivo?.codigo || ''} readOnly disabled className={styles.inputField} />
           <button
             className={styles.copyButton}
             onClick={handleCopiar}
-            disabled={!codigo}
+            disabled={!codigoActivo}
             title={copiado ? "¡Copiado!" : "Copiar"}
           >
-            {copiado ? <FiCheck className={styles.icon} /> : <FiCopy className={styles.icon} />}
+            {copiado ? <FiCheck /> : <FiCopy />}
           </button>
         </div>
       </div>
 
-      {/* Estado y usos disponibles */}
-      <div className={styles.statusWrapper}>
-        <p><strong>Estado del código:</strong> {estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
-        <p><strong>Usos disponibles:</strong> {usosDisponibles}</p>
-      </div>
-
-      {/* Lista de Códigos de Acceso */}
+      {/* Lista de todos los códigos */}
       <ListaCodigosAcceso codigos={codigos} reducirUso={reducirUso} />
     </div>
   );
