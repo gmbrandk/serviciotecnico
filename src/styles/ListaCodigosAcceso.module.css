@@ -1,0 +1,108 @@
+/* Estilos adaptados para la tabla responsiva y el item */
+@import "https://fonts.googleapis.com/css?family=Montserrat:300,400,700";
+/* Utilizando el enfoque mobile-first */
+.rwdTable {
+  margin: 1em 0;
+  min-width: 300px;
+  background: #34495E;
+  color: #fff;
+  border-radius: .4em;
+  overflow: hidden;
+}
+
+.rwdTable tr {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.rwdTable th {
+  display: none; /* Para accesibilidad, usa un método visualmente oculto */
+}
+
+.rwdTable td {
+  display: block;
+  padding: .5em;
+}
+
+.rwdTable td:first-child {
+  padding-top: .5em;
+}
+
+.rwdTable td:last-child {
+  padding-bottom: .5em;
+}
+
+.rwdTable td:before {
+  content: attr(data-th)": ";
+  font-weight: bold;
+  width: 6.5em;
+  display: inline-block;
+}
+
+@media (min-width: 480px) {
+  /* Mostrar los encabezados en pantallas grandes */
+  .rwdTable th {
+    display: table-cell;
+    padding: 10px; /* Padding para los títulos */
+    text-align: center; /* Centrar el texto de los títulos */
+  }
+
+  /* Para las celdas en la versión de escritorio */
+  .rwdTable td {
+    display: table-cell;
+    padding: 1em !important; /* Padding más grande para las celdas */
+  }
+
+  .rwdTable td:before {
+    display: none;
+  }
+
+  .rwdTable th,
+  .rwdTable td {
+    text-align: left;
+    padding: 0.25em 0.5em;
+  }
+
+  .rwdTable th:first-child,
+  .rwdTable td:first-child {
+    padding-left: 0;
+  }
+
+  .rwdTable th:last-child,
+  .rwdTable td:last-child {
+    padding-right: 0;
+  }
+}
+
+.rwdTable th,
+.rwdTable td:before {
+  color: #dd5;
+}
+
+.rwdTable {
+  background: #34495e;
+  color: #fff;
+  border-radius: 0.4em;
+  overflow: hidden;
+}
+
+.rwdTable tr {
+  border-color: #46637f;
+}
+
+.rwdTable th,
+.rwdTable td {
+  margin: 0.5em 1em;
+}
+
+@media (min-width: 480px) {
+  .rwdTable th,
+  .rwdTable td {
+    padding: 1em !important;
+  }
+}
+
+.rwdTable th,
+.rwdTable td:before {
+  color: #dd5;
+}

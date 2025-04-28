@@ -1,93 +1,75 @@
+// components/CrearCodigo.jsx
 import React, { useState } from 'react';
-import Input from '@components/shared/Input';
 import Spinner from '@components/shared/Spinner';
 import styles from '@styles/CrearCodigo.module.css';
-import { FiCopy, FiCheck } from 'react-icons/fi'; 
+import { FiCopy, FiCheck } from 'react-icons/fi';
+import useGenerarCodigo from '@hooks/useGenerarCodigo'; // Tu hook
+import useGestionarCodigos from '@hooks/useGestionarCodigos'
+import useClipboard from '@hooks/useClipboard'; // Nuevo nombre genérico para el hook
+import ListaCodigosAcceso from '@components/ListaCodigosAcceso'; // Nuevo componente
 
 const CrearCodigo = () => {
-  const [codigo, setCodigo] = useState('');
-  const [copiado, setCopiado] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [usos, setUsos] = useState(1);
+  const { codigo, usosDisponibles, estado, loading, generarCodigo, reducirUsos } = useGenerarCodigo();
+  const { copiado, handleCopiar } = useClipboard(codigo);
+  const [usosSeleccionados, setUsosSeleccionados] = useState(1);
+  const { codigos, reducirUso } = useGestionarCodigos(); // Usamos el hook
 
-  const handleUsosChange = (event) => {
-    setUsos(parseInt(event.target.value, 10));
+  const handleUsosChange = (e) => {
+    setUsosSeleccionados(parseInt(e.target.value, 10));
   };
 
-  const handleGenerarCodigo = async () => {
-    if (![1, 2, 3, 4, 5].includes(usos)) {
-      alert('Selecciona un número de usos válido (1 a 5)');
-      return;
-    }
-
-    setLoading(true);
-
-    setTimeout(() => {
-      const codigoMock = Math.random().toString(36).substring(2, 10).toUpperCase();
-      setCodigo(codigoMock);
-
-       // Aquí se puede ver el código ya actualizado
-      console.log('Datos que se enviarían al backend:', { codigo: codigoMock, usos });
-
-      setLoading(false);
-    }, 1000);
-  };
-
-  const handleCopiar = async () => {
-    try {
-      await navigator.clipboard.writeText(codigo);
-      setCopiado(true);
-      setTimeout(() => setCopiado(false), 2000);
-    } catch (error) {
-      console.error('Error al copiar', error);
-    }
+  const handleGenerarCodigo = () => {
+    generarCodigo(usosSeleccionados);
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Generar Código de Acceso</h1>
-
+      {/* Generar Código de Acceso */}
       <div className={styles.inputGroup}>
-        {/* Select para seleccionar la cantidad de usos */}
         <select
-          value={usos}
+          value={usosSeleccionados}
           onChange={handleUsosChange}
           className={styles.selectUsos}
+          disabled={usosDisponibles > 0}
         >
-          <option value="1">1 uso</option>
-          <option value="2">2 usos</option>
-          <option value="3">3 usos</option>
-          <option value="4">4 usos</option>
-          <option value="5">5 usos</option>
+          <option value={1}>1 uso</option>
+          <option value={2}>2 usos</option>
+          <option value={3}>3 usos</option>
+          <option value={4}>4 usos</option>
+          <option value={5}>5 usos</option>
         </select>
 
-        <button 
-          className={`${styles.generateButton} ${codigo !== '' ? styles.disabledButton : ''}`} // Agregar la clase 'disabledButton' si ya hay un código
+        <button
+          className={styles.generateButton}
           onClick={handleGenerarCodigo}
-          disabled={loading || codigo !== ''} // Deshabilitar si ya hay un código
+          disabled={usosDisponibles > 0 || loading}
         >
-          {loading ? (
-            <Spinner />
-          ) : (
-            <span className={styles.fadeText}>Generar</span>
-          )}
+          {loading ? <Spinner /> : <span className={styles.fadeText}>Generar</span>}
         </button>
 
+        {/* Botón copiar */}
         <div className={styles.inputCopyWrapper}>
-          <Input value={codigo} placeholder="MUUYJEE7" readOnly disabled />
-
-          <button 
+          <input value={codigo} placeholder="MUUYJEE7" readOnly disabled className={styles.inputField} />
+          <button
             className={styles.copyButton}
             onClick={handleCopiar}
             disabled={!codigo}
-            title={copiado ? "Copiado!" : "Copiar"}
+            title={copiado ? "¡Copiado!" : "Copiar"}
           >
             {copiado ? <FiCheck className={styles.icon} /> : <FiCopy className={styles.icon} />}
           </button>
         </div>
       </div>
 
-      <p className={styles.helperText}>Haz click en "Generar" para obtener un nuevo código</p>
+      {/* Estado y usos disponibles */}
+      <div className={styles.statusWrapper}>
+        <p><strong>Estado del código:</strong> {estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
+        <p><strong>Usos disponibles:</strong> {usosDisponibles}</p>
+      </div>
+
+      {/* Lista de Códigos de Acceso */}
+      <ListaCodigosAcceso codigos={codigos} reducirUso={reducirUso} />
     </div>
   );
 };
