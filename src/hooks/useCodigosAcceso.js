@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import {generateUniqueId} from '@helpers/generateUniqueId';
 
 const useCodigosAcceso = () => {
   const [codigos, setCodigos] = useState([]);
@@ -18,6 +19,7 @@ const useCodigosAcceso = () => {
     if (hayCodigoActivo) return; // Bloquear si ya existe uno activo
 
     const nuevoCodigo = {
+      id: generateUniqueId(),
       codigo: generarCodigoAleatorio(),
       usosDisponibles: usos,
       estado: 'activo'

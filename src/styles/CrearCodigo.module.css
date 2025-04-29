@@ -38,14 +38,38 @@
   justify-content: center;
 }
 
-/* Agregar en el archivo CrearCodigo.module.css */
-
-.generateButton:disabled {
-  background-color: #d3d3d3; /* Color gris claro para el fondo */
-  cursor: not-allowed; /* Cambiar el cursor a 'no permitido' */
-  color: #808080; /* Texto gris para indicar que está deshabilitado */
-  border-color: #808080;
+.generateButton:hover {
+  background-color: #1d43aa;
 }
+
+/* 1. Botón en su estado normal (sin carga y sin código activo) */
+.generateButton {
+  background-color: #1d4ed8;  /* Azul */
+  color: #ffffff;             /* Texto blanco */
+  cursor: pointer;
+}
+
+/* 2. Botón con spinner activo (cuando se está generando el código) */
+.generateButton.loading {
+  background-color: #1d4ed8;  /* Azul */
+  color: #ffffff;             /* Texto blanco */
+  cursor: not-allowed;        /* No se puede hacer clic */
+}
+
+/* 3. Botón cuando hay un código activo */
+.generateButton.disabled {
+  background-color: #f0f0f0;  /* Gris claro */
+  border-color: #f0f0f0;
+  color: #b0b0b0;             /* Gris oscuro */
+  cursor: not-allowed;        /* No se puede hacer clic */
+}
+
+/* Cambio de color cuando no está deshabilitado ni cargando */
+.generateButton:hover:disabled {
+  background-color: #0056b3;  /* Azul más oscuro cuando no está deshabilitado ni cargando */
+}
+
+
 
 .inputCopyWrapper {
   display: flex;
@@ -120,4 +144,14 @@
   font-size: 1rem;
   margin-bottom: 10px;
   margin-right: 3px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.successAnimation {
+  animation: pulse 0.6s ease forwards;
 }
