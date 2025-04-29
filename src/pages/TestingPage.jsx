@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { FiCopy, FiCheck } from 'react-icons/fi';
+import React, { useState } from 'react';
 import Spinner from '@components/shared/Spinner';
+import CopyInput from '@components/shared/CopyInput';
+import ListaCodigosAcceso from '@components/ListaCodigosAcceso';
 import useCodigosAcceso from '@hooks/useCodigosAcceso';
 import useClipboard from '@hooks/useClipboard';
 import useLoading from '@hooks/useLoading';
-import ListaCodigosAcceso from '@components/ListaCodigosAcceso';
+import useResetBotonGenerado from '../hooks/useResetBotonGenerado';
+import { handleGenerarCodigo } from '../logic/handleGenerarCodigo';
+import { activarSpotlight } from '../logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
 
 const CrearCodigo = () => {
@@ -17,52 +20,10 @@ const CrearCodigo = () => {
   const codigoActivo = codigos.find(codigo => codigo.estado === 'activo');
   const { copiado, handleCopiar } = useClipboard(codigoActivo?.codigo || '');
 
-  // Activamos el spotlight sobre un código específico
-  const activarSpotlight = (codigoId) => {
-    console.group('💡 activarSpotlight');
-    console.log('✨ Activando spotlight para el código ID:', codigoId);
-    setSpotlightActivoId(codigoId);
-    setTimeout(() => {
-      console.log('🛑 Desactivando spotlight');
-      setSpotlightActivoId(null);
-      console.groupEnd();
-    }, 2500);
-  };
-
   // Función principal del botón Generar
-  const handleGenerar = async () => {
-    console.group('🛎️ handleGenerar');
-  
-    const hayCodigoActivo = codigos.some((c) => c.estado === 'activo');
-    console.log('¿Hay código activo?', hayCodigoActivo);
-  
-    if (hayCodigoActivo && codigoActivo?.id) {
-      console.log('✅ Hay un código activo, activando spotlight para id:', codigoActivo.id);
-      activarSpotlight(codigoActivo.id);
-      console.groupEnd();
-      return;
-    }
-  
-    console.log('🆕 No hay código activo, generando nuevo código...');
-    
-    startLoading(); // Empieza la carga
-  
-    try {
-      // Generar el nuevo código con el número de usos seleccionados
-      await generarNuevoCodigo(usosSeleccionados);
-      console.log('✅ Código generado correctamente');
-    } catch (error) {
-      console.error('❌ Error al generar el código:', error);
-    } finally {
-      // Agregar un pequeño retraso antes de detener el spinner
-      setTimeout(() => {
-        stopLoading(); // Detiene la carga después del retraso
-      }, 500); // Retraso de 500ms para dar tiempo al spinner a mostrar
-    }
-  
-    console.groupEnd();
-  };
-  
+  const [botonGenerado, setBotonGenerado] = useState(false);
+
+  useResetBotonGenerado(codigos, setBotonGenerado);
 
   return (
     <div className={styles.container}>
@@ -85,33 +46,38 @@ const CrearCodigo = () => {
 
         {/* Botón generar */}
         <button
-          className={`${styles.generateButton} ${loading ? styles.loading : ''}${hayCodigoActivo ? styles.disabled : ''}`}
-          onClick={handleGenerar}
-         
+          className={`${styles.generateButton} 
+            ${loading ? styles.loading : ''} 
+            ${botonGenerado ? styles.disabled : ''}`}
+            onClick={() =>
+              handleGenerarCodigo({
+                hayCodigoActivo,
+                codigoActivo,
+                startLoading,
+                stopLoading,
+                generarNuevoCodigo,
+                usosSeleccionados,
+                activarSpotlight,
+                setBotonGenerado,
+                setSpotlightActivoId // 👈 Asegúrate de incluir esto
+              })
+            }
+            
         >
-          {loading ? <Spinner size={20} /> : hayCodigoActivo ? 'Generar' : 'Generar'}
+          {loading ? <Spinner size={20} /> : botonGenerado ? '✔ Generado' : 'Generar'}
         </button>
 
         {/* Input + botón copiar */}
-        <div className={styles.inputCopyWrapper}>
-          <input
-            value={codigoActivo?.codigo || ''}
-            readOnly
-            disabled
-            className={styles.inputField}
-          />
-          <button
-            className={styles.copyButton}
-            onClick={handleCopiar}
-            disabled={!codigoActivo}
-            title={copiado ? '¡Copiado!' : 'Copiar'}
-          >
-            {copiado ? <FiCheck /> : <FiCopy />}
-          </button>
-        </div>
+        <CopyInput
+          value={codigoActivo?.codigo || ''}
+          onCopy={handleCopiar}
+          copiado={copiado}
+          disabled={!codigoActivo}
+        />
       </div>
 
       {/* Lista de códigos, enviamos spotlightActivoId */}
+      <h2>Codigos disponibles</h2>
       <ListaCodigosAcceso 
         codigos={codigos} 
         reducirUso={reducirUso} 

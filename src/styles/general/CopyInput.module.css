@@ -1,0 +1,23 @@
+.inputCopyWrapper {
+  display: flex;
+  flex: 1;
+}
+
+.inputField {
+  background-color: #ffffff;
+  border: none;
+}
+
+.copyButton {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 0 16px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

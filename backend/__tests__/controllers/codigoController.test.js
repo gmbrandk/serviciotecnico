@@ -34,11 +34,24 @@ describe('generarCodigoAcceso', () => {
       codigo: '12345678'.toUpperCase(),
       usosDisponibles: 3,
       creadoPor: 'user123',
+      estado: 'activo',
+      fechaCreacion: expect.any(Date), // Usamos expect.any para validar que es un objeto Date
     });
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       codigo: '12345678'.toUpperCase(),
+        estado: 'activo',
+        fechaCreacion: expect.any(Date), // Verificamos que la fecha de creación sea un objeto Date
+        usosDisponibles: 3,
+        id: 'user123',
+      codigo: {
+        codigo: '12345678'.toUpperCase(),
+        estado: 'activo',
+        fechaCreacion: expect.any(Date), // Verificamos que la fecha de creación sea un objeto Date
+        usosDisponibles: 3,
+        id: 'user123',
+      },
     });
   });
 
@@ -96,5 +109,31 @@ describe('generarCodigoAcceso', () => {
     consoleErrorSpy.mockRestore(); // vuelve a la normalidad después
   });
   
+  it('debería crear un código con estado y fecha de creación si el usuario tiene rol válido', async () => {
+    await generarCodigoAcceso(req, res);
   
+    expect(crypto.randomBytes).toHaveBeenCalledWith(4);
+  
+    expect(CodigoAcceso).toHaveBeenCalledWith(expect.objectContaining({
+      codigo: '12345678'.toUpperCase(),
+      usosDisponibles: 3,
+      creadoPor: 'user123',
+      estado: 'activo',
+      fechaCreacion: expect.any(Date) // ✅ verifica que sea una fecha
+    }));
+  
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      success: true,
+      codigo: expect.any(Object), // ya que ahora envías un objeto con id, codigo, etc.
+    }));
+  });
+
+  it('debería establecer estado como "activo" por defecto', async () => {
+    await generarCodigoAcceso(req, res);
+  
+    expect(CodigoAcceso).toHaveBeenCalledWith(expect.objectContaining({
+      estado: 'activo'
+    }));
+  });  
 });

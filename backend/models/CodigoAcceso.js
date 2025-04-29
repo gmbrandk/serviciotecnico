@@ -16,10 +16,15 @@ const codigoAccesoSchema = new mongoose.Schema({
     ref: 'Usuario',
     required: true,
   },
-  creadoEn: {
-    type: Date,
-    default: Date.now,
-  }
+  estado: { 
+    type: String, 
+    enum: ['activo', 'inactivo'],
+    default: 'activo' 
+  }, 
+  fechaCreacion: { 
+    type: Date, 
+    default: Date.now 
+  } 
 });
 
 module.exports = mongoose.model('CodigoAcceso', codigoAccesoSchema);

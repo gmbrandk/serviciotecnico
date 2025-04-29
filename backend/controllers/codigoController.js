@@ -25,11 +25,22 @@ const generarCodigoAcceso = async (req, res) => {
       codigo: nuevoCodigo,
       usosDisponibles: usos,
       creadoPor: usuario.id,
+      estado: 'activo',
+      fechaCreacion: new Date(),
     });
 
     await codigo.save();
 
-    res.status(201).json({ success: true, codigo: nuevoCodigo });
+    res.status(201).json({
+      success: true,
+      codigo: {
+        id: codigo._id,
+        codigo: codigo.codigo,
+        estado: codigo.estado,
+        usosDisponibles: codigo.usosDisponibles,
+        fechaCreacion: codigo.fechaCreacion,
+      },
+    });
   } catch (error) {
     logError(error);
     res.status(500).json({ mensaje: 'Error al generar código' });

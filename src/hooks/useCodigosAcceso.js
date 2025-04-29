@@ -15,18 +15,24 @@ const useCodigosAcceso = () => {
   }, [codigos]);
 
   // Función para generar un nuevo código
-  const generarNuevoCodigo = (usos = 1) => {
-    if (hayCodigoActivo) return; // Bloquear si ya existe uno activo
-
+  // useCodigosAcceso.js
+  const generarNuevoCodigo = (usos = 1, callback) => {
+    if (hayCodigoActivo) return;
+  
     const nuevoCodigo = {
       id: generateUniqueId(),
       codigo: generarCodigoAleatorio(),
       usosDisponibles: usos,
       estado: 'activo'
     };
-
-    setCodigos(prevCodigos => [nuevoCodigo, ...prevCodigos, ]);
+  
+    setCodigos(prevCodigos => [nuevoCodigo, ...prevCodigos]);
+  
+    if (typeof callback === 'function') {
+      callback(nuevoCodigo); // ⬅️ Ejecutamos el callback al terminar
+    }
   };
+  
 
   // Función para reducir un uso de un código
   const reducirUso = (codigoBuscado) => {
