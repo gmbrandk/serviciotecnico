@@ -4,8 +4,8 @@ import React from 'react';
 const CrearCodigo = () => {
   return (
     <div>
-      <h2>🔬Pagina para hacer pruebas 🧪</h2>
-      <p>Experimenta cosas inimaginables</p>
+      <h2>Crear Usuarios</h2>
+      <p>Aquí irá el formulario para generar usuarios.</p>
     </div>
   );
 };

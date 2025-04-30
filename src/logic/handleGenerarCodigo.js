@@ -1,4 +1,7 @@
-export const handleGenerarCodigo = ({
+// logic/handleGenerarCodigo.js
+import toast from 'react-hot-toast';
+
+export const handleGenerarCodigo = async ({
   hayCodigoActivo,
   codigoActivo,
   startLoading,
@@ -9,24 +12,37 @@ export const handleGenerarCodigo = ({
   setBotonGenerado,
   setSpotlightActivoId,
 }) => {
-  if (hayCodigoActivo && codigoActivo?.id) {
-    activarSpotlight(setSpotlightActivoId, codigoActivo.id);
+  if (hayCodigoActivo) {
+    toast.error('Ya existe un código activo.');
     return;
   }
 
-  // 🧾 Log antes de enviar los datos
-  const nuevoCodigoPayload = {
-    usos: usosSeleccionados,
-    creadoEn: new Date().toISOString(),
-    generadoPor: 'usuario_logueado_placeholder', // Puedes reemplazarlo con el ID del usuario autenticado
-  };
+  try {
+    startLoading();
+    const token = localStorage.getItem('token'); // o desde tu AuthContext si lo manejas ahí
 
-  console.log('📤 Enviando nuevo código a la base de datos:', nuevoCodigoPayload);
+    const response = await fetch('http://localhost:5000/api/codigos/generar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ usos: usosSeleccionados }),
+    });
 
-  startLoading();
-  generarNuevoCodigo(usosSeleccionados, () => {
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.mensaje || 'Error al generar el código');
+    }
+
+    toast.success('Código generado exitosamente');
+    generarNuevoCodigo(data.codigo);
     setBotonGenerado(true);
-  });
-
-  setTimeout(() => stopLoading(), 500);
+    activarSpotlight(data.codigo.id, setSpotlightActivoId);
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    stopLoading();
+  }
 };
