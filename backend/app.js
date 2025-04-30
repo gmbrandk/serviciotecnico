@@ -1,30 +1,29 @@
-// backend/server.js
+// backend/app.js
 require('module-alias/register');
 
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const conectarDB = require('./config/db');
-const authRoutes = require('@routes/auth');
-const codigosRoutes = require('@routes/codigos');
-const usuariosRoutes = require('@routes/usuarios/usuarios');
-const superadminRoutes = require('@routes/superadmin');
 
-dotenv.config();
+// Cargar .env correcto
+const envPath = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+dotenv.config({ path: path.resolve(__dirname, envPath) });
+
+// Crear la app
 const app = express();
-
-// Conectar a la base de datos
-conectarDB();
-
-// Middleware
 app.use(cors());
-app.use(express.json()); // Para poder leer los datos JSON
+app.use(express.json());
 
 // Rutas
-// Montamos los routers
+const authRoutes = require('@routes/auth');
+const codigoRoutes = require('@routes/codigos');
+const usuarioRoutes = require('@routes/usuarios/usuarios');
+const superadminRoutes = require('@routes/superadmin');
+
 app.use('/api/auth', authRoutes);
-app.use('/api/codigos', codigosRoutes);
-app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/codigos', codigoRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/superadmin', superadminRoutes);
 
 module.exports = app;

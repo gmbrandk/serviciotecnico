@@ -1,9 +1,11 @@
 // __test__/setup.js
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 
-// Cargar variables de entorno de pruebas
-dotenv.config({ path: './.env.test' }); // Asegúrate de que .env.test esté configurado correctamente
+if (process.env.NODE_ENV === 'test') {
+  require('dotenv').config({ path: '.env.test' });
+} else {
+  require('dotenv').config();
+}
 
 beforeAll(async () => {
   // Conectar a la base de datos de pruebas (MongoDB)
