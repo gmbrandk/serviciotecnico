@@ -10,6 +10,7 @@ module.exports = {
       '^@utils(.*)$': '<rootDir>/utils$1',
       '^app$': '<rootDir>/app.js'
     },
+    setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
     testEnvironment: 'node'
   };
   

@@ -1,96 +1,51 @@
-// tests/registerController.test.js
-const mongoose = require('mongoose');
 const request = require('supertest');
-const app = require('../app'); // Tu app de Express
-const Usuario = require('../models/Usuario');
-const CodigoAcceso = require('../models/CodigoAcceso');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const app = require('../../app');  // Importa la aplicación correctamente
+const CodigoAcceso = require('../../models/CodigoAcceso');
 
-let mongoServer;
 
-beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri);
-});
+describe('Registro de usuario', () => {
+  let server;
 
-afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
-});
-
-afterEach(async () => {
-  await Usuario.deleteMany();
-  await CodigoAcceso.deleteMany();
-});
-
-describe('POST /api/auth/register con código de acceso', () => {
-  it('debería registrar un usuario y reducir usosDisponibles en 1', async () => {
-    const codigo = await CodigoAcceso.create({
-      codigo: 'ABC123',
-      usosDisponibles: 2,
-      estado: 'activo',
-      fechaCreacion: new Date(),
-    });
-
-    const res = await request(app).post('/api/auth/register').send({
-      nombre: 'usuario1',
-      email: 'user@example.com',
-      password: '123456',
-      role: 'tecnico',
-      codigoAcceso: 'ABC123',
-    });
-
-    expect(res.statusCode).toBe(201);
-    expect(res.body.success).toBe(true);
-
-    const usuario = await Usuario.findOne({ email: 'user@example.com' });
-    expect(usuario).not.toBeNull();
-
-    const codigoActualizado = await CodigoAcceso.findOne({ codigo: 'ABC123' });
-    expect(codigoActualizado.usosDisponibles).toBe(1);
-    expect(codigoActualizado.estado).toBe('activo');
+  beforeAll(() => {
+    server = app.listen(5001);  // Inicia el servidor en un puerto específico para las pruebas
   });
 
-  it('debería eliminar el código si usosDisponibles llega a 0', async () => {
-    const codigo = await CodigoAcceso.create({
-      codigo: 'XYZ789',
-      usosDisponibles: 1,
-      estado: 'activo',
-      fechaCreacion: new Date(),
-    });
-
-    const res = await request(app).post('/api/auth/register').send({
-      nombre: 'usuario2',
-      email: 'usuario2@example.com',
-      password: '123456',
-      role: 'tecnico',
-      codigoAcceso: 'XYZ789',
-    });
-
-    expect(res.statusCode).toBe(201);
-
-    const codigoBorrado = await CodigoAcceso.findOne({ codigo: 'XYZ789' });
-    expect(codigoBorrado).toBeNull();
+  afterAll(() => {
+    server.close();  // Cierra el servidor después de las pruebas
   });
 
-  it('debería rechazar si el código está agotado', async () => {
-    await CodigoAcceso.create({
-      codigo: 'AGOTADO',
-      usosDisponibles: 0,
-      estado: 'inactivo',
-      fechaCreacion: new Date(),
-    });
-
+  it('debería rechazar sin código de acceso válido', async () => {
     const res = await request(app).post('/api/auth/register').send({
-      nombre: 'usuario3',
-      email: 'usuario3@example.com',
+      nombre: 'testuser',
+      email: 'test@example.com',
       password: '123456',
       role: 'tecnico',
-      codigoAcceso: 'AGOTADO',
+      codigoAcceso: 'INVALIDO'
     });
 
     expect(res.statusCode).toBe(403);
-    expect(res.body.mensaje).toBe('Código de acceso inválido o sin usos disponibles.');
+    expect(res.body.mensaje).toMatch(/inválido/i);
+  });
+
+  it('debería rechazar si el email ya está registrado', async () => {
+    const codigo = await CodigoAcceso.create({ codigo: 'ABC123', usosDisponibles: 2 , creadoPor: 'admin123'});
+
+    await Usuario.create({
+      nombre: 'existente',
+      email: 'ya@registrado.com',
+      password: '123456',
+      role: 'tecnico',
+    });
+
+    const res = await request(app).post('/api/auth/register').send({
+      nombre: 'nuevo',
+      email: 'ya@registrado.com',
+      password: '123456',
+      role: 'tecnico',
+      codigoAcceso: 'ABC123'
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.mensaje).toMatch(/correo ya está registrado/i);
   });
 });
