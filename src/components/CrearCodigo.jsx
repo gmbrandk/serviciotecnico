@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Spinner from '@components/shared/Spinner';
 import CopyInput from '@components/shared/CopyInput';
 import ListaCodigosAcceso from '@components/ListaCodigosAcceso';
 import useCodigosAcceso from '@hooks/useCodigosAcceso';
 import useClipboard from '@hooks/useClipboard';
 import useLoading from '@hooks/useLoading';
-import useResetBotonGenerado from '../hooks/useResetBotonGenerado';
-import { handleGenerarCodigo } from '../logic/handleGenerarCodigo';
-import { activarSpotlight } from '../logic/activarSpotlight';
+import useResetBotonGenerado from '@hooks/useResetBotonGenerado';
+import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
+import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
 
 const CrearCodigo = () => {
-  const { codigos, generarNuevoCodigo, reducirUso, hayCodigoActivo } = useCodigosAcceso();
+  const { codigos, setCodigos, reducirUso, hayCodigoActivo } = useCodigosAcceso();
   const [usosSeleccionados, setUsosSeleccionados] = useState(1);
   const { loading, startLoading, stopLoading } = useLoading();
   const [spotlightActivoId, setSpotlightActivoId] = useState(null); // ⭐ Para manejar el spotlight
@@ -24,6 +24,20 @@ const CrearCodigo = () => {
   const [botonGenerado, setBotonGenerado] = useState(false);
 
   useResetBotonGenerado(codigos, setBotonGenerado);
+
+  const generarCodigo = () => {
+    handleGenerarCodigo({
+      hayCodigoActivo,
+      codigos,
+      setCodigos,
+      startLoading,
+      stopLoading,
+      usosSeleccionados,
+      activarSpotlight,
+      setBotonGenerado,
+      setSpotlightActivoId
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -48,24 +62,12 @@ const CrearCodigo = () => {
         <button
           className={`${styles.generateButton} 
             ${loading ? styles.loading : ''} 
-            ${botonGenerado ? styles.disabled : ''}`}
-            onClick={() =>
-              handleGenerarCodigo({
-                hayCodigoActivo,
-                codigoActivo,
-                startLoading,
-                stopLoading,
-                generarNuevoCodigo,
-                usosSeleccionados,
-                activarSpotlight,
-                setBotonGenerado,
-                setSpotlightActivoId // 👈 Asegúrate de incluir esto
-              })
-            }
-            
+            ${hayCodigoActivo ? styles.disabled : ''}`} // Deshabilitar si hay código activo
+          onClick={generarCodigo}
         >
-          {loading ? <Spinner size={20} /> : botonGenerado ? '✔ Generado' : 'Generar'}
+          {loading ? <Spinner size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
         </button>
+
 
         {/* Input + botón copiar */}
         <CopyInput

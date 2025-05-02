@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import styles from '../../styles/dashboard/DashboardLayout.module.css';
+import styles from '@styles/dashboard/DashboardLayout.module.css';
 
 const DashboardLayout = ({ children }) => {
   return (

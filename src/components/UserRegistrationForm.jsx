@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../styles/forms.module.css';
+import styles from '@styles/forms.module.css';
 import toast from 'react-hot-toast';
 import Toast from './shared/Toast';
 

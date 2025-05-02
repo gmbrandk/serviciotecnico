@@ -47,4 +47,15 @@ const generarCodigoAcceso = async (req, res) => {
   }
 };
 
-module.exports = { generarCodigoAcceso };
+const obtenerCodigos = async (req, res) => {
+  try {
+    const codigos = await CodigoAcceso.find().sort({ fechaCreacion: -1 }); // más recientes primero
+    res.status(200).json({codigos});
+  } catch (error) {
+    logError(error);
+    res.status(500).json({ mensaje: 'Error al obtener los códigos de acceso' });
+  }
+};
+
+
+module.exports = { generarCodigoAcceso, obtenerCodigos };

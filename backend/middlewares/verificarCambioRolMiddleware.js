@@ -1,6 +1,6 @@
 // ../middlewares/verificarCambioRolMiddleware.js
-const Usuario = require('../models/Usuario');
-const verificarPermiso = require('../utils/verificarPermiso');
+const Usuario = require('@models/Usuario');
+const verificarPermiso = require('@utils/verificarPermiso');
 
 const verificarCambioRolMiddleware = async (req, res, next) => {
   try {

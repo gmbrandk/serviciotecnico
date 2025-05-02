@@ -23,8 +23,8 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
       <tbody>
         {codigos.map((codigoItem) => (
           <CodigoAccesoItem
-            key={codigoItem.id} // Usamos el ID real, no el index
-            id={codigoItem.id}  // Pasamos también el ID al item
+            key={codigoItem._id} // Usamos el ID real, no el index
+            id={codigoItem._id}  // Pasamos también el ID al item
             codigo={codigoItem.codigo}
             usosDisponibles={codigoItem.usosDisponibles}
             estado={codigoItem.estado}

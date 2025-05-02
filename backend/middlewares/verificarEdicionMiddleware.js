@@ -1,6 +1,6 @@
 // middlewares/verificarEdicionMiddleware.js
-const Usuario = require('../models/Usuario');
-const verificarPermiso = require('../utils/verificarPermiso');
+const Usuario = require('@models/Usuario');
+const verificarPermiso = require('@utils/verificarPermiso');
 
 const verificarEdicionMiddleware = async (req, res, next) => {
   try {

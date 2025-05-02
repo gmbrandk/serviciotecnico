@@ -1,6 +1,6 @@
 // src/components/Toast.jsx
 import React from 'react';
-import styles from '../../styles/general/Toast.module.css';
+import styles from '@styles/general/Toast.module.css';
 
 const icons = {
     info: (
