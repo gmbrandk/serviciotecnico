@@ -1,4 +1,3 @@
-// backend/models/CodigoAcceso.js
 const mongoose = require('mongoose');
 
 const codigoAccesoSchema = new mongoose.Schema({
@@ -6,10 +5,15 @@ const codigoAccesoSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator: v => /^[A-Z0-9]{8}$/.test(v),
+      message: props => `${props.value} no es un código válido (8 caracteres hexadecimales en mayúsculas).`
+    }
   },
   usosDisponibles: {
     type: Number,
     default: 1,
+    min: [1, 'El número mínimo de usos debe ser 1'],
   },
   creadoPor: {
     type: mongoose.Schema.Types.ObjectId,

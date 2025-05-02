@@ -1,4 +1,5 @@
 // tests/controllers/codigoController.test.js
+const mongoose = require('mongoose');
 const { generarCodigoAcceso } = require('../../controllers/codigoController');
 const CodigoAcceso = require('../../models/CodigoAcceso');
 const crypto = require('crypto');
@@ -6,6 +7,7 @@ const { logError } = require('../../utils/logger');
 
 jest.mock('../../models/CodigoAcceso');
 jest.mock('../../utils/logger');
+const mockSave = jest.fn();
 
 describe('generarCodigoAcceso', () => {
   let req, res;
@@ -67,13 +69,20 @@ describe('generarCodigoAcceso', () => {
   });
 
   it('debería rechazar si el número de usos no está entre 1 y 5', async () => {
-    req.body.usos = 10;
-
+    const req = {
+      body: { usos: 10 },
+      usuario: { role: 'superadministrador', id: 'user123' },
+    };
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+  
     await generarCodigoAcceso(req, res);
-
+  
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe estar entre 1 y 5' });
-  });
+    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
+  });  
 
   it('debería responder con 500 si ocurre un error al guardar el código', async () => {
     CodigoAcceso.mockImplementation(() => ({
@@ -88,15 +97,24 @@ describe('generarCodigoAcceso', () => {
   });
 
   it('debería usar 1 uso por defecto si no se envía usos en el body', async () => {
-    req.body = {}; // sin usos
-    const mockSave = jest.fn();
+    const req = {
+      body: {},
+      usuario: { role: 'superadministrador', id: 'user123' },
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    // Preparar mock de instancia
     CodigoAcceso.mockImplementation(() => ({
       save: mockSave,
-      _id: 'mockId',
-      codigo: 'ABCD1234',
+      _id: 'mock-id',
+      codigo: 'MOCK1234',
       estado: 'activo',
       usosDisponibles: 1,
-      fechaCreacion: new Date()
+      fechaCreacion: new Date(),
     }));
 
     await generarCodigoAcceso(req, res);
@@ -105,7 +123,9 @@ describe('generarCodigoAcceso', () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
       success: true,
-      codigo: expect.objectContaining({ usosDisponibles: 1 })
+      codigo: expect.objectContaining({
+        usosDisponibles: 1,
+      }),
     }));
   });
 
@@ -147,4 +167,14 @@ describe('generarCodigoAcceso', () => {
       codigo: expect.objectContaining({ estado: 'activo' })
     }));
   });
+
+  it('debería rechazar si el número de usos no es entero (por ejemplo 2.9)', async () => {
+    req.body.usos = 2.9;
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
+  });
+  
 });

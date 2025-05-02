@@ -70,7 +70,7 @@ describe('POST /api/auth/register', () => {
 
   it('debería rechazar si el correo ya está en uso', async () => {
     const codigo = await CodigoAcceso.create({
-      codigo: 'DUPLICATE',
+      codigo: 'DUPLICAT',
       usosDisponibles: 2,
       creadoPor: new mongoose.Types.ObjectId(),
       estado: 'activo'
@@ -90,7 +90,7 @@ describe('POST /api/auth/register', () => {
         email: 'existente@example.com',
         password: '12345678',
         role: 'tecnico',
-        codigoAcceso: 'DUPLICATE'
+        codigoAcceso: 'DUPLICAT'
       });
 
     expect(res.status).toBe(400);

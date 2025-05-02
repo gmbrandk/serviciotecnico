@@ -2,11 +2,14 @@ const CodigoAcceso = require('@models/CodigoAcceso');
 
 const validarCreacionCodigo = async (req, res, next) => {
   try {
-    const codigoActivo = await CodigoAcceso.findOne({ estado: 'activo' });
+    const codigoActivo = await CodigoAcceso.findOne({ 
+      estado: 'activo', 
+      usosDisponibles: { $gt: 0 } 
+    });
 
     if (codigoActivo) {
       return res.status(409).json({
-        mensaje: 'Ya existe un código activo. No se puede generar otro.',
+        mensaje: 'Ya existe un código activo con usos disponibles. No se puede generar otro.',
         codigoExistente: codigoActivo.codigo,
       });
     }
