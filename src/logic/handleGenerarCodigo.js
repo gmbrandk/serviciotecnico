@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast';
+import { normalizedId } from '@utils/formatters';
 
 export const handleGenerarCodigo = async ({
   hayCodigoActivo,
@@ -46,14 +47,18 @@ export const handleGenerarCodigo = async ({
 
     toast.success('Código generado exitosamente');
 
-    // Agregamos el nuevo código al estado
-    setCodigos([...codigos, data.codigo]);
+    // Usamos normalizedId para asegurarnos de que _id esté correctamente asignado
+    const nuevoCodigo = { ...data.codigo, _id: normalizedId(data.codigo) };
+    setCodigos(prev => [{ ...nuevoCodigo }, ...prev]);
 
     // Indicamos que el código ha sido generado
     setBotonGenerado(true);
 
+    console.log('Respuesta completa:', data);
+    console.log('Código devuelto:', data.codigo);
+
     // Activamos el spotlight para el nuevo código generado
-    activarSpotlight(setSpotlightActivoId, data.codigo._id); // Usa _id para el nuevo código
+    activarSpotlight(setSpotlightActivoId, nuevoCodigo._id); // Usa _id para el nuevo código
 
   } catch (error) {
     toast.error(error.message);
@@ -61,4 +66,3 @@ export const handleGenerarCodigo = async ({
     stopLoading();
   }
 };
-

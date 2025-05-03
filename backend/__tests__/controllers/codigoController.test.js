@@ -9,26 +9,45 @@ jest.mock('../../models/CodigoAcceso');
 jest.mock('../../utils/logger');
 const mockSave = jest.fn();
 
-describe('generarCodigoAcceso', () => {
+describe('generarCodigoAcceso - validación estricta de usos', () => {
   let req, res;
 
   beforeEach(() => {
     req = {
-      usuario: { id: 'user123', role: 'superadministrador' },
-      body: { usos: 2 }
+      body: {},
+      usuario: { role: 'superadministrador', id: 'user123' },
     };
-
     res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn()
+      json: jest.fn(),
     };
-
-    jest.spyOn(crypto, 'randomBytes').mockReturnValue(Buffer.from('abcd1234'));
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+  it('debería rechazar si usos es un número decimal', async () => {
+    req.body.usos = 2.9;
+    await generarCodigoAcceso(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+
+  it('debería rechazar si usos es un booleano', async () => {
+    req.body.usos = true;
+    await generarCodigoAcceso(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+
+  it('debería rechazar si usos es un string', async () => {
+    req.body.usos = '3';
+    await generarCodigoAcceso(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
   });
 
   it('debería crear un código si el usuario tiene rol válido', async () => {
@@ -175,6 +194,81 @@ describe('generarCodigoAcceso', () => {
   
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
+  });
+  
+  it('debería rechazar "2" como string válido para usos', async () => {
+    req.body.usos = "2"; // string numérico válido
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
+  });
+  
+  it('debería rechazar "3.5" como string decimal inválido', async () => {
+    req.body.usos = "3.5";
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+  
+  it('debería rechazar "cuatro" como string no numérico', async () => {
+    req.body.usos = "cuatro";
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+
+  it('debería rechazar usos como cadena vacía', async () => {
+    req.body.usos = "";
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+  
+  it('debería rechazar usos como null', async () => {
+    req.body.usos = null;
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+
+  it('debería rechazar usos como true', async () => {
+    req.body.usos = true;
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+  
+  it('debería rechazar usos como false', async () => {
+    req.body.usos = false;
+  
+    await generarCodigoAcceso(req, res);
+  
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
   });
   
 });

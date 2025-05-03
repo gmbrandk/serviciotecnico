@@ -26,6 +26,7 @@ const CrearCodigo = () => {
   useResetBotonGenerado(codigos, setBotonGenerado);
 
   const generarCodigo = () => {
+    if (loading) return; // ⚠️ Evita múltiples clics
     handleGenerarCodigo({
       hayCodigoActivo,
       codigos,

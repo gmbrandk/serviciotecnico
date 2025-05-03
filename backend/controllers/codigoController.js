@@ -13,9 +13,15 @@ const generarCodigoAcceso = async (req, res) => {
   // 💡 Solo convertir a número si viene definido
   let usos;
   if (req.body.usos !== undefined) {
-    usos = Number(req.body.usos);
+    usos = req.body.usos;
 
-    if (isNaN(usos) || usos < 1 || usos > 5 || !Number.isInteger(usos)) {
+    if (
+      typeof req.body.usos !== 'number' ||
+      isNaN(usos) ||
+      usos < 1 ||
+      usos > 5 ||
+      !Number.isInteger(usos)
+    ) {
       return res.status(400).json({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
     }
   }
