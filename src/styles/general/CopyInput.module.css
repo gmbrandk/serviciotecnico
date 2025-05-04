@@ -6,6 +6,9 @@
 .inputField {
   background-color: #ffffff;
   border: none;
+  width: 100%;
+  padding: 8px;
+  font-family: montserrat, arial, verdana;
 }
 
 .copyButton {

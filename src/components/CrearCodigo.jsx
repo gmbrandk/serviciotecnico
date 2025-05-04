@@ -45,39 +45,44 @@ const CrearCodigo = () => {
       <h1 className={styles.title}>Generar Código de Acceso</h1>
 
       <div className={styles.inputGroup}>
-        {/* Select de usos */}
-        <select
-          value={usosSeleccionados}
-          onChange={(e) => setUsosSeleccionados(parseInt(e.target.value, 10))}
-          className={styles.selectUsos}
-          disabled={hayCodigoActivo}
-        >
-          {[1, 2, 3, 4, 5].map(num => (
-            <option key={num} value={num}>
-              {num} uso{num > 1 ? 's' : ''}
-            </option>
-          ))}
-        </select>
+          <div className={styles.generateComponent}>
+            {/* Select de usos */}
+            <select
+              value={usosSeleccionados}
+              onChange={(e) => setUsosSeleccionados(parseInt(e.target.value, 10))}
+              className={styles.selectUsos}
+              disabled={hayCodigoActivo}
+            >
+              {[1, 2, 3, 4, 5].map(num => (
+                <option key={num} value={num}>
+                  {num} uso{num > 1 ? 's' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        
+          <div className={styles.generateComponent}>
+            {/* Botón generar */}
+            <button
+                className={`${styles.generateButton} 
+                  ${loading ? styles.loading : ''} 
+                  ${hayCodigoActivo ? styles.disabled : ''}`} // Deshabilitar si hay código activo
+                onClick={generarCodigo}
+              >
+                {loading ? <Spinner size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
+            </button>
 
-        {/* Botón generar */}
-        <button
-          className={`${styles.generateButton} 
-            ${loading ? styles.loading : ''} 
-            ${hayCodigoActivo ? styles.disabled : ''}`} // Deshabilitar si hay código activo
-          onClick={generarCodigo}
-        >
-          {loading ? <Spinner size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
-        </button>
 
-
-        {/* Input + botón copiar */}
-        <CopyInput
-          value={codigoActivo?.codigo || ''}
-          onCopy={handleCopiar}
-          copiado={copiado}
-          disabled={!codigoActivo}
-        />
-      </div>
+              {/* Input + botón copiar */}
+            <CopyInput
+                value={codigoActivo?.codigo || ''}
+                onCopy={handleCopiar}
+                copiado={copiado}
+                disabled={!codigoActivo}
+            />
+          </div>
+      </div>     
+        
 
       {/* Lista de códigos, enviamos spotlightActivoId */}
       <h2>Codigos disponibles</h2>

@@ -1,38 +1,46 @@
-/* Estilos adaptados para la tabla responsiva y el item */
+/* Fuente personalizada */
 @import "https://fonts.googleapis.com/css?family=Montserrat:300,400,700";
 
+/* === OVERLAY === */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Negro semi-transparente */
-  z-index: 900; /* Menor que el spotlight del ítem */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 900;
 }
 
-/* Utilizando el enfoque mobile-first */
+/* === TABLA RESPONSIVA (mobile-first) === */
 .rwdTable {
   margin: 1em 0;
-  min-width: 300px;
-  background: #34495E;
+  min-width: 300px; /* Ajuste para el ancho mínimo */
+  background: transparent;
   color: #fff;
   border-radius: .4em;
   overflow: hidden;
 }
 
 .rwdTable tr {
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-}
-
-.rwdTable th {
-  display: none; /* Para accesibilidad, usa un método visualmente oculto */
+  display: block;
+  width: 100%; /* Asegura que la fila ocupe todo el ancho */
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: #34495E;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .rwdTable td {
   display: block;
   padding: .5em;
+  width: 100%; /* Asegura que la celda ocupe el ancho completo */
+  box-sizing: border-box;
+}
+
+.rwdTable th {
+  display: none;
 }
 
 .rwdTable td:first-child {
@@ -50,7 +58,7 @@
   display: inline-block;
 }
 
-/* Estilos de la paginación */
+/* === PAGINACIÓN === */
 .pagination {
   display: flex;
   justify-content: center;
@@ -68,6 +76,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-size: 14px;
 }
 
 .pagination button:hover {
@@ -90,32 +99,38 @@
   outline: none;
 }
 
-.pagination button {
-  font-size: 14px;
+.emptyState {
+  text-align: center;
+  padding: 2rem 1rem;
 }
 
-@media (max-width: 480px) {
-  .pagination button {
-    padding: 6px 12px;
-  }
-
-  .pagination span {
-    font-size: 14px;
-  }
+.emptyImage {
+  width: 120px;
+  height: auto;
+  opacity: 0.5;
+  margin-bottom: 1rem;
 }
 
+.emptyMessage {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* === MODO DE ESCRITORIO === */
 @media (min-width: 480px) {
-  /* Mostrar los encabezados en pantallas grandes */
+  .rwdTable {
+    background-color: #34495E;
+  }
+  
   .rwdTable th {
     display: table-cell;
-    padding: 10px; /* Padding para los títulos */
-    text-align: center; /* Centrar el texto de los títulos */
+    padding: 1em !important;
+    text-align: left;
   }
 
-  /* Para las celdas en la versión de escritorio */
   .rwdTable td {
     display: table-cell;
-    padding: 1em !important; /* Padding más grande para las celdas */
+    padding: 1em !important;
   }
 
   .rwdTable td:before {
@@ -124,7 +139,6 @@
 
   .rwdTable th,
   .rwdTable td {
-    text-align: left;
     padding: 0.25em 0.5em;
   }
 
@@ -137,18 +151,66 @@
   .rwdTable td:last-child {
     padding-right: 0;
   }
+
+  .rwdTable tr {
+    display: table-row;
+    width: auto;
+    background: transparent;
+    margin: 0;
+  }
 }
 
+
+
+.spotlight {
+  animation:
+            spotlightEffect 1s ease-in-out infinite alternate,
+            shakeEffect 0.4s linear 1; /* Más corto y más rápido */
+  box-shadow: 0 0 5px 2px rgba(255, 235, 59, 0.7);
+  border-radius: 8px;
+}
+
+.spotlight {
+  position: relative;
+  z-index: 1000; /* Más alto que el overlay */
+}
+
+.spotlight td {
+  border-color: rgba(255, 255, 100, 0.2);
+}
+
+/* Animación del resplandor */
+@keyframes spotlightEffect {
+  from {
+    box-shadow: 0 0 2.5px 1px rgba(255, 235, 59, 0.4);
+
+  }
+  to {
+    box-shadow: 0 0 7.5px 3px rgba(255, 235, 59, 0.8);
+
+  }
+}
+
+/* Animación del shake */
+@keyframes shakeEffect {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-2px, 2px); }
+  20% { transform: translate(-2px, -2px); }
+  30% { transform: translate(2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, 2px); }
+  60% { transform: translate(2px, -2px); }
+  70% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  90% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+
+/* === COLORES Y DETALLES === */
 .rwdTable th,
 .rwdTable td:before {
   color: #dd5;
-}
-
-.rwdTable {
-  background: #34495e;
-  color: #fff;
-  border-radius: 0.4em;
-  overflow: hidden;
 }
 
 .rwdTable tr {
@@ -165,26 +227,4 @@
   .rwdTable td {
     padding: 1em !important;
   }
-}
-
-.rwdTable th,
-.rwdTable td:before {
-  color: #dd5;
-}
-
-/* === SPOTLIGHT ANIMATION === */
-@keyframes spotlightAnimation {
-  0% {
-    background-color: #fff176; /* Amarillo claro */
-  }
-  50% {
-    background-color: #ffee58; /* Un poco más fuerte */
-  }
-  100% {
-    background-color: #fff176;
-  }
-}
-
-.spotlight {
-  animation: spotlightAnimation 2.5s ease;
 }

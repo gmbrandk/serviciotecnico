@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '@styles/CodigoAccesoItem.module.css'; // Importamos los estilos
+import styles from '@styles/ListaCodigosAcceso.module.css'; // Importamos los estilos
 import { normalizedId } from '../utils/formatters';
 
 const CodigoAccesoItem = ({ id, codigo, usosDisponibles, estado, reducirUsos, spotlightActivoId }) => {
