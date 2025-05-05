@@ -5,7 +5,7 @@ import DashboardHome from '@components/Dashboard/DashboardHome';
 import CrearCodigo from '@components/CrearCodigo'; 
 import CrearUsuario from '@components/CrearUsuario'; 
 import NotFound from './NotFound';
-import ProtectedRoute from '@components/ProtectedRoute'; // Asegúrate de importar tu componente ProtectedRoute
+import ProtectedRoute from '@components/routes/ProtectedRoute'; // Asegúrate de importar tu componente ProtectedRoute
 import { useAuth } from '@context/AuthContext';  
 
 const DashboardPage = () => {

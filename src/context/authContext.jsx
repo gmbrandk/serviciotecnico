@@ -18,6 +18,8 @@ export const AuthProvider = ({ children }) => {
     try {
       startLoading(); // Inicia la carga
 
+      await new Promise((resolve) => setTimeout(resolve, 360000));
+
       const usuarioAutenticado = await fetchUsuarioAutenticado();
       console.log('[AuthContext] Usuario autenticado:', usuarioAutenticado);
 
