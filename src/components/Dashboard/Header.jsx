@@ -6,13 +6,13 @@ const Header = () => {
   const { usuario, hasRole } = useAuth();
   const nombre = usuario?.nombre || 'Tecnico';
 
-   // 🚀 Test temporal
-   console.log('¿Es Admin o SuperAdmin?', hasRole(['superadministrador', 'administrador']));
-   console.log(usuario.role);
-
   return (
     <header className={styles.header}>
       <h1 className={styles.titulo}>Bienvenido, {nombre}</h1>
+      {/* Solo mostramos estas líneas si el usuario tiene un rol admin o superadmin */}
+      {hasRole(['superadministrador', 'administrador']) && (
+        <div>Acceso Admin</div>
+      )}
     </header>
   );
 };

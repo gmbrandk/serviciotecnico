@@ -1,9 +1,10 @@
 const register = require('./auth/registerController');
-const login = require('./auth/loginController');
+const {login, logout} = require('./auth/loginController');
 const actualizarRolUsuario = require('./auth/actualizarRolController');
 
 module.exports = {
   register,
   login,
+  logout,
   actualizarRolUsuario
 };

@@ -4,10 +4,12 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@context/authContext';
 
 const ProtectedRoute = ({ children }) => {
-  const { token } =  useAuth();
+  const { usuario, cargando } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;  // Redirige si no hay token
+  if (cargando) return null; // o un spinner opcional
+
+  if (!usuario) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;

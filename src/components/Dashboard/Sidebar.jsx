@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '@styles/dashboard/Sidebar.module.css';
 import { FaHome, FaUsers, FaTools, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
-import { useAuth } from '@context/authContext'; // Importamos el contexto
+import { useAuth } from '@context/authContext';
 
 const Sidebar = () => {
-  const { logout, hasRole } = useAuth(); // Usamos el hook para acceder al logout
+  const { logout, hasRole } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -37,11 +37,8 @@ const Sidebar = () => {
       </div>
 
       <div
-        className={`${styles.sidebar} ${
-          isCollapsed ? styles.collapsed : ''
-        } ${isMobile ? styles.mobile : ''} ${isCollapsed ? styles.open : ''}`}
+        className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobile ? styles.mobile : ''} ${isCollapsed ? styles.open : ''}`}
       >
-
         {isMobile && (
           <div className={styles.closeBtn} onClick={toggleSidebar}>
             <FaTimes />
@@ -66,16 +63,16 @@ const Sidebar = () => {
           </li>
           {hasRole(['superadministrador', 'administrador']) && (
             <>
-                <li onClick={closeMobileSidebar}>
-              <Link to="/dashboard/codigoacceso">
-                <FaTools /> <span>Crear codigo de Acceso</span>
-              </Link>
-            </li>
-            <li onClick={closeMobileSidebar}>
-              <Link to="/dashboard/usuarios">
-                <FaTools /> <span>Administrar Usuarios</span>
-              </Link>
-            </li>
+              <li onClick={closeMobileSidebar}>
+                <Link to="/dashboard/codigoacceso">
+                  <FaTools /> <span>Crear código de Acceso</span>
+                </Link>
+              </li>
+              <li onClick={closeMobileSidebar}>
+                <Link to="/dashboard/usuarios">
+                  <FaUsers /> <span>Administrar Usuarios</span>
+                </Link>
+              </li>
             </>
           )}
           <li onClick={handleLogout}>

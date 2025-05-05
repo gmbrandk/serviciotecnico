@@ -1,76 +1,87 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import loginUser from '@services/authService';
+import { loginUser, fetchUsuarioAutenticado } from '@services/authService';
 import registerUser from '@services/userService';
-import { useNavigate } from 'react-router-dom';
 import { estandarizarRol } from '@utils/formatters';
+import axios from 'axios';
+import useLoading from '@hooks/useLoading'; // Importa el hook
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
-  const [token, setToken] = useState(null);
-  const navigate = useNavigate();
+  const [cargando, setCargando] = useState(true);
+  const { loading, startLoading, stopLoading } = useLoading(); // Usa el hook de carga
+
+  const verificarSesion = async () => {
+    console.log('[AuthContext] Verificando sesión al montar');
+
+    try {
+      startLoading(); // Inicia la carga
+
+      const usuarioAutenticado = await fetchUsuarioAutenticado();
+      console.log('[AuthContext] Usuario autenticado:', usuarioAutenticado);
+
+      if (usuarioAutenticado) {
+        setUsuario(usuarioAutenticado);
+      }
+    } catch (error) {
+      console.error('[AuthContext] No hay sesión activa o error:', error);
+    } finally {
+      setCargando(false);
+      stopLoading(); // Detiene la carga
+    }
+  };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUsuario = localStorage.getItem('usuario');
-
-    if (storedToken && storedUsuario) {
-      setToken(storedToken);
-      setUsuario(JSON.parse(storedUsuario));
-    }
-  }, []);
+    verificarSesion();
+  }, []);  
 
   const login = async (email, password) => {
     try {
-      const { token, usuario } = await loginUser(email, password);
-      setToken(token);
+      startLoading(); // Inicia la carga durante el login
+      const { usuario } = await loginUser(email, password);
       setUsuario(usuario);
-      localStorage.setItem('token', token);
-      localStorage.setItem('usuario', JSON.stringify(usuario));
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000); 
+      stopLoading(); // Detiene la carga
       return { success: true };
     } catch (error) {
+      stopLoading(); // Detiene la carga si hay un error
       return { error: error.message };
     }
   };
 
   const register = async (formData) => {
     const result = await registerUser(formData);
-    if (result.success) {
-      const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        setToken(storedToken);
-      }
-    }
     return result;
   };
 
-  const logout = () => {
-    setToken(null);
+  const logout = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
+    } catch (e) {
+      console.warn('Error al cerrar sesión en el backend:', e.message);
+    }
     setUsuario(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
   };
 
-   // 🚀 Función nueva para verificar roles
-   const hasRole = (rolesPermitidos = []) => {
+  const hasRole = (rolesPermitidos = []) => {
     if (!usuario || !usuario.role) return false;
-  
-    // Normalizamos el rol del usuario (trim + lowercase)
     const userRole = estandarizarRol(usuario.role);
-  
-    // Normalizamos también los roles permitidos
     const rolesNormalizados = rolesPermitidos.map(rol => estandarizarRol(rol));
-  
     return rolesNormalizados.includes(userRole);
   };
-  
 
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario, token, login, logout, register, hasRole }}>
+    <AuthContext.Provider value={{
+      usuario,
+      setUsuario,
+      login,
+      logout,
+      register,
+      hasRole,
+      cargando,
+      loading, // Agrega el estado de loading aquí
+      verificarSesion
+    }}>
       {children}
     </AuthContext.Provider>
   );

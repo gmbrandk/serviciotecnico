@@ -8,6 +8,7 @@ const LoginForm = ({ onSubmit }) => {
     email: '',
     password: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +23,7 @@ const LoginForm = ({ onSubmit }) => {
 
     if (!formData.email || !formData.password) {
       toast.custom((t) => (
-        <Toast 
+        <Toast
           type="warning"
           title="Advertencia"
           message="Todos los campos son Obligatorios."
@@ -32,7 +33,11 @@ const LoginForm = ({ onSubmit }) => {
       return;
     }
 
+    setIsLoading(true);
+
     const result = await onSubmit(formData);
+
+    setIsLoading(false);
 
     if (result?.success) {
       toast.custom((t) => (
@@ -74,8 +79,8 @@ const LoginForm = ({ onSubmit }) => {
           value={formData.password}
           onChange={handleChange}
         />
-        <button type="submit" className={styles.actionButton}>
-          Iniciar sesión
+        <button type="submit" className={styles.actionButton} disabled={isLoading}>
+          {isLoading ? 'Cargando...' : 'Iniciar sesión'}
         </button>
       </fieldset>
     </form>
