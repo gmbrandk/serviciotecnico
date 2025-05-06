@@ -11,7 +11,7 @@ const RutaPublica = () => {
       <div className={styles.spinnerContainer}>
         <div className={styles.spinnerContent}>
           <Spinner fill="none"
-            stroke="#000"
+            color="#000"
             strokeWidth="5"/>
           <p className={styles.spinnerText}>Verificando sesión...</p>
         </div>
