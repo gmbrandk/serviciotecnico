@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const crearSuperAdmin = require('@controllers/superAdminController');
+const crearSuperAdmin = require('@controllers/admin/superAdminController');
 const { verificarToken, verificarRolesPermitidos } = require('@middlewares/authMiddleware');
 
 router.post(

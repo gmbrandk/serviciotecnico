@@ -1,6 +1,6 @@
 // backend/routes/codigos.js
 const express = require('express');
-const { generarCodigoAcceso, obtenerCodigos } = require('@controllers/codigoController');
+const { generarCodigoAcceso, obtenerCodigos } = require('@controllers/codigos/codigoController');
 const { verificarToken, verificarRolesPermitidos } = require('@middlewares/authMiddleware');
 const validarCreacionCodigo = require('@middlewares/validarCreacionCodigoMiddleware');
 

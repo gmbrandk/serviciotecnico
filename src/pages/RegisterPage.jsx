@@ -11,9 +11,18 @@ const RegisterPage = () => {
 
   const handleSubmit = async (formData) => {
     const result = await register(formData);
-    if (result.success) {
+    
+    // Agregar logs para inspeccionar el tipo de respuesta
+    console.log('Respuesta del backend:', result);
+    
+    // Revisar la estructura de la respuesta
+    if (result?.success) {
+      console.log('Registro exitoso');
       setTimeout(() => navigate('/login'), 2000);
-    }
+    } else {
+      console.log('Error en el registro:', result?.mensaje, result?.detalles);
+    }    
+
     return result;
   };
 
@@ -22,9 +31,9 @@ const RegisterPage = () => {
       <UserRegistrationForm onSubmit={handleSubmit} />
       <Toaster position="top-right" />
       <p>Ya estas registrado?</p>
-            <Link to="/login" className={styles.linkButton}>
-              Ingresa tus credenciales
-            </Link>
+      <Link to="/login" className={styles.linkButton}>
+        Ingresa tus credenciales
+      </Link>
     </div>
   );
 };

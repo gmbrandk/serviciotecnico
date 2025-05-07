@@ -8,7 +8,8 @@ const UserRegistrationForm = ({ onSubmit }) => {
     nombre: '',
     email: '',
     password: '',
-    role: 'tecnico', // predeterminado
+    confirmPassword: '',
+    role: 'tecnico',
     codigoAcceso: '',
   });
 
@@ -20,7 +21,10 @@ const UserRegistrationForm = ({ onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.nombre || !formData.email || !formData.password) {
+    const { nombre, email, password, confirmPassword, codigoAcceso } = formData;
+
+    // Validación de campos obligatorios
+    if (!nombre || !email || !password || !confirmPassword || !codigoAcceso) {
       toast.custom((t) => (
         <Toast
           type="warning"
@@ -28,27 +32,26 @@ const UserRegistrationForm = ({ onSubmit }) => {
           message="Todos los campos son obligatorios."
           onClose={() => toast.dismiss(t.id)}
         />
-      ), {
-        duration: 1000
-      });
+      ), { duration: 1000 });
       return;
     }
 
-    if (!formData.codigoAcceso) {
+    // Validación de contraseña coincidente
+    if (password !== confirmPassword) {
       toast.custom((t) => (
         <Toast
           type="warning"
           title="Advertencia"
-          message="Debes ingresar un código de acceso válido."
+          message="Las contraseñas no coinciden."
           onClose={() => toast.dismiss(t.id)}
         />
-      ), {
-        duration: 1000
-      });
+      ), { duration: 1000 });
       return;
     }
 
-    const result = await onSubmit(formData);
+    // Enviar sin confirmPassword
+    const { confirmPassword: _, ...dataToSend } = formData;
+    const result = await onSubmit(dataToSend);
 
     if (result?.success) {
       toast.custom((t) => (
@@ -58,20 +61,28 @@ const UserRegistrationForm = ({ onSubmit }) => {
           message="¡Registro exitoso! Redirigiendo..."
           onClose={() => toast.dismiss(t.id)}
         />
-      ), {
-        duration: 1000
-      });
-    } else if (result?.error) {
+      ), { duration: 1000 });
+    } else if (!result?.success && result?.mensaje && result?.detalles) {
+      // Si hay un error con mensaje y detalles
       toast.custom((t) => (
         <Toast
           type="error"
           title="Error"
-          message={result.error}
+          message={result.mensaje || "Algo salió mal."}
+          details={result.detalles || "Detalles no disponibles."}
           onClose={() => toast.dismiss(t.id)}
         />
-      ),{
-        duration: 1000
-      });
+      ), { duration: 3000 }); // Muestra el toaster más tiempo
+    } else {
+      // Si el error no tiene un mensaje y detalles claros
+      toast.custom((t) => (
+        <Toast
+          type="error"
+          title="Error"
+          message="Hubo un problema al procesar tu solicitud."
+          onClose={() => toast.dismiss(t.id)}
+        />
+      ), { duration: 1000 });
     }
   };
 
@@ -80,6 +91,7 @@ const UserRegistrationForm = ({ onSubmit }) => {
       <fieldset>
         <h2 className={styles.fsTitle}>Registro de Técnico</h2>
         <h3 className={styles.fsSubtitle}>Crea tu cuenta para comenzar</h3>
+
         <input
           type="text"
           name="nombre"
@@ -99,6 +111,13 @@ const UserRegistrationForm = ({ onSubmit }) => {
           name="password"
           placeholder="Contraseña"
           value={formData.password}
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirmar contraseña"
+          value={formData.confirmPassword}
           onChange={handleChange}
         />
         <input

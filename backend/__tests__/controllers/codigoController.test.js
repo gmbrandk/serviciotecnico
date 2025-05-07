@@ -1,6 +1,6 @@
 // tests/controllers/codigoController.test.js
 const mongoose = require('mongoose');
-const { generarCodigoAcceso } = require('../../controllers/codigoController');
+const { generarCodigoAcceso } = require('../../controllers/codigos/codigoController');
 const CodigoAcceso = require('../../models/CodigoAcceso');
 const crypto = require('crypto');
 const { logError } = require('../../utils/logger');

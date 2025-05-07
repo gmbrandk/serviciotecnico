@@ -2,19 +2,16 @@ import axios from 'axios';
 
 export const registerUser = async (formData) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/auth/register', formData);
-
-    if (res.status === 201 || res.data.success) {
-      const { token } = res.data;
-      localStorage.setItem('token', token);
-      return { success: true };
-    }
+    const res = await axios.post('http://localhost:5000/api/auth/register', formData, { withCredentials: true });
+    return { success: true, data: res.data };
   } catch (error) {
-    console.error('Error al registrar usuario:', error);
-    if (error.response && error.response.data?.mensaje) {
-      return { error: error.response.data.mensaje };
-    }
-    return { error: 'Ocurrió un error al registrar. Intenta de nuevo.' };
+    const mensaje = error.response?.data?.mensaje || 'Error desconocido';
+    const detalles = error.response?.data?.detalles || error.message;
+    return {
+      success: false,
+      mensaje,
+      detalles
+    };
   }
 };
 

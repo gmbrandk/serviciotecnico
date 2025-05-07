@@ -13,7 +13,7 @@ const codigoAccesoSchema = new mongoose.Schema({
   usosDisponibles: {
     type: Number,
     default: 1,
-    min: [1, 'El número mínimo de usos debe ser 1'],
+    min: [0, 'El número mínimo de usos debe ser 0'],
   },
   creadoPor: {
     type: mongoose.Schema.Types.ObjectId,

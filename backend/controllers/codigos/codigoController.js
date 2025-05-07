@@ -37,7 +37,7 @@ const generarCodigoAcceso = async (req, res) => {
 
     const codigo = new CodigoAcceso({
       codigo: nuevoCodigo,
-      usosDisponibles: usos, // será undefined → mongoose usa default: 1
+      usosDisponibles: usos??1, // será undefined → mongoose usa default: 1
       creadoPor: usuario.id,
       estado: 'activo',
       fechaCreacion: new Date(),

@@ -69,7 +69,7 @@ const CrearCodigo = () => {
                   ${hayCodigoActivo ? styles.disabled : ''}`} // Deshabilitar si hay código activo
                 onClick={generarCodigo}
               >
-                {loading ? <Spinner size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
+                {loading ? <Spinner color="#fff" size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
             </button>
 
 

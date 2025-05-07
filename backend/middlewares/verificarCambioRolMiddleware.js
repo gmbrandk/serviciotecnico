@@ -9,6 +9,11 @@ const verificarCambioRolMiddleware = async (req, res, next) => {
       return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
     }
 
+    
+    console.log('[Middleware CambioRol] solicitante:', req.usuario?.role);
+    console.log('[Middleware CambioRol] objetivo:', usuarioObjetivo?.role);
+    console.log('[Middleware CambioRol] nuevo rol:', req.body.nuevoRol);
+
     const permiso = verificarPermiso({
       solicitante: req.usuario,
       objetivo: usuarioObjetivo,
