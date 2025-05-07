@@ -3,23 +3,48 @@ const Usuario = require('@models/Usuario');
 const editarUsuario = async (req, res) => {
   try {
     const { nombre, email, role } = req.body;
+
     if (!nombre && !email && !role) {
-      return res.status(400).json({ mensaje: 'No se proporcionaron datos para actualizar.' });
+      return res.status(400).json({
+        success: false,
+        mensaje: 'No se proporcionaron datos para actualizar.',
+        usuario: null
+      });
     }
 
     const usuarioActualizado = await Usuario.findByIdAndUpdate(
       req.params.id,
       { nombre, email, role },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
+    if (!usuarioActualizado) {
+      return res.status(404).json({
+        success: false,
+        mensaje: 'Usuario no encontrado.',
+        usuario: null
+      });
+    }
+
     res.status(200).json({
+      success: true,
       mensaje: 'Usuario actualizado correctamente.',
-      usuario: usuarioActualizado
+      usuario: {
+        _id: usuarioActualizado._id,
+        nombre: usuarioActualizado.nombre,
+        email: usuarioActualizado.email,
+        role: usuarioActualizado.role
+      }
     });
+
   } catch (error) {
     console.error('Error al editar usuario:', error);
-    res.status(500).json({ mensaje: 'Error al editar usuario.' });
+    res.status(500).json({
+      success: false,
+      mensaje: 'Error al editar usuario.',
+      detalles: error.message,
+      usuario: null
+    });
   }
 };
 

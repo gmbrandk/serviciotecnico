@@ -2,11 +2,35 @@ const Usuario = require('@models/Usuario');
 
 const eliminarUsuario = async (req, res) => {
   try {
-    await Usuario.findByIdAndDelete(req.params.id);
-    res.status(200).json({ mensaje: 'Usuario eliminado correctamente.' });
+    const usuarioEliminado = await Usuario.findByIdAndDelete(req.params.id);
+
+    if (!usuarioEliminado) {
+      return res.status(404).json({
+        success: false,
+        mensaje: 'Usuario no encontrado.',
+        usuario: null
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      mensaje: 'Usuario eliminado correctamente.',
+      usuario: {
+        _id: usuarioEliminado._id,
+        nombre: usuarioEliminado.nombre,
+        email: usuarioEliminado.email,
+        role: usuarioEliminado.role
+      }
+    });
+
   } catch (error) {
     console.error('Error al eliminar usuario:', error);
-    res.status(500).json({ mensaje: 'Error al eliminar usuario.' });
+    res.status(500).json({
+      success: false,
+      mensaje: 'Error al eliminar usuario.',
+      detalles: error.message,
+      usuario: null
+    });
   }
 };
 

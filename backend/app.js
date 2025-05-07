@@ -6,7 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
-const errorHandlerMiddleware = require('@middlewares/errorHandlerMiddleware');
+
 
 // Cargar .env correcto
 const envPath = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
@@ -33,7 +33,5 @@ app.use('/api/auth', authRoutes);
 app.use('/api/codigos', codigoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/superadmin', superadminRoutes);
-
-app.use(errorHandlerMiddleware);
 
 module.exports = app;

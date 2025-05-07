@@ -59,6 +59,7 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
               <th>Código de Acceso</th>
               <th>Usos Disponibles</th>
               <th>Estado</th>
+              <th>Creador</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -69,6 +70,7 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
                 id={normalizedId(codigoItem)}
                 codigo={codigoItem.codigo}
                 usosDisponibles={codigoItem.usosDisponibles}
+                creadoPor={codigoItem.creadoPor.nombre}
                 estado={codigoItem.estado}
                 reducirUsos={() => reducirUso(codigoItem.codigo)}
                 spotlightActivoId={spotlightActivoId}

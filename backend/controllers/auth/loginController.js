@@ -1,29 +1,41 @@
-const Usuario = require('../../models/Usuario');
+const Usuario = require('@models/Usuario');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const login = async (req, res) => {
   const { email, password } = req.body;
   const tokenExistente = req.cookies.token;
+
   if (tokenExistente) {
     try {
-      const decoded = jwt.verify(tokenExistente, process.env.JWT_SECRET);
-      return res.status(400).json({ mensaje: 'Ya hay una sesión activa.' });
-    } catch (error) {
-      // Si el token es inválido o expiró, continúa con login normalmente
-      console.warn('Token inválido al intentar verificar sesión existente:', error.message);
+      jwt.verify(tokenExistente, process.env.JWT_SECRET);
+      return res.status(400).json({
+        success: false,
+        mensaje: 'Ya hay una sesión activa.',
+        usuario: null
+      });
+    } catch (_) {
+      // Continúa con login si el token expiró o no es válido
     }
   }
-  
+
   try {
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {
-      return res.status(404).json({ success: false, mensaje: 'Usuario no encontrado' });
+      return res.status(404).json({
+        success: false,
+        mensaje: 'Usuario no encontrado',
+        usuario: null
+      });
     }
 
     const esValida = await bcrypt.compare(password, usuario.password);
     if (!esValida) {
-      return res.status(401).json({ success: false, mensaje: 'Contraseña incorrecta' });
+      return res.status(401).json({
+        success: false,
+        mensaje: 'Contraseña incorrecta',
+        usuario: null
+      });
     }
 
     const token = jwt.sign(
@@ -32,12 +44,11 @@ const login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    // Enviar token como cookie HTTP-only
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Solo HTTPS en producción
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'Lax',
-      maxAge: 60 * 60 * 1000, // 1 hora
+      maxAge: 60 * 60 * 1000
     });
 
     res.status(200).json({
@@ -52,23 +63,29 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al iniciar sesión' });
+    console.error('Error en login:', error);
+    res.status(500).json({
+      success: false,
+      mensaje: 'Error al iniciar sesión',
+      detalles: error.message,
+      usuario: null
+    });
   }
 };
 
-// authController.js
 const logout = (req, res) => {
-  // Borra la cookie del token
   res.clearCookie('token', {
-    httpOnly: true,  // Asegura que no sea accesible desde JavaScript en el cliente
-    secure: process.env.NODE_ENV === 'production',  // Solo usa 'secure' en producción
-    sameSite: 'Strict',  // O 'Lax' si se usa en distintas pestañas
-    maxAge: 0  // La cookie ya no es válida
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Lax',
+    maxAge: 0
   });
 
-  // Responde con un mensaje de éxito
-  res.status(200).json({ mensaje: 'Sesión cerrada con éxito' });
+  res.status(200).json({
+    success: true,
+    mensaje: 'Sesión cerrada con éxito',
+    usuario: null
+  });
 };
 
-module.exports = {login, logout};
+module.exports = { login, logout };

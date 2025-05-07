@@ -9,11 +9,12 @@ const useCodigosAcceso = () => {
   useEffect(() => {
     const fetchCodigos = async () => {
       try {
-        const token = localStorage.getItem('token');
+        // El token se obtiene automáticamente de la cookie HttpOnly
         const response = await fetch('http://localhost:5000/api/codigos', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
+          credentials: 'include', // Esto enviará la cookie automáticamente
         });
 
         const data = await response.json();

@@ -2,7 +2,7 @@ import React from 'react';
 import styles from '@styles/ListaCodigosAcceso.module.css'; // Importamos los estilos
 import { normalizedId } from '../utils/formatters';
 
-const CodigoAccesoItem = ({ id, codigo, usosDisponibles, estado, reducirUsos, spotlightActivoId }) => {
+const CodigoAccesoItem = ({ id, codigo, usosDisponibles, creadoPor, estado, reducirUsos, spotlightActivoId }) => {
   const handleReducirUso = () => {
     //console.log('Reduciendo uso para el código:', codigo);
     reducirUsos(codigo);
@@ -20,6 +20,7 @@ const CodigoAccesoItem = ({ id, codigo, usosDisponibles, estado, reducirUsos, sp
       <td data-th="Código de acceso">{codigo}</td>
       <td data-th="Usos disponibles">{usosDisponibles}</td>
       <td data-th="Estado">{estado === 'activo' ? 'Activo' : 'Inactivo'}</td>
+      <td data-th="CreadoPor">{creadoPor}</td>
       <td data-th="Acciones">
         <button
           className={styles.reduceButton}

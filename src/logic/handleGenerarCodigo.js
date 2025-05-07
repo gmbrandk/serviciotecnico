@@ -25,17 +25,17 @@ export const handleGenerarCodigo = async ({
 
   try {
     startLoading();
-    const token = localStorage.getItem('token');
 
     // 🕐 Simulamos retraso de al menos 1 segundo para visibilidad del loading
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    // Realizamos la petición con las cookies automáticamente adjuntadas
     const response = await fetch('http://localhost:5000/api/codigos/generar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
+      credentials: 'include', // 🔐 Envía la cookie JWT automáticamente
       body: JSON.stringify({ usos: usosSeleccionados }),
     });
 

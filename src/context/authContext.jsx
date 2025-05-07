@@ -19,11 +19,7 @@ export const AuthProvider = ({ children }) => {
       startLoading(); // Inicia la carga
 
       if (import.meta.env.MODE === 'development') {
-<<<<<<< HEAD
         await new Promise((resolve) => setTimeout(resolve, 500));
-=======
-        await new Promise((resolve) => setTimeout(resolve, 1000));
->>>>>>> 7049b2b23d136eabaf138ebf1f7281f6650dd448
       }
       
       const usuarioAutenticado = await fetchUsuarioAutenticado();

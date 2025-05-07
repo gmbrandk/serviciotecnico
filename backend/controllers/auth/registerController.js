@@ -8,7 +8,7 @@ const isReplicaSet = async () => {
   return !!info.setName;
 };
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
   const { nombre, email, password, role, accessCode, codigoAcceso } = req.body;
 
   let session = null;
@@ -20,46 +20,42 @@ const register = async (req, res, next) => {
 
   try {
     if (role === 'superadministrador' && accessCode !== process.env.SUPER_ADMIN_ACCESS_CODE) {
-      const error = new Error('Código inválido para superAdministrador');
-      error.statusCode = 403;
-      error.customMessage = 'Código de acceso inválido para superAdministrador.';
-      error.details = 'El código de acceso proporcionado no coincide con el configurado.';
-      throw error;
+      if (session) await session.abortTransaction();
+      return res.status(403).json({
+        success: false,
+        mensaje: 'Código de acceso inválido para superAdministrador.',
+        usuario: null
+      });
     }
 
     const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso }).session(session || undefined);
-    if (!codigoValido) {
-      const error = new Error('Código no encontrado.');
-      error.statusCode = 403;
-      error.customMessage = 'Código de acceso inválido.';
-      error.details = 'El código ingresado no se encontró en la base de datos.';
-      throw error;
-    }
-
-    if (codigoValido.usosDisponibles < 1) {
-      const error = new Error('Código sin usos disponibles.');
-      error.statusCode = 403;
-      error.customMessage = 'Código sin usos disponibles.';
-      error.details = `El código ya ha sido utilizado en su totalidad.`;
-      throw error;
+    if (!codigoValido || codigoValido.usosDisponibles < 1) {
+      if (session) await session.abortTransaction();
+      return res.status(403).json({
+        success: false,
+        mensaje: 'Código de acceso inválido o sin usos disponibles.',
+        usuario: null
+      });
     }
 
     const emailExistente = await Usuario.findOne({ email }).session(session || undefined);
     if (emailExistente) {
-      const error = new Error('Correo duplicado.');
-      error.statusCode = 400;
-      error.customMessage = 'El correo ya está registrado.';
-      error.details = { email };
-      throw error;
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        mensaje: 'El correo ya está registrado.',
+        usuario: null
+      });
     }
 
     const usuarioExistente = await Usuario.findOne({ nombre }).session(session || undefined);
     if (usuarioExistente) {
-      const error = new Error('Nombre duplicado.');
-      error.statusCode = 400;
-      error.customMessage = 'El nombre ya está registrado.';
-      error.details = { nombre };
-      throw error;
+      if (session) await session.abortTransaction();
+      return res.status(400).json({
+        success: false,
+        mensaje: 'El nombre ya está registrado.',
+        usuario: null
+      });
     }
 
     const usuario = new Usuario({
@@ -79,23 +75,31 @@ const register = async (req, res, next) => {
 
     await codigoValido.save({ session: session || undefined });
 
-    if (session) {
-      await session.commitTransaction();
-      session.endSession();
-    }
+    if (session) await session.commitTransaction();
 
     res.status(201).json({
       success: true,
       mensaje: 'Usuario registrado con éxito',
-      token: 'fake-jwt-token'
+      usuario: {
+        _id: usuario._id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        role: usuario.role
+      }
     });
 
   } catch (error) {
-    if (session) {
-      await session.abortTransaction();
-      session.endSession();
-    }
-    next(error); // 🔁 Delegamos al middleware de errores
+    if (session) await session.abortTransaction();
+    console.error('Error en registro:', error);
+
+    res.status(500).json({
+      success: false,
+      mensaje: 'Error al registrar usuario',
+      detalles: error.message,
+      usuario: null
+    });
+  } finally {
+    if (session) session.endSession();
   }
 };
 
