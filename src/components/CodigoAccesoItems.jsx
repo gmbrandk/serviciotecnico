@@ -20,7 +20,6 @@ const CodigoAccesoItem = ({ id, codigo, usosDisponibles, creadoPor, estado, redu
       <td data-th="Código de acceso">{codigo}</td>
       <td data-th="Usos disponibles">{usosDisponibles}</td>
       <td data-th="Estado">{estado === 'activo' ? 'Activo' : 'Inactivo'}</td>
-      <td data-th="CreadoPor">{creadoPor}</td>
       <td data-th="Acciones">
         <button
           className={styles.reduceButton}

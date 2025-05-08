@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const movimientoSchema = new mongoose.Schema({
   tipo: {
     type: String,
-    enum: ['crear', 'editar', 'eliminar', 'login', 'logout', 'otro'],
+    enum: ['crear', 'editar', 'eliminar', 'login', 'logout', 'otro', 'uso_codigo'],
     required: true,
   },
   descripcion: {
@@ -22,6 +22,11 @@ const movimientoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Usuario',
     required: true,
+  },
+  usadoPor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Usuario',
+    required: false,
   },
   fecha: {
     type: Date,

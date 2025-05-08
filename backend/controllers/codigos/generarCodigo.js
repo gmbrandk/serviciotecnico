@@ -1,38 +1,29 @@
 const CodigoAcceso = require('@models/CodigoAcceso');
 const crypto = require('crypto');
 const { logError } = require('@utils/logger');
-const { crearMovimiento } = require('@controllers/movimientoController'); // 👈 Agregar esto
+const { crearMovimiento } = require('@controllers/movimientoController');
 
-const generarCodigoAcceso = async (req, res) => {
+const generarCodigo = async (req, res) => {
   const usuario = req.usuario;
   const rolUsuario = usuario.role?.toLowerCase();
 
-  if (rolUsuario !== 'superadministrador' && rolUsuario !== 'administrador') {
+  if (!['superadministrador', 'administrador'].includes(rolUsuario)) {
     return res.status(403).json({ success: false, mensaje: 'Acceso denegado' });
   }
 
-  let usos;
-  if (req.body.usos !== undefined) {
-    usos = req.body.usos;
-
-    if (
-      typeof usos !== 'number' ||
-      isNaN(usos) ||
-      usos < 1 ||
-      usos > 5 ||
-      !Number.isInteger(usos)
-    ) {
-      return res.status(400).json({
-        success: false,
-        mensaje: 'El número de usos debe ser un entero entre 1 y 5'
-      });
-    }
+  const usos = req.body.usos;
+  if (
+    usos !== undefined &&
+    (typeof usos !== 'number' || isNaN(usos) || usos < 1 || usos > 5 || !Number.isInteger(usos))
+  ) {
+    return res.status(400).json({
+      success: false,
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5'
+    });
   }
 
   try {
-    let nuevoCodigo;
-    let existe = true;
-
+    let nuevoCodigo, existe;
     do {
       nuevoCodigo = crypto.randomBytes(4).toString('hex').toUpperCase();
       existe = await CodigoAcceso.findOne({ codigo: nuevoCodigo });
@@ -41,20 +32,18 @@ const generarCodigoAcceso = async (req, res) => {
     const codigo = new CodigoAcceso({
       codigo: nuevoCodigo,
       usosDisponibles: usos,
-      creadoPor: usuario._id,
       estado: 'activo',
       fechaCreacion: new Date(),
     });
 
     await codigo.save();
 
-    // 👇 REGISTRO DE MOVIMIENTO
     await crearMovimiento({
       tipo: 'crear',
       descripcion: `Se creó el código de acceso ${codigo.codigo}.`,
       entidad: 'CodigoAcceso',
       entidadId: codigo._id,
-      realizadoPor: usuario._id
+      usuarioId: usuario._id,
     });
 
     res.status(201).json({
@@ -71,38 +60,16 @@ const generarCodigoAcceso = async (req, res) => {
           nombre: usuario.nombre,
           email: usuario.email,
           role: usuario.role,
-        }
-      }
+        },
+      },
     });
   } catch (error) {
     logError(error);
     res.status(500).json({
       success: false,
-      mensaje: 'Error al generar código'
+      mensaje: 'Error al generar código',
     });
   }
 };
 
-const obtenerCodigos = async (req, res) => {
-  try {
-    const codigos = await CodigoAcceso.find()
-      .populate('creadoPor', 'nombre email role')
-      .sort({ fechaCreacion: -1 });
-
-    res.status(200).json({
-      success: true,
-      codigos,
-    });
-  } catch (error) {
-    logError(error);
-    res.status(500).json({
-      success: false,
-      mensaje: 'Error al obtener los códigos de acceso'
-    });
-  }
-};
-
-module.exports = {
-  generarCodigoAcceso,
-  obtenerCodigos
-};
+module.exports = generarCodigo;

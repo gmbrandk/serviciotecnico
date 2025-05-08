@@ -25,7 +25,7 @@ app.use(cookieParser());
 
 // Rutas
 const authRoutes = require('@routes/auth/auth');
-const codigoRoutes = require('@routes/codigos');
+const codigoRoutes = require('@routes/codigo/codigos');
 const usuarioRoutes = require('@routes/usuarios/usuarios');
 const superadminRoutes = require('@routes/superadmin');
 const movimientoRoutes = require('@routes/movimientos/movimiento.routes');

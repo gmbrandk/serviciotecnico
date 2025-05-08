@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Usuario = require('@models/Usuario');
 const CodigoAcceso = require('@models/CodigoAcceso');
+const Movimiento = require('@models/Movimiento');
 
 const isReplicaSet = async () => {
   const admin = mongoose.connection.db.admin();
@@ -28,7 +29,10 @@ const register = async (req, res) => {
       });
     }
 
-    const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso }).session(session || undefined);
+    const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso })
+      .populate('creadoPor') // ⚠️ Asegura que realizadoPor tenga valor
+      .session(session || undefined);
+
     if (!codigoValido || codigoValido.usosDisponibles < 1) {
       if (session) await session.abortTransaction();
       return res.status(403).json({
@@ -58,7 +62,7 @@ const register = async (req, res) => {
       });
     }
 
-    const usuario = new Usuario({
+    const nuevoUsuario = new Usuario({
       nombre,
       email,
       password,
@@ -66,7 +70,7 @@ const register = async (req, res) => {
       accessCode: role === 'superadministrador' ? accessCode : undefined
     });
 
-    await usuario.save({ session: session || undefined });
+    await nuevoUsuario.save({ session: session || undefined });
 
     codigoValido.usosDisponibles -= 1;
     if (codigoValido.usosDisponibles <= 0) {
@@ -75,16 +79,30 @@ const register = async (req, res) => {
 
     await codigoValido.save({ session: session || undefined });
 
+    if (!codigoValido.creadoPor) {
+      throw new Error('El código de acceso no tiene un creador asignado.');
+    }
+
+    await Movimiento.create([{
+      tipo: 'uso_codigo',
+      descripcion: `El usuario ${nombre} usó el código de acceso.`,
+      entidad: 'CodigoAcceso',
+      entidadId: codigoValido._id,
+      realizadoPor: codigoValido.creadoPor._id,
+      usadoPor: nuevoUsuario._id,
+      fecha: new Date()
+    }], { session: session || undefined });
+
     if (session) await session.commitTransaction();
 
     res.status(201).json({
       success: true,
       mensaje: 'Usuario registrado con éxito',
       usuario: {
-        _id: usuario._id,
-        nombre: usuario.nombre,
-        email: usuario.email,
-        role: usuario.role
+        _id: nuevoUsuario._id,
+        nombre: nuevoUsuario.nombre,
+        email: nuevoUsuario.email,
+        role: nuevoUsuario.role
       }
     });
 

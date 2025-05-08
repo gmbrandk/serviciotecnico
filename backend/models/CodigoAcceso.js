@@ -15,11 +15,6 @@ const codigoAccesoSchema = new mongoose.Schema({
     default: 1,
     min: [0, 'El número mínimo de usos debe ser 0'],
   },
-  creadoPor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Usuario',
-    required: true,
-  },
   estado: { 
     type: String, 
     enum: ['activo', 'inactivo'],
