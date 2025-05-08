@@ -1,6 +1,7 @@
 const CodigoAcceso = require('@models/CodigoAcceso');
 const crypto = require('crypto');
 const { logError } = require('@utils/logger');
+const { crearMovimiento } = require('@controllers/movimientoController'); // 👈 Agregar esto
 
 const generarCodigoAcceso = async (req, res) => {
   const usuario = req.usuario;
@@ -46,6 +47,15 @@ const generarCodigoAcceso = async (req, res) => {
     });
 
     await codigo.save();
+
+    // 👇 REGISTRO DE MOVIMIENTO
+    await crearMovimiento({
+      tipo: 'crear',
+      descripcion: `Se creó el código de acceso ${codigo.codigo}.`,
+      entidad: 'CodigoAcceso',
+      entidadId: codigo._id,
+      realizadoPor: usuario._id
+    });
 
     res.status(201).json({
       success: true,

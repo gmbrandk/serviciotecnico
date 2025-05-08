@@ -28,10 +28,12 @@ const authRoutes = require('@routes/auth/auth');
 const codigoRoutes = require('@routes/codigos');
 const usuarioRoutes = require('@routes/usuarios/usuarios');
 const superadminRoutes = require('@routes/superadmin');
+const movimientoRoutes = require('@routes/movimientos/movimiento.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/codigos', codigoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/superadmin', superadminRoutes);
+app.use('/api/movimientos', movimientoRoutes);
 
 module.exports = app;

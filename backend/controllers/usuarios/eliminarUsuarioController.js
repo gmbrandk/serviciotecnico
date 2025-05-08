@@ -1,4 +1,5 @@
 const Usuario = require('@models/Usuario');
+const { crearMovimiento } = require('@controllers/movimientoController');
 
 const eliminarUsuario = async (req, res) => {
   try {
@@ -11,6 +12,15 @@ const eliminarUsuario = async (req, res) => {
         usuario: null
       });
     }
+
+    // Registrar el movimiento
+    await crearMovimiento({
+      tipo: 'eliminar',
+      descripcion: `El usuario ${usuarioEliminado.nombre} fue eliminado`,
+      entidad: 'Usuario',
+      entidadId: usuarioEliminado._id,
+      usuarioId: req.usuario._id, // Asegúrate que authMiddleware añade `req.usuario`
+    });
 
     res.status(200).json({
       success: true,

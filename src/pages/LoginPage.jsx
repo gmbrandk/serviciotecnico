@@ -14,7 +14,7 @@ const LoginPage = () => {
     if (result?.success) {
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1000);
+      }, 2000);
     }
     return result;
   };

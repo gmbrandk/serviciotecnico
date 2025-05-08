@@ -1,4 +1,5 @@
 const Usuario = require('@models/Usuario');
+const { crearMovimiento } = require('@controllers/movimientoController');
 
 const editarUsuario = async (req, res) => {
   try {
@@ -25,6 +26,15 @@ const editarUsuario = async (req, res) => {
         usuario: null
       });
     }
+
+    // 👇 REGISTRO DE MOVIMIENTO
+    await crearMovimiento({
+      tipo: 'editar',
+      descripcion: `El usuario ${usuarioActualizado.nombre} fue editado.`,
+      entidad: 'Usuario',
+      entidadId: usuarioActualizado._id,
+      realizadoPor: req.usuario._id
+    });
 
     res.status(200).json({
       success: true,
