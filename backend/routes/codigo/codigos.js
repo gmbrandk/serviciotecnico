@@ -15,4 +15,12 @@ router.post(
   generarCodigoAcceso
 );
 
+router.get(
+  '/',
+  verificarToken,
+  verificarRolesPermitidos(['superadministrador', 'administrador']),
+  obtenerCodigos
+);
+
+
 module.exports = router;

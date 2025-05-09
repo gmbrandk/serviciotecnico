@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const codigoAccesoSchema = new mongoose.Schema({
   codigo: {
@@ -23,7 +24,11 @@ const codigoAccesoSchema = new mongoose.Schema({
   fechaCreacion: { 
     type: Date, 
     default: Date.now 
-  } 
+  },
+  creadoPor: {
+  type: Schema.Types.ObjectId,
+  ref: 'Usuario',
+}
 });
 
 module.exports = mongoose.model('CodigoAcceso', codigoAccesoSchema);

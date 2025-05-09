@@ -11,7 +11,7 @@ const isReplicaSet = async () => {
 };
 
 const register = async (req, res) => {
-  const { nombre, email, password, role, accessCode, codigoAcceso } = req.body;
+  const { nombre, email, password, role, accessCode, codigoAcceso, activo } = req.body;
 
   let session = null;
   const useTransaction = await isReplicaSet();
@@ -65,7 +65,8 @@ const register = async (req, res) => {
       email,
       password,
       role,
-      accessCode: role === 'superadministrador' ? accessCode : undefined
+      accessCode: role === 'superadministrador' ? accessCode : undefined,
+      activo,
     });
 
     await nuevoUsuario.save({ session: session || undefined });
@@ -103,7 +104,8 @@ const register = async (req, res) => {
         _id: nuevoUsuario._id,
         nombre: nuevoUsuario.nombre,
         email: nuevoUsuario.email,
-        role: nuevoUsuario.role
+        role: nuevoUsuario.role,
+        activo: nuevoUsuario.activo,
       }
     });
 

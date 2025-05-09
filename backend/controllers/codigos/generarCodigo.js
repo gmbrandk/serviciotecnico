@@ -34,6 +34,7 @@ const generarCodigo = async (req, res) => {
       usosDisponibles: usos,
       estado: 'activo',
       fechaCreacion: new Date(),
+      creadoPor: usuario._id  // ✅ Asignar el creador directamente
     });
 
     await codigo.save();
