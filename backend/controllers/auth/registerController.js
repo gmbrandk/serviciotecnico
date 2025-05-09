@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Usuario = require('@models/Usuario');
 const CodigoAcceso = require('@models/CodigoAcceso');
 const Movimiento = require('@models/Movimiento');
+const { obtenerCreadorPorEntidad } = require('@utils/movimientos/obtenerCreadorPorEntidad');
 
 const isReplicaSet = async () => {
   const admin = mongoose.connection.db.admin();
@@ -29,10 +30,7 @@ const register = async (req, res) => {
       });
     }
 
-    const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso })
-      .populate('creadoPor') // ⚠️ Asegura que realizadoPor tenga valor
-      .session(session || undefined);
-
+    const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso }).session(session || undefined);
     if (!codigoValido || codigoValido.usosDisponibles < 1) {
       if (session) await session.abortTransaction();
       return res.status(403).json({
@@ -79,8 +77,11 @@ const register = async (req, res) => {
 
     await codigoValido.save({ session: session || undefined });
 
-    if (!codigoValido.creadoPor) {
-      throw new Error('El código de acceso no tiene un creador asignado.');
+    // ✅ Aquí usamos la función reutilizable
+    const creadorDelCodigo = await obtenerCreadorPorEntidad('CodigoAcceso', codigoValido._id, session);
+
+    if (!creadorDelCodigo) {
+      throw new Error('No se pudo determinar quién creó el código de acceso.');
     }
 
     await Movimiento.create([{
@@ -88,7 +89,7 @@ const register = async (req, res) => {
       descripcion: `El usuario ${nombre} usó el código de acceso.`,
       entidad: 'CodigoAcceso',
       entidadId: codigoValido._id,
-      realizadoPor: codigoValido.creadoPor._id,
+      realizadoPor: creadorDelCodigo._id,
       usadoPor: nuevoUsuario._id,
       fecha: new Date()
     }], { session: session || undefined });

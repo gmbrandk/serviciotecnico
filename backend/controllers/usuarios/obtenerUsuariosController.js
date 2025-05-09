@@ -1,6 +1,6 @@
 const Usuario = require('@models/Usuario');
 
-const obtenerUsuarios = async (req, res) => {
+const obtenerUsuario = async (req, res) => {
   try {
     const usuarios = await Usuario.find().select('-password'); // Excluye la contraseña
     
@@ -11,4 +11,4 @@ const obtenerUsuarios = async (req, res) => {
   }
 };
 
-module.exports = obtenerUsuarios;
+module.exports = obtenerUsuario;

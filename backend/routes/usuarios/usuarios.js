@@ -1,6 +1,6 @@
 const express = require('express');
 const {actualizarRolUsuario} = require('@controllers/authController');
-const {editarUsuario, eliminarUsuario, obtenerUsuarios} = require('@controllers/usuariosControllers');
+const {editarUsuario, eliminarUsuario, desactivarUsuario, obtenerUsuario} = require('@controllers/usuariosControllers');
 const { verificarToken, verificarRolesPermitidos } = require('@middlewares/authMiddleware');
 const verificarCambioRol = require('@middlewares/verificarCambioRolMiddleware');
 const verificarEdicion = require('@middlewares/verificarEdicionMiddleware');
@@ -15,11 +15,18 @@ router.put(
   actualizarRolUsuario
 );
 
+// Ruta para desactivar un usuario
+router.put(
+  '/desactivar/:id', 
+  verificarToken,
+  verificarRolesPermitidos(['superadministrador','administrador']),
+  desactivarUsuario);
+
 router.get(
   '/', 
   verificarToken, 
   verificarRolesPermitidos(['superadministrador', 'administrador']),
-  obtenerUsuarios);
+  obtenerUsuario);
 
 router.put(
   '/:id',

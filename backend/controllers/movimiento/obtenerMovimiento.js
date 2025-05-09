@@ -1,56 +1,33 @@
 const Movimiento = require('@models/Movimiento');
+const generarDescripcion = require('@utils/movimientos/generarDescripcionMovimiento');
 
 const obtenerMovimiento = async (req, res) => {
   try {
-    const { tipo, entidad, usuarioId, fechaDesde, fechaHasta } = req.query;
+    const { entidad } = req.query;
+    const filtro = entidad ? { entidad } : {};
 
-    const filtros = {};
+    const movimientos = await Movimiento.find(filtro)
+      .populate('realizadoPor', 'nombre')
+      .populate('usadoPor', 'nombre') // Si quieres incluir al usuario que usó el código
+      .sort({ fecha: -1 });
 
-    if (tipo) filtros.tipo = tipo;
-    if (entidad) filtros.entidad = entidad;
-    if (usuarioId) filtros.usuarioId = usuarioId;
-
-    if (fechaDesde || fechaHasta) {
-      filtros.fecha = {};
-      if (fechaDesde) filtros.fecha.$gte = new Date(fechaDesde);
-      if (fechaHasta) {
-        const hasta = new Date(fechaHasta);
-        hasta.setUTCHours(23, 59, 59, 999); // Incluye todo el día hasta las 23:59:59.999
-        filtros.fecha.$lte = hasta;
-      }
-    }
-
-    const historial = await Movimiento.find(filtros)
-      .sort({ fecha: -1 }) // más recientes primero
-      .populate('realizadoPor', 'nombre') // Cambio de usuarioId a realizadoPor
-      .lean();
-
-    const historialFormateado = historial.map(m => ({
-      _id: m._id,
-      tipo: m.tipo,
-      descripcion: m.descripcion,
-      entidad: m.entidad,
-      entidadId: m.entidadId,
-      realizadoPor: m.realizadoPor ? {
-        _id: m.realizadoPor._id,
-        nombre: m.realizadoPor.nombre
-      } : null,
-      fecha: m.fecha
+    const historial = movimientos.map(mov => ({
+      _id: mov._id,
+      tipo: mov.tipo,
+      entidad: mov.entidad,
+      entidadId: mov.entidadId,
+      realizadoPor: mov.realizadoPor,
+      usadoPor: mov.usadoPor,
+      fecha: mov.fecha,
+      descripcion: generarDescripcion(mov)
     }));
 
-    res.status(200).json({
-      success: true,
-      historial: historialFormateado
-    });
-
+    res.json({ success: true, historial });
   } catch (error) {
-    console.error('Error al obtener movimientos:', error);
-    res.status(500).json({
-      success: false,
-      mensaje: 'Error al obtener el historial',
-      detalles: error.message
-    });
+    console.error('Error al obtener historial:', error);
+    res.status(500).json({ success: false, mensaje: 'Error al obtener historial' });
   }
 };
+
 
 module.exports = obtenerMovimiento;

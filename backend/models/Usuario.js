@@ -12,7 +12,8 @@ const usuarioSchema = new mongoose.Schema({
   },
   accessCode: {
     type: String
-  }
+  },
+  activo: { type: Boolean, default: true },  // Nuevo campo para indicar si el usuario está activo
 });
 
 usuarioSchema.pre('save', async function (next) {
