@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@context/authContext';
-import UserRegistrationForm from '@components/UserRegistrationForm';
+import UserRegistrationForm from '@components/pages/HomePage/UserRegistrationForm';
 import { Toaster } from 'react-hot-toast';
 import styles from '@styles/LoginPage.module.css';
 

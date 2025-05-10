@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import LoginForm from '@components/LoginForm';
+import LoginForm from '@components/pages/HomePage/LoginForm';
 import styles from '@styles/LoginPage.module.css';
 import { Toaster } from 'react-hot-toast';
 import { useAuth } from '@context/AuthContext';

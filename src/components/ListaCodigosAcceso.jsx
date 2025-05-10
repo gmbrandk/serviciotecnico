@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
 import CodigoAccesoItem from '@components/CodigoAccesoItems'; 
 import styles from '@styles/ListaCodigosAcceso.module.css';
-import { normalizedId } from '../utils/formatters';
+import { useCodigosAccesoContext } from '@context/codigoAccesoContext'; // Importar el contexto
 
-const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlightActivoId }) => {
+const CodigoAccesoList = ({ spotlightActivoId, setSpotlightActivoId }) => {
+  const { codigos, reducirUso, loading, error } = useCodigosAccesoContext(); // Acceder a los valores del contexto
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Cantidad de códigos por página
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480); // Detectamos si es móvil
@@ -17,11 +18,9 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
 
   // Filtrar los códigos activos
   const codigosActivos = codigos.filter(c => c.estado === 'activo');
-  console.log('Códigos activos:', codigosActivos); // Log para ver los códigos activos
 
   // Mostrar solo los códigos activos en móviles
   const codigosAmostrar = isMobile ? codigosActivos.slice(0, 1) : codigos;
-  console.log('Códigos a mostrar:', codigosAmostrar); // Log para ver qué códigos se están mostrando
 
   // Obtener los índices de inicio y fin de la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -29,11 +28,10 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
 
   // Dividir la lista de códigos según la paginación
   const currentItems = codigosAmostrar.slice(indexOfFirstItem, indexOfLastItem);
-  console.log('🧮Ítems actuales (paginados):', currentItems); // Log para ver los ítems actuales
 
   // Cambiar de página
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-  console.log('Códigos antes de filtrar:', currentItems);
+
   return (
     <>
       {spotlightActivoId && (
@@ -75,8 +73,7 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
               </tr>
             ) : (
               currentItems.filter(c => c.id).map((codigoItem) => {
-                const id = normalizedId(codigoItem);
-                console.log('📦 Renderizando item con ID:', id, 'Datos:', codigoItem);
+                const id = codigoItem.id; // Se asume que el ID está disponible sin necesidad de normalización
                 return (
                   <CodigoAccesoItem
                     key={id}
@@ -85,7 +82,7 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
                     usosDisponibles={codigoItem.usosDisponibles}
                     estado={codigoItem.estado}
                     creadoPor={codigoItem.creadoPor?.nombre ?? 'N/A'}
-                    reducirUsos={() => reducirUso(codigoItem.codigo)}
+                    reducirUsos={() => reducirUso(codigoItem.codigo)} // Usar la función de reducir uso desde el contexto
                     spotlightActivoId={spotlightActivoId}
                   />
                 );

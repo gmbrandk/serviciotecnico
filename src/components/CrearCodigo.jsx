@@ -1,41 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Spinner from '@components/shared/Spinner';
 import CopyInput from '@components/shared/CopyInput';
 import ListaCodigosAcceso from '@components/ListaCodigosAcceso';
-import useCodigosAcceso from '@hooks/useCodigosAcceso';
-import useClipboard from '@hooks/useClipboard';
-import useLoading from '@hooks/useLoading';
-import useResetBotonGenerado from '@hooks/useResetBotonGenerado';
+import { useCodigosAccesoContext } from '@context/codigoAccesoContext'; // Usamos el contexto aquí
 import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
 
 const CrearCodigo = () => {
-  const { codigos, setCodigos, reducirUso, hayCodigoActivo } = useCodigosAcceso();
+  const { codigos, setCodigos, reducirUsoCodigo, hayCodigoActivo, loading } = useCodigosAccesoContext(); // Usamos el hook del contexto
   const [usosSeleccionados, setUsosSeleccionados] = useState(1);
-  const { loading, startLoading, stopLoading } = useLoading();
-  const [spotlightActivoId, setSpotlightActivoId] = useState(null); // ⭐ Para manejar el spotlight
+  const [spotlightActivoId, setSpotlightActivoId] = useState(null);
 
   // Obtenemos el código activo actual (si existe)
   const codigoActivo = codigos.find(codigo => codigo.estado === 'activo');
-  const { copiado, handleCopiar } = useClipboard(codigoActivo?.codigo || '');
-
-  // Función principal del botón Generar
-  const [botonGenerado, setBotonGenerado] = useState(false);
-
-  useResetBotonGenerado(codigos, setBotonGenerado);
 
   const generarCodigo = () => {
-    if (loading) return; // ⚠️ Evita múltiples clics
+    if (loading) return;
     handleGenerarCodigo({
       hayCodigoActivo,
       codigos,
       setCodigos,
-      startLoading,
-      stopLoading,
+      startLoading: () => {},
+      stopLoading: () => {},
       usosSeleccionados,
       activarSpotlight,
-      setBotonGenerado,
       setSpotlightActivoId
     });
   };
@@ -43,53 +32,43 @@ const CrearCodigo = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Generar Código de Acceso</h1>
-
       <div className={styles.inputGroup}>
-          <div className={styles.generateComponent}>
-            {/* Select de usos */}
-            <select
-              value={usosSeleccionados}
-              onChange={(e) => setUsosSeleccionados(parseInt(e.target.value, 10))}
-              className={styles.selectUsos}
-              disabled={hayCodigoActivo}
-            >
-              {[1, 2, 3, 4, 5].map(num => (
-                <option key={num} value={num}>
-                  {num} uso{num > 1 ? 's' : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-        
-          <div className={styles.generateComponent}>
-            {/* Botón generar */}
-            <button
-                className={`${styles.generateButton} 
-                  ${loading ? styles.loading : ''} 
-                  ${hayCodigoActivo ? styles.disabled : ''}`} // Deshabilitar si hay código activo
-                onClick={generarCodigo}
-              >
-                {loading ? <Spinner color="#fff" size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
-            </button>
-
-
-              {/* Input + botón copiar */}
-            <CopyInput
-                value={codigoActivo?.codigo || ''}
-                onCopy={handleCopiar}
-                copiado={copiado}
-                disabled={!codigoActivo}
-            />
-          </div>
-      </div>     
-        
-
-      {/* Lista de códigos, enviamos spotlightActivoId */}
+        <div className={styles.generateComponent}>
+          <select
+            value={usosSeleccionados}
+            onChange={(e) => setUsosSeleccionados(parseInt(e.target.value, 10))}
+            className={styles.selectUsos}
+            disabled={hayCodigoActivo}
+          >
+            {[1, 2, 3, 4, 5].map(num => (
+              <option key={num} value={num}>
+                {num} uso{num > 1 ? 's' : ''}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.generateComponent}>
+          <button
+            className={`${styles.generateButton} 
+              ${loading ? styles.loading : ''} 
+              ${hayCodigoActivo ? styles.disabled : ''}`}
+            onClick={generarCodigo}
+          >
+            {loading ? <Spinner color="#fff" size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
+          </button>
+          <CopyInput
+            value={codigoActivo?.codigo || ''}
+            onCopy={() => {}}
+            copiado={false}
+            disabled={!codigoActivo}
+          />
+        </div>
+      </div>
       <h2>Codigos disponibles</h2>
-      <ListaCodigosAcceso 
-        codigos={codigos} 
-        reducirUso={reducirUso} 
-        spotlightActivoId={spotlightActivoId} 
+      <ListaCodigosAcceso
+        codigos={codigos}
+        reducirUso={reducirUsoCodigo}
+        spotlightActivoId={spotlightActivoId}
         setSpotlightActivoId={setSpotlightActivoId}
       />
     </div>
