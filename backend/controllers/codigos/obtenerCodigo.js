@@ -1,36 +1,35 @@
 const CodigoAcceso = require('@models/CodigoAcceso');
-const Movimiento = require('@models/Movimiento');
 const { logError } = require('@utils/logger');
 
 const obtenerCodigos = async (req, res) => {
   try {
-    const codigos = await CodigoAcceso.find().sort({ fechaCreacion: -1 });
+    const { estado, creadoPor } = req.query;
 
-    const codigosConCreador = await Promise.all(
-      codigos.map(async (codigo) => {
-        const movimiento = await Movimiento.findOne({
-          tipo: 'crear',
-          entidad: 'CodigoAcceso',
-          entidadId: codigo._id
-        }).populate('realizadoPor', 'nombre');
+    // Construir filtro dinámico
+    const filtro = {};
+    if (estado) filtro.estado = estado;
+    if (creadoPor) filtro.creadoPor = creadoPor;
 
-        return {
-          id: codigo._id,
-          codigo: codigo.codigo,
-          estado: codigo.estado,
-          usosDisponibles: codigo.usosDisponibles,
-          fechaCreacion: codigo.fechaCreacion,
-          creadoPor: movimiento?.realizadoPor
-            ? {
-                id: movimiento.realizadoPor._id,
-                nombre: movimiento.realizadoPor.nombre
-              }
-            : null
-        };
-      })
-    );
+    const codigos = await CodigoAcceso.find(filtro)
+      .sort({ fechaCreacion: -1 })
+      .populate('creadoPor', 'nombre email');
 
-    res.json({ success: true, codigos: codigosConCreador });
+    const codigosFormateados = codigos.map((codigo) => ({
+      id: codigo._id,
+      codigo: codigo.codigo,
+      estado: codigo.estado,
+      usosDisponibles: codigo.usosDisponibles,
+      fechaCreacion: codigo.fechaCreacion,
+      creadoPor: codigo.creadoPor
+        ? {
+            id: codigo.creadoPor._id,
+            nombre: codigo.creadoPor.nombre,
+            email: codigo.creadoPor.email
+          }
+        : null
+    }));
+
+    res.json({ success: true, codigos: codigosFormateados });
   } catch (error) {
     logError(error);
     res.status(500).json({
