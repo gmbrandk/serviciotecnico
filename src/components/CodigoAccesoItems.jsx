@@ -3,6 +3,17 @@ import styles from '@styles/ListaCodigosAcceso.module.css'; // Importamos los es
 import { normalizedId } from '../utils/formatters';
 
 const CodigoAccesoItem = ({ id, codigo, usosDisponibles, creadoPor, estado, reducirUsos, spotlightActivoId }) => {
+    console.log('🔧 CodigoAccesoItem se está renderizando con ID:', id);
+  // Log para verificar los datos que llegan al componente hijo
+  console.log('Propiedades recibidas por CodigoAccesoItem:', {
+    id,
+    codigo,
+    usosDisponibles,
+    creadoPor,
+    estado,
+    spotlightActivoId
+  });
+
   const handleReducirUso = () => {
     //console.log('Reduciendo uso para el código:', codigo);
     reducirUsos(codigo);
@@ -20,6 +31,7 @@ const CodigoAccesoItem = ({ id, codigo, usosDisponibles, creadoPor, estado, redu
       <td data-th="Código de acceso">{codigo}</td>
       <td data-th="Usos disponibles">{usosDisponibles}</td>
       <td data-th="Estado">{estado === 'activo' ? 'Activo' : 'Inactivo'}</td>
+       <td data-th="Usos disponibles">{creadoPor}</td>
       <td data-th="Acciones">
         <button
           className={styles.reduceButton}
@@ -31,7 +43,7 @@ const CodigoAccesoItem = ({ id, codigo, usosDisponibles, creadoPor, estado, redu
       </td>
     </tr>
   );
-};
 
+};
 
 export default CodigoAccesoItem;

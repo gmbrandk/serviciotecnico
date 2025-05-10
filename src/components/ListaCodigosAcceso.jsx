@@ -17,9 +17,11 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
 
   // Filtrar los códigos activos
   const codigosActivos = codigos.filter(c => c.estado === 'activo');
+  console.log('Códigos activos:', codigosActivos); // Log para ver los códigos activos
 
   // Mostrar solo los códigos activos en móviles
   const codigosAmostrar = isMobile ? codigosActivos.slice(0, 1) : codigos;
+  console.log('Códigos a mostrar:', codigosAmostrar); // Log para ver qué códigos se están mostrando
 
   // Obtener los índices de inicio y fin de la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -27,10 +29,11 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
 
   // Dividir la lista de códigos según la paginación
   const currentItems = codigosAmostrar.slice(indexOfFirstItem, indexOfLastItem);
+  console.log('🧮Ítems actuales (paginados):', currentItems); // Log para ver los ítems actuales
 
   // Cambiar de página
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-
+  console.log('Códigos antes de filtrar:', currentItems);
   return (
     <>
       {spotlightActivoId && (
@@ -59,21 +62,35 @@ const CodigoAccesoList = ({ codigos, reducirUso, spotlightActivoId, setSpotlight
               <th>Código de Acceso</th>
               <th>Usos Disponibles</th>
               <th>Estado</th>
+              <th>Usuario</th>
               <th>Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {currentItems.filter(c => c._id).map((codigoItem) => (
-              <CodigoAccesoItem
-                key={normalizedId(codigoItem)}
-                id={normalizedId(codigoItem)}
-                codigo={codigoItem.codigo}
-                usosDisponibles={codigoItem.usosDisponibles}
-                estado={codigoItem.estado}
-                reducirUsos={() => reducirUso(codigoItem.codigo)}
-                spotlightActivoId={spotlightActivoId}
-              />
-            ))}
+          <tbody>       
+            {currentItems.length === 0 ? (
+              <tr>
+                <td colSpan="4" className={styles.emptyRow}>
+                  No hay códigos disponibles en este momento.
+                </td>
+              </tr>
+            ) : (
+              currentItems.filter(c => c.id).map((codigoItem) => {
+                const id = normalizedId(codigoItem);
+                console.log('📦 Renderizando item con ID:', id, 'Datos:', codigoItem);
+                return (
+                  <CodigoAccesoItem
+                    key={id}
+                    id={id}
+                    codigo={codigoItem.codigo}
+                    usosDisponibles={codigoItem.usosDisponibles}
+                    estado={codigoItem.estado}
+                    creadoPor={codigoItem.creadoPor?.nombre ?? 'N/A'}
+                    reducirUsos={() => reducirUso(codigoItem.codigo)}
+                    spotlightActivoId={spotlightActivoId}
+                  />
+                );
+              })
+            )}
           </tbody>
         </table>
       )}
