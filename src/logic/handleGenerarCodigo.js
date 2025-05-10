@@ -18,7 +18,7 @@ export const handleGenerarCodigo = async ({
     // Activamos el spotlight para el código activo
     const codigoActivo = codigos.find(c => c.estado === 'activo');
     if (codigoActivo) {
-      activarSpotlight(setSpotlightActivoId, codigoActivo._id); // Usa _id directamente
+      activarSpotlight(setSpotlightActivoId, codigoActivo.id); // Usa _id directamente
     }
     return;
   }
