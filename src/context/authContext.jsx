@@ -18,13 +18,9 @@ export const AuthProvider = ({ children }) => {
     try {
       startLoading(); // Inicia la carga
 
-      if (import.meta.env.MODE === 'development') {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
-      
-      const usuarioAutenticado = await fetchUsuarioAutenticado();
+      const { usuario: usuarioAutenticado } = await fetchUsuarioAutenticado();
       console.log('[AuthContext] Usuario autenticado:', usuarioAutenticado);
-
+      
       if (usuarioAutenticado) {
         setUsuario(usuarioAutenticado);
       }
