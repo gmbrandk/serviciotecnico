@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from '@styles/forms.module.css';
 import toast from 'react-hot-toast';
 import Toast from '../../shared/Toast';
+import Spinner from '../../shared/Spinner';
 
 const LoginForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -80,7 +81,7 @@ const LoginForm = ({ onSubmit }) => {
           onChange={handleChange}
         />
         <button type="submit" className={styles.actionButton} disabled={isLoading}>
-          {isLoading ? 'Cargando...' : 'Iniciar sesión'}
+          {isLoading ? <Spinner color="#fff" size={20} /> : 'Iniciar sesión'}
         </button>
       </fieldset>
     </form>

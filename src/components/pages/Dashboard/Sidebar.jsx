@@ -75,6 +75,11 @@ const Sidebar = () => {
               </li>
             </>
           )}
+          <li onClick={closeMobileSidebar}>
+            <Link to="/dashboard/historial">
+              <FaTools /> <span>Historial</span>
+            </Link>
+          </li>
           <li onClick={handleLogout}>
             <Link to="/login">
               <FaSignOutAlt /> <span>Cerrar sesión</span>
