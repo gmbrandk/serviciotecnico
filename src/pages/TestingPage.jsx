@@ -1,13 +1,25 @@
-// components/dashboard/CrearCodigo.jsx
+// @pages/TestingPage.jsx
 import React from 'react';
+import TablaDatos from '@components/shared/Tabla/TablaDatos';
 
-const CrearCodigo = () => {
+const mockData = [
+  { id: '1', nombre: 'Juan', correo: 'juan@mail.com' },
+  { id: '2', nombre: 'Ana', correo: 'ana@mail.com' },
+  { id: '3', nombre: 'Carlos', correo: 'carlos@mail.com' },
+];
+
+const columns = [
+  { header: 'Nombre', accessor: 'nombre' },
+  { header: 'Correo', accessor: 'correo' },
+];
+
+const TestingPage = () => {
   return (
     <div>
-      <h2>🔬Pagina para hacer pruebas 🧪</h2>
-      <p>Experimenta cosas inimaginables</p>
+      <h2 style={{ color: '#fff' }}>Tabla Modular</h2>
+      <TablaDatos columns={columns} data={mockData} spotlightId={'2'} />
     </div>
   );
 };
 
-export default CrearCodigo;
+export default TestingPage;

@@ -9,6 +9,7 @@ import ProtectedRoute from '@components/routes/ProtectedRoute';
 import PublicRoute from '@components/routes/PublicRoute';
 import dashboardRoutes from '@routes/dashboardRoutes';
 import { Toaster } from 'react-hot-toast';
+import TestingPage from '@pages/TestingPage'
 
 const App = () => {
   return (
@@ -22,7 +23,7 @@ const App = () => {
 
         {/* Rutas protegidas y anidadas */}
         <Route
-          path="/dashboard"
+          path="/dashboard/*"
           element={
             <ProtectedRoute>
               <DashboardPage />
@@ -33,6 +34,13 @@ const App = () => {
             <Route key={index} path={path} element={element} />
           ))}
         </Route>
+
+        <Route
+          path="/testing"
+          element={
+            <TestingPage />
+          }
+        />
 
         {/* Catch-all protegida */}
         <Route
