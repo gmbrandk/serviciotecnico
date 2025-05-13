@@ -1,17 +1,17 @@
 import React from 'react';
-import TablaAcciones from './TablaAcciones'; // Si deseas usar acciones
+import TablaAcciones from './TablaAcciones';
 
-const TablaBody = ({ data, columns, spotlightId }) => {
+const TablaBody = ({ data, columns }) => {
   return (
     <tbody>
       {data.map((item) => (
-        <tr key={item.id} className={item.id === spotlightId ? 'spotlight' : ''}>
+        <tr key={item.id}>
           {columns.map((col, index) => (
             <td key={index} data-th={col.header}>
               {col.render ? col.render(item[col.accessor], item) : item[col.accessor]}
             </td>
           ))}
-          {<TablaAcciones item={item} />}
+          <TablaAcciones item={item} />
         </tr>
       ))}
     </tbody>

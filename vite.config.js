@@ -17,6 +17,7 @@ export default defineConfig({
       '@mock': path.resolve(__dirname, 'src/mock'),
       '@helpers': path.resolve(__dirname, 'src/helpers'),
       '@logic': path.resolve(__dirname, 'src/logic'),
+      '@data': path.resolve(__dirname, 'src/data'),
     },
   },
 });

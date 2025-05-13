@@ -1,26 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TablaHeader from './TablaHeader';
 import TablaBody from './TablaBody';
-import tableStyles from '@styles/ListaCodigosAcceso.module.css';
-import rowStyles from '@styles/CodigoAccesoItem.module.css';
+import TablaPaginacion from './TablaPaginacion';
+import TablaVacia from './TablaVacia';
+import styles from '@styles/ListaCodigosAcceso.module.css';
 
+const TablaDatos = ({ columns, data }) => {
+  const itemsPorPagina = 5;
+  const [paginaActual, setPaginaActual] = useState(1);
 
-const TablaDatos = ({ columns, data, spotlightId }) => {
-  if (!data.length) {
-    return (
-      <div className="emptyState">
-        <img src="/empty.png" alt="No hay datos" className="emptyImage" />
-        <p className="emptyMessage">No hay datos para mostrar</p>
-      </div>
-    );
-  }
+  const totalPaginas = Math.ceil(data.length / itemsPorPagina);
+  const datosPaginados = data.slice(
+    (paginaActual - 1) * itemsPorPagina,
+    paginaActual * itemsPorPagina
+  );
+
+  if (!data.length) return <TablaVacia />;
 
   return (
-    
-    <table className={tableStyles.rwdTable}>
-      <TablaHeader columns={columns} />
-      <TablaBody data={data} columns={columns} className={rowStyles} spotlightId={spotlightId} />
-    </table>
+    <div style={{maxWidth :'500px'}}>
+      <table className={styles.rwdTable} >
+        <TablaHeader columns={columns} />
+        <TablaBody data={datosPaginados} columns={columns} />
+      </table>
+      {totalPaginas > 1 && (
+        <TablaPaginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          setPaginaActual={setPaginaActual}
+        />
+      )}
+    </div>
   );
 };
 
