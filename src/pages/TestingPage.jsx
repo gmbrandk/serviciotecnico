@@ -6,7 +6,7 @@ import {
   mascotas,
   inventarioElectronica,
 } from '@mock/mockData';
-import styles from '../styles/testing/TestingPage.module.css';
+import { testingStyles, buttonStyles } from '@styles';
 
 const rubros = {
   productos: {
@@ -58,41 +58,30 @@ const TestingPage = () => {
   const vaciarDatos = () => {
     setDatosActuales([]);
   };
+
   return (
-    <div style={{ padding: '2rem' }} className={styles.Container}>
+    <div className={testingStyles.Container}>
       <h2 style={{ color: '#fff' }}>{titulo}</h2>
-      <div style={{ marginBottom: '1rem' }}>
+
+      <div className={buttonStyles.botones}>
         {Object.keys(rubros).map((rubroKey) => (
           <button
             key={rubroKey}
             onClick={() => cambiarRubro(rubroKey)}
-            style={{
-              marginRight: '0.5rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: rubroActual === rubroKey ? '#2980b9' : '#34495e',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
+            className={`${buttonStyles.boton} ${
+              rubroActual === rubroKey ? buttonStyles.activo : ''
+            }`}
           >
             {rubros[rubroKey].titulo}
           </button>
         ))}
+
         <button
           onClick={vaciarDatos}
           disabled={datosActuales.length === 0}
-           style={{
-              marginRight: '0.5rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: datosActuales.length !== 0 ? '#34495e': '#7f8c8d',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
+          className={`${buttonStyles.boton} ${buttonStyles.vaciar}`}
         >
-          Vaciar datos
+          {datosActuales.length === 0 ? 'Restaurar datos' : 'Vaciar datos'}
         </button>
       </div>
 
