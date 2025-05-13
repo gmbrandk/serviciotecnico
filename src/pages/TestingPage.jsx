@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import TablaDatos from '@components/shared/Tabla/TablaDatos';
+import { Tabla } from '@components/shared/Tabla';
+
 import {
   productos,
   trabajadores,
@@ -85,7 +86,7 @@ const TestingPage = () => {
         </button>
       </div>
 
-      <TablaDatos columns={columnas} data={datosActuales} />
+      <Tabla columns={columnas} data={datosActuales} />
     </div>
   );
 };

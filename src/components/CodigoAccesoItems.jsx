@@ -10,7 +10,7 @@ const CodigoAccesoItem = ({ id, codigo, usosDisponibles, creadoPor, estado, spot
     };
 
     return (
-        <tr className={`${styles.itemRow} ${id === spotlightActivoId ? styles.spotlight : ''}`}>
+        <tr className={`${id === spotlightActivoId ? styles.spotlight : ''}`}>
             <td data-th="Código de acceso">{codigo}</td>
             <td data-th="Usos disponibles">{usosDisponibles}</td>
             <td data-th="Estado">{estado === 'activo' ? 'Activo' : 'Inactivo'}</td>

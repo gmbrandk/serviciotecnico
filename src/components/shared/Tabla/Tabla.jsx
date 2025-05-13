@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import TablaHeader from './TablaHeader';
-import TablaBody from './TablaBody';
-import TablaPaginacion from './TablaPaginacion';
-import TablaVacia from './TablaVacia';
+import { TablaHeader, TablaBody, TablaPaginacion, TablaVacia } from '@components/shared/Tabla'
 import styles from '@styles/ListaCodigosAcceso.module.css';
 
-const TablaDatos = ({ columns, data }) => {
+const Tabla = ({ columns, data }) => {
   const itemsPorPagina = 5;
   const [paginaActual, setPaginaActual] = useState(1);
 
@@ -18,8 +15,8 @@ const TablaDatos = ({ columns, data }) => {
   if (!data.length) return <TablaVacia />;
 
   return (
-    <div style={{maxWidth :'500px'}}>
-      <table className={styles.rwdTable} >
+    <div style={{ maxWidth: '500px' }}>
+      <table className={styles.rwdTable}>
         <TablaHeader columns={columns} />
         <TablaBody data={datosPaginados} columns={columns} />
       </table>
@@ -34,4 +31,4 @@ const TablaDatos = ({ columns, data }) => {
   );
 };
 
-export default TablaDatos;
+export default Tabla;

@@ -11,6 +11,9 @@ export const trabajadores = [
   { id: '1', nombre: 'Carlos', turno: 'Mañana' },
   { id: '2', nombre: 'Lucía', turno: 'Tarde' },
   { id: '3', nombre: 'Ana', turno: 'Noche' },
+  { id: '4', nombre: 'Luna', turno: 'Noche' },
+  { id: '5', nombre: 'Julio', turno: 'Mañana' },
+  { id: '6', nombre: 'Christiam', turno: 'Noche' },
 ];
 
 export const mascotas = [
