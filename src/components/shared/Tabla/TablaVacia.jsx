@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '@styles/ListaCodigosAcceso.module.css';
+import styles from '../../../styles/general/tabla/emptyTable.module.css';
 
 const TablaVacia = () => {
   return (

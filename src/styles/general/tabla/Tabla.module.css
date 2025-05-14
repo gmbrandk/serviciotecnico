@@ -1,0 +1,106 @@
+@import '../../fonts/Monserrat.css';
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+/* === Tabla === */
+.rwdTable {
+  margin: 1em 0;
+  min-width: 300px;
+  background: transparent;
+  color: #fff;
+  border-radius: .4em;
+  overflow: hidden;
+}
+
+.rwdTable tr {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: #34495E;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rwdTable td {
+  display: block;
+  padding: .5em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rwdTable th {
+  display: none;
+}
+
+.rwdTable td:first-child {
+  padding-top: .5em;
+}
+.rwdTable td:last-child {
+  padding-bottom: .5em;
+}
+
+.rwdTable td:before {
+  content: attr(data-th)": ";
+  font-weight: bold;
+  width: 6.5em;
+  display: inline-block;
+}
+
+.rwdTable th,
+.rwdTable td:before {
+  color: #dd5;
+}
+
+.rwdTable tr {
+  border-color: #46637f;
+}
+
+.rwdTable th,
+.rwdTable td {
+  margin: 0.5em 1em;
+}
+
+/* Desktop */
+@media (min-width: 480px) {
+  .rwdTable {
+    background-color: #34495E;
+  }
+
+  .rwdTable th {
+    display: table-cell;
+    padding: 1em !important;
+    text-align: left;
+  }
+
+  .rwdTable td {
+    display: table-cell;
+    padding: 1em !important;
+  }
+
+  .rwdTable td:before {
+    display: none;
+  }
+
+  .rwdTable tr {
+    display: table-row;
+    background: transparent;
+    margin: 0;
+  }
+
+  .rwdTable th:first-child,
+  .rwdTable td:first-child {
+    padding-left: 0;
+  }
+
+  .rwdTable th:last-child,
+  .rwdTable td:last-child {
+    padding-right: 0;
+  }
+}

@@ -48,6 +48,8 @@ const rubros = {
 const TestingPage = () => {
   const [rubroActual, setRubroActual] = useState('productos');
   const [datosActuales, setDatosActuales] = useState(rubros['productos'].datos);
+  const [spotlightActivoId, setSpotlightActivoId] = useState(null);
+
 
   const { titulo, columnas } = rubros[rubroActual];
 
@@ -86,7 +88,12 @@ const TestingPage = () => {
         </button>
       </div>
 
-      <Tabla columns={columnas} data={datosActuales} />
+      <Tabla 
+        columns={columnas} 
+        data={datosActuales} 
+        spotlightActivoId={spotlightActivoId}
+        setSpotlightActivoId={setSpotlightActivoId}
+      />
     </div>
   );
 };

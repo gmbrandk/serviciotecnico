@@ -1,0 +1,16 @@
+.emptyState {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.emptyImage {
+  width: 120px;
+  height: auto;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.emptyMessage {
+  font-size: 1rem;
+  color: #666;
+}
