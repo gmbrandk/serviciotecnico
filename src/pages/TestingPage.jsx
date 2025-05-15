@@ -1,100 +1,51 @@
 import React, { useState } from 'react';
-import { Tabla } from '@components/shared/Tabla';
-
-import {
-  productos,
-  trabajadores,
-  mascotas,
-  inventarioElectronica,
-} from '@mock/mockData';
-import { testingStyles, buttonStyles } from '@styles';
-
-const rubros = {
-  productos: {
-    titulo: 'Productos',
-    datos: productos,
-    columnas: [
-      { header: 'Nombre', accessor: 'nombre' },
-      { header: 'Precio', accessor: 'precio' },
-    ],
-  },
-  trabajadores: {
-    titulo: 'Trabajadores',
-    datos: trabajadores,
-    columnas: [
-      { header: 'Nombre', accessor: 'nombre' },
-      { header: 'Turno', accessor: 'turno' },
-    ],
-  },
-  mascotas: {
-    titulo: 'Mascotas',
-    datos: mascotas,
-    columnas: [
-      { header: 'Nombre', accessor: 'nombre' },
-      { header: 'Vacuna', accessor: 'vacuna' },
-    ],
-  },
-  inventario: {
-    titulo: 'Inventario Electrónica',
-    datos: inventarioElectronica,
-    columnas: [
-      { header: 'Nombre', accessor: 'nombre' },
-      { header: 'Cantidad', accessor: 'cantidad' },
-      { header: 'Marca', accessor: 'marca' },
-    ],
-  },
-};
+import {Tabla} from '@components/shared/Tabla';
+import { activarSpotlight } from '@logic/activarSpotlight';
+import { datosPrueba, columnas } from '@data/testing/tablaPrueba';
+import {animationStyles, tableStyles} from '@styles';
 
 const TestingPage = () => {
-  const [rubroActual, setRubroActual] = useState('productos');
-  const [datosActuales, setDatosActuales] = useState(rubros['productos'].datos);
   const [spotlightActivoId, setSpotlightActivoId] = useState(null);
 
-
-  const { titulo, columnas } = rubros[rubroActual];
-
-  const cambiarRubro = (nuevoRubro) => {
-    setRubroActual(nuevoRubro);
-    setDatosActuales(rubros[nuevoRubro].datos);
+  const handleAccionPersonalizada = (itemId) => {
+    activarSpotlight(setSpotlightActivoId, itemId);
   };
 
-  const vaciarDatos = () => {
-    setDatosActuales([]);
+  const rowClassNameCallback = (item) => {
+    return item.id === spotlightActivoId ? 'spotlight' : '';
   };
 
   return (
-    <div className={testingStyles.Container}>
-      <h2 style={{ color: '#fff' }}>{titulo}</h2>
-
-      <div className={buttonStyles.botones}>
-        {Object.keys(rubros).map((rubroKey) => (
+    <>
+      {spotlightActivoId && (
+          <div
+            className={tableStyles.overlay}
+            onClick={() => setSpotlightActivoId(null)}
+          ></div>
+      )}
+      <Tabla
+        columns={columnas}
+        data={datosPrueba}
+        onAccionPersonalizada={handleAccionPersonalizada}
+        renderBotonAnimar={(item) => (
           <button
-            key={rubroKey}
-            onClick={() => cambiarRubro(rubroKey)}
-            className={`${buttonStyles.boton} ${
-              rubroActual === rubroKey ? buttonStyles.activo : ''
-            }`}
+            style={{ marginRight: '5px', background: 'yellow' }}
+            onClick={() => handleAccionPersonalizada(item.id)}
           >
-            {rubros[rubroKey].titulo}
+            🌟 Resaltar
           </button>
-        ))}
-
-        <button
-          onClick={vaciarDatos}
-          disabled={datosActuales.length === 0}
-          className={`${buttonStyles.boton} ${buttonStyles.vaciar}`}
-        >
-          {datosActuales.length === 0 ? 'Restaurar datos' : 'Vaciar datos'}
-        </button>
-      </div>
-
-      <Tabla 
-        columns={columnas} 
-        data={datosActuales} 
-        spotlightActivoId={spotlightActivoId}
-        setSpotlightActivoId={setSpotlightActivoId}
+        )}
+        renderAcciones={(item) => (
+          <>
+            <button onClick={() => alert(`Editar ${item.id}`)}>✏️</button>
+            <button onClick={() => alert(`Eliminar ${item.id}`)}>🗑️</button>
+          </>
+        )}
+        rowClassNameCallback={rowClassNameCallback}
+        rowStyles={animationStyles}
+        className={tableStyles.rwdTable}
       />
-    </div>
+    </>
   );
 };
 
