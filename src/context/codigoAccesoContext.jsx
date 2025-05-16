@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import { fetchCodigos } from '@services/codigoAccesoService'; // Importamos el servicio
-import { reducirUso } from '@utils/reducirUso'; // Importamos el servicio
 
 const CodigosAccesoContext = createContext();
 
@@ -33,15 +32,10 @@ export const CodigosAccesoProvider = ({ children }) => {
     return codigos.some(codigo => codigo.estado === 'activo');
   }, [codigos]);
 
-  const reducirUsoCodigo = (codigoBuscado) => {
-    setCodigos(prevCodigos => reducirUso(prevCodigos, codigoBuscado));
-  };
-
   return (
     <CodigosAccesoContext.Provider value={{ 
       codigos, 
       setCodigos,
-      reducirUsoCodigo, 
       hayCodigoActivo, 
       loading, 
       setLoading,

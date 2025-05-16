@@ -24,5 +24,9 @@ export const columnasCodigos = [
     accessor: 'creadoPor.nombre',
     render: (_, item) => item.creadoPor?.nombre || 'N/A',
   },
+  { header: 'Acciones', 
+    accessor: 'acciones', 
+    esAcciones: true 
+  } // <--- esta marca
 ];
 

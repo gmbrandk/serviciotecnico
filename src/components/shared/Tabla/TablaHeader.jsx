@@ -7,7 +7,6 @@ const TablaHeader = ({ columns }) => {
         {columns.map((col, index) => (
           <th key={index}>{col.header}</th>
         ))}
-        <th>Acciones</th>
       </tr>
     </thead>
   );

@@ -3,20 +3,23 @@ import { Tabla } from '@components/shared/Tabla';
 import Spinner from '@components/shared/Spinner';
 import CopyInput from '@components/shared/CopyInput';
 import { useCodigosAccesoContext } from '@context/codigoAccesoContext';
+import useClipboard from '@hooks/useClipboard';
 import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
 import { animationStyles, tableStyles } from '@styles';
 import { columnasCodigos } from '@data/tabla/columnasCodigos';
 import { normalizedId } from '@utils/formatters';
+import { reducirCampoConLimite } from '@utils/reducirValores';
 
 const CrearCodigo = () => {
-  const { codigos, setCodigos, reducirUsoCodigo, hayCodigoActivo, loading, setLoading } = useCodigosAccesoContext();
+  const { codigos, setCodigos, hayCodigoActivo, loading, setLoading } = useCodigosAccesoContext();
   const [usosSeleccionados, setUsosSeleccionados] = useState(1);
   const [spotlightActivoId, setSpotlightActivoId] = useState(null);
   const [botonGenerado, setBotonGenerado] = useState(false);
 
   const codigoActivo = codigos.find(codigo => codigo.estado === 'activo');
+  const { copiado, handleCopiar } = useClipboard(codigoActivo?.codigo || '');
 
   const generarCodigo = () => {
     if (loading) return;
@@ -62,8 +65,8 @@ const CrearCodigo = () => {
           </button>
           <CopyInput
             value={codigoActivo?.codigo || ''}
-            onCopy={() => {}}
-            copiado={false}
+            onCopy={handleCopiar}
+            copiado={copiado}
             disabled={!codigoActivo}
           />
         </div>
@@ -86,10 +89,30 @@ const CrearCodigo = () => {
         }
         rowStyles={animationStyles}
         renderAcciones={(item) => (
-          <>
-            <button onClick={() => reducirUsoCodigo(item._id)}>➖ Usos</button>
-          </>
-        )}
+        <>
+          <button
+  onClick={() =>
+    setCodigos(prev =>
+      reducirCampoConLimite({
+        lista: prev,
+        identificadorBuscado: item._id, // ✔ CORRECTO
+        claveIdentificador: '_id',      // ✔ usamos '_id' en vez de 'codigo'
+        claveCantidad: 'usosDisponibles',
+        valorLimite: 0,
+        actualizarEstado: true,
+        clavesEstado: {
+          activo: 'activo',
+          inactivo: 'inactivo',
+        },
+      })
+    )
+  }
+>
+  ➖ Usos
+</button>
+
+        </>
+      )}
         className={tableStyles.rwdTable}
       />
     </div>

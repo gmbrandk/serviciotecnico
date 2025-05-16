@@ -16,17 +16,20 @@ const TablaBody = ({
         const rowClass = rowStyles[rowClassKey] || '';
         return (
           <tr key={item.id} className={rowClass}>
-            {columns.map((col, index) => (
-              <td key={index} data-th={col.header}>
-                {col.render ? col.render(item[col.accessor], item) : item[col.accessor]}
-              </td>
-            ))}
-            {(renderAcciones || renderBotonAnimar) && (
-              <td>
-                {renderBotonAnimar && renderBotonAnimar(item)}
-                {renderAcciones && renderAcciones(item)}
-              </td>
-            )}
+            {columns.map((col, index) => {
+              if (col.esAcciones && renderAcciones) {
+                return (
+                  <td key={index} data-th={col.header}>
+                    {renderAcciones(item)}
+                  </td>
+                );
+              }
+              return (
+                <td key={index} data-th={col.header}>
+                  {col.render ? col.render(item[col.accessor], item) : item[col.accessor]}
+                </td>
+              );
+            })}
           </tr>
         );
       })}
