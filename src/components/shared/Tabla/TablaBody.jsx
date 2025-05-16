@@ -1,5 +1,4 @@
 import React from 'react';
-import { TablaAcciones } from '@components/shared/Tabla';
 
 const TablaBody = ({
   data,

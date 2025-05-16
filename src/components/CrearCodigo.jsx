@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import { Tabla } from '@components/shared/Tabla';
 import Spinner from '@components/shared/Spinner';
 import CopyInput from '@components/shared/CopyInput';
-import ListaCodigosAcceso from '@components/ListaCodigosAcceso';
-import { useCodigosAccesoContext } from '@context/codigoAccesoContext'; // Usamos el contexto aquí
+import { useCodigosAccesoContext } from '@context/codigoAccesoContext';
 import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
+import { animationStyles, tableStyles } from '@styles';
+import { columnasCodigos } from '@data/tabla/columnasCodigos';
+import { normalizedId } from '@utils/formatters';
 
 const CrearCodigo = () => {
-  const { codigos, setCodigos, reducirUsoCodigo, hayCodigoActivo, loading } = useCodigosAccesoContext(); // Usamos el hook del contexto
+  const { codigos, setCodigos, reducirUsoCodigo, hayCodigoActivo, loading, setLoading } = useCodigosAccesoContext();
   const [usosSeleccionados, setUsosSeleccionados] = useState(1);
   const [spotlightActivoId, setSpotlightActivoId] = useState(null);
+  const [botonGenerado, setBotonGenerado] = useState(false);
 
-  // Obtenemos el código activo actual (si existe)
   const codigoActivo = codigos.find(codigo => codigo.estado === 'activo');
 
   const generarCodigo = () => {
@@ -21,8 +24,9 @@ const CrearCodigo = () => {
       hayCodigoActivo,
       codigos,
       setCodigos,
-      startLoading: () => {},
-      stopLoading: () => {},
+      setBotonGenerado,
+      startLoading: () => setLoading(true),
+      stopLoading: () => setLoading(false),
       usosSeleccionados,
       activarSpotlight,
       setSpotlightActivoId
@@ -64,12 +68,29 @@ const CrearCodigo = () => {
           />
         </div>
       </div>
+
       <h2>Codigos disponibles</h2>
-      <ListaCodigosAcceso
-        codigos={codigos}
-        reducirUso={reducirUsoCodigo}
-        spotlightActivoId={spotlightActivoId}
-        setSpotlightActivoId={setSpotlightActivoId}
+
+      {spotlightActivoId && (
+        <div
+          className={tableStyles.overlay}
+          onClick={() => setSpotlightActivoId(null)}
+        />
+      )}
+
+      <Tabla
+        columns={columnasCodigos}
+        data={codigos}
+        rowClassNameCallback={(item) =>
+          normalizedId(item) === spotlightActivoId ? 'spotlight' : ''
+        }
+        rowStyles={animationStyles}
+        renderAcciones={(item) => (
+          <>
+            <button onClick={() => reducirUsoCodigo(item._id)}>➖ Usos</button>
+          </>
+        )}
+        className={tableStyles.rwdTable}
       />
     </div>
   );

@@ -23,7 +23,7 @@ columns,
   if (!data.length) return <TablaVacia />;
 
   return (
-    <div style={{ maxWidth: '500px' }}>
+    <div>
       <table className={className}>
         <TablaHeader columns={columns}  mostrarAcciones={!!renderAcciones || !!renderBotonAnimar} />
         <TablaBody

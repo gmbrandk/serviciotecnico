@@ -38,7 +38,15 @@ export const CodigosAccesoProvider = ({ children }) => {
   };
 
   return (
-    <CodigosAccesoContext.Provider value={{ codigos, setCodigos, reducirUsoCodigo, hayCodigoActivo, loading, error }}>
+    <CodigosAccesoContext.Provider value={{ 
+      codigos, 
+      setCodigos,
+      reducirUsoCodigo, 
+      hayCodigoActivo, 
+      loading, 
+      setLoading,
+      error }}
+    >
       {children}
     </CodigosAccesoContext.Provider>
   );

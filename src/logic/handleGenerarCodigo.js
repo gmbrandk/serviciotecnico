@@ -5,37 +5,36 @@ export const handleGenerarCodigo = async ({
   hayCodigoActivo,
   codigos,
   setCodigos,
-  startLoading,
-  stopLoading,
   usosSeleccionados,
   activarSpotlight,
-  setBotonGenerado,
   setSpotlightActivoId,
+  setBotonGenerado,          // (opcional): Para marcar botón como generado
+  startLoading,              // Requiere ser pasado desde el context
+  stopLoading,
 }) => {
   if (hayCodigoActivo) {
     toast.error('Ya existe un código activo.');
 
-    // Activamos el spotlight para el código activo
+    // Activamos spotlight en el código activo actual
     const codigoActivo = codigos.find(c => c.estado === 'activo');
     if (codigoActivo) {
-      activarSpotlight(setSpotlightActivoId, codigoActivo.id); // Usa _id directamente
+      activarSpotlight(setSpotlightActivoId, normalizedId(codigoActivo));
     }
     return;
   }
 
   try {
-    startLoading();
+    startLoading?.(); // ✅ Evitamos error si no se pasa
 
-    // 🕐 Simulamos retraso de al menos 1 segundo para visibilidad del loading
+    // Simulamos delay (opcional, útil para mostrar spinner)
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Realizamos la petición con las cookies automáticamente adjuntadas
     const response = await fetch('http://localhost:5000/api/codigos/generar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include', // 🔐 Envía la cookie JWT automáticamente
+      credentials: 'include', // 🔐 Envía la cookie JWT
       body: JSON.stringify({ usos: usosSeleccionados }),
     });
 
@@ -47,22 +46,19 @@ export const handleGenerarCodigo = async ({
 
     toast.success('Código generado exitosamente');
 
-    // Usamos normalizedId para asegurarnos de que _id esté correctamente asignado
+    // Aseguramos que el nuevo código tenga `_id` unificado
     const nuevoCodigo = { ...data.codigo, _id: normalizedId(data.codigo) };
     setCodigos(prev => [{ ...nuevoCodigo }, ...prev]);
 
-    // Indicamos que el código ha sido generado
-    setBotonGenerado(true);
+    // Spotlight al nuevo código generado
+    activarSpotlight(setSpotlightActivoId, nuevoCodigo._id);
 
-    console.log('Respuesta completa:', data);
-    console.log('Código devuelto:', data.codigo);
-
-    // Activamos el spotlight para el nuevo código generado
-    activarSpotlight(setSpotlightActivoId, nuevoCodigo._id); // Usa _id para el nuevo código
+    // ✅ Indicamos que el botón fue usado (si se provee)
+    setBotonGenerado?.(true);
 
   } catch (error) {
     toast.error(error.message);
   } finally {
-    stopLoading();
+    stopLoading?.(); // ✅ Siempre cerramos loading
   }
 };
