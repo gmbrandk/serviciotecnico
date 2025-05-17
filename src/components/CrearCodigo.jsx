@@ -7,10 +7,12 @@ import useClipboard from '@hooks/useClipboard';
 import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
-import { animationStyles, tableStyles } from '@styles';
+import { animationSpotlightStyles, tableStyles } from '@styles';
 import { columnasCodigos } from '@data/tabla/columnasCodigos';
-import { normalizedId } from '@utils/formatters';
 import { reducirCampoConLimite } from '@utils/reducirValores';
+import { createRowClassNameCallback } from '@utils/rowClassName/createRowClassNameCallback';
+
+
 
 const CrearCodigo = () => {
   const { codigos, setCodigos, hayCodigoActivo, loading, setLoading } = useCodigosAccesoContext();
@@ -35,6 +37,36 @@ const CrearCodigo = () => {
       setSpotlightActivoId
     });
   };
+
+  const renderAcciones = (item) => {
+    const handleReducir = (id) => {
+      setCodigos(prev =>
+        reducirCampoConLimite({
+          lista: prev,
+          identificadorBuscado: id,
+          claveIdentificador: '_id',
+          claveCantidad: 'usosDisponibles',
+          valorLimite: 0,
+          actualizarEstado: true,
+          clavesEstado: {
+            activo: 'activo',
+            inactivo: 'inactivo',
+          },
+        })
+      );
+    };
+
+    return (
+      <button onClick={() => handleReducir(item._id)}>
+        ➖ Usos
+      </button>
+    );
+  };
+
+  const rowClassNameCallback = createRowClassNameCallback({
+    spotlightId: spotlightActivoId,
+    //...getRowPreset('codigos')
+  });
 
   return (
     <div className={styles.container}>
@@ -84,35 +116,9 @@ const CrearCodigo = () => {
       <Tabla
         columns={columnasCodigos}
         data={codigos}
-        rowClassNameCallback={(item) =>
-          normalizedId(item) === spotlightActivoId ? 'spotlight' : ''
-        }
-        rowStyles={animationStyles}
-        renderAcciones={(item) => (
-        <>
-          <button
-  onClick={() =>
-    setCodigos(prev =>
-      reducirCampoConLimite({
-        lista: prev,
-        identificadorBuscado: item._id, // ✔ CORRECTO
-        claveIdentificador: '_id',      // ✔ usamos '_id' en vez de 'codigo'
-        claveCantidad: 'usosDisponibles',
-        valorLimite: 0,
-        actualizarEstado: true,
-        clavesEstado: {
-          activo: 'activo',
-          inactivo: 'inactivo',
-        },
-      })
-    )
-  }
->
-  ➖ Usos
-</button>
-
-        </>
-      )}
+        rowClassNameCallback={rowClassNameCallback}
+        rowStyles={animationSpotlightStyles}
+        renderAcciones={renderAcciones}
         className={tableStyles.rwdTable}
       />
     </div>

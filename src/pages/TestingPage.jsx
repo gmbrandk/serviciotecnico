@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Tabla} from '@components/shared/Tabla';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import { datosPrueba, columnas } from '@data/testing/tablaPrueba';
-import {animationStyles, tableStyles} from '@styles';
+import {animationSpotlightStyles, tableStyles} from '@styles';
 
 const TestingPage = () => {
   const [spotlightActivoId, setSpotlightActivoId] = useState(null);
@@ -42,7 +42,7 @@ const TestingPage = () => {
           </>
         )}
         rowClassNameCallback={rowClassNameCallback}
-        rowStyles={animationStyles}
+        rowStyles={animationSpotlightStyles}
         className={tableStyles.rwdTable}
       />
     </>

@@ -4,16 +4,18 @@ const TablaBody = ({
   data,
   columns,
   renderAcciones,
-  renderBotonAnimar,
-  onAccionPersonalizada,
   rowClassNameCallback,
   rowStyles = {}, // se inyecta desde el padre
 }) => {
   return (
     <tbody>
       {data.map((item) => {
-        const rowClassKey = rowClassNameCallback?.(item) || '';
-        const rowClass = rowStyles[rowClassKey] || '';
+        const classKeys = rowClassNameCallback?.(item) || [];
+        const rowClass = classKeys
+          .map((key) => rowStyles[key] || '')
+          .filter(Boolean)
+          .join(' ');
+
         return (
           <tr key={item.id} className={rowClass}>
             {columns.map((col, index) => {
