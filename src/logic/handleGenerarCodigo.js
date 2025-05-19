@@ -1,5 +1,5 @@
-import toast from 'react-hot-toast';
 import { normalizedId } from '@utils/formatters';
+import { showToast } from '@services/toast/toastService';
 
 export const handleGenerarCodigo = async ({
   hayCodigoActivo,
@@ -13,7 +13,7 @@ export const handleGenerarCodigo = async ({
   stopLoading,
 }) => {
   if (hayCodigoActivo) {
-    toast.error('Ya existe un código activo.');
+    showToast('Ya existe un código activo');
 
     // Activamos spotlight en el código activo actual
     const codigoActivo = codigos.find(c => c.estado === 'activo');
@@ -44,7 +44,7 @@ export const handleGenerarCodigo = async ({
       throw new Error(data.mensaje || 'Error al generar el código');
     }
 
-    toast.success('Código generado exitosamente');
+    showToast('Código generado exitosamente', 'success');
 
     // Aseguramos que el nuevo código tenga `_id` unificado
     const nuevoCodigo = { ...data.codigo, _id: normalizedId(data.codigo) };
