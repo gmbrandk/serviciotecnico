@@ -1,52 +1,38 @@
+// pages/TestingPage.jsx
 import React, { useState } from 'react';
-import {Tabla} from '@components/shared/Tabla';
-import { activarSpotlight } from '@logic/activarSpotlight';
-import { datosPrueba, columnas } from '@data/testing/tablaPrueba';
-import {animationSpotlightStyles, tableStyles} from '@styles';
+import { usuariosMock } from '@__mock__/usuariosMock';
+import Tabla from '@components/shared/Tabla/Tabla'; // Ajusta según tu estructura real
+import { normalizedId } from '@utils/formatters';
 
-const TestingPage = () => {
-  const [spotlightActivoId, setSpotlightActivoId] = useState(null);
+export default function TestingPage() {
+  // 🔄 Normalizamos la data para que tenga `.id`
+  const dataNormalizada = usuariosMock.map((usuario) => ({
+    ...usuario,
+    id: normalizedId(usuario),
+  }));
 
-  const handleAccionPersonalizada = (itemId) => {
-    activarSpotlight(setSpotlightActivoId, itemId);
-  };
+  // 🧪 Log para validar que cada item tenga `id`
+  console.log('🔍 Data normalizada:', dataNormalizada);
 
-  const rowClassNameCallback = (item) => {
-    return item.id === spotlightActivoId ? 'spotlight' : '';
-  };
+  const columns = [
+    { header: 'Nombre', accessor: 'nombre' },
+    { header: 'Email', accessor: 'email' },
+    { header: 'Rol', accessor: 'role' },
+    { header: 'Activo', accessor: 'activo', render: (valor) => valor ? '✅' : '❌' },
+    { header: 'Código de Acceso', accessor: 'accessCode' }, // opcional
+    {
+      header: 'Acciones',
+      esAcciones: true, // ⚠️ Importante para detectar columna de acciones
+    },
+  ];
 
   return (
-    <>
-      {spotlightActivoId && (
-          <div
-            className={tableStyles.overlay}
-            onClick={() => setSpotlightActivoId(null)}
-          ></div>
-      )}
-      <Tabla
-        columns={columnas}
-        data={datosPrueba}
-        onAccionPersonalizada={handleAccionPersonalizada}
-        renderBotonAnimar={(item) => (
-          <button
-            style={{ marginRight: '5px', background: 'yellow' }}
-            onClick={() => handleAccionPersonalizada(item.id)}
-          >
-            🌟 Resaltar
-          </button>
-        )}
-        renderAcciones={(item) => (
-          <>
-            <button onClick={() => alert(`Editar ${item.id}`)}>✏️</button>
-            <button onClick={() => alert(`Eliminar ${item.id}`)}>🗑️</button>
-          </>
-        )}
-        rowClassNameCallback={rowClassNameCallback}
-        rowStyles={animationSpotlightStyles}
-        className={tableStyles.rwdTable}
+    <div style={{ padding: 20 }}>
+      <h1>Test Tabla Usuarios</h1>
+      <Tabla  
+        columns={columns} 
+        data={dataNormalizada} 
       />
-    </>
+    </div>
   );
-};
-
-export default TestingPage;
+}

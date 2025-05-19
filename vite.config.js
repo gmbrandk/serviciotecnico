@@ -14,7 +14,7 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@services': path.resolve(__dirname, 'src/services'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
-      '@mock': path.resolve(__dirname, 'src/mock'),
+      '@__mock__': path.resolve(__dirname, 'src/__mock__'),
       '@helpers': path.resolve(__dirname, 'src/helpers'),
       '@logic': path.resolve(__dirname, 'src/logic'),
       '@data': path.resolve(__dirname, 'src/data'),
