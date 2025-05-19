@@ -20,6 +20,11 @@ const verificarToken = async (req, res, next) => {
       return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
     }
 
+    if (!usuario.activo) {
+      console.warn('[Middleware] 🚫 Usuario inactivo');
+      return res.status(403).json({ mensaje: 'Tu cuenta está desactivada. Contacta al administrador.' });
+    }
+
     console.log('[Middleware] 👤 Usuario autenticado:', {
       id: usuario._id.toString(),
       nombre: usuario.nombre,

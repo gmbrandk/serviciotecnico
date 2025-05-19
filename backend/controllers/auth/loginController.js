@@ -29,6 +29,14 @@ const login = async (req, res) => {
       });
     }
 
+    if (!usuario.activo) {
+      return res.status(403).json({
+        success: false,
+        mensaje: 'Tu cuenta está desactivada. Contacta al administrador.',
+        usuario: null
+      });
+    }
+
     const esValida = await bcrypt.compare(password, usuario.password);
     if (!esValida) {
       return res.status(401).json({
