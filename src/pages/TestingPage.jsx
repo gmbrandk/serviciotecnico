@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { usuariosMock } from '@__mock__/usuariosMock';
 import Tabla from '@components/shared/Tabla/Tabla'; // Ajusta según tu estructura real
 import { normalizedId } from '@utils/formatters';
+import { rwdtableStyles } from '@styles';
 
 export default function TestingPage() {
   // 🔄 Normalizamos la data para que tenga `.id`
@@ -32,6 +33,7 @@ export default function TestingPage() {
       <Tabla  
         columns={columns} 
         data={dataNormalizada} 
+        //className={rwdtableStyles.rwdTable}
       />
     </div>
   );

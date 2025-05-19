@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; 
 import { TablaHeader, TablaBody, TablaPaginacion, TablaVacia } from '@components/shared/Tabla';
-
+import { defaultTableStyles } from '@styles';
 const Tabla = ({
   columns,
   data,
@@ -34,7 +34,7 @@ const Tabla = ({
 
   return (
     <div>
-      <table className={className}>
+      <table className={className || defaultTableStyles.tablaClasica}>
         <TablaHeader
           columns={columnasFinales}
           mostrarAcciones={debeMostrarAcciones}

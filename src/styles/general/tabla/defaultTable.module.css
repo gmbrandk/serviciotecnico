@@ -1,0 +1,32 @@
+.tablaClasica {
+  width: 100%;
+  border: 4px ridge #ffffff;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  table-layout: auto;
+}
+
+.tablaClasica th,
+.tablaClasica td {
+  border: 4px ridge #ffffff;
+  padding: 4px 8px;
+  background-color: transparent;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tablaClasica th {
+  font-weight: bold;
+  background-color: #f0f0f0; /* leve diferencia para dar jerarquía */
+}
+
+.tablaClasica tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+.tablaClasica tr:nth-child(odd) {
+  background-color: #fcfcfc;
+}
