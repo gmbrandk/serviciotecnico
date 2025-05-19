@@ -19,6 +19,19 @@
   z-index: 999;
 }
 
+/* styles/animations/Spotlight.module.css */
+.hovered {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.rowDisabled {
+  opacity: 0.4;
+  pointer-events: none;
+  background-color: rgba(180, 180, 180, 0.08);
+  cursor: not-allowed;
+}
+
 @keyframes spotlightEffect {
   from {
     box-shadow: 0 0 2.5px 1px rgba(255, 235, 59, 0.4);

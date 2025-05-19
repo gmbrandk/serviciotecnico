@@ -5,14 +5,14 @@ const TablaBody = ({
   columns,
   renderAcciones,
   rowClassNameCallback,
-  rowStyles = {}, // se inyecta desde el padre
+  rowClassMap = {}, // se inyecta desde el padre
 }) => {
   return (
     <tbody>
       {data.map((item) => {
         const classKeys = rowClassNameCallback?.(item) || [];
         const rowClass = classKeys
-          .map((key) => rowStyles[key] || '')
+          .map((key) => rowClassMap[key] || '')
           .filter(Boolean)
           .join(' ');
 

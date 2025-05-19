@@ -18,6 +18,7 @@ export default defineConfig({
       '@helpers': path.resolve(__dirname, 'src/helpers'),
       '@logic': path.resolve(__dirname, 'src/logic'),
       '@data': path.resolve(__dirname, 'src/data'),
+      '@plugins': path.resolve(__dirname, 'src/plugins'),
     },
   },
 });

@@ -1,39 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { TablaHeader, TablaBody, TablaPaginacion, TablaVacia } from '@components/shared/Tabla';
 
 const Tabla = ({
-columns,
+  columns,
   data,
   onAccionPersonalizada,
   renderAcciones,
   renderBotonAnimar, // ✅ NUEVO
+  rowEnhancer,
   rowClassNameCallback,
-  rowStyles,
+  rowClassMap,
   className,
 }) => {
   const itemsPorPagina = 5;
   const [paginaActual, setPaginaActual] = useState(1);
 
-  const totalPaginas = Math.ceil(data.length / itemsPorPagina);
-  const datosPaginados = data.slice(
+  const enhancedData = rowEnhancer ? data.map(rowEnhancer) : data;
+
+  const totalPaginas = Math.ceil(enhancedData.length / itemsPorPagina);
+  const datosPaginados = enhancedData.slice(
     (paginaActual - 1) * itemsPorPagina,
     paginaActual * itemsPorPagina
   );
 
   if (!data.length) return <TablaVacia />;
 
+  // ✅ NUEVO: lógica para mostrar columna Acciones sólo si es necesario
+  const debeMostrarAcciones = !!renderAcciones || !!renderBotonAnimar;
+
+  const columnasFinales = debeMostrarAcciones
+    ? columns
+    : columns.filter((col) => !col.esAcciones);
+
   return (
     <div>
       <table className={className}>
-        <TablaHeader columns={columns}  mostrarAcciones={!!renderAcciones || !!renderBotonAnimar} />
+        <TablaHeader
+          columns={columnasFinales}
+          mostrarAcciones={debeMostrarAcciones}
+        />
         <TablaBody
           data={datosPaginados}
-          columns={columns}
+          columns={columnasFinales}
           onAccionPersonalizada={onAccionPersonalizada}
           renderAcciones={renderAcciones}
-          renderBotonAnimar={renderBotonAnimar} // ✅ NUEVO
+          renderBotonAnimar={renderBotonAnimar}
           rowClassNameCallback={rowClassNameCallback}
-          rowStyles={rowStyles}
+          rowClassMap={rowClassMap}
         />
       </table>
       {totalPaginas > 1 && (

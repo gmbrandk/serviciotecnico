@@ -10,9 +10,8 @@ import styles from '@styles/CrearCodigo.module.css';
 import { animationSpotlightStyles, tableStyles } from '@styles';
 import { columnasCodigos } from '@data/tabla/columnasCodigos';
 import { reducirCampoConLimite } from '@utils/reducirValores';
-import { createRowClassNameCallback } from '@utils/rowClassName/createRowClassNameCallback';
-
-
+import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
+import { crearRowEnhancer } from '@utils/tabla/crearRowEnhancer';
 
 const CrearCodigo = () => {
   const { codigos, setCodigos, hayCodigoActivo, loading, setLoading } = useCodigosAccesoContext();
@@ -63,10 +62,16 @@ const CrearCodigo = () => {
     );
   };
 
-  const rowClassNameCallback = createRowClassNameCallback({
-    spotlightId: spotlightActivoId,
-    //...getRowPreset('codigos')
+  const rowEnhancer = crearRowEnhancer({ claveEstado: 'estado', valorDesactivado: 'inactivo' });
+
+  const rowClassNameCallback = crearRowClassNameCallback({
+    customConditions: [
+      { condition: (item) => item.id === spotlightActivoId, className: 'spotlight' },
+      { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
+      { condition: (item) => item.estado === 'pendiente', className: 'rowPendiente' },
+    ],
   });
+
 
   return (
     <div className={styles.container}>
@@ -116,9 +121,10 @@ const CrearCodigo = () => {
       <Tabla
         columns={columnasCodigos}
         data={codigos}
+        rowEnhancer={rowEnhancer}
         rowClassNameCallback={rowClassNameCallback}
-        rowStyles={animationSpotlightStyles}
-        renderAcciones={renderAcciones}
+        rowClassMap ={animationSpotlightStyles}
+        //renderAcciones={renderAcciones}
         className={tableStyles.rwdTable}
       />
     </div>
