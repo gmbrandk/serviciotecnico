@@ -37,3 +37,7 @@
 .icono {
   display: flex;
 }
+
+.iconoAccion + .iconoAccion {
+  margin-left: 8px;
+}
