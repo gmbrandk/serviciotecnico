@@ -17,7 +17,7 @@ async function desactivarTodosLosCodigos() {
       }
     );
 
-    console.log(`✅ Codigos actualizados: ${resultado.modifiedCount}`);
+    console.log(`✅ Codigos desactivados: ${resultado.modifiedCount}`);
   } catch (error) {
     console.error('❌ Error al actualizar códigos:', error);
   } finally {

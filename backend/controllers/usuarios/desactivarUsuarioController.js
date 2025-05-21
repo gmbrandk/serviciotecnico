@@ -20,7 +20,7 @@ const desactivarUsuario = async (req, res) => {
     // Registrar el movimiento en el historial (opcional)
     const movimiento = new Movimiento({
       tipo: 'eliminar',  // Puedes usar 'eliminar' o un tipo específico de desactivación
-      descripcion: `Se desactivó al usuario ${usuario.nombre}.`,
+      descripcion: `EL usuarios ${req.user._id} desactivó al usuario ${usuario.nombre}.`,
       entidad: 'Usuario',
       entidadId: id,
       realizadoPor: req.user._id,  // Asumiendo que tienes un middleware de autenticación que asigna req.user

@@ -2,7 +2,8 @@ const rolesJerarquia = require('./permisos/rolesJerarquia');
 const acciones = {
   cambiarRol: require('./permisos/accionesPermiso/cambiarRol'),
   editar: require('./permisos/accionesPermiso/editar'),
-  eliminar: require('./permisos/accionesPermiso/eliminarUsuario')
+  eliminar: require('./permisos/accionesPermiso/eliminarUsuario'),
+  cambiarEstado: require('./permisos/accionesPermiso/cambiarEstado'), // ✅ NUEVO
 };
 
 const verificarPermiso = ({ solicitante, objetivo, accion, nuevoRol = null }) => {

@@ -41,7 +41,7 @@ const generarCodigo = async (req, res) => {
 
     await crearMovimiento({
       tipo: 'crear',
-      descripcion: `Se creó el código de acceso ${codigo.codigo}.`,
+      descripcion: `El usuario ${usuario.nombre} (${usuario.role}) generó el código de acceso ${codigo.codigo}, con ${codigo.usosDisponibles} ${codigo.usosDisponibles === 1 ? 'uso disponible' : 'usos disponibles'}.`,
       entidad: 'CodigoAcceso',
       entidadId: codigo._id,
       usuarioId: usuario._id,

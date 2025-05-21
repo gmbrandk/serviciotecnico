@@ -9,6 +9,7 @@ const crearMovimiento = async ({ tipo, descripcion, entidad, entidadId, usuarioI
       entidadId,
       realizadoPor: usuarioId,
     });
+    console.log('Descripción recibida en crearMovimiento:', descripcion); // <--- Aquí
     await movimiento.save();
   } catch (error) {
     console.error('Error al registrar movimiento:', error.message);

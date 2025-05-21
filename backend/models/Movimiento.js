@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+const TIPOS_MOVIMIENTO = require('../utils/constantes/tiposMovimiento');
 
 const movimientoSchema = new mongoose.Schema({
   tipo: {
     type: String,
-    enum: ['crear', 'editar', 'eliminar', 'login', 'logout', 'otro', 'uso_codigo'],
+    enum: Object.values(TIPOS_MOVIMIENTO),
     required: true,
   },
   descripcion: {

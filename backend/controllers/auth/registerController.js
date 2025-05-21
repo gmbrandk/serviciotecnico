@@ -81,6 +81,9 @@ const register = async (req, res) => {
     // ✅ Aquí usamos la función reutilizable
     const creadorDelCodigo = await obtenerCreadorPorEntidad('CodigoAcceso', codigoValido._id, session);
 
+    const movimiento = await Movimiento.findById(idMovimiento);
+    console.log('Descripción en la consulta:', movimiento.descripcion);
+    
     if (!creadorDelCodigo) {
       throw new Error('No se pudo determinar quién creó el código de acceso.');
     }
