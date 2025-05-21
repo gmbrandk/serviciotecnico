@@ -22,7 +22,7 @@ export const usuariosMock = [
     _id: "681abeef01f846019099a2b8",
     nombre: "Tyrone Myers",
     email: "tyrone@backyardigans.com",
-    role: "tecnico",
+    role: "administrador",
     activo: false,
     __v: 0,
   },
@@ -39,7 +39,7 @@ export const usuariosMock = [
     _id: "681ad61efe3ac27adc42a26b",
     nombre: "Juan Pérez",
     email: "juanperez@example.com",
-    role: "tecnico",
+    role: "administrador",
     __v: 0,
   },
   {

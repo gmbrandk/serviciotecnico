@@ -1,12 +1,11 @@
 // pages/TestingPage.jsx
-import React, { useState } from 'react';
-import { usuariosMock } from '@__mock__/usuariosMock';
-import { normalizedId } from '@utils/formatters';
-import { toggleActivoMock } from '@__mock__/usuarioMockManager';
+import React, { useEffect, useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
 import { rwdtableStyles } from '@styles';
 import toast from 'react-hot-toast';
+import { normalizedId } from '@utils/formatters';
+import { getUsuarios } from '@services/getUsuarioService';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -18,17 +17,33 @@ const columns = [
 ];
 
 const TestingPage = () => {
-  const [usuarios, setUsuarios] = useState(() =>
-    usuariosMock.map((usuario) => ({
-      ...usuario,
-      id: normalizedId(usuario),
-    }))
-  );
+  const [usuarios, setUsuarios] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   const usuarioActual = {
     id: 'Techisaurio',
     role: 'superadministrador',
   };
+
+  useEffect(() => {
+    const cargarUsuarios = async () => {
+      try {
+        const usuariosBackend = await getUsuarios();
+        const normalizados = usuariosBackend.map((usuario) => ({
+          ...usuario,
+          id: normalizedId(usuario),
+        }));
+        setUsuarios(normalizados);
+        
+      } catch (error) {
+        toast.error(error.message || 'Error al cargar usuarios');
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarUsuarios();
+  }, []);
 
   const handleEditar = (usuario) => {
     console.log('Editar usuario', usuario);
@@ -43,18 +58,8 @@ const TestingPage = () => {
 
     if (!confirmar) return;
 
-    const resultado = toggleActivoMock({
-      usuarios,
-      setUsuarios,
-      usuarioActual,
-      usuarioObjetivo,
-    });
-
-    if (!resultado.success) {
-      toast.error(resultado.mensaje);
-    } else {
-      toast.success(resultado.mensaje);
-    }
+    // Aquí deberás integrar eliminarUsuarioService cuando esté listo.
+    toast.success('Simulación de activar/desactivar completada (falta backend)');
   };
 
   const renderAcciones = (usuario) => (
@@ -65,15 +70,21 @@ const TestingPage = () => {
     />
   );
 
+  console.log(usuarios);
+  
   return (
     <div style={{ padding: 20 }}>
-      <h1>Test Tabla Usuarios</h1>
-      <Tabla
-        columns={columns}
-        data={usuarios}
-        className={rwdtableStyles.rwdTable}
-        renderAcciones={renderAcciones}
-      />
+      <h1>Panel de Usuarios</h1>
+      {cargando ? (
+        <p>Cargando usuarios...</p>
+      ) : (
+        <Tabla
+          columns={columns}
+          data={usuarios}
+          className={rwdtableStyles.rwdTable}
+          renderAcciones={renderAcciones}
+        />
+      )}
     </div>
   );
 };

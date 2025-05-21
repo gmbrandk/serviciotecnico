@@ -1,6 +1,6 @@
 // @routes/dashboardRoutes.jsx
 import CrearCodigo from '@components/CrearCodigo';
-import CrearUsuario from '@components/CrearUsuario';
+import PanelUsuarios from '@components/PanelUsuarios';
 import DashboardHome from '@components/pages/Dashboard/DashboardHome';
 import CrearClientes from '@components/CrearClientes';
 import Historial from '@components/Historial'; // Asegúrate de tener este componente
@@ -26,7 +26,7 @@ const dashboardRoutes = [
   },
   {
     path: 'usuarios',
-    element: <CrearUsuario />,
+    element: <PanelUsuarios />,
   },
   {
     path: 'historial',
