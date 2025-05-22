@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
 import { rwdtableStyles } from '@styles';
+import styles from '../styles/CrearCodigo.module.css';
 import toast from 'react-hot-toast';
 import { normalizedId } from '@utils/formatters';
 import { getUsuarios } from '@services/getUsuarioService';
@@ -73,8 +74,8 @@ const TestingPage = () => {
   console.log(usuarios);
   
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Panel de Usuarios</h1>
+    <div style={{ padding: 20}} className={styles.container}>
+      <h1 className={styles.title}>Panel de Usuarios</h1>
       {cargando ? (
         <p>Cargando usuarios...</p>
       ) : (
@@ -83,6 +84,7 @@ const TestingPage = () => {
           data={usuarios}
           className={rwdtableStyles.rwdTable}
           renderAcciones={renderAcciones}
+          style={{maxWidth: '500px'}}
         />
       )}
     </div>
