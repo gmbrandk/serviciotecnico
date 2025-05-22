@@ -88,7 +88,7 @@ const register = async (req, res) => {
 
     await crearMovimiento({
       tipo: 'uso_codigo',
-      descripcion: `El usuario ${nombre} usó el código de acceso ${codigoValido.codigo}.`,
+      descripcion: `El usuario ${nombre} usó el código de acceso ${codigoValido.codigo} creado por ${creadorDelCodigo.nombre}.`,
       entidad: 'CodigoAcceso',
       entidadId: codigoValido._id,
       usuarioId: creadorDelCodigo._id,
