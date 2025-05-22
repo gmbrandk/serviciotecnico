@@ -1,6 +1,6 @@
 // BotonAccion.jsx
 import React from 'react';
-import styles from './BotonAccion.module.css';
+import styles from '@styles/general/BotonAccion.module.css';
 import PropTypes from 'prop-types';
 
 const BotonAccion = ({

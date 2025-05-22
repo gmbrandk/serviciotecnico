@@ -41,6 +41,12 @@
   }
 }
 
+@media (max-width: 480px) {
+  .ocultarEnMovil {
+    display: none !important;
+  }
+}
+
 @keyframes shakeEffect {
   0% { transform: translate(0, 0); }
   10% { transform: translate(-2px, 2px); }

@@ -1,8 +1,17 @@
-// @utils/tabla/crearRowClassNameCallback.js
-export const crearRowClassNameCallback = ({ customConditions = [] } = {}) => {
-  return (item) =>
-    customConditions.reduce((acc, { condition, className }) => {
-      if (condition(item)) acc.push(className);
-      return acc;
-    }, []);
+export const crearRowClassNameCallback = ({ customConditions = [] }) => {
+  return (item) => {
+    const clases = [];
+
+    for (const { condition, className } of customConditions) {
+      try {
+        if (condition(item)) {
+          clases.push(className);
+        }
+      } catch (err) {
+        console.warn('Error evaluando condición de clase:', err);
+      }
+    }
+
+    return clases;
+  };
 };

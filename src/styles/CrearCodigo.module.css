@@ -20,6 +20,7 @@
 }
 
 .title {
+  padding: 20px;
   font-size: 1.5rem;
   margin-bottom: 1rem;
   text-align: center;
@@ -145,13 +146,32 @@
 
 /* ✅ SOLO APLICA EN RESPONSIVE */
 @media (max-width: 480px) {
+  .scrollHorizontalWrapper {
+    width: 100%;
+    overflow-x: auto !important;
+  }
+
+  /* Opcional: suaviza el scroll */
+  .scrollHorizontalWrapper::-webkit-scrollbar {
+    height: 8px;
+  }
+  .scrollHorizontalWrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  .scrollWrapper {
+    width: 100%;
+    height: 100vh; /* puedes ajustar según el layout */
+    overflow: auto;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
   .container{
     width: 100%;
     max-width: 420px;
-    padding: 0%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin: 0;
   }
 
   .inputGroup{

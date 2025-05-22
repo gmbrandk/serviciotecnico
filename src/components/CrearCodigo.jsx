@@ -69,6 +69,7 @@ const CrearCodigo = () => {
       { condition: (item) => item.id === spotlightActivoId, className: 'spotlight' },
       { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
       { condition: (item) => item.estado === 'pendiente', className: 'rowPendiente' },
+      { condition: (item) => item.estado !== 'activo', className: 'ocultarEnMovil' }, 
     ],
   });
 
@@ -117,17 +118,16 @@ const CrearCodigo = () => {
           onClick={() => setSpotlightActivoId(null)}
         />
       )}
-
-      <Tabla
-        columns={columnasCodigos}
-        data={codigos}
-        rowEnhancer={rowEnhancer}
-        rowClassNameCallback={rowClassNameCallback}
-        rowClassMap ={animationSpotlightStyles}
-        //renderAcciones={renderAcciones}
-        className={rwdtableStyles.rwdTable}
-      />
-    </div>
+          <Tabla
+            columns={columnasCodigos}
+            data={codigos}
+            rowEnhancer={rowEnhancer}
+            rowClassNameCallback={rowClassNameCallback}
+            rowClassMap ={animationSpotlightStyles}
+            //renderAcciones={renderAcciones}
+            className={rwdtableStyles.rwdTable}
+          />
+        </div>  
   );
 };
 

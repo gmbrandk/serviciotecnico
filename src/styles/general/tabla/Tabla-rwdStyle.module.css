@@ -11,6 +11,10 @@
   backdrop-filter: blur(2px);
 }
 
+.scrollHorizontalWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
 
 /* === Tabla === */
 .rwdTable {
@@ -71,6 +75,10 @@
   margin: 0.5em 1em;
 }
 
+.ocultarEnMovil {
+  display: none !important;
+}
+
 /* Desktop */
 @media (min-width: 480px) {
   .rwdTable {
@@ -109,18 +117,18 @@
   }
   
   .rwdTable th,
-.rwdTable td {
-  display: table-cell;
-  padding: 1em !important;
-  text-align: center;
-  vertical-align: middle;
-  width: auto; /* ✨ Forzamos que sea ancho automático */
-  white-space: nowrap; /* ✨ Evita que el contenido cause salto de línea innecesario */
-}
+  .rwdTable td {
+    display: table-cell;
+    padding: 1em !important;
+    text-align: center;
+    vertical-align: middle;
+    width: auto; /* ✨ Forzamos que sea ancho automático */
+    white-space: nowrap; /* ✨ Evita que el contenido cause salto de línea innecesario */
+  }
 
-.rwdTable th:first-child,
-.rwdTable td:first-child {
-  width: 1%; /* ✨ Ocupa el mínimo necesario */
-  white-space: nowrap; /* ✨ Para que contenido largo no expanda la columna */
-}
+  .rwdTable th:first-child,
+  .rwdTable td:first-child {
+    width: 1%; /* ✨ Ocupa el mínimo necesario */
+    white-space: nowrap; /* ✨ Para que contenido largo no expanda la columna */
+  }
 }
