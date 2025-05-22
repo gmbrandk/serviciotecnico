@@ -3,6 +3,7 @@ const Usuario = require('@models/Usuario');
 const CodigoAcceso = require('@models/CodigoAcceso');
 const Movimiento = require('@models/Movimiento');
 const { obtenerCreadorPorEntidad } = require('@utils/movimientos/obtenerCreadorPorEntidad');
+const { crearMovimiento } = require('@controllers/movimientoController');
 
 const isReplicaSet = async () => {
   const admin = mongoose.connection.db.admin();
@@ -80,23 +81,20 @@ const register = async (req, res) => {
 
     // ✅ Aquí usamos la función reutilizable
     const creadorDelCodigo = await obtenerCreadorPorEntidad('CodigoAcceso', codigoValido._id, session);
-
-    const movimiento = await Movimiento.findById(idMovimiento);
-    console.log('Descripción en la consulta:', movimiento.descripcion);
     
     if (!creadorDelCodigo) {
       throw new Error('No se pudo determinar quién creó el código de acceso.');
     }
 
-    await Movimiento.create([{
+    await crearMovimiento({
       tipo: 'uso_codigo',
-      descripcion: `El usuario ${nombre} usó el código de acceso.`,
+      descripcion: `El usuario ${nombre} usó el código de acceso ${codigoValido.codigo}.`,
       entidad: 'CodigoAcceso',
       entidadId: codigoValido._id,
-      realizadoPor: creadorDelCodigo._id,
+      usuarioId: creadorDelCodigo._id,
       usadoPor: nuevoUsuario._id,
       fecha: new Date()
-    }], { session: session || undefined });
+    }, { session: session || undefined });
 
     if (session) await session.commitTransaction();
 

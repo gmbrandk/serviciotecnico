@@ -2,6 +2,10 @@ const Usuario = require('@models/Usuario');
 const { crearMovimiento } = require('@controllers/movimientoController');
 
 const editarUsuario = async (req, res) => {
+  if (!req.usuario || !req.usuario._id) {
+    return res.status(401).json({ success: false, mensaje: 'Usuario no autenticado' });
+  }
+
   try {
     const { nombre, email, role } = req.body;
 
@@ -30,11 +34,12 @@ const editarUsuario = async (req, res) => {
     // 👇 REGISTRO DE MOVIMIENTO
     await crearMovimiento({
       tipo: 'editar',
-      descripcion: `El usuario ${usuarioActualizado.nombre} fue editado.`,
+      descripcion: `El usuario ${usuarioActualizado.nombre} fue editado por ${req.usuario.nombre} (${req.usuario.role}).`,
       entidad: 'Usuario',
       entidadId: usuarioActualizado._id,
-      realizadoPor: req.usuario._id
+      usuarioId: req.usuario._id
     });
+    
 
     res.status(200).json({
       success: true,
