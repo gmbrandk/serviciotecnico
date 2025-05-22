@@ -8,7 +8,7 @@ const TIPOS_MOVIMIENTO = {
   USO_CODIGO: 'uso_codigo',
   REACTIVAR: 'reactivar',
   DESACTIVAR: 'desactivar',
-  CAMBIO_ROL: 'cambiarRol',
+  CAMBIO_ROL: 'cambio_rol',
 };
 
 module.exports = TIPOS_MOVIMIENTO;
