@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
-import { rwdtableStyles } from '@styles';
+import { rwdtableStyles, paginadorStyles } from '@styles';
 import styles from '../styles/CrearCodigo.module.css';
 import toast from 'react-hot-toast';
 import { normalizedId } from '@utils/formatters';
@@ -84,7 +84,10 @@ const TestingPage = () => {
           data={usuarios}
           className={rwdtableStyles.rwdTable}
           renderAcciones={renderAcciones}
-          style={{maxWidth: '500px'}}
+          paginadorClases={{
+            pagination: paginadorStyles.pagination,
+            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+          }}
         />
       )}
     </div>

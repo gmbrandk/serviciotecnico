@@ -1,40 +1,35 @@
-/* === PAGINACIÓN === */
+/* === PAGINACIÓN OLDSCHOOL === */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Arial', sans-serif;
+  gap: 0.5rem;
 }
 
 .pagination button {
   padding: 8px 15px;
   margin: 0 5px;
-  background-color: #34495e;
-  color: #fff;
-  border: 1px solid #46637f;
-  border-radius: 5px;
+  background-color: #eeeeee;
+  color: #000;
+  border: 1px solid #aaa;
+  border-radius: 3px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
   font-size: 14px;
 }
 
 .pagination button:hover {
-  background-color: #2c3e50;
+  background-color: #ddd;
 }
 
 .pagination button:disabled {
-  background-color: #7f8c8d;
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
 .pagination span {
-  color: #fff;
   margin: 0 15px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-}
-
-.pagination button:focus {
-  outline: none;
 }

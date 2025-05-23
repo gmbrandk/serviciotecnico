@@ -1,22 +1,23 @@
 import React, { useState } from 'react'; 
-import { TablaHeader, TablaBody, TablaPaginacion, TablaVacia } from '@components/shared/Tabla';
+import { TablaHeader, TablaBody, TablaVacia } from '@components/shared/Tabla';
+import Paginador from '@components/shared/Paginador';
 import { defaultTableStyles } from '@styles';
 const Tabla = ({
   columns,
   data,
   onAccionPersonalizada,
   renderAcciones,
-  renderBotonAnimar, // ✅ NUEVO
+  renderBotonAnimar,
   rowEnhancer,
   rowClassNameCallback,
   rowClassMap,
   className,
+  paginadorClases = {}, // ✅ nuevo
 }) => {
   const itemsPorPagina = 5;
   const [paginaActual, setPaginaActual] = useState(1);
 
   const enhancedData = rowEnhancer ? data.map(rowEnhancer) : data;
-
   const totalPaginas = Math.ceil(enhancedData.length / itemsPorPagina);
   const datosPaginados = enhancedData.slice(
     (paginaActual - 1) * itemsPorPagina,
@@ -25,7 +26,6 @@ const Tabla = ({
 
   if (!data.length) return <TablaVacia />;
 
-  // ✅ NUEVO: lógica para mostrar columna Acciones sólo si es necesario
   const debeMostrarAcciones = !!renderAcciones || !!renderBotonAnimar;
 
   const columnasFinales = debeMostrarAcciones
@@ -35,10 +35,7 @@ const Tabla = ({
   return (
     <div>
       <table className={className || defaultTableStyles.tablaClasica}>
-        <TablaHeader
-          columns={columnasFinales}
-          mostrarAcciones={debeMostrarAcciones}
-        />
+        <TablaHeader columns={columnasFinales} mostrarAcciones={debeMostrarAcciones} />
         <TablaBody
           data={datosPaginados}
           columns={columnasFinales}
@@ -49,11 +46,14 @@ const Tabla = ({
           rowClassMap={rowClassMap}
         />
       </table>
+
       {totalPaginas > 1 && (
-        <TablaPaginacion
+        <Paginador
           paginaActual={paginaActual}
           totalPaginas={totalPaginas}
           setPaginaActual={setPaginaActual}
+          ocultarEnMovil={true}
+          clases={paginadorClases} // ✅ pasamos clases
         />
       )}
     </div>

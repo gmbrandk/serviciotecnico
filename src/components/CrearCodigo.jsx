@@ -7,7 +7,7 @@ import useClipboard from '@hooks/useClipboard';
 import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
-import { animationSpotlightStyles, rwdtableStyles } from '@styles';
+import { animationSpotlightStyles, rwdtableStyles, paginadorStyles } from '@styles';
 import { columnasCodigos } from '@data/tabla/columnasCodigos';
 import { reducirCampoConLimite } from '@utils/reducirValores';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
@@ -126,6 +126,10 @@ const CrearCodigo = () => {
             rowClassMap ={animationSpotlightStyles}
             //renderAcciones={renderAcciones}
             className={rwdtableStyles.rwdTable}
+            paginadorClases={{
+              pagination: paginadorStyles.pagination,
+              ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+            }}
           />
         </div>  
   );

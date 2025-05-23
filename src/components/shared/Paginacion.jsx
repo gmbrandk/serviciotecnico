@@ -1,6 +1,6 @@
 // components/shared/Paginador.jsx
 import React from 'react';
-import styles from '@styles/general/Pagination.module.css'; // Asumiendo un archivo de estilos general
+//import styles from '@styles/general/Pagination.module.css'; // Asumiendo un archivo de estilos general
 
 const Paginador = ({ paginaActual, totalPaginas, setPaginaActual }) => {
   const avanzar = () => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas));

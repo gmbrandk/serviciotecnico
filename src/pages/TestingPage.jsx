@@ -5,8 +5,9 @@ import { normalizedId } from '@utils/formatters';
 import { toggleActivoMock } from '@__mock__/usuarioMockManager';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
-import { rwdtableStyles } from '@styles';
+import { rwdtableStyles,animationSpotlightStyles,paginadorStyles } from '@styles';
 import toast from 'react-hot-toast';
+import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -65,14 +66,32 @@ const TestingPage = () => {
     />
   );
 
+  const rowClassNameCallback = crearRowClassNameCallback({
+      customConditions: [
+        { condition: (item) => item.id === spotlightActivoId, className: 'spotlight' },
+        { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
+        { condition: (item) => item.estado === 'pendiente', className: 'rowPendiente' },
+        { condition: (item) => item.estado !== 'activo', className: 'ocultarEnMovil' }, 
+      ],
+    });
+
+    console.log(paginadorStyles); // en TestingPage.jsx
+
+
   return (
     <div style={{ padding: 20 }}>
       <h1>Test Tabla Usuarios</h1>
       <Tabla
         columns={columns}
         data={usuarios}
+        //rowClassNameCallback={rowClassNameCallback}
+        //rowClassMap ={animationSpotlightStyles}
         className={rwdtableStyles.rwdTable}
         renderAcciones={renderAcciones}
+        /*paginadorClases={{
+          pagination: paginadorStyles.pagination,
+          ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+        }}*/
       />
     </div>
   );
