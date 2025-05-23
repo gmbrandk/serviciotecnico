@@ -7,20 +7,29 @@ import useClipboard from '@hooks/useClipboard';
 import { handleGenerarCodigo } from '@logic/handleGenerarCodigo';
 import { activarSpotlight } from '@logic/activarSpotlight';
 import styles from '@styles/CrearCodigo.module.css';
-import { animationSpotlightStyles, rwdtableStyles, paginadorStyles } from '@styles';
+import {
+  animationSpotlightStyles,
+  rwdtableStyles,
+  paginadorStyles,
+} from '@styles';
 import { columnasCodigos } from '@data/tabla/columnasCodigos';
 import { reducirCampoConLimite } from '@utils/reducirValores';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import { crearRowEnhancer } from '@utils/tabla/crearRowEnhancer';
+import useEsMovil from '@hooks/useEsMovil';
 
 const CrearCodigo = () => {
-  const { codigos, setCodigos, hayCodigoActivo, loading, setLoading } = useCodigosAccesoContext();
+  const { codigos, setCodigos, hayCodigoActivo, loading, setLoading } =
+    useCodigosAccesoContext();
   const [usosSeleccionados, setUsosSeleccionados] = useState(1);
   const [spotlightActivoId, setSpotlightActivoId] = useState(null);
   const [botonGenerado, setBotonGenerado] = useState(false);
 
-  const codigoActivo = codigos.find(codigo => codigo.estado === 'activo');
+  const codigoActivo = codigos.find((codigo) => codigo.estado === 'activo');
   const { copiado, handleCopiar } = useClipboard(codigoActivo?.codigo || '');
+
+  const esMovil = useEsMovil();
+  const itemsPorPagina = esMovil ? 1 : 9;
 
   const generarCodigo = () => {
     if (loading) return;
@@ -33,13 +42,13 @@ const CrearCodigo = () => {
       stopLoading: () => setLoading(false),
       usosSeleccionados,
       activarSpotlight,
-      setSpotlightActivoId
+      setSpotlightActivoId,
     });
   };
 
   const renderAcciones = (item) => {
     const handleReducir = (id) => {
-      setCodigos(prev =>
+      setCodigos((prev) =>
         reducirCampoConLimite({
           lista: prev,
           identificadorBuscado: id,
@@ -55,24 +64,31 @@ const CrearCodigo = () => {
       );
     };
 
-    return (
-      <button onClick={() => handleReducir(item._id)}>
-        ➖ Usos
-      </button>
-    );
+    return <button onClick={() => handleReducir(item._id)}>➖ Usos</button>;
   };
 
-  const rowEnhancer = crearRowEnhancer({ claveEstado: 'estado', valorDesactivado: 'inactivo' });
+  const rowEnhancer = crearRowEnhancer({
+    claveEstado: 'estado',
+    valorDesactivado: 'inactivo',
+  });
 
   const rowClassNameCallback = crearRowClassNameCallback({
     customConditions: [
-      { condition: (item) => item.id === spotlightActivoId, className: 'spotlight' },
+      {
+        condition: (item) => item.id === spotlightActivoId,
+        className: 'spotlight',
+      },
+      {
+        condition: (item) => item.estado === 'pendiente',
+        className: 'rowPendiente',
+      },
       { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
-      { condition: (item) => item.estado === 'pendiente', className: 'rowPendiente' },
-      { condition: (item) => item.estado !== 'activo', className: 'ocultarEnMovil' }, 
+      {
+        condition: (item) => item.estado !== 'activo',
+        className: 'ocultarEnMovil',
+      },
     ],
   });
-
 
   return (
     <div className={styles.container}>
@@ -85,7 +101,7 @@ const CrearCodigo = () => {
             className={styles.selectUsos}
             disabled={hayCodigoActivo}
           >
-            {[1, 2, 3, 4, 5].map(num => (
+            {[1, 2, 3, 4, 5].map((num) => (
               <option key={num} value={num}>
                 {num} uso{num > 1 ? 's' : ''}
               </option>
@@ -99,7 +115,13 @@ const CrearCodigo = () => {
               ${hayCodigoActivo ? styles.disabled : ''}`}
             onClick={generarCodigo}
           >
-            {loading ? <Spinner color="#fff" size={20} /> : hayCodigoActivo ? '✔ Generado' : 'Generar'}
+            {loading ? (
+              <Spinner color="#fff" size={20} />
+            ) : hayCodigoActivo ? (
+              '✔ Generado'
+            ) : (
+              'Generar'
+            )}
           </button>
           <CopyInput
             value={codigoActivo?.codigo || ''}
@@ -118,20 +140,22 @@ const CrearCodigo = () => {
           onClick={() => setSpotlightActivoId(null)}
         />
       )}
-          <Tabla
-            columns={columnasCodigos}
-            data={codigos}
-            rowEnhancer={rowEnhancer}
-            rowClassNameCallback={rowClassNameCallback}
-            rowClassMap ={animationSpotlightStyles}
-            //renderAcciones={renderAcciones}
-            className={rwdtableStyles.rwdTable}
-            paginadorClases={{
-              pagination: paginadorStyles.pagination,
-              ocultarEnMovil: paginadorStyles.ocultarEnMovil,
-            }}
-          />
-        </div>  
+      <Tabla
+        columns={columnasCodigos}
+        data={codigos}
+        rowEnhancer={rowEnhancer}
+        rowClassNameCallback={rowClassNameCallback}
+        estilos={{
+          tabla: rwdtableStyles.rwdTable,
+          filaAnimacion: animationSpotlightStyles,
+          paginador: {
+            pagination: paginadorStyles.pagination,
+            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+          },
+        }}
+        itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
+      />
+    </div>
   );
 };
 

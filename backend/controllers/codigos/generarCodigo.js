@@ -14,11 +14,15 @@ const generarCodigo = async (req, res) => {
   const usos = req.body.usos;
   if (
     usos !== undefined &&
-    (typeof usos !== 'number' || isNaN(usos) || usos < 1 || usos > 5 || !Number.isInteger(usos))
+    (typeof usos !== 'number' ||
+      isNaN(usos) ||
+      usos < 1 ||
+      usos > 5 ||
+      !Number.isInteger(usos))
   ) {
     return res.status(400).json({
       success: false,
-      mensaje: 'El número de usos debe ser un entero entre 1 y 5'
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
     });
   }
 
@@ -34,14 +38,20 @@ const generarCodigo = async (req, res) => {
       usosDisponibles: usos,
       estado: 'activo',
       fechaCreacion: new Date(),
-      creadoPor: usuario._id  // ✅ Asignar el creador directamente
+      creadoPor: usuario._id, // ✅ Asignar el creador directamente
     });
 
     await codigo.save();
 
     await crearMovimiento({
       tipo: 'crear',
-      descripcion: `El usuario ${usuario.nombre} (${usuario.role}) generó el código de acceso ${codigo.codigo}, con ${codigo.usosDisponibles} ${codigo.usosDisponibles === 1 ? 'uso disponible' : 'usos disponibles'}.`,
+      descripcion: `El usuario ${usuario.nombre} (${
+        usuario.role
+      }) generó el código de acceso ${codigo.codigo}, con ${
+        codigo.usosDisponibles
+      } ${
+        codigo.usosDisponibles === 1 ? 'uso disponible' : 'usos disponibles'
+      }.`,
       entidad: 'CodigoAcceso',
       entidadId: codigo._id,
       usuarioId: usuario._id,

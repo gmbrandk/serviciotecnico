@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const Usuario = require('@models/Usuario');
 const CodigoAcceso = require('@models/CodigoAcceso');
 const Movimiento = require('@models/Movimiento');
-const { obtenerCreadorPorEntidad } = require('@utils/movimientos/obtenerCreadorPorEntidad');
+const {
+  obtenerCreadorPorEntidad,
+} = require('@utils/movimientos/obtenerCreadorPorEntidad');
 const { crearMovimiento } = require('@controllers/movimientoController');
 
 const isReplicaSet = async () => {
@@ -12,7 +14,8 @@ const isReplicaSet = async () => {
 };
 
 const register = async (req, res) => {
-  const { nombre, email, password, role, accessCode, codigoAcceso, activo } = req.body;
+  const { nombre, email, password, role, accessCode, codigoAcceso, activo } =
+    req.body;
 
   let session = null;
   const useTransaction = await isReplicaSet();
@@ -22,42 +25,51 @@ const register = async (req, res) => {
   }
 
   try {
-    if (role === 'superadministrador' && accessCode !== process.env.SUPER_ADMIN_ACCESS_CODE) {
+    if (
+      role === 'superadministrador' &&
+      accessCode !== process.env.SUPER_ADMIN_ACCESS_CODE
+    ) {
       if (session) await session.abortTransaction();
       return res.status(403).json({
         success: false,
         mensaje: 'Código de acceso inválido para superAdministrador.',
-        usuario: null
+        usuario: null,
       });
     }
 
-    const codigoValido = await CodigoAcceso.findOne({ codigo: codigoAcceso }).session(session || undefined);
+    const codigoValido = await CodigoAcceso.findOne({
+      codigo: codigoAcceso,
+    }).session(session || undefined);
     if (!codigoValido || codigoValido.usosDisponibles < 1) {
       if (session) await session.abortTransaction();
       return res.status(403).json({
         success: false,
         mensaje: 'Código de acceso inválido o sin usos disponibles.',
-        usuario: null
+        usuario: null,
       });
     }
 
-    const emailExistente = await Usuario.findOne({ email }).session(session || undefined);
+    const emailExistente = await Usuario.findOne({ email }).session(
+      session || undefined
+    );
     if (emailExistente) {
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         mensaje: 'El correo ya está registrado.',
-        usuario: null
+        usuario: null,
       });
     }
 
-    const usuarioExistente = await Usuario.findOne({ nombre }).session(session || undefined);
+    const usuarioExistente = await Usuario.findOne({ nombre }).session(
+      session || undefined
+    );
     if (usuarioExistente) {
       if (session) await session.abortTransaction();
       return res.status(400).json({
         success: false,
         mensaje: 'El nombre ya está registrado.',
-        usuario: null
+        usuario: null,
       });
     }
 
@@ -80,21 +92,28 @@ const register = async (req, res) => {
     await codigoValido.save({ session: session || undefined });
 
     // ✅ Aquí usamos la función reutilizable
-    const creadorDelCodigo = await obtenerCreadorPorEntidad('CodigoAcceso', codigoValido._id, session);
-    
+    const creadorDelCodigo = await obtenerCreadorPorEntidad(
+      'CodigoAcceso',
+      codigoValido._id,
+      session
+    );
+
     if (!creadorDelCodigo) {
       throw new Error('No se pudo determinar quién creó el código de acceso.');
     }
 
-    await crearMovimiento({
-      tipo: 'uso_codigo',
-      descripcion: `El usuario ${nombre} usó el código de acceso ${codigoValido.codigo} creado por ${creadorDelCodigo.nombre}.`,
-      entidad: 'CodigoAcceso',
-      entidadId: codigoValido._id,
-      usuarioId: creadorDelCodigo._id,
-      usadoPor: nuevoUsuario._id,
-      fecha: new Date()
-    }, { session: session || undefined });
+    await crearMovimiento(
+      {
+        tipo: 'uso_codigo',
+        descripcion: `El usuario ${nombre} usó el código de acceso ${codigoValido.codigo} creado por ${creadorDelCodigo.nombre}.`,
+        entidad: 'CodigoAcceso',
+        entidadId: codigoValido._id,
+        usuarioId: creadorDelCodigo._id,
+        usadoPor: nuevoUsuario._id,
+        fecha: new Date(),
+      },
+      { session: session || undefined }
+    );
 
     if (session) await session.commitTransaction();
 
@@ -107,9 +126,8 @@ const register = async (req, res) => {
         email: nuevoUsuario.email,
         role: nuevoUsuario.role,
         activo: nuevoUsuario.activo,
-      }
+      },
     });
-
   } catch (error) {
     if (session) await session.abortTransaction();
     console.error('Error en registro:', error);
@@ -118,7 +136,7 @@ const register = async (req, res) => {
       success: false,
       mensaje: 'Error al registrar usuario',
       detalles: error.message,
-      usuario: null
+      usuario: null,
     });
   } finally {
     if (session) session.endSession();

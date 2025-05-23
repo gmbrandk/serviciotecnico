@@ -5,20 +5,31 @@ import { normalizedId } from '@utils/formatters';
 import { toggleActivoMock } from '@__mock__/usuarioMockManager';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
-import { rwdtableStyles,animationSpotlightStyles,paginadorStyles } from '@styles';
+import {
+  rwdtableStyles,
+  animationSpotlightStyles,
+  paginadorStyles,
+} from '@styles';
 import toast from 'react-hot-toast';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
+import useEsMovil from '@hooks/useEsMovil';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
   { header: 'Email', accessor: 'email' },
   { header: 'Rol', accessor: 'role' },
-  { header: 'Activo', accessor: 'activo', render: (valor) => (valor ? '✅' : '❌') },
+  {
+    header: 'Activo',
+    accessor: 'activo',
+    render: (valor) => (valor ? '✅' : '❌'),
+  },
   { header: 'Código de Acceso', accessor: 'accessCode' },
   { header: 'Acciones', esAcciones: true },
 ];
 
 const TestingPage = () => {
+  const esMovil = useEsMovil();
+  const itemsPorPagina = esMovil ? 1 : 5;
   const [usuarios, setUsuarios] = useState(() =>
     usuariosMock.map((usuario) => ({
       ...usuario,
@@ -67,16 +78,24 @@ const TestingPage = () => {
   );
 
   const rowClassNameCallback = crearRowClassNameCallback({
-      customConditions: [
-        { condition: (item) => item.id === spotlightActivoId, className: 'spotlight' },
-        { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
-        { condition: (item) => item.estado === 'pendiente', className: 'rowPendiente' },
-        { condition: (item) => item.estado !== 'activo', className: 'ocultarEnMovil' }, 
-      ],
-    });
+    customConditions: [
+      {
+        condition: (item) => item.id === spotlightActivoId,
+        className: 'spotlight',
+      },
+      { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
+      {
+        condition: (item) => item.estado === 'pendiente',
+        className: 'rowPendiente',
+      },
+      {
+        condition: (item) => item.estado !== 'activo',
+        className: 'ocultarEnMovil',
+      },
+    ],
+  });
 
-    console.log(paginadorStyles); // en TestingPage.jsx
-
+  console.log(paginadorStyles); // en TestingPage.jsx
 
   return (
     <div style={{ padding: 20 }}>
@@ -84,14 +103,15 @@ const TestingPage = () => {
       <Tabla
         columns={columns}
         data={usuarios}
-        //rowClassNameCallback={rowClassNameCallback}
-        //rowClassMap ={animationSpotlightStyles}
-        className={rwdtableStyles.rwdTable}
+        estilos={{
+          tabla: rwdtableStyles.rwdTable,
+          paginador: {
+            pagination: paginadorStyles.pagination,
+            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+          },
+        }}
+        itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
         renderAcciones={renderAcciones}
-        /*paginadorClases={{
-          pagination: paginadorStyles.pagination,
-          ocultarEnMovil: paginadorStyles.ocultarEnMovil,
-        }}*/
       />
     </div>
   );

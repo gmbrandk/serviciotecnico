@@ -1,15 +1,15 @@
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import {
   canAddToast,
   removeOldestToastIfNeeded,
-  registerToast
-} from './toastLimiter';
+  registerToast,
+} from "./toastLimiter";
 
-export const showToast = (mensaje, tipo = 'error') => {
+export const showToast = (mensaje, tipo = "error") => {
   removeOldestToastIfNeeded();
 
   const id = toast[tipo](mensaje, {
-    id: `toast-${Date.now()}-${Math.random()}`
+    id: `toast-${Date.now()}-${Math.random()}`,
   });
 
   registerToast(id);

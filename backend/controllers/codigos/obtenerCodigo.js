@@ -24,9 +24,9 @@ const obtenerCodigos = async (req, res) => {
         ? {
             id: codigo.creadoPor._id,
             nombre: codigo.creadoPor.nombre,
-            email: codigo.creadoPor.email
+            email: codigo.creadoPor.email,
           }
-        : null
+        : null,
     }));
 
     res.json({ success: true, codigos: codigosFormateados });
@@ -34,7 +34,7 @@ const obtenerCodigos = async (req, res) => {
     logError(error);
     res.status(500).json({
       success: false,
-      mensaje: 'Error al obtener los códigos de acceso'
+      mensaje: 'Error al obtener los códigos de acceso',
     });
   }
 };

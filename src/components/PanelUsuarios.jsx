@@ -7,12 +7,17 @@ import styles from '../styles/CrearCodigo.module.css';
 import toast from 'react-hot-toast';
 import { normalizedId } from '@utils/formatters';
 import { getUsuarios } from '@services/getUsuarioService';
+import useEsMovil from '@hooks/useEsMovil';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
   { header: 'Email', accessor: 'email' },
   { header: 'Rol', accessor: 'role' },
-  { header: 'Activo', accessor: 'activo', render: (valor) => (valor ? '✅' : '❌') },
+  {
+    header: 'Activo',
+    accessor: 'activo',
+    render: (valor) => (valor ? '✅' : '❌'),
+  },
   { header: 'Código de Acceso', accessor: 'accessCode' },
   { header: 'Acciones', esAcciones: true },
 ];
@@ -20,11 +25,8 @@ const columns = [
 const TestingPage = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [cargando, setCargando] = useState(true);
-
-  const usuarioActual = {
-    id: 'Techisaurio',
-    role: 'superadministrador',
-  };
+  const esMovil = useEsMovil();
+  const itemsPorPagina = esMovil ? 1 : 8;
 
   useEffect(() => {
     const cargarUsuarios = async () => {
@@ -35,7 +37,6 @@ const TestingPage = () => {
           id: normalizedId(usuario),
         }));
         setUsuarios(normalizados);
-        
       } catch (error) {
         toast.error(error.message || 'Error al cargar usuarios');
       } finally {
@@ -60,7 +61,9 @@ const TestingPage = () => {
     if (!confirmar) return;
 
     // Aquí deberás integrar eliminarUsuarioService cuando esté listo.
-    toast.success('Simulación de activar/desactivar completada (falta backend)');
+    toast.success(
+      'Simulación de activar/desactivar completada (falta backend)'
+    );
   };
 
   const renderAcciones = (usuario) => (
@@ -71,10 +74,8 @@ const TestingPage = () => {
     />
   );
 
-  console.log(usuarios);
-  
   return (
-    <div style={{ padding: 20}} className={styles.container}>
+    <div style={{ padding: 20 }} className={styles.container}>
       <h1 className={styles.title}>Panel de Usuarios</h1>
       {cargando ? (
         <p>Cargando usuarios...</p>
@@ -82,12 +83,15 @@ const TestingPage = () => {
         <Tabla
           columns={columns}
           data={usuarios}
-          className={rwdtableStyles.rwdTable}
           renderAcciones={renderAcciones}
-          paginadorClases={{
-            pagination: paginadorStyles.pagination,
-            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+          estilos={{
+            tabla: rwdtableStyles.rwdTable,
+            paginador: {
+              pagination: paginadorStyles.pagination,
+              ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+            },
           }}
+          itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
         />
       )}
     </div>

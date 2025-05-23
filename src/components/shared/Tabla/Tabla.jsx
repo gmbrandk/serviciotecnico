@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import { TablaHeader, TablaBody, TablaVacia } from '@components/shared/Tabla';
 import Paginador from '@components/shared/Paginador';
 import { defaultTableStyles } from '@styles';
@@ -10,11 +10,11 @@ const Tabla = ({
   renderBotonAnimar,
   rowEnhancer,
   rowClassNameCallback,
-  rowClassMap,
-  className,
-  paginadorClases = {}, // ✅ nuevo
+  estilos = {},
+  itemsPorPagina = 5, // ✅ Valor por defecto
 }) => {
-  const itemsPorPagina = 5;
+  const { tabla, filaAnimacion, paginador: paginadorClases } = estilos;
+
   const [paginaActual, setPaginaActual] = useState(1);
 
   const enhancedData = rowEnhancer ? data.map(rowEnhancer) : data;
@@ -34,8 +34,11 @@ const Tabla = ({
 
   return (
     <div>
-      <table className={className || defaultTableStyles.tablaClasica}>
-        <TablaHeader columns={columnasFinales} mostrarAcciones={debeMostrarAcciones} />
+      <table className={tabla || defaultTableStyles.tablaClasica}>
+        <TablaHeader
+          columns={columnasFinales}
+          mostrarAcciones={debeMostrarAcciones}
+        />
         <TablaBody
           data={datosPaginados}
           columns={columnasFinales}
@@ -43,7 +46,7 @@ const Tabla = ({
           renderAcciones={renderAcciones}
           renderBotonAnimar={renderBotonAnimar}
           rowClassNameCallback={rowClassNameCallback}
-          rowClassMap={rowClassMap}
+          rowClassMap={filaAnimacion}
         />
       </table>
 

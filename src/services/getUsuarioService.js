@@ -7,7 +7,6 @@ export const getUsuarios = async () => {
   });
 
   const data = await response.json();
-  console.log('Respuesta backend usuarios:', data);
 
   if (!response.ok) {
     throw new Error(data.mensaje || 'Error al cargar usuarios');

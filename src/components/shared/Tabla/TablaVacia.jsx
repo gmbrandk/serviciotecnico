@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from '../../../styles/general/tabla/emptyTable.module.css';
+import React from "react";
+import styles from "../../../styles/general/tabla/emptyTable.module.css";
 
 const TablaVacia = () => {
   return (
