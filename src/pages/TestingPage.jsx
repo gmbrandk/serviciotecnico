@@ -1,18 +1,14 @@
-// pages/TestingPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usuariosMock } from '@__mock__/usuariosMock';
 import { normalizedId } from '@utils/formatters';
 import { toggleActivoMock } from '@__mock__/usuarioMockManager';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
-import {
-  rwdtableStyles,
-  animationSpotlightStyles,
-  paginadorStyles,
-} from '@styles';
+import { rwdtableStyles, paginadorStyles } from '@styles';
 import toast from 'react-hot-toast';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import useEsMovil from '@hooks/useEsMovil';
+import Paginador from '../components/shared/Paginador';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -29,13 +25,25 @@ const columns = [
 
 const TestingPage = () => {
   const esMovil = useEsMovil();
-  const itemsPorPagina = esMovil ? 1 : 5;
+  const [paginaActual, setPaginaActual] = useState(1);
   const [usuarios, setUsuarios] = useState(() =>
     usuariosMock.map((usuario) => ({
       ...usuario,
       id: normalizedId(usuario),
     }))
   );
+
+  const itemsPorPagina = esMovil ? 3 : 5;
+  const totalPaginas = Math.ceil(usuarios.length / itemsPorPagina);
+  const datosMostrados = usuarios.slice(
+    (paginaActual - 1) * itemsPorPagina,
+    paginaActual * itemsPorPagina
+  );
+
+  // Reiniciar la página si cambia el modo
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [esMovil]);
 
   const usuarioActual = {
     id: 'Techisaurio',
@@ -62,11 +70,9 @@ const TestingPage = () => {
       usuarioObjetivo,
     });
 
-    if (!resultado.success) {
-      toast.error(resultado.mensaje);
-    } else {
-      toast.success(resultado.mensaje);
-    }
+    resultado.success
+      ? toast.success(resultado.mensaje)
+      : toast.error(resultado.mensaje);
   };
 
   const renderAcciones = (usuario) => (
@@ -95,14 +101,12 @@ const TestingPage = () => {
     ],
   });
 
-  console.log(paginadorStyles); // en TestingPage.jsx
-
   return (
     <div style={{ padding: 20 }}>
       <h1>Test Tabla Usuarios</h1>
       <Tabla
         columns={columns}
-        data={usuarios}
+        data={datosMostrados}
         estilos={{
           tabla: rwdtableStyles.rwdTable,
           paginador: {
@@ -110,9 +114,25 @@ const TestingPage = () => {
             ocultarEnMovil: paginadorStyles.ocultarEnMovil,
           },
         }}
-        itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
         renderAcciones={renderAcciones}
+        /*itemsPorPagina={itemsPorPagina}
+        tipo="numerado"*/
       />
+
+      {totalPaginas > 1 && (
+        <Paginador
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          setPaginaActual={setPaginaActual}
+          estilos={{
+            pagination: paginadorStyles.pagination,
+            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+          }}
+          ocultarEnMovil={true}
+          mostrarExtremos={true}
+          tipo="numerado"
+        />
+      )}
     </div>
   );
 };

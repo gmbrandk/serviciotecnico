@@ -22,11 +22,11 @@ const columns = [
   { header: 'Acciones', esAcciones: true },
 ];
 
-const TestingPage = () => {
+const PanelUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [cargando, setCargando] = useState(true);
   const esMovil = useEsMovil();
-  const itemsPorPagina = esMovil ? 1 : 8;
+  const itemsPorPagina = esMovil ? 3 : 8;
 
   useEffect(() => {
     const cargarUsuarios = async () => {
@@ -92,10 +92,11 @@ const TestingPage = () => {
             },
           }}
           itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
+          tipo="numerado"
         />
       )}
     </div>
   );
 };
 
-export default TestingPage;
+export default PanelUsuarios;

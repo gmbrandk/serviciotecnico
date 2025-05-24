@@ -12,6 +12,7 @@ const Tabla = ({
   rowClassNameCallback,
   estilos = {},
   itemsPorPagina = 5, // ✅ Valor por defecto
+  tipo = 'clasico',
 }) => {
   const { tabla, filaAnimacion, paginador: paginadorClases } = estilos;
 
@@ -56,7 +57,8 @@ const Tabla = ({
           totalPaginas={totalPaginas}
           setPaginaActual={setPaginaActual}
           ocultarEnMovil={true}
-          clases={paginadorClases} // ✅ pasamos clases
+          estilos={paginadorClases} // ✅ pasamos clases
+          tipo={tipo}
         />
       )}
     </div>
