@@ -93,6 +93,7 @@ const PanelUsuarios = () => {
           }}
           itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
           tipo="numerado"
+          ocultarEnMovil={false}
         />
       )}
     </div>

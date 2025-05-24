@@ -18,8 +18,10 @@
 
 /* === Tabla === */
 .rwdTable {
+  justify-content: center;
   margin: 1em 0;
-  min-width: 300px;
+  min-width: 300px; 
+  max-width: 420px;
   background: transparent;
   color: #fff;
   border-radius: .4em;
@@ -83,6 +85,7 @@
 @media (min-width: 480px) {
   .rwdTable {
     background-color: #34495E;
+    max-width: 1000px;
   }
 
   .rwdTable th {

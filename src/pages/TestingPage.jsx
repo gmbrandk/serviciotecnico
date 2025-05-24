@@ -5,6 +5,7 @@ import { toggleActivoMock } from '@__mock__/usuarioMockManager';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
 import { rwdtableStyles, paginadorStyles } from '@styles';
+import styles from '../styles/testing/TestingPage.module.css';
 import toast from 'react-hot-toast';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import useEsMovil from '@hooks/useEsMovil';
@@ -33,7 +34,7 @@ const TestingPage = () => {
     }))
   );
 
-  const itemsPorPagina = esMovil ? 3 : 5;
+  const itemsPorPagina = esMovil ? 1 : 5;
   const totalPaginas = Math.ceil(usuarios.length / itemsPorPagina);
   const datosMostrados = usuarios.slice(
     (paginaActual - 1) * itemsPorPagina,
@@ -102,7 +103,7 @@ const TestingPage = () => {
   });
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20 }} className={styles.Container}>
       <h1>Test Tabla Usuarios</h1>
       <Tabla
         columns={columns}
@@ -128,9 +129,9 @@ const TestingPage = () => {
             pagination: paginadorStyles.pagination,
             ocultarEnMovil: paginadorStyles.ocultarEnMovil,
           }}
-          ocultarEnMovil={true}
+          ocultarEnMovil={false}
           mostrarExtremos={true}
-          tipo="numerado"
+          tipo="clasico"
         />
       )}
     </div>

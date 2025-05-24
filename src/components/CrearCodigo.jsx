@@ -154,6 +154,7 @@ const CrearCodigo = () => {
           },
         }}
         itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
+        tipo="numerado"
       />
     </div>
   );

@@ -13,6 +13,7 @@ const Tabla = ({
   estilos = {},
   itemsPorPagina = 5, // ✅ Valor por defecto
   tipo = 'clasico',
+  ocultarEnMovil,
 }) => {
   const { tabla, filaAnimacion, paginador: paginadorClases } = estilos;
 
@@ -56,9 +57,9 @@ const Tabla = ({
           paginaActual={paginaActual}
           totalPaginas={totalPaginas}
           setPaginaActual={setPaginaActual}
-          ocultarEnMovil={true}
           estilos={paginadorClases} // ✅ pasamos clases
           tipo={tipo}
+          ocultarEnMovil={ocultarEnMovil}
         />
       )}
     </div>

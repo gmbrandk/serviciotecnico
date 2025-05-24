@@ -31,7 +31,7 @@ const Paginador = ({
         <>
           {mostrarBotones && mostrarExtremos && (
             <button onClick={irPrimera} disabled={paginaActual === 1}>
-              « Primera
+              «<span>Primera</span>
             </button>
           )}
           {mostrarBotones && (
@@ -51,7 +51,7 @@ const Paginador = ({
           )}
           {mostrarBotones && mostrarExtremos && (
             <button onClick={irUltima} disabled={paginaActual === totalPaginas}>
-              Última »
+              <span>Última</span>»
             </button>
           )}
         </>
