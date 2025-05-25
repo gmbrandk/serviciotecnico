@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabla } from '@components/shared/Tabla';
 import Spinner from '@components/shared/Spinner';
 import CopyInput from '@components/shared/CopyInput';
@@ -10,13 +10,14 @@ import styles from '@styles/CrearCodigo.module.css';
 import {
   animationSpotlightStyles,
   rwdtableStyles,
-  paginadorStyles,
+  RwdPaginadorStyles,
 } from '@styles';
 import { columnasCodigos } from '@data/tabla/columnasCodigos';
 import { reducirCampoConLimite } from '@utils/reducirValores';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import { crearRowEnhancer } from '@utils/tabla/crearRowEnhancer';
 import useEsMovil from '@hooks/useEsMovil';
+import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente'; // ✅ IMPORTACIÓN
 
 const CrearCodigo = () => {
   const { codigos, setCodigos, hayCodigoActivo, loading, setLoading } =
@@ -29,7 +30,18 @@ const CrearCodigo = () => {
   const { copiado, handleCopiar } = useClipboard(codigoActivo?.codigo || '');
 
   const esMovil = useEsMovil();
-  const itemsPorPagina = esMovil ? 1 : 9;
+  const itemsPorPagina = esMovil ? 1 : 6;
+
+  const [paginaActual, setPaginaActual] = useState(1);
+  const totalPaginas = Math.ceil(codigos.length / itemsPorPagina);
+  const codigosMostrados = codigos.slice(
+    (paginaActual - 1) * itemsPorPagina,
+    paginaActual * itemsPorPagina
+  );
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [itemsPorPagina]);
 
   const generarCodigo = () => {
     if (loading) return;
@@ -83,16 +95,13 @@ const CrearCodigo = () => {
         className: 'rowPendiente',
       },
       { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
-      {
-        condition: (item) => item.estado !== 'activo',
-        className: 'ocultarEnMovil',
-      },
     ],
   });
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Generar Código de Acceso</h1>
+
       <div className={styles.inputGroup}>
         <div className={styles.generateComponent}>
           <select
@@ -108,6 +117,7 @@ const CrearCodigo = () => {
             ))}
           </select>
         </div>
+
         <div className={styles.generateComponent}>
           <button
             className={`${styles.generateButton} 
@@ -132,7 +142,7 @@ const CrearCodigo = () => {
         </div>
       </div>
 
-      <h2>Codigos disponibles</h2>
+      <h2>Códigos disponibles</h2>
 
       {spotlightActivoId && (
         <div
@@ -140,22 +150,30 @@ const CrearCodigo = () => {
           onClick={() => setSpotlightActivoId(null)}
         />
       )}
+
       <Tabla
         columns={columnasCodigos}
-        data={codigos}
+        data={codigosMostrados}
         rowEnhancer={rowEnhancer}
         rowClassNameCallback={rowClassNameCallback}
+        renderAcciones={renderAcciones}
         estilos={{
           tabla: rwdtableStyles.rwdTable,
           filaAnimacion: animationSpotlightStyles,
-          paginador: {
-            pagination: paginadorStyles.pagination,
-            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
-          },
         }}
-        itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
-        tipo="numerado"
+        paginacionInterna={false} // 🚫 apaga la paginación interna
       />
+
+      {totalPaginas > 1 && (
+        <PaginadorNumeradoInteligente
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          setPaginaActual={setPaginaActual}
+          esMovil={esMovil}
+          estilos={RwdPaginadorStyles}
+          maxVisible={5}
+        />
+      )}
     </div>
   );
 };

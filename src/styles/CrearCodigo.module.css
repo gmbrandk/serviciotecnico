@@ -146,6 +146,10 @@
 
 /* ✅ SOLO APLICA EN RESPONSIVE */
 @media (max-width: 480px) {
+  .container {
+    max-width: 420px;
+  }
+
   .scrollHorizontalWrapper {
     width: 100%;
     overflow-x: auto !important;

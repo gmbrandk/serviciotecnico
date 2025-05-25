@@ -36,6 +36,13 @@
   font-weight: bold;
 }
 
+.pagination button.activo {
+  background-color: #2c3e50; /* Verde aguamarina o el que prefieras */
+  color: #fff;
+  font-weight: bold;
+  border-color: #ffffff;
+}
+
 .pagination button:focus {
   outline: none;
 }
@@ -50,14 +57,12 @@
   }
 }
 
-@media (max-width: 480px){
-   .pagination button{
+@media (max-width: 480px) {
+  .pagination button {
     margin: 0 0px;
-    
-   }
-   
-   .pagination span {
-display: none;
-   }
-   
+  }
+
+  .pagination span {
+    display: none;
+  }
 }

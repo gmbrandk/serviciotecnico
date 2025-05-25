@@ -1,4 +1,3 @@
-/* === PAGINACIÓN OLDSCHOOL === */
 .pagination {
   display: flex;
   justify-content: center;
@@ -8,7 +7,7 @@
   gap: 0.5rem;
 }
 
-.pagination button {
+.button {
   padding: 8px 15px;
   margin: 0 5px;
   background-color: #eeeeee;
@@ -19,16 +18,23 @@
   font-size: 14px;
 }
 
-.pagination button:hover {
+.button:hover {
   background-color: #ddd;
 }
 
-.pagination button:disabled {
+.button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.pagination span {
+.activo {
+  background-color: #333;
+  color: white;
+  font-weight: bold;
+  border-color: #555;
+}
+
+.puntos {
   margin: 0 15px;
   font-size: 14px;
   font-weight: bold;

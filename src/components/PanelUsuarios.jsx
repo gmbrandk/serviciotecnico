@@ -1,8 +1,9 @@
-// pages/TestingPage.jsx
 import React, { useEffect, useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
-import { rwdtableStyles, paginadorStyles } from '@styles';
+import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente'; // ✅ IMPORTACIÓN
+
+import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
 import styles from '../styles/CrearCodigo.module.css';
 import toast from 'react-hot-toast';
 import { normalizedId } from '@utils/formatters';
@@ -18,15 +19,16 @@ const columns = [
     accessor: 'activo',
     render: (valor) => (valor ? '✅' : '❌'),
   },
-  { header: 'Código de Acceso', accessor: 'accessCode' },
+  /*{ header: 'Código de Acceso', accessor: 'accessCode' },*/
   { header: 'Acciones', esAcciones: true },
 ];
 
 const PanelUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [paginaActual, setPaginaActual] = useState(1); // ✅
   const esMovil = useEsMovil();
-  const itemsPorPagina = esMovil ? 3 : 8;
+  const itemsPorPagina = esMovil ? 1 : 8;
 
   useEffect(() => {
     const cargarUsuarios = async () => {
@@ -60,7 +62,6 @@ const PanelUsuarios = () => {
 
     if (!confirmar) return;
 
-    // Aquí deberás integrar eliminarUsuarioService cuando esté listo.
     toast.success(
       'Simulación de activar/desactivar completada (falta backend)'
     );
@@ -74,27 +75,45 @@ const PanelUsuarios = () => {
     />
   );
 
+  // ✅ PAGINACIÓN MANUAL
+  const totalPaginas = Math.ceil(usuarios.length / itemsPorPagina);
+  const indiceInicio = (paginaActual - 1) * itemsPorPagina;
+  const datosPaginados = usuarios.slice(
+    indiceInicio,
+    indiceInicio + itemsPorPagina
+  );
+
   return (
-    <div style={{ padding: 20 }} className={styles.container}>
+    <div style={{ maxWidth: '500px' }} className={styles.container}>
       <h1 className={styles.title}>Panel de Usuarios</h1>
       {cargando ? (
         <p>Cargando usuarios...</p>
       ) : (
-        <Tabla
-          columns={columns}
-          data={usuarios}
-          renderAcciones={renderAcciones}
-          estilos={{
-            tabla: rwdtableStyles.rwdTable,
-            paginador: {
-              pagination: paginadorStyles.pagination,
-              ocultarEnMovil: paginadorStyles.ocultarEnMovil,
-            },
-          }}
-          itemsPorPagina={itemsPorPagina} // ✅ inyectado dinámicamente
-          tipo="numerado"
-          ocultarEnMovil={false}
-        />
+        <>
+          <Tabla
+            columns={columns}
+            data={datosPaginados}
+            renderAcciones={renderAcciones}
+            estilos={{
+              tabla: rwdtableStyles.rwdTable,
+            }}
+            itemsPorPagina={itemsPorPagina}
+            tipo="numerado"
+            ocultarEnMovil={false}
+          />
+
+          {/* ✅ PAGINADOR DEBAJO */}
+          {totalPaginas > 1 && (
+            <PaginadorNumeradoInteligente
+              paginaActual={paginaActual}
+              totalPaginas={totalPaginas}
+              setPaginaActual={setPaginaActual}
+              esMovil={esMovil}
+              estilos={RwdPaginadorStyles}
+              maxVisible={5}
+            />
+          )}
+        </>
       )}
     </div>
   );

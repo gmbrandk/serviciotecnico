@@ -4,12 +4,12 @@ import { normalizedId } from '@utils/formatters';
 import { toggleActivoMock } from '@__mock__/usuarioMockManager';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
-import { rwdtableStyles, paginadorStyles } from '@styles';
+import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
 import styles from '../styles/testing/TestingPage.module.css';
 import toast from 'react-hot-toast';
 import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import useEsMovil from '@hooks/useEsMovil';
-import Paginador from '../components/shared/Paginador';
+import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -120,20 +120,15 @@ const TestingPage = () => {
         tipo="numerado"*/
       />
 
-      {totalPaginas > 1 && (
-        <Paginador
-          paginaActual={paginaActual}
-          totalPaginas={totalPaginas}
-          setPaginaActual={setPaginaActual}
-          estilos={{
-            pagination: paginadorStyles.pagination,
-            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
-          }}
-          ocultarEnMovil={false}
-          mostrarExtremos={true}
-          tipo="clasico"
-        />
-      )}
+      <PaginadorNumeradoInteligente
+        paginaActual={paginaActual}
+        totalPaginas={totalPaginas}
+        setPaginaActual={setPaginaActual}
+        esMovil={esMovil}
+        estilos={{
+          pagination: RwdPaginadorStyles,
+        }}
+      />
     </div>
   );
 };
