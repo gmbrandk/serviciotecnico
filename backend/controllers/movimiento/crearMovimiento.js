@@ -1,7 +1,14 @@
 const Movimiento = require('@models/Movimiento');
 
-const crearMovimiento = async ({ tipo, descripcion, entidad, entidadId, usuarioId, usadoPor }) => {
-  console.log('Descripción recibida en crearMovimiento:', descripcion);  // <--- aquí
+const crearMovimiento = async ({
+  tipo,
+  descripcion,
+  entidad,
+  entidadId,
+  usuarioId,
+  usadoPor,
+}) => {
+  console.log('Descripción recibida en crearMovimiento:', descripcion); // <--- aquí
   console.log('📌 crearMovimiento() recibió usuarioId:', usuarioId);
   try {
     const movimiento = new Movimiento({
@@ -10,7 +17,7 @@ const crearMovimiento = async ({ tipo, descripcion, entidad, entidadId, usuarioI
       entidad,
       entidadId,
       realizadoPor: usuarioId,
-      usadoPor
+      usadoPor,
     });
     await movimiento.save();
   } catch (error) {

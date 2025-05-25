@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
 import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente'; // ✅ IMPORTACIÓN
-
+import { toggleActivoUsuario } from '@services/toggleActivoUsuarioService';
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
 import styles from '../styles/CrearCodigo.module.css';
 import toast from 'react-hot-toast';
@@ -53,7 +53,7 @@ const PanelUsuarios = () => {
     console.log('Editar usuario', usuario);
   };
 
-  const handleToggleActivo = (usuarioObjetivo) => {
+  const handleToggleActivo = async (usuarioObjetivo) => {
     const confirmar = confirm(
       usuarioObjetivo.activo
         ? `¿Estás seguro de desactivar a ${usuarioObjetivo.nombre}?`
@@ -62,9 +62,25 @@ const PanelUsuarios = () => {
 
     if (!confirmar) return;
 
-    toast.success(
-      'Simulación de activar/desactivar completada (falta backend)'
-    );
+    try {
+      const data = await toggleActivoUsuario(
+        usuarioObjetivo.id,
+        !usuarioObjetivo.activo
+      );
+      if (data.success) {
+        toast.success(data.mensaje);
+
+        setUsuarios((prevUsuarios) =>
+          prevUsuarios.map((u) =>
+            u.id === usuarioObjetivo.id ? { ...u, activo: !u.activo } : u
+          )
+        );
+      } else {
+        toast.error(data.mensaje || 'Error al actualizar estado');
+      }
+    } catch (error) {
+      toast.error(error.mensaje || 'Error al conectar con el servidor');
+    }
   };
 
   const renderAcciones = (usuario) => (

@@ -7,15 +7,14 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 
-
 // Cargar .env correcto
 const envPath = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
 dotenv.config({ path: path.resolve(__dirname, envPath) });
 
 const corsOptions = {
-    origin: 'http://localhost:5173', // frontend URL
-    credentials: true // 🔑 permite cookies
-  };
+  origin: 'http://localhost:5173', // frontend URL
+  credentials: true, // 🔑 permite cookies
+};
 
 // Crear la app
 const app = express();

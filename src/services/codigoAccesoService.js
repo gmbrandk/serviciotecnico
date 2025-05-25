@@ -1,15 +1,14 @@
-// codigoAccesoService.js
+import axios from 'axios';
 
 export const fetchCodigos = async () => {
-  const response = await fetch("http://localhost:5000/api/codigos", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.mensaje || "Error al cargar los códigos");
+  try {
+    const response = await axios.get('http://localhost:5000/api/codigos', {
+      withCredentials: true,
+    });
+    return response.data.codigos;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.mensaje || 'Error al cargar los códigos'
+    );
   }
-  return data.codigos;
 };
