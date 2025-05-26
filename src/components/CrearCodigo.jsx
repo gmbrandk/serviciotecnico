@@ -156,7 +156,6 @@ const CrearCodigo = () => {
         data={codigosMostrados}
         rowEnhancer={rowEnhancer}
         rowClassNameCallback={rowClassNameCallback}
-        renderAcciones={renderAcciones}
         estilos={{
           tabla: rwdtableStyles.rwdTable,
           filaAnimacion: animationSpotlightStyles,
