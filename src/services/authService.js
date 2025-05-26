@@ -1,7 +1,7 @@
 // frontend/services/authService.js
-import axios from "axios";
+import axios from 'axios';
 
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL = 'http://localhost:5000/api/auth';
 
 export const loginUser = async (email, password) => {
   try {
@@ -14,23 +14,23 @@ export const loginUser = async (email, password) => {
     );
     const { usuario } = res.data;
     if (usuario) return { usuario };
-    throw new Error("Respuesta inválida");
+    throw new Error('Respuesta inválida');
   } catch (error) {
-    throw new Error(error.response?.data?.mensaje || "Error al iniciar sesión");
+    throw new Error(error.response?.data?.mensaje || 'Error al iniciar sesión');
   }
 };
 
 export const fetchUsuarioAutenticado = async () => {
   try {
-    console.log("[authService] Llamando a /api/auth/me...");
-    const response = await axios.get("http://localhost:5000/api/auth/me", {
+    console.log('[authService] Llamando a /api/auth/me...');
+    const response = await axios.get('http://localhost:5000/api/auth/me', {
       withCredentials: true, // importante para cookies
     });
-    console.log("[authService] Respuesta exitosa:", response.data);
+    console.log('[authService] Respuesta exitosa:', response.data);
     return response.data;
   } catch (error) {
     console.error(
-      "[authService] Error al obtener usuario:",
+      '[authService] Error al obtener usuario:',
       error.response?.data || error.message
     );
     throw error;

@@ -1,27 +1,48 @@
-// components/shared/Botones/AccionesUsuario.jsx
 import React from 'react';
 import BotonAccion from './BotonAccion';
 import { Pencil, Trash2, Undo2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
 
-const AccionesUsuario = ({ usuario, onEditar, onToggleActivo }) => {
-  const esActivo = usuario.activo;
-  const textoToggle = esActivo ? 'Eliminar' : 'Reactivar';
-  const iconoToggle = esActivo ? <Trash2 size={16} /> : <Undo2 size={16} />;
-  const tipoToggle = esActivo ? 'peligro' : 'secundario';
+const AccionesUsuario = ({
+  usuario: usuarioObjetivo, // 👈 claridad semántica
+  usuarioSolicitante, // 👈 nuevo nombre consistente
+  onEditar,
+  onToggleActivo,
+}) => {
+  const { permitido, mensaje } = verificarPermisoMock({
+    solicitante: usuarioSolicitante,
+    objetivo: usuarioObjetivo,
+    accion: 'editar',
+  });
+
+  const handleEditarClick = () => {
+    if (!permitido) {
+      toast.error(mensaje);
+      return;
+    }
+    onEditar(usuarioObjetivo);
+  };
 
   return (
-    <div style={{ display: 'flex', gap: '8px' }}>
+    <div>
       <BotonAccion
         texto="Editar"
-        icono={<Pencil size={16} />}
+        onClick={handleEditarClick}
+        disabled={false}
+        title={!permitido ? mensaje : 'Editar usuario'}
         tipo="primario"
-        onClick={() => onEditar(usuario)}
+        icono={<Pencil size={16} />}
+        deshabilitadoVisual={!permitido}
       />
+
       <BotonAccion
-        texto={textoToggle}
-        icono={iconoToggle}
-        tipo={tipoToggle}
-        onClick={() => onToggleActivo(usuario)}
+        texto={usuarioObjetivo.activo ? 'Eliminar' : 'Reactivar'}
+        onClick={() => onToggleActivo(usuarioObjetivo)}
+        tipo={usuarioObjetivo.activo ? 'peligro' : 'secundario'}
+        icono={
+          usuarioObjetivo.activo ? <Trash2 size={16} /> : <Undo2 size={16} />
+        }
       />
     </div>
   );

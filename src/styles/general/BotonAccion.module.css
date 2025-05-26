@@ -34,10 +34,39 @@
   background-color: #c82333;
 }
 
+.secundario {
+  background-color: #a9abac;
+  color: white;
+}
+
+.secundario:hover {
+  background-color: #5d6164;
+}
+
 .icono {
   display: flex;
 }
 
 .iconoAccion + .iconoAccion {
   margin-left: 8px;
+}
+
+/* @styles/general/BotonAccion.module.css */
+
+.boton {
+  cursor: pointer;
+  /* otros estilos */
+}
+
+.deshabilitado {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none; /* No recibe eventos */
+}
+
+/* Nueva clase: apariencia "deshabilitado" pero sigue recibiendo eventos */
+.deshabilitadoVisual {
+  opacity: 0.5;
+  cursor: not-allowed;
+  /* No ponemos pointer-events:none para permitir click */
 }

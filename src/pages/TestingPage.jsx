@@ -1,7 +1,11 @@
+// @pages/testing/TestingPage.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usuariosMock } from '@__mock__/usuariosMock';
 import { normalizedId } from '@utils/formatters';
 import { toggleActivoMock } from '@__mock__/usuarioMockManager';
+// Quitamos importar verificarPermisoMock aquí, ya no lo usamos en TestingPage
+
 import Tabla from '@components/shared/Tabla/Tabla';
 import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
@@ -26,6 +30,7 @@ const columns = [
 
 const TestingPage = () => {
   const esMovil = useEsMovil();
+  const navigate = useNavigate();
   const [paginaActual, setPaginaActual] = useState(1);
   const [usuarios, setUsuarios] = useState(() =>
     usuariosMock.map((usuario) => ({
@@ -41,7 +46,6 @@ const TestingPage = () => {
     paginaActual * itemsPorPagina
   );
 
-  // Reiniciar la página si cambia el modo
   useEffect(() => {
     setPaginaActual(1);
   }, [esMovil]);
@@ -51,8 +55,10 @@ const TestingPage = () => {
     role: 'superadministrador',
   };
 
-  const handleEditar = (usuario) => {
-    console.log('Editar usuario', usuario);
+  // --- NOTA: En esta versión, handleEditar NO valida permisos ni muestra toast.
+  // Esa responsabilidad queda en AccionesUsuario para centralizar la lógica.
+  const handleEditar = (usuarioObjetivo) => {
+    navigate(`/testing/editar/${usuarioObjetivo.id}`);
   };
 
   const handleToggleActivo = (usuarioObjetivo) => {
@@ -76,9 +82,12 @@ const TestingPage = () => {
       : toast.error(resultado.mensaje);
   };
 
-  const renderAcciones = (usuario) => (
+  // --- Aquí pasamos solo los callbacks y usuario, sin verificar permisos.
+  // La validación y el toast quedan en el propio componente de botones.
+  const renderAcciones = (usuarioObjetivo) => (
     <AccionesUsuario
-      usuario={usuario}
+      usuario={usuarioObjetivo}
+      usuarioSolicitante={usuarioActual} // 👈 nuevo nombre aquí también
       onEditar={handleEditar}
       onToggleActivo={handleToggleActivo}
     />
@@ -87,13 +96,12 @@ const TestingPage = () => {
   const rowClassNameCallback = crearRowClassNameCallback({
     customConditions: [
       {
-        condition: (item) => item.id === spotlightActivoId,
-        className: 'spotlight',
-      },
-      { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
-      {
         condition: (item) => item.estado === 'pendiente',
         className: 'rowPendiente',
+      },
+      {
+        condition: (item) => item.estaDeshabilitado,
+        className: 'rowDisabled',
       },
       {
         condition: (item) => item.estado !== 'activo',
@@ -111,13 +119,12 @@ const TestingPage = () => {
         estilos={{
           tabla: rwdtableStyles.rwdTable,
           paginador: {
-            pagination: paginadorStyles.pagination,
-            ocultarEnMovil: paginadorStyles.ocultarEnMovil,
+            pagination: RwdPaginadorStyles.pagination,
+            ocultarEnMovil: RwdPaginadorStyles.ocultarEnMovil,
           },
         }}
         renderAcciones={renderAcciones}
-        /*itemsPorPagina={itemsPorPagina}
-        tipo="numerado"*/
+        rowClassNameCallback={rowClassNameCallback}
       />
 
       <PaginadorNumeradoInteligente

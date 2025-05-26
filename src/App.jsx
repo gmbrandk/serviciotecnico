@@ -9,7 +9,8 @@ import ProtectedRoute from '@components/routes/ProtectedRoute';
 import PublicRoute from '@components/routes/PublicRoute';
 import dashboardRoutes from '@routes/dashboardRoutes';
 import { Toaster } from 'react-hot-toast';
-import TestingPage from '@pages/TestingPage'
+import TestingPage from '@pages/TestingPage';
+import FormularioEditarUsuario from '@components/pages/Dashboard/Forms/FormularioEditarUsuario';
 
 const App = () => {
   return (
@@ -35,11 +36,10 @@ const App = () => {
           ))}
         </Route>
 
+        <Route path="/testing" element={<TestingPage />} />
         <Route
-          path="/testing"
-          element={
-            <TestingPage />
-          }
+          path="/testing/editar/:id"
+          element={<FormularioEditarUsuario />}
         />
 
         {/* Catch-all protegida */}
