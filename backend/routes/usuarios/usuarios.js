@@ -31,13 +31,7 @@ router.get(
   obtenerUsuario
 );
 
-router.put(
-  '/editar/:id',
-  verificarToken,
-  verificarRolesPermitidos(['superadministrador', 'administrador']),
-  verificarEdicion,
-  editarUsuario
-);
+router.put('/editar/:id', verificarToken, verificarEdicion, editarUsuario);
 
 // Ruta para cambiar el estado activo (activar/desactivar)
 router.patch(

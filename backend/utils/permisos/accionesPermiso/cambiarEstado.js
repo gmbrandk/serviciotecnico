@@ -1,12 +1,26 @@
-// permisos/accionesPermiso/cambiarEstado.js
+// No se permite cambiar el estado a uno mismo.
+// Tampoco se permite cambiar el estado a usuarios de igual o mayor jerarquía.
+
+const rolesJerarquia = require('../rolesJerarquia');
+
 module.exports = ({ solicitante, objetivo }) => {
-  // Asumamos que aquí la regla es igual a la de editar, sólo que validamos que no se cambie su propio estado
   if (solicitante._id.toString() === objetivo._id.toString()) {
     return {
       permitido: false,
-      mensaje: 'No puedes cambiar tu propio estado.',
+      mensaje: 'No puedes cambiar el estado de tu propia cuenta.',
     };
   }
-  // Ejemplo simple, sólo permite a quien tiene jerarquía mayor (esto ya se valida antes en verificarPermiso)
+
+  const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
+  const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
+
+  if (jerarquiaSolicitante <= jerarquiaObjetivo) {
+    return {
+      permitido: false,
+      mensaje:
+        'No puedes cambiar el estado de usuarios de igual o mayor jerarquía.',
+    };
+  }
+
   return { permitido: true };
 };

@@ -3,23 +3,32 @@ const { crearMovimiento } = require('@controllers/movimientoController');
 
 const editarUsuario = async (req, res) => {
   if (!req.usuario || !req.usuario._id) {
-    return res.status(401).json({ success: false, mensaje: 'Usuario no autenticado' });
+    return res.status(401).json({
+      success: false,
+      mensaje: 'Usuario no autenticado',
+    });
   }
 
   try {
-    const { nombre, email, role } = req.body;
+    const { nombre, email } = req.body;
 
-    if (!nombre && !email && !role) {
+    // Validar que al menos uno de los campos permitidos esté presente
+    if (!nombre && !email) {
       return res.status(400).json({
         success: false,
-        mensaje: 'No se proporcionaron datos para actualizar.',
-        usuario: null
+        mensaje: 'No se proporcionaron datos válidos para actualizar.',
+        usuario: null,
       });
     }
 
+    // Asegurar que sólo se actualicen campos permitidos
+    const camposActualizados = {};
+    if (nombre) camposActualizados.nombre = nombre;
+    if (email) camposActualizados.email = email;
+
     const usuarioActualizado = await Usuario.findByIdAndUpdate(
       req.params.id,
-      { nombre, email, role },
+      camposActualizados,
       { new: true, runValidators: true }
     );
 
@@ -27,19 +36,18 @@ const editarUsuario = async (req, res) => {
       return res.status(404).json({
         success: false,
         mensaje: 'Usuario no encontrado.',
-        usuario: null
+        usuario: null,
       });
     }
 
-    // 👇 REGISTRO DE MOVIMIENTO
+    // ✅ REGISTRO DE MOVIMIENTO
     await crearMovimiento({
       tipo: 'editar',
       descripcion: `El usuario ${usuarioActualizado.nombre} fue editado por ${req.usuario.nombre} (${req.usuario.role}).`,
       entidad: 'Usuario',
       entidadId: usuarioActualizado._id,
-      usuarioId: req.usuario._id
+      usuarioId: req.usuario._id,
     });
-    
 
     res.status(200).json({
       success: true,
@@ -48,17 +56,16 @@ const editarUsuario = async (req, res) => {
         _id: usuarioActualizado._id,
         nombre: usuarioActualizado.nombre,
         email: usuarioActualizado.email,
-        role: usuarioActualizado.role
-      }
+        role: usuarioActualizado.role, // Se devuelve el rol, pero no se permite editarlo desde aquí
+      },
     });
-
   } catch (error) {
     console.error('Error al editar usuario:', error);
     res.status(500).json({
       success: false,
       mensaje: 'Error al editar usuario.',
       detalles: error.message,
-      usuario: null
+      usuario: null,
     });
   }
 };

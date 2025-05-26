@@ -1,12 +1,14 @@
+// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 const Usuario = require('@models/Usuario');
+const { sendError } = require('@utils/httpResponse');
 
 const verificarToken = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
     console.warn('[Middleware] ❌ No se encontró token en cookies');
-    return res.status(401).json({ error: 'No autenticado' });
+    return sendError(res, 401, 'Not authenticated');
   }
 
   try {
@@ -17,12 +19,16 @@ const verificarToken = async (req, res, next) => {
     const usuario = await Usuario.findById(decoded.id);
     if (!usuario) {
       console.warn('[Middleware] ⚠️ Usuario no encontrado en la base de datos');
-      return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
+      return sendError(res, 404, 'User not found');
     }
 
     if (!usuario.activo) {
       console.warn('[Middleware] 🚫 Usuario inactivo');
-      return res.status(403).json({ mensaje: 'Tu cuenta está desactivada. Contacta al administrador.' });
+      return sendError(
+        res,
+        403,
+        'Your account is deactivated. Contact the administrator.'
+      );
     }
 
     console.log('[Middleware] 👤 Usuario autenticado:', {
@@ -36,17 +42,23 @@ const verificarToken = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('[Middleware] ❌ Error al verificar token:', error.message);
-    res.status(401).json({ mensaje: 'Token inválido.' });
+    return sendError(res, 401, 'Invalid token');
   }
 };
 
 const verificarRolesPermitidos = (rolesPermitidos) => {
   return (req, res, next) => {
     const rolUsuario = req.usuario?.role?.toLowerCase();
-    const rolesPermitidosLower = rolesPermitidos.map(role => role.toLowerCase());
+    const rolesPermitidosLower = rolesPermitidos.map((role) =>
+      role.toLowerCase()
+    );
 
     if (!rolesPermitidosLower.includes(rolUsuario)) {
-      return res.status(403).json({ mensaje: 'No tienes permisos para realizar esta acción.' });
+      return sendError(
+        res,
+        403,
+        'You do not have permission to perform this action.'
+      );
     }
 
     next();
