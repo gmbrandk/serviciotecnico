@@ -3,14 +3,14 @@ import { loginUser, fetchUsuarioAutenticado } from '@services/authService';
 import registerUser from '@services/userService';
 import { estandarizarRol } from '@utils/formatters';
 import axios from 'axios';
-import useLoading from '@hooks/useLoading'; // Importa el hook
+import useGlobalLoading from '@hooks/useGlobalLoading'; // Importa el hook
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
   const [cargando, setCargando] = useState(true);
-  const { loading, startLoading, stopLoading } = useLoading(); // Usa el hook de carga
+  const { loading, startLoading, stopLoading } = useGlobalLoading(); // Usa el hook de carga
 
   const verificarSesion = async () => {
     console.log('[AuthContext] Verificando sesión al montar');
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
       const { usuario: usuarioAutenticado } = await fetchUsuarioAutenticado();
       console.log('[AuthContext] Usuario autenticado:', usuarioAutenticado);
-      
+
       if (usuarioAutenticado) {
         setUsuario(usuarioAutenticado);
       }
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     verificarSesion();
-  }, []);  
+  }, []);
 
   const login = async (email, password) => {
     try {
@@ -56,7 +56,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
+      await axios.post(
+        'http://localhost:5000/api/auth/logout',
+        {},
+        { withCredentials: true }
+      );
     } catch (e) {
       console.warn('Error al cerrar sesión en el backend:', e.message);
     }
@@ -66,22 +70,26 @@ export const AuthProvider = ({ children }) => {
   const hasRole = (rolesPermitidos = []) => {
     if (!usuario || !usuario.role) return false;
     const userRole = estandarizarRol(usuario.role);
-    const rolesNormalizados = rolesPermitidos.map(rol => estandarizarRol(rol));
+    const rolesNormalizados = rolesPermitidos.map((rol) =>
+      estandarizarRol(rol)
+    );
     return rolesNormalizados.includes(userRole);
   };
 
   return (
-    <AuthContext.Provider value={{
-      usuario,
-      setUsuario,
-      login,
-      logout,
-      register,
-      hasRole,
-      cargando,
-      loading, // Agrega el estado de loading aquí
-      verificarSesion
-    }}>
+    <AuthContext.Provider
+      value={{
+        usuario,
+        setUsuario,
+        login,
+        logout,
+        register,
+        hasRole,
+        cargando,
+        loading, // Agrega el estado de loading aquí
+        verificarSesion,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,7 +1,7 @@
-// @components/shared/Botones/BotonAccion.jsx
 import React from 'react';
-import styles from '@styles/general/BotonAccion.module.css';
 import PropTypes from 'prop-types';
+import Spinner from '@components/shared/Spinner';
+import styles from '@styles/general/BotonAccion.module.css';
 
 const BotonAccion = ({
   texto,
@@ -10,14 +10,15 @@ const BotonAccion = ({
   icono = null,
   className = '',
   disabled = false,
-  deshabilitadoVisual = false, // Nueva prop para controlar solo el estilo visual
+  deshabilitadoVisual = false,
   title = '',
+  cargando = false, // ✅ NUEVA PROP
   ...rest
 }) => {
   const claseFinal = `
     ${styles.boton}
     ${styles[tipo]}
-    ${disabled ? styles.deshabilitado : ''}
+    ${disabled || cargando ? styles.deshabilitado : ''}
     ${deshabilitadoVisual ? styles.deshabilitadoVisual : ''}
     ${className}
   `.trim();
@@ -25,13 +26,19 @@ const BotonAccion = ({
   return (
     <button
       className={claseFinal}
-      onClick={disabled ? undefined : onClick}
-      disabled={disabled}
+      onClick={disabled || cargando ? undefined : onClick}
+      disabled={disabled || cargando}
       title={title}
       {...rest}
     >
-      {icono && <span className={styles.icono}>{icono}</span>}
-      {texto}
+      {cargando ? (
+        <Spinner size={45} color="#fff" /> // ajusta color según fondo si deseas
+      ) : (
+        <>
+          {icono && <span className={styles.icono}>{icono}</span>}
+          {texto}
+        </>
+      )}
     </button>
   );
 };
@@ -45,6 +52,7 @@ BotonAccion.propTypes = {
   disabled: PropTypes.bool,
   deshabilitadoVisual: PropTypes.bool,
   title: PropTypes.string,
+  cargando: PropTypes.bool, // ✅ NUEVA PROP
 };
 
 export default BotonAccion;

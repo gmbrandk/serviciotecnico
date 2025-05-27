@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
  * Hook para manejar el estado de carga (loading).
  * Ideal para mostrar spinners en procesos asíncronos.
  */
-const useLoading = () => {
+const useGlobalLoading = () => {
   const [loading, setLoading] = useState(false);
 
   const startLoading = useCallback(() => setLoading(true), []);
@@ -13,4 +13,4 @@ const useLoading = () => {
   return { loading, startLoading, stopLoading };
 };
 
-export default useLoading;
+export default useGlobalLoading;
