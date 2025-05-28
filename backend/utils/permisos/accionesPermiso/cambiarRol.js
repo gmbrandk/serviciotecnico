@@ -9,6 +9,13 @@ module.exports = ({ solicitante, objetivo, nuevoRol }) => {
   const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
   const jerarquiaNuevoRol = rolesJerarquia[nuevoRol?.toLowerCase()];
 
+  if (solicitante._id.toString() === objetivo._id.toString()) {
+    return {
+      permitido: false,
+      mensaje: 'No puedes cambiar tu propio rol.',
+    };
+  }
+
   if (jerarquiaSolicitante <= jerarquiaObjetivo) {
     return {
       permitido: false,

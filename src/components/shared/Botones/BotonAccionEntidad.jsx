@@ -22,6 +22,7 @@ const BotonAccionEntidad = ({
           objetivo: entidad,
           accion: clave,
         });
+        console.log(`[FRONTEND]Permiso para ${clave}:`, { permitido, mensaje });
 
         const handleClick = () => {
           if (config.requierePermiso && !permitido) {
@@ -51,6 +52,7 @@ const BotonAccionEntidad = ({
             : config.tipo;
 
         const cargando = estadoCargandoPorId[entidad.id] === true;
+        const deshabilitadoVisual = config.requierePermiso ? !permitido : false;
 
         return (
           <BotonAccion
@@ -60,7 +62,7 @@ const BotonAccionEntidad = ({
             tipo={tipo}
             onClick={handleClick}
             title={!permitido ? mensaje : config.tooltip}
-            deshabilitadoVisual={config.requierePermiso && !permitido}
+            deshabilitadoVisual={deshabilitadoVisual}
             cargando={clave === 'eliminarUsuario' ? cargando : false} // ✅ Solo ese botón muestra spinner
           />
         );

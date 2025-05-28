@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
-import AccionesUsuario from '@components/shared/Botones/AccionesUsuario';
+import BotonAccionEntidad from '@components/shared/Botones/BotonAccionEntidad';
+import { verificarPermisoMock } from '@__mock__/verificarPermisoMock'; // o donde lo tengas
+
 import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
 import { apiProvider } from '@services/usuarios/providers/apiProvider'; // ✅ Usamos provider central
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
@@ -83,11 +85,18 @@ const PanelUsuarios = () => {
   };
 
   const renderAcciones = (usuarioObjetivo) => (
-    <AccionesUsuario
-      usuario={usuarioObjetivo}
+    <BotonAccionEntidad
+      entidad={usuarioObjetivo}
       usuarioSolicitante={usuarioActual}
-      onEditar={handleEditar}
-      onToggleActivo={handleToggleActivo}
+      acciones={['editar', 'softDelete']}
+      verificarPermiso={verificarPermisoMock}
+      onAccion={(accion, entidad) => {
+        if (accion === 'editar') {
+          handleEditar(entidad);
+        } else if (accion === 'softDelete') {
+          handleToggleActivo(entidad);
+        }
+      }}
     />
   );
 

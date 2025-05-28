@@ -1,9 +1,10 @@
 import { rolesJerarquia } from '@__mock__/rolesJerarquia';
+import { normalizedId } from '@utils/formatters';
 
 // Módulo de acciones específicas
 const acciones = {
   editar: ({ solicitante, objetivo }) => {
-    const esMismoUsuario = solicitante.id === objetivo.id;
+    const esMismoUsuario = normalizedId(solicitante) === normalizedId(objetivo);
     const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
     const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
 
@@ -28,19 +29,35 @@ const acciones = {
   },
 
   softDelete: ({ solicitante, objetivo }) => {
+    const esMismoUsuario = normalizedId(solicitante) === normalizedId(objetivo);
     const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
     const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
+
+    if (esMismoUsuario) {
+      return {
+        permitido: false,
+        mensaje: 'No puedes cambiar el estado de tu propia cuenta.',
+      };
+    }
 
     if (jerarquiaSolicitante > jerarquiaObjetivo) {
       return {
         permitido: true,
-        mensaje: 'Puedes eliminar usuarios de menor jerarquía.',
+        mensaje: 'Puedes cambiar el estado de usuarios de menor jerarquía.',
+      };
+    }
+
+    if (jerarquiaSolicitante === jerarquiaObjetivo) {
+      return {
+        permitido: false,
+        mensaje:
+          'No puedes cambiar el estado de usuarios con tu misma jerarquía.',
       };
     }
 
     return {
       permitido: false,
-      mensaje: 'No puedes eliminar usuarios de igual o mayor jerarquía.',
+      mensaje: 'No puedes cambiar el estado de usuarios de mayor jerarquía.',
     };
   },
 
