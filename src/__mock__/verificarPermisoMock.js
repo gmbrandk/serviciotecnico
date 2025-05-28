@@ -2,15 +2,47 @@ import { rolesJerarquia } from '@__mock__/rolesJerarquia';
 
 // Módulo de acciones específicas
 const acciones = {
-  eliminarUsuario: ({ solicitante, objetivo }) => ({
-    permitido: true,
-    mensaje: 'Eliminación permitida (mock).',
-  }),
+  editar: ({ solicitante, objetivo }) => {
+    const esMismoUsuario = solicitante.id === objetivo.id;
+    const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
+    const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
 
-  editar: () => ({
-    permitido: true,
-    mensaje: 'Edición permitida.',
-  }),
+    if (esMismoUsuario) {
+      return {
+        permitido: true,
+        mensaje: 'Puedes editar tu propia cuenta.',
+      };
+    }
+
+    if (jerarquiaSolicitante > jerarquiaObjetivo) {
+      return {
+        permitido: true,
+        mensaje: 'Puedes editar usuarios de menor jerarquía.',
+      };
+    }
+
+    return {
+      permitido: false,
+      mensaje: 'No puedes editar a usuarios de igual o mayor jerarquía.',
+    };
+  },
+
+  softDelete: ({ solicitante, objetivo }) => {
+    const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
+    const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
+
+    if (jerarquiaSolicitante > jerarquiaObjetivo) {
+      return {
+        permitido: true,
+        mensaje: 'Puedes eliminar usuarios de menor jerarquía.',
+      };
+    }
+
+    return {
+      permitido: false,
+      mensaje: 'No puedes eliminar usuarios de igual o mayor jerarquía.',
+    };
+  },
 
   cambiarRol: ({ nuevoRol }) => {
     if (!nuevoRol) {
@@ -41,12 +73,6 @@ export const verificarPermisoMock = ({
   accion,
   nuevoRol = null,
 }) => {
-  const rolSolicitante = solicitante?.role?.toLowerCase?.();
-  const rolObjetivo = objetivo?.role?.toLowerCase?.();
-
-  const jerarquiaSolicitante = rolesJerarquia[rolSolicitante];
-  const jerarquiaObjetivo = rolesJerarquia[rolObjetivo];
-
   if (!acciones[accion]) {
     return {
       permitido: false,
@@ -54,17 +80,13 @@ export const verificarPermisoMock = ({
     };
   }
 
-  if (jerarquiaSolicitante === undefined || jerarquiaObjetivo === undefined) {
+  const rolSolicitante = solicitante?.role?.toLowerCase?.();
+  const rolObjetivo = objetivo?.role?.toLowerCase?.();
+
+  if (!rolesJerarquia[rolSolicitante] || !rolesJerarquia[rolObjetivo]) {
     return {
       permitido: false,
       mensaje: 'Rol no reconocido o jerarquía no definida.',
-    };
-  }
-
-  if (jerarquiaSolicitante <= jerarquiaObjetivo) {
-    return {
-      permitido: false,
-      mensaje: 'No puedes modificar a usuarios de igual o mayor jerarquía.',
     };
   }
 

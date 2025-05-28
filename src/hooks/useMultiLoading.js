@@ -1,21 +1,22 @@
 import { useState, useCallback } from 'react';
 
+/**
+ * Hook para manejar múltiples estados de carga por ID (útil para listas de ítems).
+ */
 const useMultiLoading = () => {
   const [loadingMap, setLoadingMap] = useState({});
 
-  const startLoading = useCallback((key) => {
-    setLoadingMap((prev) => ({ ...prev, [key]: true }));
+  const startLoading = useCallback((id) => {
+    setLoadingMap((prev) => ({ ...prev, [id]: true }));
   }, []);
 
-  const stopLoading = useCallback((key) => {
-    setLoadingMap((prev) => ({ ...prev, [key]: false }));
+  const stopLoading = useCallback((id) => {
+    setLoadingMap((prev) => ({ ...prev, [id]: false }));
   }, []);
 
-  const isLoading = useCallback((key) => !!loadingMap[key], [loadingMap]);
+  const isLoading = loadingMap;
 
-  const resetAll = () => setLoadingMap({});
-
-  return { isLoading, startLoading, stopLoading, resetAll };
+  return { isLoading, startLoading, stopLoading };
 };
 
 export default useMultiLoading;

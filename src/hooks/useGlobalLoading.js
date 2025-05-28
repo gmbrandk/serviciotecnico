@@ -10,7 +10,8 @@ const useGlobalLoading = () => {
   const startLoading = useCallback(() => setLoading(true), []);
   const stopLoading = useCallback(() => setLoading(false), []);
 
-  return { loading, startLoading, stopLoading };
+  const isLoading = loading;
+  return { isLoading, startLoading, stopLoading };
 };
 
 export default useGlobalLoading;

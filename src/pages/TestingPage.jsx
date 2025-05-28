@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { normalizedId } from '@utils/formatters';
-
 import Tabla from '@components/shared/Tabla/Tabla';
+import toast from 'react-hot-toast';
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
 import styles from '../styles/testing/TestingPage.module.css';
-import toast from 'react-hot-toast';
-import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import useEsMovil from '@hooks/useEsMovil';
+import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
 import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
+import AccionesEntidad from '@components/shared/Botones/BotonAccionEntidad';
+import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
 
-// Nuevos hooks de loading
+import Spinner from '@components/shared/Spinner';
 import useGlobalLoading from '@hooks/useGlobalLoading';
 import useMultiLoading from '@hooks/useMultiLoading';
 
-// Servicios
 import { localStorageProvider } from '@services/usuarios/providers/localStorageProvider';
 import {
   inicializarUsuarioService,
@@ -23,9 +23,6 @@ import {
   obtenerNombreProveedor,
   obtenerTipoProveedor,
 } from '@services/usuarioService';
-
-import AccionesEntidad from '@components/shared/Botones/BotonAccionEntidad';
-import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -43,33 +40,44 @@ const columns = [
 const TestingPage = () => {
   const esMovil = useEsMovil();
   const navigate = useNavigate();
-  const [paginaActual, setPaginaActual] = useState(1);
+
   const [usuarios, setUsuarios] = useState([]);
 
-  const { loading: cargando, startLoading, stopLoading } = useGlobalLoading();
   const {
-    isLoading: estaCargandoId,
-    startLoading: startLoadingId,
-    stopLoading: stopLoadingId,
+    isLoading: cargandoGlobal,
+    startLoading: startGlobalLoading,
+    stopLoading: stopGlobalLoading,
+  } = useGlobalLoading();
+
+  const {
+    isLoading: cargandoPorId,
+    startLoading: startMultiLoading,
+    stopLoading: stopMultiLoading,
   } = useMultiLoading();
+
+  useEffect(() => {
+    startGlobalLoading();
+  }, []);
 
   useEffect(() => {
     const inicializarYObtener = async () => {
       try {
-        startLoading();
-        inicializarUsuarioService(localStorageProvider, 'Mock Local', 'mock');
+        console.log('[DEBUG] Iniciando carga de usuarios...');
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 segundos
+        console.log('[DEBUG] Espera artificial completada');
 
+        inicializarUsuarioService(localStorageProvider, 'Mock Local', 'mock');
         const datos = await obtenerUsuarios();
-        const normalizados = datos.map((u) => ({
-          ...u,
-          id: normalizedId(u),
-        }));
+        const normalizados = datos.map((u) => ({ ...u, id: normalizedId(u) }));
         setUsuarios(normalizados);
+
+        console.log('[DEBUG] Usuarios cargados:', normalizados);
       } catch (error) {
-        console.error('[❌ Error cargando usuarios]', error);
+        console.error('[DEBUG] Error al cargar usuarios:', error);
         toast.error('Error al cargar usuarios');
       } finally {
-        stopLoading();
+        stopGlobalLoading();
+        console.log('[DEBUG] Finaliza carga (stopGlobalLoading)');
       }
     };
 
@@ -80,6 +88,7 @@ const TestingPage = () => {
     setPaginaActual(1);
   }, [esMovil]);
 
+  const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = esMovil ? 1 : 5;
   const totalPaginas = Math.ceil(usuarios.length / itemsPorPagina);
   const datosMostrados = usuarios.slice(
@@ -88,8 +97,8 @@ const TestingPage = () => {
   );
 
   const usuarioActual = {
-    id: 'Techisaurio',
-    role: 'superadministrador',
+    id: '681abeef01f846019099a2b8',
+    role: 'administrador',
   };
 
   const handleEditar = (usuarioObjetivo) => {
@@ -104,11 +113,7 @@ const TestingPage = () => {
     );
     if (!confirmar) return;
 
-    const id = usuarioObjetivo.id;
-    startLoadingId(id);
-
     const respuesta = await toggleActivo(usuarioObjetivo._id);
-
     if (respuesta.success) {
       toast.success(respuesta.mensaje);
       const actualizados = await obtenerUsuarios();
@@ -116,12 +121,9 @@ const TestingPage = () => {
     } else {
       toast.error(respuesta.mensaje);
     }
-
-    stopLoadingId(id);
   };
 
   const renderAcciones = (usuarioObjetivo) => {
-    const claveUsuario = usuarioObjetivo.id;
     return (
       <AccionesEntidad
         entidad={usuarioObjetivo}
@@ -133,18 +135,19 @@ const TestingPage = () => {
 
           if (clave === 'editar') {
             handleEditar(usuarioObjetivo);
+            return;
           }
 
           if (clave === 'softDelete') {
             try {
-              startLoading(id);
+              startMultiLoading(id);
               await handleToggleActivo(usuarioObjetivo);
             } finally {
-              stopLoading(id);
+              stopMultiLoading(id);
             }
           }
         }}
-        estadoCargandoPorId={isLoading} // ✅ nuevo prop
+        estadoCargandoPorId={cargandoPorId[usuarioObjetivo.id]}
       />
     );
   };
@@ -168,21 +171,24 @@ const TestingPage = () => {
 
   const tipo = obtenerTipoProveedor();
   const nombre = obtenerNombreProveedor();
+  const estiloProveedor = {
+    mock: { color: '#fff', icono: '🧪' },
+    api: { color: '#3498db', icono: '🌐' },
+  }[tipo] || { color: '#95a5a6', icono: '❔' };
 
-  const obtenerEstiloProveedor = (tipo) => {
-    switch (tipo) {
-      case 'mock':
-        return { color: '#fff', icono: '🧪' };
-      case 'api':
-        return { color: '#3498db', icono: '🌐' };
-      default:
-        return { color: '#95a5a6', icono: '❔' };
-    }
-  };
-
-  const { color, icono } = obtenerEstiloProveedor(tipo);
-
-  if (cargando) return <p>Cargando usuarios...</p>;
+  // ✅ Mostrar Spinner con mensaje
+  if (cargandoGlobal) {
+    console.log('[DEBUG] Mostrando spinner global...');
+    return (
+      <div
+        className={styles.Container}
+        style={{ padding: 20, textAlign: 'left' }}
+      >
+        <Spinner size={50} color="#fff" />
+        <p style={{ marginTop: '1rem' }}>Cargando usuarios...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: 20 }} className={styles.Container}>
@@ -192,7 +198,7 @@ const TestingPage = () => {
         style={{
           fontWeight: 400,
           fontSize: '1rem',
-          color,
+          color: estiloProveedor.color,
           marginBottom: '1rem',
           display: 'flex',
           alignItems: 'center',
@@ -200,7 +206,7 @@ const TestingPage = () => {
         }}
         title={`Esta página usa el proveedor "${nombre}" de tipo "${tipo}"`}
       >
-        <span style={{ fontSize: '1.2rem' }}>{icono}</span>
+        <span style={{ fontSize: '1.2rem' }}>{estiloProveedor.icono}</span>
         Datos obtenidos desde: <strong>{nombre}</strong>
       </h2>
 

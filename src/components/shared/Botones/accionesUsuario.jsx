@@ -43,6 +43,7 @@ const AccionesUsuario = ({
         icono={
           usuarioObjetivo.activo ? <Trash2 size={16} /> : <Undo2 size={16} />
         }
+        deshabilitadoVisual={!permitido}
       />
     </div>
   );

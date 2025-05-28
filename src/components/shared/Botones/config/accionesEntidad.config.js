@@ -24,7 +24,7 @@ export const accionesEntidad = {
     tipoAlternativo: 'secundario',
     tooltip: 'Desactiva o reactiva el registro',
     esAlternante: true,
-    requierePermiso: false,
+    requierePermiso: true,
   },
   crear: {
     clave: 'crear',
