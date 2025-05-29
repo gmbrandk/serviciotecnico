@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { normalizedId } from '@utils/formatters';
 import Tabla from '@components/shared/Tabla/Tabla';
 import toast from 'react-hot-toast';
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
@@ -10,19 +9,12 @@ import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallba
 import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
 import AccionesEntidad from '@components/shared/Botones/BotonAccionEntidad';
 import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
-
 import Spinner from '@components/shared/Spinner';
 import useGlobalLoading from '@hooks/useGlobalLoading';
 import useMultiLoading from '@hooks/useMultiLoading';
-
-import { localStorageProvider } from '@services/usuarios/providers/localStorageProvider';
-import {
-  inicializarUsuarioService,
-  obtenerUsuarios,
-  toggleActivo,
-  obtenerNombreProveedor,
-  obtenerTipoProveedor,
-} from '@services/usuarioService';
+import { getUsuarioService } from '@services/usuarioService';
+import { useUsuarios } from '@context/UsuariosContext';
+import { useAuth } from '@context/AuthContext';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -40,9 +32,11 @@ const columns = [
 const TestingPage = () => {
   const esMovil = useEsMovil();
   const navigate = useNavigate();
+  const { usuarios, alternarActivo, cargandoUsuarios } = useUsuarios();
 
-  const [usuarios, setUsuarios] = useState([]);
+  const { usuario: usuarioActual, cargando: cargandoAuth } = useAuth();
 
+  const { resetUsuarios } = useUsuarios();
   const {
     isLoading: cargandoGlobal,
     startLoading: startGlobalLoading,
@@ -55,56 +49,41 @@ const TestingPage = () => {
     stopLoading: stopMultiLoading,
   } = useMultiLoading();
 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const itemsPorPagina = esMovil ? 1 : 5;
+
+  const service = getUsuarioService();
+  const nombreProveedor = service.obtenerNombreProveedor();
+  const tipoProveedor = service.obtenerTipoProveedor();
+
   useEffect(() => {
     startGlobalLoading();
-  }, []);
-
-  useEffect(() => {
-    const inicializarYObtener = async () => {
-      try {
-        console.log('[DEBUG] Iniciando carga de usuarios...');
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 segundos
-        console.log('[DEBUG] Espera artificial completada');
-
-        inicializarUsuarioService(localStorageProvider, 'Mock Local', 'mock');
-        const datos = await obtenerUsuarios();
-        const normalizados = datos.map((u) => ({ ...u, id: normalizedId(u) }));
-        setUsuarios(normalizados);
-
-        console.log('[DEBUG] Usuarios cargados:', normalizados);
-      } catch (error) {
-        console.error('[DEBUG] Error al cargar usuarios:', error);
-        toast.error('Error al cargar usuarios');
-      } finally {
-        stopGlobalLoading();
-        console.log('[DEBUG] Finaliza carga (stopGlobalLoading)');
-      }
-    };
-
-    inicializarYObtener();
+    const timeout = setTimeout(() => stopGlobalLoading(), 2000);
+    return () => clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
     setPaginaActual(1);
   }, [esMovil]);
 
-  const [paginaActual, setPaginaActual] = useState(1);
-  const itemsPorPagina = esMovil ? 1 : 5;
   const totalPaginas = Math.ceil(usuarios.length / itemsPorPagina);
   const datosMostrados = usuarios.slice(
     (paginaActual - 1) * itemsPorPagina,
     paginaActual * itemsPorPagina
   );
 
-  const usuarioActual = {
-    id: '681abeef01f846019099a2b8',
-    role: 'administrador',
-  };
-
   const handleEditar = (usuarioObjetivo) => {
     navigate(`/testing/editar/${usuarioObjetivo.id}`);
   };
 
+  const handleReset = async () => {
+    const resultado = await resetUsuarios();
+    if (resultado.success) {
+      toast.success('Usuarios de prueba restaurados correctamente');
+    } else {
+      toast.error(resultado.mensaje || 'Error al restaurar usuarios');
+    }
+  };
   const handleToggleActivo = async (usuarioObjetivo) => {
     const confirmar = confirm(
       usuarioObjetivo.activo
@@ -113,44 +92,51 @@ const TestingPage = () => {
     );
     if (!confirmar) return;
 
-    const respuesta = await toggleActivo(usuarioObjetivo._id);
-    if (respuesta.success) {
-      toast.success(respuesta.mensaje);
-      const actualizados = await obtenerUsuarios();
-      setUsuarios(actualizados.map((u) => ({ ...u, id: normalizedId(u) })));
-    } else {
-      toast.error(respuesta.mensaje);
+    try {
+      const data = await apiProvider.cambiarEstado(
+        usuarioObjetivo.id,
+        !usuarioObjetivo.activo
+      );
+
+      if (data.success) {
+        toast.success(data.mensaje);
+        setUsuarios((prev) =>
+          prev.map((u) =>
+            u.id === usuarioObjetivo.id ? { ...u, activo: !u.activo } : u
+          )
+        );
+      } else {
+        toast.error(data.mensaje || 'Error al actualizar estado');
+      }
+    } catch (error) {
+      toast.error(error.mensaje || 'Error al conectar con el servidor');
     }
   };
 
-  const renderAcciones = (usuarioObjetivo) => {
-    return (
-      <AccionesEntidad
-        entidad={usuarioObjetivo}
-        usuarioSolicitante={usuarioActual}
-        acciones={['editar', 'softDelete']}
-        verificarPermiso={verificarPermisoMock}
-        onAccion={async (clave, usuarioObjetivo) => {
-          const id = usuarioObjetivo.id;
-
-          if (clave === 'editar') {
-            handleEditar(usuarioObjetivo);
-            return;
+  const renderAcciones = (usuarioObjetivo) => (
+    <AccionesEntidad
+      entidad={usuarioObjetivo}
+      usuarioSolicitante={usuarioActual}
+      acciones={['editar', 'softDelete']}
+      verificarPermiso={verificarPermisoMock}
+      onAccion={async (clave, usuarioObjetivo) => {
+        const id = usuarioObjetivo.id;
+        if (clave === 'editar') {
+          handleEditar(usuarioObjetivo);
+          return;
+        }
+        if (clave === 'softDelete') {
+          try {
+            startMultiLoading(id);
+            await handleToggleActivo(usuarioObjetivo);
+          } finally {
+            stopMultiLoading(id);
           }
-
-          if (clave === 'softDelete') {
-            try {
-              startMultiLoading(id);
-              await handleToggleActivo(usuarioObjetivo);
-            } finally {
-              stopMultiLoading(id);
-            }
-          }
-        }}
-        estadoCargandoPorId={cargandoPorId[usuarioObjetivo.id]}
-      />
-    );
-  };
+        }
+      }}
+      estadoCargandoPorId={cargandoPorId[usuarioObjetivo.id]}
+    />
+  );
 
   const rowClassNameCallback = crearRowClassNameCallback({
     customConditions: [
@@ -158,10 +144,7 @@ const TestingPage = () => {
         condition: (item) => item.estado === 'pendiente',
         className: 'rowPendiente',
       },
-      {
-        condition: (item) => item.estaDeshabilitado,
-        className: 'rowDisabled',
-      },
+      { condition: (item) => item.estaDeshabilitado, className: 'rowDisabled' },
       {
         condition: (item) => item.estado !== 'activo',
         className: 'ocultarEnMovil',
@@ -169,21 +152,16 @@ const TestingPage = () => {
     ],
   });
 
-  const tipo = obtenerTipoProveedor();
-  const nombre = obtenerNombreProveedor();
+  const tipo = tipoProveedor;
+  const nombre = nombreProveedor;
   const estiloProveedor = {
     mock: { color: '#fff', icono: '🧪' },
     api: { color: '#3498db', icono: '🌐' },
   }[tipo] || { color: '#95a5a6', icono: '❔' };
 
-  // ✅ Mostrar Spinner con mensaje
-  if (cargandoGlobal) {
-    console.log('[DEBUG] Mostrando spinner global...');
+  if (cargandoGlobal || cargandoUsuarios || cargandoAuth) {
     return (
-      <div
-        className={styles.Container}
-        style={{ padding: 20, textAlign: 'left' }}
-      >
+      <div className={styles.Container} style={{ padding: 20 }}>
         <Spinner size={50} color="#fff" />
         <p style={{ marginTop: '1rem' }}>Cargando usuarios...</p>
       </div>
@@ -191,47 +169,40 @@ const TestingPage = () => {
   }
 
   return (
-    <div style={{ padding: 20 }} className={styles.Container}>
-      <h1>Test Tabla Usuarios</h1>
-
-      <h2
-        style={{
-          fontWeight: 400,
-          fontSize: '1rem',
-          color: estiloProveedor.color,
-          marginBottom: '1rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-        }}
-        title={`Esta página usa el proveedor "${nombre}" de tipo "${tipo}"`}
-      >
-        <span style={{ fontSize: '1.2rem' }}>{estiloProveedor.icono}</span>
-        Datos obtenidos desde: <strong>{nombre}</strong>
+    <div className={styles.Container}>
+      <h2 style={{ color: estiloProveedor.color }}>
+        {estiloProveedor.icono} Usuarios del sistema ({nombre})
       </h2>
-
       <Tabla
         columns={columns}
         data={datosMostrados}
-        estilos={{
-          tabla: rwdtableStyles.rwdTable,
-          paginador: {
-            pagination: RwdPaginadorStyles.pagination,
-            ocultarEnMovil: RwdPaginadorStyles.ocultarEnMovil,
-          },
-        }}
         renderAcciones={renderAcciones}
+        estilos={{ tabla: rwdtableStyles.rwdTable }}
         rowClassNameCallback={rowClassNameCallback}
+        onAccionPersonalizada={(clave, usuarioObjetivo) => {
+          if (clave === 'editar') handleEditar(usuarioObjetivo);
+        }}
       />
+      <button
+        onClick={handleReset}
+        style={{
+          marginTop: '1rem',
+          backgroundColor: '#e74c3c',
+          color: 'white',
+          padding: '0.5rem 1rem',
+          borderRadius: '6px',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        🔄 Restaurar usuarios de prueba
+      </button>
 
       <PaginadorNumeradoInteligente
         paginaActual={paginaActual}
-        totalPaginas={totalPaginas}
         setPaginaActual={setPaginaActual}
-        esMovil={esMovil}
-        estilos={{
-          pagination: RwdPaginadorStyles,
-        }}
+        totalPaginas={totalPaginas}
+        maxPaginasVisibles={5}
       />
     </div>
   );

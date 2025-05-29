@@ -22,7 +22,7 @@ const BotonAccionEntidad = ({
           objetivo: entidad,
           accion: clave,
         });
-        console.log(`[FRONTEND]Permiso para ${clave}:`, { permitido, mensaje });
+        console.log(`[FRONTEND]Permiso para:` + clave, { permitido, mensaje });
 
         const handleClick = () => {
           if (config.requierePermiso && !permitido) {

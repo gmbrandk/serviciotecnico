@@ -1,4 +1,4 @@
-// @services/usuarioService.js
+// @services/usuarioServiceSingleton.js
 
 let _provider = null;
 let _proveedorNombre = 'no definido';
@@ -36,7 +36,6 @@ export const getUsuarioService = () => {
   return {
     obtenerUsuarios: () => _provider.obtenerUsuarios(),
     editarUsuario: (id, data) => _provider.editarUsuario(id, data),
-    reset: () => _provider.reset?.(),
     toggleActivo: (id) => _provider.toggleActivo(id),
     obtenerNombreProveedor: () => _proveedorNombre,
     obtenerTipoProveedor: () => _proveedorTipo,

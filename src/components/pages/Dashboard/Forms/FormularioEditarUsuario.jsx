@@ -1,55 +1,116 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { usuariosMock } from '@__mock__/usuariosMock';
-import { normalizedId } from '@utils/formatters';
+import { useUsuarios } from '@context/UsuariosContext';
+import { useAuth } from '@context/AuthContext';
 import styles from '@styles/forms.module.css';
 
 const FormularioEditarUsuario = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { usuarios, actualizarUsuario } = useUsuarios();
+  const { usuario: usuarioSolicitante } = useAuth();
+
   const [usuario, setUsuario] = useState(null);
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
+    role: '',
     passwordActual: '',
     nuevaPassword: '',
     confirmarPassword: '',
+    confirmarPasswordSuperadmin: '',
   });
 
   useEffect(() => {
-    const encontrado = usuariosMock.find((u) => normalizedId(u) === id);
-    if (encontrado) {
-      setUsuario(encontrado);
-      setFormData((prev) => ({
-        ...prev,
-        nombre: encontrado.nombre,
-        email: encontrado.email,
-      }));
+    const usuarioObjetivo = usuarios.find((u) => u.id === id);
+    console.log('Usuarios Solicitante:', usuarioSolicitante);
+    console.log('Usuarios Objetivo:', usuarioObjetivo);
+
+    if (usuarioObjetivo) {
+      setUsuario(usuarioObjetivo);
+      setFormData({
+        nombre: usuarioObjetivo.nombre,
+        email: usuarioObjetivo.email,
+        role: usuarioObjetivo.role,
+        passwordActual: '',
+        nuevaPassword: '',
+        confirmarPassword: '',
+        confirmarPasswordSuperadmin: '',
+      });
     } else {
       alert('Usuario no encontrado');
       navigate('/testing');
     }
-  }, [id, navigate]);
+  }, [id, usuarios, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.nuevaPassword !== formData.confirmarPassword) {
-      alert('Las contraseñas no coinciden');
+
+    // Validaciones básicas
+    if (!formData.nombre.trim() || !formData.email.trim()) {
+      alert('Nombre y email son obligatorios');
       return;
     }
 
-    // Lógica de envío futura
-    console.log('Datos enviados:', formData);
-    alert('Cambios simulados correctamente');
-    navigate('/testing');
+    if (
+      formData.nuevaPassword &&
+      formData.nuevaPassword !== formData.confirmarPassword
+    ) {
+      alert('Las nuevas contraseñas no coinciden');
+      return;
+    }
+
+    if (
+      usuarioSolicitante.role !== 'superadministrador' &&
+      formData.role !== usuario.role
+    ) {
+      alert(
+        'No tienes permiso para cambiar el rol. Contacta con un superadministrador.'
+      );
+      return;
+    }
+
+    if (
+      usuarioSolicitante.role === 'superadministrador' &&
+      formData.role === 'superadministrador' &&
+      usuario.role !== 'superadministrador' &&
+      !formData.confirmarPasswordSuperadmin
+    ) {
+      alert(
+        'Debes ingresar tu contraseña para confirmar el cambio a superadministrador.'
+      );
+      return;
+    }
+
+    if (
+      usuarioSolicitante.role === 'superadministrador' &&
+      formData.role === 'superadministrador' &&
+      usuario.role !== 'superadministrador' &&
+      formData.confirmarPasswordSuperadmin !== usuarioSolicitante.password
+    ) {
+      alert('Contraseña del superadministrador incorrecta.');
+      return;
+    }
+
+    // Aquí enviarías a actualizar usuario en backend o context
+    const actualizado = await actualizarUsuario(usuario.id, {
+      nombre: formData.nombre,
+      email: formData.email,
+      role: formData.role,
+      password: formData.nuevaPassword ? formData.nuevaPassword : undefined,
+    });
+
+    if (actualizado.success) {
+      alert('Usuario actualizado correctamente');
+      navigate('/testing');
+    } else {
+      alert('Error al actualizar usuario: ' + actualizado.error);
+    }
   };
 
   if (!usuario) return null;
@@ -57,56 +118,107 @@ const FormularioEditarUsuario = () => {
   return (
     <form className={styles.msform} onSubmit={handleSubmit}>
       <fieldset>
-        <h2 className={styles.fsTitle}>Editar Usuario</h2>
-        <h3 className={styles.fsSubtitle}>Modifica los datos del usuario</h3>
+        <h3 className={styles.fsTitle}>Editar usuario: {usuario.nombre}</h3>
 
-        <input
-          type="text"
-          name="nombre"
-          placeholder="Nombre"
-          value={formData.nombre}
-          onChange={handleChange}
-        />
+        <label>
+          Nombre:
+          <input
+            className={styles.input}
+            type="text"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            required
+          />
+        </label>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+        <label>
+          Email:
+          <input
+            className={styles.input}
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </label>
 
-        <input
-          type="text"
-          name="role"
-          placeholder="Rol"
-          value={usuario.role}
-          readOnly
-        />
+        <label>
+          Rol:
+          {usuarioSolicitante.role === 'superadministrador' ? (
+            <select
+              className={styles.select}
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="usuario">Usuario</option>
+              <option value="administrador">Administrador</option>
+              <option value="tecnico">Técnico</option>
+              <option value="superadministrador">Superadministrador</option>
+            </select>
+          ) : (
+            <input
+              className={styles.input}
+              type="text"
+              name="role"
+              value={formData.role}
+              readOnly
+              disabled
+            />
+          )}
+        </label>
 
-        <input
-          type="password"
-          name="passwordActual"
-          placeholder="Contraseña Actual"
-          value={formData.passwordActual}
-          onChange={handleChange}
-        />
+        <label>
+          Contraseña actual:
+          <input
+            className={styles.input}
+            type="password"
+            name="passwordActual"
+            value={formData.passwordActual}
+            onChange={handleChange}
+          />
+        </label>
 
-        <input
-          type="password"
-          name="nuevaPassword"
-          placeholder="Nueva Contraseña"
-          value={formData.nuevaPassword}
-          onChange={handleChange}
-        />
+        <label>
+          Nueva contraseña:
+          <input
+            className={styles.input}
+            type="password"
+            name="nuevaPassword"
+            value={formData.nuevaPassword}
+            onChange={handleChange}
+          />
+        </label>
 
-        <input
-          type="password"
-          name="confirmarPassword"
-          placeholder="Confirmar Nueva Contraseña"
-          value={formData.confirmarPassword}
-          onChange={handleChange}
-        />
+        <label>
+          Confirmar nueva contraseña:
+          <input
+            className={styles.input}
+            type="password"
+            name="confirmarPassword"
+            value={formData.confirmarPassword}
+            onChange={handleChange}
+          />
+        </label>
+
+        {usuarioSolicitante.role === 'superadministrador' &&
+          formData.role === 'superadministrador' &&
+          usuario.role !== 'superadministrador' && (
+            <label>
+              Confirma tu contraseña superadministrador para este cambio:
+              <input
+                className={styles.input}
+                type="password"
+                name="confirmarPasswordSuperadmin"
+                value={formData.confirmarPasswordSuperadmin}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
         <button type="submit" className={styles.actionButton}>
           Guardar
