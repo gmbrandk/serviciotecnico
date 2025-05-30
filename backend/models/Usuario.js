@@ -8,12 +8,14 @@ const usuarioSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['superadministrador', 'administrador', 'tecnico'],
-    default: 'tecnico'
+    default: 'tecnico',
   },
   accessCode: {
-    type: String
+    type: String,
   },
-  activo: { type: Boolean, default: true },  // Nuevo campo para indicar si el usuario está activo
+  telefono: { type: String }, // Nuevo campo opcional
+  direccion: { type: String }, // Nuevo campo opcional
+  activo: { type: Boolean, default: true },
 });
 
 usuarioSchema.pre('save', async function (next) {

@@ -5,6 +5,7 @@ const {
   eliminarUsuario,
   cambiarEstadoActivo,
   obtenerUsuario,
+  cambiarPasswordController,
 } = require('@controllers/usuariosControllers');
 const {
   verificarToken,
@@ -14,6 +15,7 @@ const verificarCambioRol = require('@middlewares/verificarCambioRolMiddleware');
 const verificarEdicion = require('@middlewares/verificarEdicionMiddleware');
 const verificarEliminacion = require('@middlewares/verificarEliminacionMiddleware');
 const verificarCambioEstado = require('@middlewares/verificarCambioEstadoMiddleware');
+const verificarEdicionMiddleware = require('@middlewares/verificarEdicionMiddleware');
 
 const router = express.Router();
 
@@ -32,6 +34,13 @@ router.get(
 );
 
 router.put('/editar/:id', verificarToken, verificarEdicion, editarUsuario);
+
+router.post(
+  '/editar/:id/cambiar-password',
+  verificarToken,
+  verificarEdicionMiddleware,
+  cambiarPasswordController
+);
 
 // Ruta para cambiar el estado activo (activar/desactivar)
 router.patch(

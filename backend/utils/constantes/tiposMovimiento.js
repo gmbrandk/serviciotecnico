@@ -9,6 +9,7 @@ const TIPOS_MOVIMIENTO = {
   REACTIVAR: 'reactivar',
   DESACTIVAR: 'desactivar',
   CAMBIO_ROL: 'cambio_rol',
+  CAMBIO_PSSWD: 'cambio_psswd',
 };
 
 module.exports = TIPOS_MOVIMIENTO;

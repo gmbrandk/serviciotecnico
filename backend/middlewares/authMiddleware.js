@@ -19,7 +19,7 @@ const verificarToken = async (req, res, next) => {
     const usuario = await Usuario.findById(decoded.id);
     if (!usuario) {
       console.warn('[Middleware] ⚠️ Usuario no encontrado en la base de datos');
-      return sendError(res, 404, 'User not found');
+      return sendError(res, 404, 'Usuario no encontrado');
     }
 
     if (!usuario.activo) {
@@ -27,7 +27,7 @@ const verificarToken = async (req, res, next) => {
       return sendError(
         res,
         403,
-        'Your account is deactivated. Contact the administrator.'
+        'Tu cuenta ha sido desactivada. Contacta con el administrador.'
       );
     }
 
@@ -42,7 +42,7 @@ const verificarToken = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('[Middleware] ❌ Error al verificar token:', error.message);
-    return sendError(res, 401, 'Invalid token');
+    return sendError(res, 401, 'Token invalido');
   }
 };
 
@@ -57,7 +57,7 @@ const verificarRolesPermitidos = (rolesPermitidos) => {
       return sendError(
         res,
         403,
-        'You do not have permission to perform this action.'
+        'No tienes permiso para realizar esta acción.'
       );
     }
 

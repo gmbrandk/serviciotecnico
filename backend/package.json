@@ -12,7 +12,8 @@
     "@middlewares": "middlewares",
     "@routes": "routes",
     "@models": "models",
-    "@utils": "utils"
+    "@utils": "utils",
+    "@services": "services"
   },
   "keywords": [],
   "author": "",

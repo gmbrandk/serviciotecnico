@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const TIPOS_MOVIMIENTO = require('../utils/constantes/tiposMovimiento');
+const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 
 const movimientoSchema = new mongoose.Schema({
   tipo: {
