@@ -32,7 +32,7 @@ const columns = [
 const TestingPage = () => {
   const esMovil = useEsMovil();
   const navigate = useNavigate();
-  const { usuarios, alternarActivo, cargandoUsuarios } = useUsuarios();
+  const { usuarios, setUsuarios, cargandoUsuarios } = useUsuarios();
 
   const { usuario: usuarioActual, cargando: cargandoAuth } = useAuth();
 
@@ -58,7 +58,7 @@ const TestingPage = () => {
 
   useEffect(() => {
     startGlobalLoading();
-    const timeout = setTimeout(() => stopGlobalLoading(), 2000);
+    const timeout = setTimeout(() => stopGlobalLoading(), 800);
     return () => clearTimeout(timeout);
   }, []);
 
@@ -84,6 +84,7 @@ const TestingPage = () => {
       toast.error(resultado.mensaje || 'Error al restaurar usuarios');
     }
   };
+
   const handleToggleActivo = async (usuarioObjetivo) => {
     const confirmar = confirm(
       usuarioObjetivo.activo
@@ -93,23 +94,30 @@ const TestingPage = () => {
     if (!confirmar) return;
 
     try {
-      const data = await apiProvider.cambiarEstado(
-        usuarioObjetivo.id,
-        !usuarioObjetivo.activo
-      );
+      const service = getUsuarioService();
 
-      if (data.success) {
-        toast.success(data.mensaje);
+      const usuarioOriginal = usuarios.find((u) => u.id === usuarioObjetivo.id);
+      if (!usuarioOriginal) {
+        toast.error('Usuario no encontrado en el contexto.');
+        return;
+      }
+
+      const respuesta = await service.toggleActivo(usuarioOriginal._id);
+
+      if (respuesta.success) {
+        toast.success(respuesta.mensaje);
+
         setUsuarios((prev) =>
           prev.map((u) =>
             u.id === usuarioObjetivo.id ? { ...u, activo: !u.activo } : u
           )
         );
       } else {
-        toast.error(data.mensaje || 'Error al actualizar estado');
+        toast.error(respuesta.mensaje || 'Error al actualizar estado');
       }
     } catch (error) {
-      toast.error(error.mensaje || 'Error al conectar con el servidor');
+      console.error('Error al alternar estado:', error);
+      toast.error(error.message || 'Error al conectar con el servidor');
     }
   };
 

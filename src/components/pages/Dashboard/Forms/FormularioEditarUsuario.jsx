@@ -7,7 +7,7 @@ import styles from '@styles/forms.module.css';
 const FormularioEditarUsuario = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { usuarios, actualizarUsuario } = useUsuarios();
+  const { usuarios, editarUsuario } = useUsuarios();
   const { usuario: usuarioSolicitante } = useAuth();
 
   const [usuario, setUsuario] = useState(null);
@@ -67,6 +67,7 @@ const FormularioEditarUsuario = () => {
 
     if (
       usuarioSolicitante.role !== 'superadministrador' &&
+      usuarioSolicitante.role !== 'administrador' &&
       formData.role !== usuario.role
     ) {
       alert(
@@ -98,7 +99,7 @@ const FormularioEditarUsuario = () => {
     }
 
     // Aquí enviarías a actualizar usuario en backend o context
-    const actualizado = await actualizarUsuario(usuario.id, {
+    const actualizado = await editarUsuario(usuario.id, {
       nombre: formData.nombre,
       email: formData.email,
       role: formData.role,
@@ -118,111 +119,83 @@ const FormularioEditarUsuario = () => {
   return (
     <form className={styles.msform} onSubmit={handleSubmit}>
       <fieldset>
-        <h3 className={styles.fsTitle}>Editar usuario: {usuario.nombre}</h3>
+        <h2 className={styles.fsTitle}>Editar Usuario</h2>
+        <h3 className={styles.fsSubtitle}>Modifica los datos del usuario</h3>
 
-        <label>
-          Nombre:
-          <input
-            className={styles.input}
-            type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-          />
-        </label>
+        <input
+          type="text"
+          name="nombre"
+          placeholder="Nombre"
+          value={formData.nombre}
+          onChange={handleChange}
+          required
+        />
 
-        <label>
-          Email:
-          <input
-            className={styles.input}
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </label>
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo electrónico"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
 
-        <label>
-          Rol:
-          {usuarioSolicitante.role === 'superadministrador' ? (
-            <select
-              className={styles.select}
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="usuario">Usuario</option>
-              <option value="administrador">Administrador</option>
-              <option value="tecnico">Técnico</option>
-              <option value="superadministrador">Superadministrador</option>
-            </select>
-          ) : (
-            <input
-              className={styles.input}
-              type="text"
-              name="role"
-              value={formData.role}
-              readOnly
-              disabled
-            />
-          )}
-        </label>
+        {usuarioSolicitante?.role === 'superadministrador' ? (
+          <select name="role" value={formData.role} onChange={handleChange}>
+            <option value="tecnico">Técnico</option>
+            <option value="administrador">Administrador</option>
+            <option value="superadministrador">Superadministrador</option>
+          </select>
+        ) : usuarioSolicitante?.role === 'administrador' ? (
+          <select name="role" value={formData.role} onChange={handleChange}>
+            <option value="tecnico">Técnico</option>
+            <option value="administrador">Administrador</option>
+          </select>
+        ) : (
+          <input type="text" name="role" value={formData.role} readOnly />
+        )}
 
-        <label>
-          Contraseña actual:
-          <input
-            className={styles.input}
-            type="password"
-            name="passwordActual"
-            value={formData.passwordActual}
-            onChange={handleChange}
-          />
-        </label>
+        <input
+          type="password"
+          name="passwordActual"
+          placeholder="Contraseña actual"
+          value={formData.passwordActual}
+          onChange={handleChange}
+        />
 
-        <label>
-          Nueva contraseña:
-          <input
-            className={styles.input}
-            type="password"
-            name="nuevaPassword"
-            value={formData.nuevaPassword}
-            onChange={handleChange}
-          />
-        </label>
+        <input
+          type="password"
+          name="nuevaPassword"
+          placeholder="Nueva contraseña"
+          value={formData.nuevaPassword}
+          onChange={handleChange}
+        />
 
-        <label>
-          Confirmar nueva contraseña:
-          <input
-            className={styles.input}
-            type="password"
-            name="confirmarPassword"
-            value={formData.confirmarPassword}
-            onChange={handleChange}
-          />
-        </label>
+        <input
+          type="password"
+          name="confirmarPassword"
+          placeholder="Confirmar nueva contraseña"
+          value={formData.confirmarPassword}
+          onChange={handleChange}
+        />
 
         {usuarioSolicitante.role === 'superadministrador' &&
           formData.role === 'superadministrador' &&
           usuario.role !== 'superadministrador' && (
-            <label>
-              Confirma tu contraseña superadministrador para este cambio:
-              <input
-                className={styles.input}
-                type="password"
-                name="confirmarPasswordSuperadmin"
-                value={formData.confirmarPasswordSuperadmin}
-                onChange={handleChange}
-                required
-              />
-            </label>
+            <input
+              type="password"
+              name="confirmarPasswordSuperadmin"
+              placeholder="Contraseña Superadmin Requerida"
+              value={formData.confirmarPasswordSuperadmin}
+              onChange={handleChange}
+              required
+            />
           )}
 
         <button type="submit" className={styles.actionButton}>
           Guardar
         </button>
+
         <button
           type="button"
           className={styles.actionButton}

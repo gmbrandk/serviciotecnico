@@ -54,6 +54,27 @@ export const UsuariosProvider = ({ children }) => {
 
     setup();
   }, []);
+
+  const editarUsuario = async (id, nuevosDatos) => {
+    try {
+      // Llamada al servicio que actualiza el backend (o mock)
+      const service = getUsuarioService();
+      await service.editarUsuario(id, nuevosDatos);
+
+      // Actualización local del estado en contexto
+      setUsuarios((usuariosActuales) =>
+        usuariosActuales.map((usuario) =>
+          usuario.id === id ? { ...usuario, ...nuevosDatos } : usuario
+        )
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error al editar usuario:', error);
+      return { success: false, error };
+    }
+  };
+
   const resetUsuarios = async () => {
     try {
       const service = getUsuarioService();
@@ -80,7 +101,7 @@ export const UsuariosProvider = ({ children }) => {
 
   return (
     <UsuariosContext.Provider
-      value={{ usuarios, setUsuarios, cargando, resetUsuarios }}
+      value={{ usuarios, setUsuarios, cargando, resetUsuarios, editarUsuario }}
     >
       {children}
     </UsuariosContext.Provider>
