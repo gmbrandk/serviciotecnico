@@ -24,10 +24,11 @@ module.exports = ({ solicitante, objetivo, nuevoRol }) => {
     };
   }
 
-  if (jerarquiaNuevoRol >= jerarquiaSolicitante) {
+  // 🛑 No se permite asignar un rol superior al del solicitante
+  if (jerarquiaNuevoRol > jerarquiaSolicitante) {
     return {
       permitido: false,
-      mensaje: 'No puedes asignar un rol igual o superior al tuyo.',
+      mensaje: 'No puedes asignar un rol superior al tuyo.',
     };
   }
 

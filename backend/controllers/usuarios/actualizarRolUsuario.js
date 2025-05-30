@@ -1,29 +1,31 @@
-const crearMovimiento = require('@controllers/movimiento/crearMovimiento'); // asegúrate de importar correctamente
+const cambiarRolService = require('@services/usuarios/cambiarRolService');
 
 const actualizarRolUsuario = async (req, res) => {
-  const usuarioObjetivo = req.usuarioObjetivo;
-  const { nuevoRol } = req.body;
-
   try {
-    const rolAnterior = usuarioObjetivo.role;
-    usuarioObjetivo.role = nuevoRol.toLowerCase();
-    await usuarioObjetivo.save();
+    const { nuevoRol, contrasenaConfirmacion } = req.body;
 
-    // 🔄 Registrar movimiento
-    await crearMovimiento({
-      tipo: 'cambio_rol',
-      descripcion: `${req.usuario.nombre} (${req.usuario.role}) cambió el rol de ${usuarioObjetivo.nombre} de ${rolAnterior} a ${nuevoRol.toLowerCase()}.`,
-      entidad: 'Usuario',
-      entidadId: usuarioObjetivo._id,
-      usuarioId: req.usuario._id,
-      fecha: new Date()
+    const usuarioActualizado = await cambiarRolService({
+      usuarioSolicitante: req.usuario,
+      usuarioObjetivo: req.usuarioObjetivo, // inyectado por middleware
+      nuevoRol,
+      contrasenaConfirmacion,
     });
 
-    res.json({ mensaje: `Rol actualizado a ${nuevoRol.toLowerCase()} exitosamente.` });
+    // 💡 Eliminar password antes de responder
+    const { password, ...usuarioSinPassword } = usuarioActualizado.toObject();
 
+    res.status(200).json({
+      success: true,
+      mensaje: `Rol actualizado a '${nuevoRol.toLowerCase()}' exitosamente.`,
+      usuario: usuarioSinPassword,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al actualizar el rol.' });
+    console.error('❌ Error en actualizarRolUsuario:', error);
+
+    res.status(error.statusCode || 500).json({
+      success: false,
+      mensaje: error.mensaje || 'Error interno del servidor.',
+    });
   }
 };
 
