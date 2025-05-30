@@ -1,9 +1,15 @@
-const Usuario = require('@models/Usuario');
+const obtenerUsuariosService = require('@services/usuarios/obtenerUsuariosService');
 
-const obtenerUsuario = async (req, res) => {
+const obtenerUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.find().select('-password'); // Excluye la contraseña
-    
+    const filtros = {
+      role: req.query.role,
+      activo: req.query.activo,
+      nombre: req.query.nombre,
+    };
+
+    const usuarios = await obtenerUsuariosService(filtros);
+
     res.status(200).json({ usuarios });
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
@@ -11,4 +17,4 @@ const obtenerUsuario = async (req, res) => {
   }
 };
 
-module.exports = obtenerUsuario;
+module.exports = obtenerUsuarios;
