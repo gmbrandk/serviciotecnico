@@ -1,6 +1,6 @@
 // utils/httpResponse.js
 
-const sendResponse = (
+const httpResponse = (
   res,
   { status = 500, success = false, message, details = null }
 ) => {
@@ -10,13 +10,13 @@ const sendResponse = (
 };
 
 const sendError = (res, status, message, details = null) =>
-  sendResponse(res, { status, success: false, message, details });
+  httpResponse(res, { status, success: false, message, details });
 
 const sendSuccess = (res, status, message, details = null) =>
-  sendResponse(res, { status, success: true, message, details });
+  httpResponse(res, { status, success: true, message, details });
 
 module.exports = {
-  sendResponse,
+  httpResponse,
   sendError,
   sendSuccess,
 };

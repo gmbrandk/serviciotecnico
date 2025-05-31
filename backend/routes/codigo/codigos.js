@@ -9,6 +9,7 @@ const {
   verificarRolesPermitidos,
 } = require('@middlewares/authMiddleware');
 const validarCreacionCodigo = require('@middlewares/validarCreacionCodigoMiddleware');
+const verificarAcceso = require('../../middlewares/verificarAcceso');
 
 const router = express.Router();
 
@@ -16,7 +17,10 @@ const router = express.Router();
 router.post(
   '/generar',
   verificarToken, // ✅ Primero: verificar que el usuario esté autenticado
-  verificarRolesPermitidos(['superadministrador', 'administrador']), // ✅ Segundo: validar que su rol tenga permiso
+  verificarAcceso({
+    accion: 'generarCodigo',
+    rolesPermitidos: ['superadministrador', 'administrador'],
+  }),
   validarCreacionCodigo, // ✅ Tercero: validar campos del body (si aplica)
   generarCodigoAcceso // ✅ Finalmente: controlador que llama al service
 );
