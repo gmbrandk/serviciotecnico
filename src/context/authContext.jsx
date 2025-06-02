@@ -13,7 +13,7 @@ const MODO_SIMULADO = false;
 // 🧪 Usuario de prueba usado en modo simulado
 const usuarioMock = {
   id: '6811a47aebf66546dbed5910',
-  nombre: 'superadmin',
+  nombre: 'Marina Gold',
   email: 'superadmin@example.com',
   role: 'superadministrador',
   password: 'admin123',

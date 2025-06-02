@@ -1,16 +1,28 @@
 // @App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
 import LoginPage from '@pages/LoginPage';
 import RegisterPage from '@pages/RegisterPage';
 import NotFound from '@pages/NotFound';
 import DashboardPage from '@pages/DashboardPage';
 import ProtectedRoute from '@components/routes/ProtectedRoute';
 import PublicRoute from '@components/routes/PublicRoute';
+
 import dashboardRoutes from '@routes/dashboardRoutes';
-import { Toaster } from 'react-hot-toast';
+
 import TestingPage from '@pages/TestingPage';
 import FormularioEditarUsuario from '@components/pages/Dashboard/Forms/FormularioEditarUsuario';
+
+import { Toaster } from 'react-hot-toast';
+
+// Función recursiva para renderizar rutas anidadas
+const renderRoutes = (routes) =>
+  routes.map(({ path, element, children, index }, i) => (
+    <Route key={i} path={path} element={element} index={index}>
+      {children && renderRoutes(children)}
+    </Route>
+  ));
 
 const App = () => {
   return (
@@ -31,11 +43,10 @@ const App = () => {
             </ProtectedRoute>
           }
         >
-          {dashboardRoutes.map(({ path, element }, index) => (
-            <Route key={index} path={path} element={element} />
-          ))}
+          {renderRoutes(dashboardRoutes)}
         </Route>
 
+        {/* Ruta independiente de testing */}
         <Route path="/testing" element={<TestingPage />} />
         <Route
           path="/testing/editar/:id"
@@ -52,6 +63,7 @@ const App = () => {
           }
         />
       </Routes>
+
       <Toaster position="top-right" reverseOrder={false} />
     </>
   );

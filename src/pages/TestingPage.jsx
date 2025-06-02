@@ -191,20 +191,23 @@ const TestingPage = () => {
           if (clave === 'editar') handleEditar(usuarioObjetivo);
         }}
       />
-      <button
-        onClick={handleReset}
-        style={{
-          marginTop: '1rem',
-          backgroundColor: '#e74c3c',
-          color: 'white',
-          padding: '0.5rem 1rem',
-          borderRadius: '6px',
-          border: 'none',
-          cursor: 'pointer',
-        }}
-      >
-        🔄 Restaurar usuarios de prueba
-      </button>
+      {(tipoProveedor === 'mock' ||
+        nombreProveedor?.toLowerCase().includes('mock')) && (
+        <button
+          onClick={handleReset}
+          style={{
+            marginTop: '1rem',
+            backgroundColor: '#e74c3c',
+            color: 'white',
+            padding: '0.5rem 1rem',
+            borderRadius: '6px',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          🔄 Restaurar usuarios de prueba
+        </button>
+      )}
 
       <PaginadorNumeradoInteligente
         paginaActual={paginaActual}

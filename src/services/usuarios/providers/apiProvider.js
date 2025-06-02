@@ -78,4 +78,24 @@ export const apiProvider = {
       );
     }
   },
+  cambiarPasswordUsuario: async (
+    id,
+    { passwordActual, nuevaPassword, confirmarPassword }
+  ) => {
+    try {
+      const res = await axios.post(
+        `${baseURL}/usuarios/editar/${id}/cambiar-password`,
+        { passwordActual, nuevaPassword, confirmarPassword },
+        { withCredentials: true }
+      );
+      return res.data;
+    } catch (error) {
+      console.error('[❌ apiProvider] Error en cambiarPassword:', error);
+      throw (
+        error.response?.data || {
+          mensaje: 'Error desconocido al cambiar la contraseña',
+        }
+      );
+    }
+  },
 };

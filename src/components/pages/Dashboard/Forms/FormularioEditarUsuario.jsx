@@ -7,7 +7,8 @@ import styles from '@styles/forms.module.css';
 const FormularioEditarUsuario = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { usuarios, editarUsuario, cambiarRolUsuario } = useUsuarios();
+  const { usuarios, editarUsuario, cambiarRolUsuario, cambiarPasswordUsuario } =
+    useUsuarios();
   const { usuario: usuarioSolicitante } = useAuth();
 
   const [usuario, setUsuario] = useState(null);
@@ -39,7 +40,7 @@ const FormularioEditarUsuario = () => {
       });
     } else {
       alert('Usuario no encontrado');
-      navigate('/testing');
+      navigate('/dashboard/usuarios');
     }
   }, [id, usuarios, navigate, usuarioSolicitante]);
 
@@ -65,6 +66,7 @@ const FormularioEditarUsuario = () => {
       return;
     }
 
+    // Validación de rol como ya tienes...
     if (
       usuarioSolicitante.role !== 'superadministrador' &&
       usuarioSolicitante.role !== 'administrador' &&
@@ -89,17 +91,29 @@ const FormularioEditarUsuario = () => {
     }
 
     try {
+      // 1. Si hay cambio de contraseña, lo ejecutamos primero
+      if (formData.nuevaPassword) {
+        const resPass = await cambiarPasswordUsuario(usuario.id, {
+          passwordActual: formData.passwordActual,
+          nuevaPassword: formData.nuevaPassword,
+          confirmarPassword: formData.confirmarPassword,
+        });
+
+        if (!resPass.success) {
+          alert('Error al cambiar contraseña: ' + resPass.mensaje);
+          return;
+        }
+      }
+
+      // 2. Actualización general de usuario
       const {
         role,
+        passwordActual,
+        nuevaPassword,
         confirmarPassword,
         confirmarPasswordSuperadmin,
-        passwordActual,
         ...datosActualizados
       } = formData;
-
-      if (formData.nuevaPassword) {
-        datosActualizados.password = formData.nuevaPassword;
-      }
 
       const respuesta1 = await editarUsuario(usuario.id, datosActualizados);
 
@@ -108,14 +122,8 @@ const FormularioEditarUsuario = () => {
         return;
       }
 
-      // Aquí log para depurar contraseña superadmin antes de enviar
-      console.log(
-        'Confirmar Password Superadmin antes de cambiar rol:',
-        formData.confirmarPasswordSuperadmin
-      );
-
+      // 3. Cambio de rol si es necesario
       if (formData.role !== usuario.role) {
-        console.log('formData justo antes de cambiarRolUsuario:', formData);
         const respuesta2 = await cambiarRolUsuario(
           usuario.id,
           formData.role,
@@ -132,7 +140,7 @@ const FormularioEditarUsuario = () => {
       }
 
       alert('Usuario actualizado correctamente');
-      navigate('/testing');
+      navigate('/dashboard/usuarios');
     } catch (error) {
       console.error('Error al editar usuario:', error);
       alert('Error inesperado');
@@ -224,7 +232,7 @@ const FormularioEditarUsuario = () => {
         <button
           type="button"
           className={styles.actionButton}
-          onClick={() => navigate('/testing')}
+          onClick={() => navigate('/dashboard/usuarios')}
         >
           Cancelar
         </button>

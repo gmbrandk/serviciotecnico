@@ -1,13 +1,7 @@
 // @context/UsuariosContext.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { normalizedId } from '@utils/formatters'; // 👈 importa tu helper
-import {
-  getUsuarioService,
-  inicializarUsuarioService,
-  estaInicializadoUsuarioService,
-} from '@services/usuarioService';
-//import { localStorageProvider } from '@services/usuarios/providers/localStorageProvider';
-import { apiProvider } from '../services/usuarios/providers/apiProvider';
+import { getUsuarioService } from '@services/usuarioService';
 
 const UsuariosContext = createContext();
 
@@ -18,21 +12,12 @@ export const UsuariosProvider = ({ children }) => {
   useEffect(() => {
     const setup = async () => {
       try {
-        // 🛡 Fallback en desarrollo (solo si no se ha inicializado)
-        if (!estaInicializadoUsuarioService()) {
-          if (import.meta.env.DEV) {
-            console.warn(
-              '[UsuariosContext] Inicializando provider mock por fallback'
-            );
-            inicializarUsuarioService(apiProvider, 'API REST', 'api');
-          } else {
-            throw new Error(
-              '[UsuariosContext] usuarioService no inicializado y no se puede usar fallback en producción.'
-            );
-          }
-        }
-
         const service = getUsuarioService();
+
+        console.info(
+          `❔ Usuarios del sistema (proveedor): ${service.obtenerNombreProveedor()} [${service.obtenerTipoProveedor()}]`
+        );
+
         const usuariosObtenidos = await service.obtenerUsuarios();
 
         // ✅ Normaliza los IDs una sola vez aquí
@@ -56,6 +41,7 @@ export const UsuariosProvider = ({ children }) => {
     try {
       // Llamada al servicio que actualiza el backend (o mock)
       const service = getUsuarioService();
+
       await service.editarUsuario(id, nuevosDatos);
 
       // Actualización local del estado en contexto
@@ -118,6 +104,20 @@ export const UsuariosProvider = ({ children }) => {
       return { success: false, mensaje: error.message };
     }
   };
+  const cambiarPasswordUsuario = async (id, passwordActual, nuevaPassword) => {
+    try {
+      const service = getUsuarioService();
+      const respuesta = await service.cambiarPasswordUsuario(
+        id,
+        passwordActual,
+        nuevaPassword
+      );
+      return { success: true, data: respuesta };
+    } catch (error) {
+      console.error('Error al cambiar contraseña:', error);
+      return { success: false, error };
+    }
+  };
 
   return (
     <UsuariosContext.Provider
@@ -128,6 +128,7 @@ export const UsuariosProvider = ({ children }) => {
         resetUsuarios,
         editarUsuario,
         cambiarRolUsuario,
+        cambiarPasswordUsuario,
       }}
     >
       {children}

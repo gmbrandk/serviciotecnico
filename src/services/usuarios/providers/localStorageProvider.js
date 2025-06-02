@@ -30,6 +30,23 @@ export const localStorageProvider = {
     });
   },
 
+  // ✅ Nuevo método para cambiar rol
+  cambiarRolUsuario(id, nuevoRol, contrasenaConfirmacion = '') {
+    const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    const index = data.findIndex((u) => u._id === id);
+
+    if (index !== -1) {
+      data[index].role = nuevoRol;
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+      return simularLatencia({ success: true });
+    }
+
+    return simularLatencia({
+      success: false,
+      mensaje: 'Usuario no encontrado',
+    });
+  },
+
   async toggleActivo(id) {
     const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
     const index = data.findIndex((u) => u._id === id);
@@ -44,7 +61,6 @@ export const localStorageProvider = {
     return { success: false, mensaje: 'Usuario no encontrado' };
   },
 
-  // ✅ Reset corregido
   reset: () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(usuariosMock));
     console.log('[Mock] Estado reiniciado con usuariosMock');

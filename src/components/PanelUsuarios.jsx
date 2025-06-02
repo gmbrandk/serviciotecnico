@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Tabla from '@components/shared/Tabla/Tabla';
 import BotonAccionEntidad from '@components/shared/Botones/BotonAccionEntidad';
-import { verificarPermisoMock } from '@__mock__/verificarPermisoMock'; // o donde lo tengas
-
 import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
-import { apiProvider } from '@services/usuarios/providers/apiProvider'; // ✅ Usamos provider central
+
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
 import styles from '../styles/CrearCodigo.module.css';
+
 import toast from 'react-hot-toast';
 import useEsMovil from '@hooks/useEsMovil';
 import { useAuth } from '@context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
+
+import { useUsuarios } from '@context/UsuariosContext'; // <-- Importamos el contexto
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -25,31 +27,18 @@ const columns = [
 ];
 
 const PanelUsuarios = () => {
-  const [usuarios, setUsuarios] = useState([]);
-  const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
+  // Obtengo usuarios y estado de carga desde contexto
+  const { usuarios, cargando, editarUsuario } = useUsuarios();
+
   const [paginaActual, setPaginaActual] = useState(1);
+
   const esMovil = useEsMovil();
   const itemsPorPagina = esMovil ? 1 : 8;
 
   const { usuario: usuarioActual, cargando: cargandoAuth } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const cargarUsuarios = async () => {
-      try {
-        const usuarios = await apiProvider.obtenerUsuarios();
-        setUsuarios(usuarios);
-      } catch (error) {
-        toast.error(
-          error.response?.data?.mensaje || 'Error al cargar usuarios'
-        );
-      } finally {
-        setCargandoUsuarios(false);
-      }
-    };
-
-    cargarUsuarios();
-  }, []);
+  // Ya no necesitamos obtener el servicio ni cargar usuarios localmente
 
   const handleEditar = (usuarioObjetivo) => {
     navigate(`/dashboard/usuarios/editar/${usuarioObjetivo.id}`);
@@ -64,40 +53,38 @@ const PanelUsuarios = () => {
     if (!confirmar) return;
 
     try {
-      const data = await apiProvider.cambiarEstado(
-        usuarioObjetivo.id,
-        !usuarioObjetivo.activo
-      );
+      // Para toggle activo llamamos a editarUsuario con el nuevo estado
+      const nuevosDatos = { activo: !usuarioObjetivo.activo };
+      const resultado = await editarUsuario(usuarioObjetivo.id, nuevosDatos);
 
-      if (data.success) {
-        toast.success(data.mensaje);
-        setUsuarios((prev) =>
-          prev.map((u) =>
-            u.id === usuarioObjetivo.id ? { ...u, activo: !u.activo } : u
-          )
+      if (resultado.success) {
+        toast.success(
+          usuarioObjetivo.activo
+            ? `${usuarioObjetivo.nombre} fue desactivado`
+            : `${usuarioObjetivo.nombre} fue reactivado`
         );
       } else {
-        toast.error(data.mensaje || 'Error al actualizar estado');
+        toast.error('Error al actualizar estado');
       }
     } catch (error) {
-      toast.error(error.mensaje || 'Error al conectar con el servidor');
+      toast.error(error.message || 'Error al conectar con el servidor');
     }
   };
 
-  const renderAcciones = (usuarioObjetivo) => (
-    <BotonAccionEntidad
-      entidad={usuarioObjetivo}
-      usuarioSolicitante={usuarioActual}
-      acciones={['editar', 'softDelete']}
-      verificarPermiso={verificarPermisoMock}
-      onAccion={(accion, entidad) => {
-        if (accion === 'editar') {
-          handleEditar(entidad);
-        } else if (accion === 'softDelete') {
-          handleToggleActivo(entidad);
-        }
-      }}
-    />
+  const renderAcciones = React.useCallback(
+    (usuarioObjetivo) => (
+      <BotonAccionEntidad
+        entidad={usuarioObjetivo}
+        usuarioSolicitante={usuarioActual}
+        acciones={['editar', 'softDelete']}
+        verificarPermiso={verificarPermisoMock}
+        onAccion={(accion, entidad) => {
+          if (accion === 'editar') handleEditar(entidad);
+          else if (accion === 'softDelete') handleToggleActivo(entidad);
+        }}
+      />
+    ),
+    [usuarioActual]
   );
 
   const totalPaginas = Math.ceil(usuarios.length / itemsPorPagina);
@@ -107,12 +94,12 @@ const PanelUsuarios = () => {
     indiceInicio + itemsPorPagina
   );
 
-  if (cargandoUsuarios || cargandoAuth || !usuarioActual) {
+  if (cargando || cargandoAuth || !usuarioActual) {
     return <p>Cargando sesión y usuarios...</p>;
   }
 
   return (
-    <div style={{ maxWidth: '500px' }} className={styles.container}>
+    <div className={styles.container}>
       <h1 className={styles.title}>Panel de Usuarios</h1>
 
       <Tabla
@@ -120,9 +107,8 @@ const PanelUsuarios = () => {
         data={datosPaginados}
         renderAcciones={renderAcciones}
         estilos={{ tabla: rwdtableStyles.rwdTable }}
-        itemsPorPagina={itemsPorPagina}
-        tipo="numerado"
-        ocultarEnMovil={false}
+        paginacionInterna={false}
+        rowClassNameCallback={null}
       />
 
       {totalPaginas > 1 && (
