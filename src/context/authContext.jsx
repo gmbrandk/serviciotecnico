@@ -12,10 +12,10 @@ const MODO_SIMULADO = true;
 
 // 🧪 Usuario de prueba usado en modo simulado
 const usuarioMock = {
-  id: '681abeef01f846019099a2b8',
-  nombre: 'Tyrone Myers',
-  email: 'tyrone@backyardigans.com',
-  role: 'administrador',
+  id: '6811a47aebf66546dbed5910',
+  nombre: 'superadmin',
+  email: 'superadmin@example.com',
+  role: 'superadministrador',
   password: 'admin123',
 };
 

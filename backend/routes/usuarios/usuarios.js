@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 const { actualizarRolUsuario } = require('@controllers/authController');
 const {
   editarUsuario,
@@ -11,25 +12,30 @@ const {
   verificarToken,
   verificarRolesPermitidos,
 } = require('@middlewares/authMiddleware');
-const verificarCambioRol = require('@middlewares/verificarCambioRolMiddleware');
 const verificarEdicion = require('@middlewares/verificarEdicionMiddleware');
 const verificarEliminacion = require('@middlewares/verificarEliminacionMiddleware');
 const verificarCambioEstado = require('@middlewares/verificarCambioEstadoMiddleware');
 const verificarEdicionMiddleware = require('@middlewares/verificarEdicionMiddleware');
-
-const router = express.Router();
+const verificarAcceso = require('@middlewares/verificarAcceso');
 
 router.patch(
   '/editar/:id/rol',
-  verificarToken,
-  verificarCambioRol,
+  verificarToken, // ✅ Primero: verificar que el usuario esté autenticado
+  verificarAcceso({
+    accion: 'cambiarRol',
+    requiereUsuarioObjetivo: true,
+    obtenerNuevoRol: (req) => req.body.nuevoRol,
+  }),
   actualizarRolUsuario
 );
 
 router.get(
   '/',
   verificarToken,
-  verificarRolesPermitidos(['superadministrador', 'administrador']),
+  verificarAcceso({
+    accion: 'obtenerUsuario',
+    rolesPermitidos: ['superadministrador', 'administrador'],
+  }),
   obtenerUsuario
 );
 

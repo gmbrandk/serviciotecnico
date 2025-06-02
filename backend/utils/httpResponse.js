@@ -4,8 +4,15 @@ const httpResponse = (
   res,
   { status = 500, success = false, message, details = null }
 ) => {
-  const payload = { success, message };
+  const payload = {
+    success,
+    ok: success, // 🔁 Compatibilidad
+    message,
+    mensaje: message, // 🔁 Compatibilidad
+  };
+
   if (details) payload.details = details;
+
   return res.status(status).json(payload);
 };
 

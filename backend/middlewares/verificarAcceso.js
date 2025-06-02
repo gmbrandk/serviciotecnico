@@ -1,7 +1,7 @@
 // middlewares/verificarAcceso.js
 const Usuario = require('@models/Usuario');
 const verificarPermiso = require('@utils/verificarPermiso');
-const { httpResponse } = require('@utils/httpResponse');
+const { httpResponse, sendError } = require('@utils/httpResponse');
 
 const verificarAcceso = (config) => {
   return async (req, res, next) => {
@@ -10,21 +10,40 @@ const verificarAcceso = (config) => {
         accion,
         requiereUsuarioObjetivo = false,
         obtenerIdObjetivo = () => req.params.id,
-        obtenerNuevoRol = () => req.body.rol,
+        obtenerNuevoRol,
         rolesPermitidos = null,
       } = config;
 
       const solicitante = req.usuario;
+      const rolesPermitidosNormalizados =
+        rolesPermitidos?.map((r) => r.toLowerCase()) || [];
+
+      let nuevoRol;
+      try {
+        nuevoRol = obtenerNuevoRol ? obtenerNuevoRol(req) : undefined;
+      } catch (e) {
+        nuevoRol = undefined; // Falla segura
+      }
 
       // Si hay una lista de roles permitidos global (como en GET /usuarios), validarla directamente
+      console.log(
+        '[🛡️ VerificarAcceso] Rol del solicitante:',
+        solicitante?.role
+      );
+      console.log(
+        '[🛡️ VerificarAcceso] Roles permitidos:',
+        rolesPermitidosNormalizados
+      );
+
       if (
-        rolesPermitidos &&
-        !rolesPermitidos.includes(solicitante?.role?.toLowerCase())
+        rolesPermitidosNormalizados.length > 0 &&
+        !rolesPermitidosNormalizados.includes(solicitante?.role?.toLowerCase())
       ) {
-        return httpResponse(res, 403, {
-          ok: false,
-          mensaje: 'No tiene permisos para acceder a esta ruta.',
-        });
+        return sendError(
+          res,
+          403,
+          'No tienes permisos para acceder a esta ruta'
+        );
       }
 
       // Si se requiere un objetivo (otro usuario), buscarlo
@@ -33,10 +52,7 @@ const verificarAcceso = (config) => {
         const id = obtenerIdObjetivo(req);
         objetivo = await Usuario.findById(id);
         if (!objetivo) {
-          return httpResponse(res, 404, {
-            ok: false,
-            mensaje: 'Usuario objetivo no encontrado.',
-          });
+          return sendError(res, 404, 'Usuario objetivo no encontrado.');
         }
       }
 
@@ -44,11 +60,11 @@ const verificarAcceso = (config) => {
         solicitante,
         objetivo,
         accion,
-        nuevoRol: obtenerNuevoRol(req),
+        nuevoRol,
       });
 
       if (!permiso.permitido) {
-        return httpResponse(res, 403, { ok: false, mensaje: permiso.mensaje });
+        return sendError(res, 403, permiso.mensaje);
       }
 
       if (objetivo) req.usuarioObjetivo = objetivo;
@@ -56,10 +72,7 @@ const verificarAcceso = (config) => {
       next();
     } catch (error) {
       console.error('Error en verificación de acceso:', error);
-      return httpResponse(res, 500, {
-        ok: false,
-        mensaje: 'Error interno del servidor.',
-      });
+      return sendError(res, 500, 'Error interno del servidor.');
     }
   };
 };

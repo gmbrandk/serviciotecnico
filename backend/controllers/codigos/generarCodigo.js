@@ -1,24 +1,26 @@
-const {
-  generarCodigoService,
-} = require('../../services/codigos/generarCodigoService');
-const { logError } = require('@utils/logger');
+const generarCodigoService = require('@services/codigos/generarCodigoService');
 
-const generarCodigo = async (req, res) => {
+const generarCodigoController = async (req, res) => {
   try {
-    const resultado = await generarCodigoService(req.usuario, req.body.usos);
+    const nuevoCodigo = await generarCodigoService({
+      usuarioSolicitante: req.usuario,
+      usos: req.body.usos,
+    });
 
     res.status(201).json({
       success: true,
-      mensaje: 'Código generado correctamente',
-      codigo: resultado,
+      mensaje: 'Código generado correctamente.',
+      codigo: nuevoCodigo,
     });
   } catch (error) {
-    logError(error);
-    res.status(error.status || 500).json({
+    console.error('❌ Error al generar código:', error);
+
+    res.status(error.statusCode || 500).json({
       success: false,
-      mensaje: error.mensaje || 'Error al generar código',
+      mensaje: error.mensaje || 'Error al generar el código.',
+      ...(error.codigoExistente && { codigoExistente: error.codigoExistente }),
     });
   }
 };
 
-module.exports = generarCodigo;
+module.exports = generarCodigoController;

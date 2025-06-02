@@ -1,21 +1,22 @@
 const CodigoAcceso = require('@models/CodigoAcceso');
 const crypto = require('crypto');
 const { crearMovimiento } = require('@controllers/movimientoController');
-const verificarPermiso = require('@utils/verificarPermiso');
 
-const generarCodigoService = async (usuario, usos = 1) => {
-  const rolUsuario = usuario.role?.toLowerCase();
+const generarCodigoService = async ({ usuarioSolicitante, usos = 1 }) => {
+  const usuario = usuarioSolicitante;
 
-  // Validación de rol
-  const { permitido, mensaje } = verificarPermiso({
-    solicitante: usuario,
-    accion: 'generarCodigo',
+  const codigoActivo = await CodigoAcceso.findOne({
+    estado: 'activo',
+    usosDisponibles: { $gt: 0 },
   });
 
-  if (!permitido) {
-    const error = new Error(mensaje);
-    error.status = 403;
-    throw error;
+  if (codigoActivo) {
+    throw {
+      statusCode: 409,
+      mensaje:
+        'Ya existe un código activo con usos disponibles. No se puede generar otro.',
+      codigoExistente: codigoActivo.codigo,
+    };
   }
   // Validación de usos
   if (
@@ -27,7 +28,7 @@ const generarCodigoService = async (usuario, usos = 1) => {
       !Number.isInteger(usos))
   ) {
     const error = new Error('El número de usos debe ser un entero entre 1 y 5');
-    error.status = 400;
+    error.statusCode = 400;
     throw error;
   }
 
@@ -74,4 +75,4 @@ const generarCodigoService = async (usuario, usos = 1) => {
   };
 };
 
-module.exports = { generarCodigoService };
+module.exports = generarCodigoService;
