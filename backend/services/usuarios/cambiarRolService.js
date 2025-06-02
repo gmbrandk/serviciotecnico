@@ -12,7 +12,7 @@ const cambiarRolService = async ({
   const rolSolicitante = usuarioSolicitante.role;
   const rolObjetivoActual = usuarioObjetivo.role;
 
-  // Validar que el nuevo rol no sea igual al actual
+  // 1️⃣ Validar que el nuevo rol no sea igual al actual
   if (nuevoRol === rolObjetivoActual) {
     throw {
       statusCode: 400,
@@ -20,7 +20,7 @@ const cambiarRolService = async ({
     };
   }
 
-  // Verificar jerarquía
+  // 2️⃣ Validar jerarquía
   if (rolesJerarquia[nuevoRol] > rolesJerarquia[rolSolicitante]) {
     throw {
       statusCode: 403,
@@ -28,7 +28,7 @@ const cambiarRolService = async ({
     };
   }
 
-  // Solo superadministrador puede asignar ese rol, y debe confirmar con su contraseña
+  // 3️⃣ Solo superadmin puede asignar ese rol, y debe confirmar con contraseña
   if (nuevoRol === 'superadministrador') {
     if (rolSolicitante !== 'superadministrador') {
       throw {
@@ -37,8 +37,18 @@ const cambiarRolService = async ({
       };
     }
 
+    // 🔒 Verificar si la contraseña fue enviada
+    if (!contrasenaConfirmacion || contrasenaConfirmacion.trim() === '') {
+      throw {
+        statusCode: 400,
+        mensaje:
+          'Debes ingresar tu contraseña para confirmar el cambio de rol.',
+      };
+    }
+
+    // 🔐 Verificar si coincide la contraseña
     const coincide = await bcrypt.compare(
-      contrasenaConfirmacion || '',
+      contrasenaConfirmacion,
       usuarioSolicitante.password
     );
 
@@ -50,11 +60,12 @@ const cambiarRolService = async ({
     }
   }
 
+  // 4️⃣ Actualizar y guardar
   const rolAnterior = usuarioObjetivo.role;
   usuarioObjetivo.role = nuevoRol.toLowerCase();
   await usuarioObjetivo.save();
 
-  // Registrar movimiento
+  // 📝 Registrar movimiento
   await crearMovimiento({
     tipo: TIPOS_MOVIMIENTO.CAMBIO_ROL,
     descripcion: `${usuarioSolicitante.nombre} (${

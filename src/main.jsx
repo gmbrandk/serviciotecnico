@@ -10,8 +10,8 @@ import { inicializarUsuarioService } from '@services/usuarioService';
 import { localStorageProvider } from '@services/usuarios/providers/localStorageProvider';
 import { apiProvider } from '@services/usuarios/providers/apiProvider';
 
-inicializarUsuarioService(localStorageProvider, 'Mock Local', 'mock');
-//inicializarUsuarioService(apiProvider, 'API REST', 'mock');
+//inicializarUsuarioService(localStorageProvider, 'Mock Local', 'mock');
+inicializarUsuarioService(apiProvider, 'API REST', 'mock');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>

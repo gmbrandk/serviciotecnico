@@ -7,7 +7,7 @@ import styles from '@styles/forms.module.css';
 const FormularioEditarUsuario = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { usuarios, editarUsuario } = useUsuarios();
+  const { usuarios, editarUsuario, cambiarRolUsuario } = useUsuarios();
   const { usuario: usuarioSolicitante } = useAuth();
 
   const [usuario, setUsuario] = useState(null);
@@ -41,17 +41,17 @@ const FormularioEditarUsuario = () => {
       alert('Usuario no encontrado');
       navigate('/testing');
     }
-  }, [id, usuarios, navigate]);
+  }, [id, usuarios, navigate, usuarioSolicitante]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log('Cambio en input:', name, value);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones básicas
     if (!formData.nombre.trim() || !formData.email.trim()) {
       alert('Nombre y email son obligatorios');
       return;
@@ -88,29 +88,54 @@ const FormularioEditarUsuario = () => {
       return;
     }
 
-    if (
-      usuarioSolicitante.role === 'superadministrador' &&
-      formData.role === 'superadministrador' &&
-      usuario.role !== 'superadministrador' &&
-      formData.confirmarPasswordSuperadmin !== usuarioSolicitante.password
-    ) {
-      alert('Contraseña del superadministrador incorrecta.');
-      return;
-    }
+    try {
+      const {
+        role,
+        confirmarPassword,
+        confirmarPasswordSuperadmin,
+        passwordActual,
+        ...datosActualizados
+      } = formData;
 
-    // Aquí enviarías a actualizar usuario en backend o context
-    const actualizado = await editarUsuario(usuario.id, {
-      nombre: formData.nombre,
-      email: formData.email,
-      role: formData.role,
-      password: formData.nuevaPassword ? formData.nuevaPassword : undefined,
-    });
+      if (formData.nuevaPassword) {
+        datosActualizados.password = formData.nuevaPassword;
+      }
 
-    if (actualizado.success) {
+      const respuesta1 = await editarUsuario(usuario.id, datosActualizados);
+
+      if (!respuesta1.success) {
+        alert('Error al actualizar datos: ' + respuesta1.error);
+        return;
+      }
+
+      // Aquí log para depurar contraseña superadmin antes de enviar
+      console.log(
+        'Confirmar Password Superadmin antes de cambiar rol:',
+        formData.confirmarPasswordSuperadmin
+      );
+
+      if (formData.role !== usuario.role) {
+        console.log('formData justo antes de cambiarRolUsuario:', formData);
+        const respuesta2 = await cambiarRolUsuario(
+          usuario.id,
+          formData.role,
+          formData.confirmarPasswordSuperadmin
+        );
+
+        if (!respuesta2.success) {
+          alert(
+            'Error al cambiar rol: ' +
+              (respuesta2.error?.mensaje || 'Error desconocido')
+          );
+          return;
+        }
+      }
+
       alert('Usuario actualizado correctamente');
       navigate('/testing');
-    } else {
-      alert('Error al actualizar usuario: ' + actualizado.error);
+    } catch (error) {
+      console.error('Error al editar usuario:', error);
+      alert('Error inesperado');
     }
   };
 

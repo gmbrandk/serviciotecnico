@@ -36,6 +36,8 @@ export const getUsuarioService = () => {
   return {
     obtenerUsuarios: () => _provider.obtenerUsuarios(),
     editarUsuario: (id, data) => _provider.editarUsuario(id, data),
+    cambiarRolUsuario: (id, nuevoRol, contrasenaConfirmacion) =>
+      _provider.cambiarRolUsuario(id, nuevoRol, contrasenaConfirmacion),
     reset: () => _provider.reset?.(),
     toggleActivo: (id) => _provider.toggleActivo(id),
     obtenerNombreProveedor: () => _proveedorNombre,

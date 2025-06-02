@@ -1,4 +1,3 @@
-//@services/usuarios/providers/apiProvider.js //data Real
 import axios from 'axios';
 import { normalizedId } from '@utils/formatters';
 
@@ -9,7 +8,7 @@ export const apiProvider = {
     try {
       console.log('[🔄 apiProvider] solicitando /api/usuarios');
       const res = await axios.get(`${baseURL}/usuarios`, {
-        withCredentials: true, // <== para enviar cookies HttpOnly
+        withCredentials: true,
       });
       console.log('[✅ respuesta]', res.data);
       return res.data.usuarios.map((u) => ({
@@ -19,6 +18,22 @@ export const apiProvider = {
     } catch (error) {
       console.error('[❌ apiProvider] Error en obtenerUsuarios:', error);
       throw error;
+    }
+  },
+
+  editarUsuario: async (id, datos) => {
+    try {
+      const res = await axios.put(`${baseURL}/usuarios/editar/${id}`, datos, {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (error) {
+      console.error('[❌ apiProvider] Error en editarUsuario:', error);
+      throw (
+        error.response?.data || {
+          mensaje: 'Error desconocido al editar usuario',
+        }
+      );
     }
   },
 
@@ -35,6 +50,30 @@ export const apiProvider = {
       throw (
         error.response?.data || {
           mensaje: 'Error desconocido al actualizar estado',
+        }
+      );
+    }
+  },
+
+  cambiarRolUsuario: async (id, nuevoRol, contrasenaConfirmacion = '') => {
+    console.log('✅ Llamando a cambiarRolUsuario con:', {
+      id,
+      nuevoRol,
+      contrasenaConfirmacion,
+    });
+
+    try {
+      const res = await axios.patch(
+        `${baseURL}/usuarios/editar/${id}/rol`,
+        { nuevoRol, contrasenaConfirmacion },
+        { withCredentials: true }
+      );
+      return res.data;
+    } catch (error) {
+      console.error('[❌ apiProvider] Error en cambiarRolUsuario:', error);
+      throw (
+        error.response?.data || {
+          mensaje: 'Error desconocido al cambiar el rol',
         }
       );
     }

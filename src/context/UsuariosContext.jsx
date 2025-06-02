@@ -6,7 +6,8 @@ import {
   inicializarUsuarioService,
   estaInicializadoUsuarioService,
 } from '@services/usuarioService';
-import { localStorageProvider } from '@services/usuarios/providers/localStorageProvider';
+//import { localStorageProvider } from '@services/usuarios/providers/localStorageProvider';
+import { apiProvider } from '../services/usuarios/providers/apiProvider';
 
 const UsuariosContext = createContext();
 
@@ -23,11 +24,7 @@ export const UsuariosProvider = ({ children }) => {
             console.warn(
               '[UsuariosContext] Inicializando provider mock por fallback'
             );
-            inicializarUsuarioService(
-              localStorageProvider,
-              'LocalStorageMock',
-              'mock'
-            );
+            inicializarUsuarioService(apiProvider, 'API REST', 'api');
           } else {
             throw new Error(
               '[UsuariosContext] usuarioService no inicializado y no se puede usar fallback en producción.'
@@ -75,6 +72,29 @@ export const UsuariosProvider = ({ children }) => {
     }
   };
 
+  const cambiarRolUsuario = async (
+    id,
+    nuevoRol,
+    contrasenaConfirmacion = ''
+  ) => {
+    try {
+      const service = getUsuarioService();
+      await service.cambiarRolUsuario(id, nuevoRol, contrasenaConfirmacion);
+
+      // Actualizar el usuario en el estado local
+      setUsuarios((usuariosActuales) =>
+        usuariosActuales.map((usuario) =>
+          usuario.id === id ? { ...usuario, role: nuevoRol } : usuario
+        )
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error al cambiar rol del usuario:', error);
+      return { success: false, error };
+    }
+  };
+
   const resetUsuarios = async () => {
     try {
       const service = getUsuarioService();
@@ -101,7 +121,14 @@ export const UsuariosProvider = ({ children }) => {
 
   return (
     <UsuariosContext.Provider
-      value={{ usuarios, setUsuarios, cargando, resetUsuarios, editarUsuario }}
+      value={{
+        usuarios,
+        setUsuarios,
+        cargando,
+        resetUsuarios,
+        editarUsuario,
+        cambiarRolUsuario,
+      }}
     >
       {children}
     </UsuariosContext.Provider>
