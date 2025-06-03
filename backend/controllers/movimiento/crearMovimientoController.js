@@ -1,27 +1,27 @@
-const Movimiento = require('@models/Movimiento');
+const crearMovimientoService = require('@services/movimientos/crearMovimientoService');
 
-const crearMovimientoController = async ({
-  tipo,
-  descripcion,
-  entidad,
-  entidadId,
-  usuarioId,
-  usadoPor,
-}) => {
-  console.log('Descripción recibida en crearMovimiento:', descripcion); // <--- aquí
-  console.log('📌 crearMovimiento() recibió usuarioId:', usuarioId);
+const crearMovimientoController = async (datos, opciones = {}) => {
+  const { tipo, descripcion, entidad, entidadId, usuarioId, usadoPor } = datos;
+
+  const { session = null } = opciones;
+
   try {
-    const movimiento = new Movimiento({
+    console.log('Descripción recibida en crearMovimiento:', descripcion);
+    console.log('📌 crearMovimiento() recibió usuarioId:', usuarioId);
+
+    await crearMovimientoService({
       tipo,
       descripcion,
       entidad,
       entidadId,
-      realizadoPor: usuarioId,
+      usuarioId,
       usadoPor,
+      session,
     });
-    await movimiento.save();
   } catch (error) {
     console.error('Error al registrar movimiento:', error.message);
+    // Si decides escalar el error, podrías lanzar una excepción aquí
+    // throw error;
   }
 };
 

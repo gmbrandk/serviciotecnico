@@ -1,20 +1,18 @@
-const TIPOS_MOVIMIENTO = require('../../utils/constantes/tiposMovimiento');
-const { crearMovimiento } = require('@controllers/movimientoController');
+const cambiarEstadoActivoService = require('@services/usuarios/cambiarEstadoActivoService');
 
 const cambiarEstadoActivoController = async (req, res) => {
   try {
-    const usuario = req.usuarioObjetivo; // Ya viene del middleware
-    const usuarioSolicitante = req.usuario; // Usuario autenticado
+    const usuario = req.usuarioObjetivo;
+    const usuarioSolicitante = req.usuario;
     const { activo } = req.body;
 
-    if (typeof activo !== 'boolean') {
-      return res.status(400).json({
-        success: false,
-        mensaje: 'El campo "activo" debe ser booleano (true o false).',
-      });
-    }
+    const resultado = await cambiarEstadoActivoService({
+      usuarioObjetivo: usuario,
+      usuarioSolicitante,
+      nuevoEstado: activo,
+    });
 
-    if (usuario.activo === activo) {
+    if (resultado.yaEstaEnEseEstado) {
       return res.status(200).json({
         success: true,
         mensaje: `El usuario ya se encuentra ${
@@ -23,40 +21,23 @@ const cambiarEstadoActivoController = async (req, res) => {
       });
     }
 
-    usuario.activo = activo;
-    await usuario.save();
-
-    const tipo = activo
-      ? TIPOS_MOVIMIENTO.REACTIVAR
-      : TIPOS_MOVIMIENTO.DESACTIVAR;
-
-    await crearMovimiento({
-      tipo,
-      descripcion: `El usuario ${usuarioSolicitante.nombre} ${
-        activo ? 'reactivó' : 'desactivó'
-      } al usuario ${usuario.nombre} correctamente.`,
-      entidad: 'Usuario',
-      entidadId: usuario._id,
-      usuarioId: usuarioSolicitante._id,
-      fecha: new Date(),
-    });
-
-    res.json({
+    res.status(200).json({
       success: true,
       mensaje: `Usuario ${
         activo ? 'reactivado' : 'desactivado'
       } correctamente.`,
       usuario: {
-        id: usuario._id,
-        nombre: usuario.nombre,
-        activo: usuario.activo,
+        id: resultado.usuario._id,
+        nombre: resultado.usuario.nombre,
+        activo: resultado.usuario.activo,
       },
     });
   } catch (error) {
     console.error('Error al cambiar estado del usuario:', error);
     res.status(500).json({
       success: false,
-      mensaje: 'Error del servidor al actualizar estado del usuario.',
+      mensaje:
+        error.message || 'Error del servidor al actualizar estado del usuario.',
     });
   }
 };

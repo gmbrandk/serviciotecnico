@@ -14,7 +14,6 @@ const {
 } = require('@middlewares/authMiddleware');
 const verificarEdicion = require('@middlewares/verificarEdicionMiddleware');
 const verificarEliminacion = require('@middlewares/verificarEliminacionMiddleware');
-const verificarCambioEstado = require('@middlewares/verificarCambioEstadoMiddleware');
 const verificarEdicionMiddleware = require('@middlewares/verificarEdicionMiddleware');
 const verificarAcceso = require('@middlewares/verificarAcceso');
 
@@ -52,8 +51,12 @@ router.post(
 router.patch(
   '/:id/estado',
   verificarToken,
-  verificarRolesPermitidos(['superadministrador', 'administrador']),
-  verificarCambioEstado,
+  verificarAcceso({
+    accion: 'cambiarEstado',
+    requiereUsuarioObjetivo: true,
+    rolesPermitidos: ['superadministrador', 'administrador'],
+    requiereUsuarioObjetivo: true, // ✅ Activar esto
+  }),
   cambiarEstadoActivo
 );
 

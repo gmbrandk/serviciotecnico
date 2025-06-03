@@ -1,7 +1,7 @@
-// middlewares/verificarAcceso.js
 const Usuario = require('@models/Usuario');
 const verificarPermiso = require('@utils/verificarPermiso');
 const { httpResponse, sendError } = require('@utils/httpResponse');
+const { validarBooleano, esBooleano } = require('@utils/validadores'); // ✅ Importación del validador
 
 const verificarAcceso = (config) => {
   return async (req, res, next) => {
@@ -23,6 +23,34 @@ const verificarAcceso = (config) => {
         nuevoRol = obtenerNuevoRol ? obtenerNuevoRol(req) : undefined;
       } catch (e) {
         nuevoRol = undefined; // Falla segura
+      }
+
+      // ✅ Validar campo booleano "activo" si está presente en el body
+      // Normalizar campo "activo" antes de validar
+      if ('activo' in req.body) {
+        const val = req.body.activo;
+
+        // Normalizar si viene como string
+        if (typeof val === 'string') {
+          if (val.toLowerCase() === 'true') req.body.activo = true;
+          else if (val.toLowerCase() === 'false') req.body.activo = false;
+        }
+
+        // Validación estricta sin excepción para control
+        if (!esBooleano(req.body.activo)) {
+          return sendError(
+            res,
+            400,
+            'El campo "activo" debe ser booleano (true o false).'
+          );
+        }
+
+        // O si quieres usar la versión que lanza error para asegurarte:
+        try {
+          validarBooleano(req.body.activo, 'activo');
+        } catch (err) {
+          return sendError(res, 400, err.message);
+        }
       }
 
       // Si hay una lista de roles permitidos global (como en GET /usuarios), validarla directamente
