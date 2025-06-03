@@ -1,6 +1,6 @@
 const cambiarRolService = require('@services/usuarios/cambiarRolService');
 
-const actualizarRolUsuario = async (req, res) => {
+const actualizarRolUsuarioController = async (req, res) => {
   try {
     const { nuevoRol, contrasenaConfirmacion } = req.body;
 
@@ -29,4 +29,4 @@ const actualizarRolUsuario = async (req, res) => {
   }
 };
 
-module.exports = actualizarRolUsuario;
+module.exports = actualizarRolUsuarioController;

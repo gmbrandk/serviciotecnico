@@ -1,7 +1,7 @@
-const obtenerMovimiento = require('./movimiento/obtenerMovimiento');
-const crearMovimiento = require('./movimiento/crearMovimiento');
+const obtenerMovimiento = require('./movimiento/obtenerMovimientoController');
+const crearMovimiento = require('./movimiento/crearMovimientoController');
 
 module.exports = {
-    obtenerMovimiento,
-    crearMovimiento
+  obtenerMovimiento,
+  crearMovimiento,
 };

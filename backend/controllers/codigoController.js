@@ -1,7 +1,7 @@
-const generarCodigoAcceso = require('./codigos/generarCodigo');
-const obtenerCodigos = require('./codigos/obtenerCodigo');
+const generarCodigoAcceso = require('./codigos/generarCodigoController');
+const obtenerCodigos = require('./codigos/obtenerCodigoController');
 
 module.exports = {
   generarCodigoAcceso,
-  obtenerCodigos
+  obtenerCodigos,
 };

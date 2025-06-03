@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { actualizarRolUsuario } = require('@controllers/authController');
 const {
   editarUsuario,
   eliminarUsuario,
   cambiarEstadoActivo,
   obtenerUsuario,
   cambiarPasswordController,
+  actualizarRolUsuario,
 } = require('@controllers/usuariosControllers');
 const {
   verificarToken,

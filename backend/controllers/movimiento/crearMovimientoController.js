@@ -1,6 +1,6 @@
 const Movimiento = require('@models/Movimiento');
 
-const crearMovimiento = async ({
+const crearMovimientoController = async ({
   tipo,
   descripcion,
   entidad,
@@ -25,4 +25,4 @@ const crearMovimiento = async ({
   }
 };
 
-module.exports = crearMovimiento;
+module.exports = crearMovimientoController;

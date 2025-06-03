@@ -1,7 +1,7 @@
 const TIPOS_MOVIMIENTO = require('../../utils/constantes/tiposMovimiento');
 const { crearMovimiento } = require('@controllers/movimientoController');
 
-const cambiarEstadoActivo = async (req, res) => {
+const cambiarEstadoActivoController = async (req, res) => {
   try {
     const usuario = req.usuarioObjetivo; // Ya viene del middleware
     const usuarioSolicitante = req.usuario; // Usuario autenticado
@@ -61,4 +61,4 @@ const cambiarEstadoActivo = async (req, res) => {
   }
 };
 
-module.exports = cambiarEstadoActivo;
+module.exports = cambiarEstadoActivoController;
