@@ -1,7 +1,7 @@
 import React from 'react';
 import BotonAccion from './BotonAccion';
 import { accionesEntidad } from './config/accionesEntidad.config';
-import toast from 'react-hot-toast';
+import { showToast } from '@services/toast/toastService';
 
 const BotonAccionEntidad = ({
   entidad,
@@ -22,11 +22,10 @@ const BotonAccionEntidad = ({
           objetivo: entidad,
           accion: clave,
         });
-        console.log(`[FRONTEND]Permiso para:` + clave, { permitido, mensaje });
 
         const handleClick = () => {
           if (config.requierePermiso && !permitido) {
-            toast.error(mensaje);
+            showToast(mensaje, 'error'); // ✅ Usa el limiter
             return;
           }
           onAccion(clave, entidad);

@@ -118,6 +118,23 @@ export const UsuariosProvider = ({ children }) => {
       return { success: false, error };
     }
   };
+  const cambiarEstadoUsuario = async (id, nuevoEstado) => {
+    try {
+      const service = getUsuarioService();
+      await service.cambiarEstadoUsuario(id, nuevoEstado);
+
+      setUsuarios((usuariosActuales) =>
+        usuariosActuales.map((usuario) =>
+          usuario.id === id ? { ...usuario, activo: nuevoEstado } : usuario
+        )
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error al cambiar estado del usuario:', error);
+      return { success: false, error };
+    }
+  };
 
   return (
     <UsuariosContext.Provider
@@ -129,6 +146,7 @@ export const UsuariosProvider = ({ children }) => {
         editarUsuario,
         cambiarRolUsuario,
         cambiarPasswordUsuario,
+        cambiarEstadoUsuario,
       }}
     >
       {children}

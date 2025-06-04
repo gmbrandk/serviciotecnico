@@ -24,8 +24,6 @@ const FormularioEditarUsuario = () => {
 
   useEffect(() => {
     const usuarioObjetivo = usuarios.find((u) => u.id === id);
-    console.log('Usuarios Solicitante:', usuarioSolicitante);
-    console.log('Usuarios Objetivo:', usuarioObjetivo);
 
     if (usuarioObjetivo) {
       setUsuario(usuarioObjetivo);
@@ -42,12 +40,27 @@ const FormularioEditarUsuario = () => {
       alert('Usuario no encontrado');
       navigate('/dashboard/usuarios');
     }
-  }, [id, usuarios, navigate, usuarioSolicitante]);
+  }, [id, usuarios, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log('Cambio en input:', name, value);
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const formularioEditado = () => {
+    if (!usuario) return false;
+
+    const camposPrincipales = ['nombre', 'email', 'role'];
+    const algunoEditado = camposPrincipales.some(
+      (campo) => formData[campo] !== usuario[campo]
+    );
+
+    const cambioPassword =
+      formData.nuevaPassword ||
+      formData.confirmarPassword ||
+      formData.passwordActual;
+
+    return algunoEditado || cambioPassword;
   };
 
   const handleSubmit = async (e) => {
@@ -66,7 +79,6 @@ const FormularioEditarUsuario = () => {
       return;
     }
 
-    // Validación de rol como ya tienes...
     if (
       usuarioSolicitante.role !== 'superadministrador' &&
       usuarioSolicitante.role !== 'administrador' &&
@@ -91,7 +103,6 @@ const FormularioEditarUsuario = () => {
     }
 
     try {
-      // 1. Si hay cambio de contraseña, lo ejecutamos primero
       if (formData.nuevaPassword) {
         const resPass = await cambiarPasswordUsuario(usuario.id, {
           passwordActual: formData.passwordActual,
@@ -105,7 +116,6 @@ const FormularioEditarUsuario = () => {
         }
       }
 
-      // 2. Actualización general de usuario
       const {
         role,
         passwordActual,
@@ -122,7 +132,6 @@ const FormularioEditarUsuario = () => {
         return;
       }
 
-      // 3. Cambio de rol si es necesario
       if (formData.role !== usuario.role) {
         const respuesta2 = await cambiarRolUsuario(
           usuario.id,
@@ -225,10 +234,13 @@ const FormularioEditarUsuario = () => {
             />
           )}
 
-        <button type="submit" className={styles.actionButton}>
+        <button
+          type="submit"
+          className={styles.actionButton}
+          disabled={!formularioEditado()}
+        >
           Guardar
         </button>
-
         <button
           type="button"
           className={styles.actionButton}

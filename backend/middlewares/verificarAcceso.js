@@ -27,7 +27,7 @@ const verificarAcceso = (config) => {
 
       // ✅ Validar campo booleano "activo" si está presente en el body
       // Normalizar campo "activo" antes de validar
-      if ('activo' in req.body) {
+      if (req.body && 'activo' in req.body) {
         const val = req.body.activo;
 
         // Normalizar si viene como string

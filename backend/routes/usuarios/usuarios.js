@@ -49,7 +49,7 @@ router.post(
 
 // Ruta para cambiar el estado activo (activar/desactivar)
 router.patch(
-  '/:id/estado',
+  '/editar/:id/estado',
   verificarToken,
   verificarAcceso({
     accion: 'cambiarEstado',

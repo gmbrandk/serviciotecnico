@@ -33,11 +33,11 @@ export const getUsuarioService = () => {
     cambiarRolUsuario: (id, nuevoRol, contrasenaConfirmacion) =>
       _provider.cambiarRolUsuario(id, nuevoRol, contrasenaConfirmacion),
     reset: () => _provider.reset?.(),
-    toggleActivo: (id) => _provider.toggleActivo(id),
-    obtenerNombreProveedor: () => _proveedorNombre,
-    obtenerTipoProveedor: () => _proveedorTipo,
+    cambiarEstadoUsuario: (id) => _provider.cambiarEstadoUsuario(id),
     cambiarPasswordUsuario: (id, datos) =>
       _provider.cambiarPasswordUsuario(id, datos),
+    obtenerNombreProveedor: () => _proveedorNombre,
+    obtenerTipoProveedor: () => _proveedorTipo,
   };
 };
 

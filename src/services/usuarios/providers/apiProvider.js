@@ -37,10 +37,10 @@ export const apiProvider = {
     }
   },
 
-  cambiarEstado: async (id, activo) => {
+  cambiarEstadoUsuario: async (id, activo) => {
     try {
       const res = await axios.patch(
-        `${baseURL}/usuarios/${id}/estado`,
+        `${baseURL}/usuarios/editar/${id}/estado`,
         { activo },
         { withCredentials: true }
       );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Tabla from '@components/shared/Tabla/Tabla';
-import toast from 'react-hot-toast';
+import { showToast } from '@services/toast/toastService';
 import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
 import styles from '../styles/testing/TestingPage.module.css';
 import useEsMovil from '@hooks/useEsMovil';
@@ -98,14 +98,14 @@ const TestingPage = () => {
 
       const usuarioOriginal = usuarios.find((u) => u.id === usuarioObjetivo.id);
       if (!usuarioOriginal) {
-        toast.error('Usuario no encontrado en el contexto.');
+        showToast('Usuario no encontrado en el contexto.', 'error');
         return;
       }
 
-      const respuesta = await service.toggleActivo(usuarioOriginal._id);
+      const respuesta = await service.cambiarEstadoUsuario(usuarioOriginal._id);
 
       if (respuesta.success) {
-        toast.success(respuesta.mensaje);
+        showToast(respuesta.mensaje, 'success');
 
         setUsuarios((prev) =>
           prev.map((u) =>
@@ -113,11 +113,11 @@ const TestingPage = () => {
           )
         );
       } else {
-        toast.error(respuesta.mensaje || 'Error al actualizar estado');
+        showToast(respuesta.mensaje || 'Error al actualizar estado', 'error');
       }
     } catch (error) {
       console.error('Error al alternar estado:', error);
-      toast.error(error.message || 'Error al conectar con el servidor');
+      showToast(error.message || 'Error al conectar con el servidor', 'error');
     }
   };
 

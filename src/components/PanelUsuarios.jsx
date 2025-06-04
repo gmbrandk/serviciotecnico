@@ -28,7 +28,7 @@ const columns = [
 
 const PanelUsuarios = () => {
   // Obtengo usuarios y estado de carga desde contexto
-  const { usuarios, cargando, editarUsuario } = useUsuarios();
+  const { usuarios, cargando, cambiarEstadoUsuario } = useUsuarios();
 
   const [paginaActual, setPaginaActual] = useState(1);
 
@@ -54,8 +54,15 @@ const PanelUsuarios = () => {
 
     try {
       // Para toggle activo llamamos a editarUsuario con el nuevo estado
-      const nuevosDatos = { activo: !usuarioObjetivo.activo };
-      const resultado = await editarUsuario(usuarioObjetivo.id, nuevosDatos);
+      const nuevoEstado = !usuarioObjetivo.activo;
+      const resultado = await cambiarEstadoUsuario(
+        usuarioObjetivo.id,
+        nuevoEstado
+      );
+
+      console.log('[FRONTEND] Resultado final:', resultado);
+      console.log('[FRONTEND] Usuario Objetivo:', usuarioObjetivo);
+      console.log('[FRONTEND] Datos Actualizados:', nuevoEstado);
 
       if (resultado.success) {
         toast.success(
