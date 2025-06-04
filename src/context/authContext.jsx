@@ -8,7 +8,7 @@ import useGlobalLoading from '@hooks/useGlobalLoading';
 const AuthContext = createContext();
 
 // 🧪 Activa o desactiva el modo simulado de pruebas
-const MODO_SIMULADO = true;
+const MODO_SIMULADO = false;
 
 // 🧪 Usuario de prueba usado en modo simulado
 const usuarioMock = {

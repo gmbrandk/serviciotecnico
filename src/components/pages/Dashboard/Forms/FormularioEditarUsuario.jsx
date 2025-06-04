@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUsuarios } from '@context/UsuariosContext';
 import { useAuth } from '@context/AuthContext';
 import styles from '@styles/forms.module.css';
+import { mostrarConfirmacion } from '../../../../services/alerta/alertaService';
+import { showToast } from '../../../../services/toast/toastService';
 
 const FormularioEditarUsuario = () => {
   const { id } = useParams();
@@ -22,11 +24,20 @@ const FormularioEditarUsuario = () => {
     confirmarPasswordSuperadmin: '',
   });
 
+  const formInicializado = useRef(false);
+
   useEffect(() => {
     const usuarioObjetivo = usuarios.find((u) => u.id === id);
 
-    if (usuarioObjetivo) {
-      setUsuario(usuarioObjetivo);
+    if (!usuarioObjetivo) {
+      showToast('Usuario no encontrado', 'error');
+      navigate('/dashboard/usuarios');
+      return;
+    }
+
+    setUsuario(usuarioObjetivo);
+
+    if (!formInicializado.current) {
       setFormData({
         nombre: usuarioObjetivo.nombre,
         email: usuarioObjetivo.email,
@@ -36,9 +47,7 @@ const FormularioEditarUsuario = () => {
         confirmarPassword: '',
         confirmarPasswordSuperadmin: '',
       });
-    } else {
-      alert('Usuario no encontrado');
-      navigate('/dashboard/usuarios');
+      formInicializado.current = true;
     }
   }, [id, usuarios, navigate]);
 
@@ -55,37 +64,64 @@ const FormularioEditarUsuario = () => {
       (campo) => formData[campo] !== usuario[campo]
     );
 
-    const cambioPassword =
-      formData.nuevaPassword ||
-      formData.confirmarPassword ||
-      formData.passwordActual;
+    const quiereCambiarPassword =
+      formData.passwordActual.trim() !== '' ||
+      formData.nuevaPassword.trim() !== '' ||
+      formData.confirmarPassword.trim() !== '';
 
-    return algunoEditado || cambioPassword;
+    return algunoEditado || quiereCambiarPassword;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.nombre.trim() || !formData.email.trim()) {
-      alert('Nombre y email son obligatorios');
+      showToast('Nombre y email son obligatorios', 'error');
       return;
     }
 
-    if (
-      formData.nuevaPassword &&
-      formData.nuevaPassword !== formData.confirmarPassword
-    ) {
-      alert('Las nuevas contraseñas no coinciden');
-      return;
+    const quiereCambiarPassword =
+      formData.passwordActual.trim() !== '' ||
+      formData.nuevaPassword.trim() !== '' ||
+      formData.confirmarPassword.trim() !== '';
+
+    const esCambioSobreSiMismo = usuarioSolicitante.id === usuario.id;
+
+    if (quiereCambiarPassword) {
+      if (esCambioSobreSiMismo && !formData.passwordActual.trim()) {
+        showToast(
+          'Debes ingresar tu contraseña actual para cambiarla.',
+          'error'
+        );
+        return;
+      }
+
+      if (!formData.nuevaPassword.trim()) {
+        showToast('Debes ingresar una nueva contraseña.', 'error');
+        return;
+      }
+
+      if (!formData.confirmarPassword.trim()) {
+        showToast('Debes confirmar la nueva contraseña.', 'error');
+        return;
+      }
+
+      if (formData.nuevaPassword !== formData.confirmarPassword) {
+        showToast('Las nuevas contraseñas no coinciden', 'error');
+        return;
+      }
     }
+
+    // ... (resto del código permanece igual)
 
     if (
       usuarioSolicitante.role !== 'superadministrador' &&
       usuarioSolicitante.role !== 'administrador' &&
       formData.role !== usuario.role
     ) {
-      alert(
-        'No tienes permiso para cambiar el rol. Contacta con un superadministrador.'
+      showToast(
+        'No tienes permiso para cambiar el rol. Contacta con un superadministrador.',
+        'error'
       );
       return;
     }
@@ -96,14 +132,24 @@ const FormularioEditarUsuario = () => {
       usuario.role !== 'superadministrador' &&
       !formData.confirmarPasswordSuperadmin
     ) {
-      alert(
-        'Debes ingresar tu contraseña para confirmar el cambio a superadministrador.'
+      showToast(
+        'Debes ingresar tu contraseña para confirmar el cambio a superadministrador.',
+        'error'
       );
       return;
     }
 
+    const confirmado = await mostrarConfirmacion({
+      titulo: '¿Guardar cambios?',
+      texto: 'Se actualizará la información del usuario.',
+      icono: 'question',
+      confirmButtonText: 'Sí, guardar',
+    });
+
+    if (!confirmado) return;
+
     try {
-      if (formData.nuevaPassword) {
+      if (quiereCambiarPassword) {
         const resPass = await cambiarPasswordUsuario(usuario.id, {
           passwordActual: formData.passwordActual,
           nuevaPassword: formData.nuevaPassword,
@@ -111,7 +157,7 @@ const FormularioEditarUsuario = () => {
         });
 
         if (!resPass.success) {
-          alert('Error al cambiar contraseña: ' + resPass.mensaje);
+          showToast('Error al cambiar contraseña: ' + resPass.mensaje, 'error');
           return;
         }
       }
@@ -128,7 +174,7 @@ const FormularioEditarUsuario = () => {
       const respuesta1 = await editarUsuario(usuario.id, datosActualizados);
 
       if (!respuesta1.success) {
-        alert('Error al actualizar datos: ' + respuesta1.error);
+        showToast('Error al actualizar datos: ' + respuesta1.error, 'error');
         return;
       }
 
@@ -140,19 +186,20 @@ const FormularioEditarUsuario = () => {
         );
 
         if (!respuesta2.success) {
-          alert(
+          showToast(
             'Error al cambiar rol: ' +
-              (respuesta2.error?.mensaje || 'Error desconocido')
+              (respuesta2.error?.mensaje || 'Error desconocido'),
+            'error'
           );
           return;
         }
       }
 
-      alert('Usuario actualizado correctamente');
+      showToast('Usuario actualizado correctamente', 'success');
       navigate('/dashboard/usuarios');
     } catch (error) {
       console.error('Error al editar usuario:', error);
-      alert('Error inesperado');
+      showToast('Error inesperado', 'error');
     }
   };
 

@@ -1,2 +1,2 @@
 // Puedes controlarlo con una variable .env si deseas
-export const proveedorUsuarios = 'local'; // Cambia a 'api' cuando desees
+export const proveedorUsuarios = 'api'; // Cambia a 'api' cuando desees

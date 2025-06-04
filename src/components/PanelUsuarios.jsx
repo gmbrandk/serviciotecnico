@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
 
 import { useUsuarios } from '@context/UsuariosContext'; // <-- Importamos el contexto
+import { mostrarConfirmacion } from '@services/alerta/alertaService'; // al inicio del archivo
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -45,11 +46,18 @@ const PanelUsuarios = () => {
   };
 
   const handleToggleActivo = async (usuarioObjetivo) => {
-    const confirmar = confirm(
-      usuarioObjetivo.activo
-        ? `¿Estás seguro de desactivar a ${usuarioObjetivo.nombre}?`
-        : `¿Deseas reactivar a ${usuarioObjetivo.nombre}?`
-    );
+    const confirmar = await mostrarConfirmacion({
+      titulo: usuarioObjetivo.activo
+        ? `¿Desactivar a ${usuarioObjetivo.nombre}?`
+        : `¿Reactivar a ${usuarioObjetivo.nombre}?`,
+      texto: usuarioObjetivo.activo
+        ? 'El usuario ya no podrá iniciar sesión.'
+        : 'El usuario volverá a tener acceso al sistema.',
+      confirmButtonText: usuarioObjetivo.activo
+        ? 'Sí, desactivar'
+        : 'Sí, reactivar',
+      cancelButtonText: 'Cancelar',
+    });
     if (!confirmar) return;
 
     try {
