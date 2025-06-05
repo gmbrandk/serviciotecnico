@@ -5,8 +5,14 @@ import { normalizedId } from '@utils/formatters';
 const acciones = {
   editar: ({ solicitante, objetivo }) => {
     const esMismoUsuario = normalizedId(solicitante) === normalizedId(objetivo);
-    const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
-    const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
+    const rolSolicitante = solicitante.role.toLowerCase();
+    const rolObjetivo = objetivo.role.toLowerCase();
+
+    const jerarquiaSolicitante = rolesJerarquia[rolSolicitante];
+    const jerarquiaObjetivo = rolesJerarquia[rolObjetivo];
+
+    const sonAdministradoresAmbos =
+      rolSolicitante === 'administrador' && rolObjetivo === 'administrador';
 
     if (esMismoUsuario) {
       return {
@@ -15,16 +21,26 @@ const acciones = {
       };
     }
 
-    if (jerarquiaSolicitante > jerarquiaObjetivo) {
+    if (jerarquiaSolicitante < jerarquiaObjetivo) {
       return {
-        permitido: true,
-        mensaje: 'Puedes editar usuarios de menor jerarquía.',
+        permitido: false,
+        mensaje: 'No puedes editar a un usuario de mayor jerarquía.',
+      };
+    }
+
+    if (
+      jerarquiaSolicitante === jerarquiaObjetivo &&
+      !sonAdministradoresAmbos
+    ) {
+      return {
+        permitido: false,
+        mensaje: 'No puedes editar a un usuario de igual jerarquía.',
       };
     }
 
     return {
-      permitido: false,
-      mensaje: 'No puedes editar a usuarios de igual o mayor jerarquía.',
+      permitido: true,
+      mensaje: 'Puedes editar este usuario.',
     };
   },
 

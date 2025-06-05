@@ -12,16 +12,14 @@ const {
   verificarToken,
   verificarRolesPermitidos,
 } = require('@middlewares/authMiddleware');
-const verificarEdicion = require('@middlewares/verificarEdicionMiddleware');
 const verificarEliminacion = require('@middlewares/verificarEliminacionMiddleware');
-const verificarEdicionMiddleware = require('@middlewares/verificarEdicionMiddleware');
 const verificarAcceso = require('@middlewares/verificarAcceso');
 
 router.patch(
   '/editar/:id/rol',
   verificarToken, // ✅ Primero: verificar que el usuario esté autenticado
   verificarAcceso({
-    accion: 'cambiarRol',
+    accion: 'cambiarRolUsuario',
     requiereUsuarioObjetivo: true,
     obtenerNuevoRol: (req) => req.body.nuevoRol,
   }),
@@ -38,12 +36,25 @@ router.get(
   obtenerUsuario
 );
 
-router.put('/editar/:id', verificarToken, verificarEdicion, editarUsuario);
+router.put(
+  '/editar/:id',
+  verificarToken,
+  verificarAcceso({
+    accion: 'editarUsuario',
+    rolesPermitidos: ['superadministrador', 'administrador', 'tecnico'],
+    requiereUsuarioObjetivo: true,
+  }),
+  editarUsuario
+);
 
 router.post(
   '/editar/:id/cambiar-password',
   verificarToken,
-  verificarEdicionMiddleware,
+  verificarAcceso({
+    accion: 'editarUsuario',
+    rolesPermitidos: ['superadministrador', 'administrador', 'tecnico'],
+    requiereUsuarioObjetivo: true,
+  }),
   cambiarPasswordController
 );
 
@@ -53,7 +64,6 @@ router.patch(
   verificarToken,
   verificarAcceso({
     accion: 'cambiarEstado',
-    requiereUsuarioObjetivo: true,
     rolesPermitidos: ['superadministrador', 'administrador'],
     requiereUsuarioObjetivo: true, // ✅ Activar esto
   }),

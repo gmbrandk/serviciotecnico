@@ -1,9 +1,9 @@
 // utils/permisos/verificarPermiso.js
 const rolesJerarquia = require('./permisos/rolesJerarquia');
 const acciones = {
-  cambiarRol: require('./permisos/accionesPermiso/cambiarRol'),
+  cambiarRolUsuario: require('./permisos/accionesPermiso/cambiarRolUsuario'),
   cambiarEstado: require('./permisos/accionesPermiso/cambiarEstado'),
-  editar: require('./permisos/accionesPermiso/editarUsuario'),
+  editarUsuario: require('./permisos/accionesPermiso/editarUsuario'),
   eliminar: require('./permisos/accionesPermiso/eliminarUsuario'),
   cambiarEstado: require('./permisos/accionesPermiso/cambiarEstado'),
   generarCodigo: require('./permisos/accionesPermiso/generarCodigoAcceso'),

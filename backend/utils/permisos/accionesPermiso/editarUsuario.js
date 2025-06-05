@@ -4,19 +4,31 @@
 const rolesJerarquia = require('../rolesJerarquia');
 
 module.exports = ({ solicitante, objetivo }) => {
-  if (solicitante._id.toString() === objetivo._id.toString()) {
-    // ✅ Autoedición permitida
+  const esAutoedicion = solicitante._id.toString() === objetivo._id.toString();
+  if (esAutoedicion) {
     return { permitido: true };
   }
 
-  const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];
-  const jerarquiaObjetivo = rolesJerarquia[objetivo.role.toLowerCase()];
+  const rolSolicitante = solicitante.role.toLowerCase();
+  const rolObjetivo = objetivo.role.toLowerCase();
 
-  if (jerarquiaSolicitante <= jerarquiaObjetivo) {
-    // ❌ No se permite editar a iguales o superiores
+  const jerarquiaSolicitante = rolesJerarquia[rolSolicitante];
+  const jerarquiaObjetivo = rolesJerarquia[rolObjetivo];
+
+  const sonAdministradoresAmbos =
+    rolSolicitante === 'administrador' && rolObjetivo === 'administrador';
+
+  if (jerarquiaSolicitante < jerarquiaObjetivo) {
     return {
       permitido: false,
-      mensaje: 'No puedes editar a usuarios de igual o mayor jerarquía.',
+      mensaje: 'No puedes editar a un usuario de mayor jerarquía.',
+    };
+  }
+
+  if (jerarquiaSolicitante === jerarquiaObjetivo && !sonAdministradoresAmbos) {
+    return {
+      permitido: false,
+      mensaje: 'No puedes editar a un usuario de igual jerarquía.',
     };
   }
 
