@@ -28,11 +28,13 @@ const codigoRoutes = require('@routes/codigo/codigos');
 const usuarioRoutes = require('@routes/usuarios/usuarios');
 const superadminRoutes = require('@routes/superadmin');
 const movimientoRoutes = require('@routes/movimientos/movimiento.routes');
+const clientesRoutes = require('@routes/clientes/clientes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/codigos', codigoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/superadmin', superadminRoutes);
 app.use('/api/movimientos', movimientoRoutes);
+app.use('/api/clientes', clientesRoutes); // 👈 Prefijo correcto
 
 module.exports = app;
