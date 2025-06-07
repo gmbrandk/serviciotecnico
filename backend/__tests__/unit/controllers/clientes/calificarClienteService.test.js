@@ -3,7 +3,9 @@ const request = require('supertest');
 const app = require('app'); // Asegúrate de que este sea tu archivo Express principal
 const Cliente = require('@models/Cliente');
 const OrdenServicio = require('@models/OrdenServicio');
-const { crearClienteYOrdenes } = require('../../helpers/crearClienteyOrdenes');
+const {
+  crearClienteYOrdenes,
+} = require('../../../helpers/crearClienteyOrdenes');
 
 describe('🧪 Calificar Cliente - Integración', () => {
   beforeAll(async () => {

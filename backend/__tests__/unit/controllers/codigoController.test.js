@@ -1,9 +1,11 @@
 // tests/controllers/codigoController.test.js
 const mongoose = require('mongoose');
-const { generarCodigoAcceso } = require('../../controllers/codigoController');
-const CodigoAcceso = require('../../models/CodigoAcceso');
+const {
+  generarCodigoAcceso,
+} = require('../../../controllers/codigoController');
+const CodigoAcceso = require('../../../models/CodigoAcceso');
 const crypto = require('crypto');
-const { logError } = require('../../utils/logger');
+const { logError } = require('../../../utils/logger');
 
 jest.mock('../../models/CodigoAcceso');
 jest.mock('../../utils/logger');
@@ -59,7 +61,7 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
       codigo: 'ABCD1234',
       estado: 'activo',
       usosDisponibles: 2,
-      fechaCreacion: fechaMock
+      fechaCreacion: fechaMock,
     }));
 
     await generarCodigoAcceso(req, res);
@@ -73,8 +75,8 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
         codigo: 'ABCD1234',
         estado: 'activo',
         usosDisponibles: 2,
-        fechaCreacion: fechaMock
-      }
+        fechaCreacion: fechaMock,
+      },
     });
   });
 
@@ -96,23 +98,27 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-  
+
     await generarCodigoAcceso(req, res);
-  
+
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
-  });  
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
 
   it('debería responder con 500 si ocurre un error al guardar el código', async () => {
     CodigoAcceso.mockImplementation(() => ({
-      save: jest.fn().mockRejectedValue(new Error('DB error'))
+      save: jest.fn().mockRejectedValue(new Error('DB error')),
     }));
 
     await generarCodigoAcceso(req, res);
 
     expect(logError).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ mensaje: 'Error al generar código' });
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'Error al generar código',
+    });
   });
 
   it('debería usar 1 uso por defecto si no se envía usos en el body', async () => {
@@ -140,12 +146,14 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
 
     expect(mockSave).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: true,
-      codigo: expect.objectContaining({
-        usosDisponibles: 1,
-      }),
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: true,
+        codigo: expect.objectContaining({
+          usosDisponibles: 1,
+        }),
+      })
+    );
   });
 
   it('debería crear un código con estado y fecha de creación si el usuario tiene rol válido', async () => {
@@ -156,18 +164,20 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
       codigo: 'ABCD1234',
       estado: 'activo',
       usosDisponibles: 2,
-      fechaCreacion: fechaMock
+      fechaCreacion: fechaMock,
     }));
 
     await generarCodigoAcceso(req, res);
 
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: true,
-      codigo: expect.objectContaining({
-        estado: 'activo',
-        fechaCreacion: fechaMock
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: true,
+        codigo: expect.objectContaining({
+          estado: 'activo',
+          fechaCreacion: fechaMock,
+        }),
       })
-    }));
+    );
   });
 
   it('debería establecer estado como "activo" por defecto', async () => {
@@ -177,50 +187,56 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
       codigo: 'ABCD1234',
       estado: 'activo',
       usosDisponibles: 2,
-      fechaCreacion: new Date()
+      fechaCreacion: new Date(),
     }));
 
     await generarCodigoAcceso(req, res);
 
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      codigo: expect.objectContaining({ estado: 'activo' })
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        codigo: expect.objectContaining({ estado: 'activo' }),
+      })
+    );
   });
 
   it('debería rechazar si el número de usos no es entero (por ejemplo 2.9)', async () => {
     req.body.usos = 2.9;
-  
+
     await generarCodigoAcceso(req, res);
-  
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
-  });
-  
-  it('debería rechazar "2" como string válido para usos', async () => {
-    req.body.usos = "2"; // string numérico válido
-  
-    await generarCodigoAcceso(req, res);
-  
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ mensaje: 'El número de usos debe ser un entero entre 1 y 5' });
-  });
-  
-  it('debería rechazar "3.5" como string decimal inválido', async () => {
-    req.body.usos = "3.5";
-  
-    await generarCodigoAcceso(req, res);
-  
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       mensaje: 'El número de usos debe ser un entero entre 1 y 5',
     });
   });
-  
-  it('debería rechazar "cuatro" como string no numérico', async () => {
-    req.body.usos = "cuatro";
-  
+
+  it('debería rechazar "2" como string válido para usos', async () => {
+    req.body.usos = '2'; // string numérico válido
+
     await generarCodigoAcceso(req, res);
-  
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+
+  it('debería rechazar "3.5" como string decimal inválido', async () => {
+    req.body.usos = '3.5';
+
+    await generarCodigoAcceso(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      mensaje: 'El número de usos debe ser un entero entre 1 y 5',
+    });
+  });
+
+  it('debería rechazar "cuatro" como string no numérico', async () => {
+    req.body.usos = 'cuatro';
+
+    await generarCodigoAcceso(req, res);
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       mensaje: 'El número de usos debe ser un entero entre 1 y 5',
@@ -228,21 +244,21 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
   });
 
   it('debería rechazar usos como cadena vacía', async () => {
-    req.body.usos = "";
-  
+    req.body.usos = '';
+
     await generarCodigoAcceso(req, res);
-  
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       mensaje: 'El número de usos debe ser un entero entre 1 y 5',
     });
   });
-  
+
   it('debería rechazar usos como null', async () => {
     req.body.usos = null;
-  
+
     await generarCodigoAcceso(req, res);
-  
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       mensaje: 'El número de usos debe ser un entero entre 1 y 5',
@@ -251,24 +267,23 @@ describe('generarCodigoAcceso - validación estricta de usos', () => {
 
   it('debería rechazar usos como true', async () => {
     req.body.usos = true;
-  
+
     await generarCodigoAcceso(req, res);
-  
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       mensaje: 'El número de usos debe ser un entero entre 1 y 5',
     });
   });
-  
+
   it('debería rechazar usos como false', async () => {
     req.body.usos = false;
-  
+
     await generarCodigoAcceso(req, res);
-  
+
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       mensaje: 'El número de usos debe ser un entero entre 1 y 5',
     });
   });
-  
 });
