@@ -48,38 +48,32 @@ describe('🧪 [Integración] crearClienteController', () => {
     );
   });
 
-  it('❌ Rechaza cliente con estado inválido', async () => {
+  it('❌ Rechaza cliente con campo "estado" no permitido', async () => {
     const req = httpMocks.createRequest({
       body: { ...baseBody, estado: 'suspendido' },
     });
     const res = httpMocks.createResponse();
 
-    Cliente.findOne = jest.fn().mockResolvedValue(null);
-    Cliente.mockImplementation(() => ({
-      save: jest.fn(),
-    }));
-
     await crearClienteController(req, res);
 
-    expect(res._getStatusCode()).toBe(500);
-    expect(res._getJSONData().message).toBe('Error al crear el cliente');
+    expect(res._getStatusCode()).toBe(400);
+    expect(res._getJSONData().message).toBe(
+      'Los siguientes campos no están permitidos: estado'
+    );
   });
 
-  it('❌ Rechaza cliente con calificación inválida', async () => {
+  it('❌ Rechaza cliente con campo "calificacion" no permitido', async () => {
     const req = httpMocks.createRequest({
       body: { ...baseBody, calificacion: 'muy_malo' },
     });
     const res = httpMocks.createResponse();
 
-    Cliente.findOne = jest.fn().mockResolvedValue(null);
-    Cliente.mockImplementation(() => ({
-      save: jest.fn(),
-    }));
-
     await crearClienteController(req, res);
 
-    expect(res._getStatusCode()).toBe(500);
-    expect(res._getJSONData().message).toBe('Error al crear el cliente');
+    expect(res._getStatusCode()).toBe(400);
+    expect(res._getJSONData().message).toBe(
+      'Los siguientes campos no están permitidos: calificacion'
+    );
   });
 
   it('❌ Rechaza cliente con email duplicado', async () => {
@@ -145,7 +139,27 @@ describe('🧪 [Integración] crearClienteController', () => {
 
     expect(res._getStatusCode()).toBe(400);
     expect(res._getJSONData().message).toBe(
-      'Las observaciones contienen contenido no permitido'
+      'El campo observaciones contiene caracteres no permitidos'
     );
+  });
+
+  it('❌ Rechaza campos no permitidos como fechaRegistro y estado', async () => {
+    const req = httpMocks.createRequest({
+      method: 'POST',
+      url: '/clientes',
+      body: {
+        nombre: 'Carlos',
+        dni: '99999999',
+        telefono: '999999999',
+        fechaRegistro: '2022-01-01T00:00:00Z',
+        estado: 'inactivo',
+      },
+    });
+    const res = httpMocks.createResponse();
+
+    await crearClienteController(req, res);
+
+    expect(res._getStatusCode()).toBe(400);
+    expect(res._getJSONData().message).toMatch(/campos no están permitidos/i);
   });
 });

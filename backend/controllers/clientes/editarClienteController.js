@@ -6,9 +6,10 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 const editarClienteController = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('🟢 [Controller] ID recibido:', id);
 
-    // 1. Validar ID de MongoDB
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log('🔴 [Controller] ID inválido');
       return sendError(res, 400, 'ID inválido');
     }
 
@@ -23,12 +24,13 @@ const editarClienteController = async (req, res) => {
     ];
 
     const camposRecibidos = Object.keys(req.body);
+    console.log('🟢 [Controller] Campos recibidos:', camposRecibidos);
 
-    // 2. Rechazar campos no permitidos
     const camposInvalidos = camposRecibidos.filter(
       (campo) => !camposPermitidos.includes(campo)
     );
     if (camposInvalidos.length > 0) {
+      console.log('🔴 [Controller] Campos no permitidos:', camposInvalidos);
       return sendError(
         res,
         400,
@@ -38,12 +40,12 @@ const editarClienteController = async (req, res) => {
       );
     }
 
-    // 3. Sanitizar inputs
     const bodySanitizado = {};
     for (const campo of camposPermitidos) {
       if (req.body[campo]) {
         const valor = req.body[campo];
         if (typeof valor === 'string' && /<|>/.test(valor)) {
+          console.log('🔴 [Controller] Campo peligroso:', campo);
           return sendError(
             res,
             400,
@@ -53,20 +55,23 @@ const editarClienteController = async (req, res) => {
         bodySanitizado[campo] = xss(valor);
       }
     }
+    console.log('🟢 [Controller] Body sanitizado:', bodySanitizado);
 
-    // 4. Validar formato email si existe
     if (bodySanitizado.email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(bodySanitizado.email)) {
+        console.log('🔴 [Controller] Email con formato inválido');
         return sendError(res, 400, 'El correo tiene un formato inválido');
       }
     }
 
-    // 5. Llamar al service
+    console.log('🟡 [Controller] Llamando al service...');
     const cliente = await editarClienteService(id, bodySanitizado);
+    console.log('🟢 [Controller] Cliente actualizado:', cliente);
 
     return sendSuccess(res, 200, 'Cliente editado correctamente', { cliente });
   } catch (error) {
+    console.error('💥 [Controller] Error al editar cliente:', error.message);
     const status = error.message === 'Cliente no encontrado' ? 404 : 400;
     return sendError(res, status, error.message);
   }

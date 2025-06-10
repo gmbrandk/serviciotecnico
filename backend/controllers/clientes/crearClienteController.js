@@ -5,33 +5,52 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const crearClienteController = async (req, res) => {
   try {
-    const { nombre, dni, telefono, email, observaciones } = req.body;
+    const camposPermitidos = [
+      'nombre',
+      'dni',
+      'telefono',
+      'email',
+      'observaciones',
+    ];
+    const bodyRecibido = req.body;
+    const bodyFiltrado = {};
+    const camposInvalidos = [];
 
-    // 1. Validar campos obligatorios
+    // 1. Filtrar y sanitizar campos válidos
+    for (const campo in bodyRecibido) {
+      const valor = bodyRecibido[campo];
+      if (camposPermitidos.includes(campo)) {
+        if (typeof valor === 'string' && /<|>/.test(valor)) {
+          return sendError(
+            res,
+            400,
+            `El campo ${campo} contiene caracteres no permitidos`
+          );
+        }
+        bodyFiltrado[campo] = xss(valor);
+      } else {
+        camposInvalidos.push(campo);
+      }
+    }
+
+    // 2. Rechazar campos no permitidos
+    if (camposInvalidos.length > 0) {
+      return sendError(
+        res,
+        400,
+        `Los siguientes campos no están permitidos: ${camposInvalidos.join(
+          ', '
+        )}`
+      );
+    }
+
+    // 3. Validar campos obligatorios
+    const { nombre, dni, telefono, email } = bodyFiltrado;
     if (!nombre || !dni || !telefono) {
       return sendError(res, 400, 'Nombre, DNI y Teléfono son obligatorios');
     }
 
-    // 2. Sanitizar inputs
-    const campos = { nombre, dni, telefono, email, observaciones };
-    for (const campo in campos) {
-      if (campos[campo] && /<|>/.test(campos[campo])) {
-        return sendError(
-          res,
-          400,
-          `El campo ${campo} contiene caracteres no permitidos`
-        );
-      }
-    }
-
-    // Opcionalmente: limpiar con xss
-    req.body.nombre = xss(nombre);
-    req.body.dni = xss(dni);
-    req.body.telefono = xss(telefono);
-    req.body.email = xss(email);
-    req.body.observaciones = xss(observaciones);
-
-    // 3. Validar duplicados
+    // 4. Validaciones adicionales
     const existeDni = await Cliente.findOne({ dni });
     if (existeDni)
       return sendError(res, 400, 'Ya existe un cliente con ese DNI');
@@ -51,8 +70,8 @@ const crearClienteController = async (req, res) => {
     if (existeTelefono)
       return sendError(res, 400, 'Ya existe un cliente con ese teléfono');
 
-    // 4. Crear cliente
-    const cliente = await crearClienteService(req.body);
+    // 5. Crear cliente
+    const cliente = await crearClienteService(bodyFiltrado);
     return sendSuccess(res, 201, 'Cliente creado correctamente', { cliente });
   } catch (error) {
     console.error('[crearClienteController]', error);
