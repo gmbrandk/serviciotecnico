@@ -1,4 +1,3 @@
-// 📋 models/OrdenServicio.js
 const mongoose = require('mongoose');
 
 const OrdenServicioSchema = new mongoose.Schema({
@@ -26,11 +25,18 @@ const OrdenServicioSchema = new mongoose.Schema({
   defectosReportados: String,
   observaciones: String,
   diagnosticoCliente: String,
-  estado: {
+
+  estadoOS: {
     type: String,
-    enum: ['pendiente', 'en_proceso', 'finalizado', 'entregado'],
-    default: 'pendiente',
+    enum: ['en_proceso', 'finalizado'],
+    default: 'en_proceso',
   },
+
+  estadoEquipo: {
+    type: String,
+    enum: ['reparado', 'retiro_cliente', 'irreparable'],
+  },
+
   trabajosRealizados: [
     {
       tipoTrabajo: {
@@ -47,15 +53,8 @@ const OrdenServicioSchema = new mongoose.Schema({
       },
     },
   ],
+
   total: { type: Number, required: true },
-  estadoFinal: {
-    type: String,
-    enum: ['reparado', 'no_reparado', 'otro'], // Puedes ajustarlo
-  },
-  retiroSinReparar: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 module.exports = mongoose.model('OrdenServicio', OrdenServicioSchema);

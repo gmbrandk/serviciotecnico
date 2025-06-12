@@ -6,19 +6,19 @@ const obtenerClientePorIdController = require('@controllers/clientes/obtenerClie
 const obtenerClientesController = require('@controllers/clientes/obtenerClientesController');
 const crearClienteController = require('@controllers/clientes/crearClienteController');
 const editarClienteController = require('@controllers/clientes/editarClienteController');
-const eliminarClienteController = require('@controllers/clientes/eliminarClienteController');
+const eliminarClienteController = require('@controllers/clientes/eliminacion/eliminarClienteController');
 
 jest.mock('@services/clientes/obtenerClientePorIdService');
 jest.mock('@services/clientes/obtenerClientesService');
 jest.mock('@services/clientes/crearClienteService');
 jest.mock('@services/clientes/editarClienteService');
-jest.mock('@services/clientes/eliminarClienteService');
+jest.mock('@services/clientes/eliminacion/eliminarClienteService');
 
 const obtenerClientePorIdService = require('@services/clientes/obtenerClientePorIdService');
 const obtenerClientesService = require('@services/clientes/obtenerClientesService');
 const crearClienteService = require('@services/clientes/crearClienteService');
 const editarClienteService = require('@services/clientes/editarClienteService');
-const eliminarClienteService = require('@services/clientes/eliminarClienteService');
+const eliminarClienteService = require('@services/clientes/eliminacion/eliminarClienteService');
 
 describe('🧪 Controladores de Cliente', () => {
   afterEach(() => jest.clearAllMocks());

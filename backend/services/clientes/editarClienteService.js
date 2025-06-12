@@ -1,4 +1,5 @@
 const Cliente = require('@models/Cliente');
+const OrdenServicio = require('@models/OrdenServicio'); // IMPORTANTE
 
 const editarClienteService = async (id, data) => {
   console.log('🟡 [Service] ID recibido:', id);
@@ -11,6 +12,19 @@ const editarClienteService = async (id, data) => {
   if (!clienteOriginal) {
     console.log('🔴 [Service] Cliente no encontrado');
     throw new Error('Cliente no encontrado');
+  }
+
+  // 0.1 Validar si el cliente tiene órdenes no finalizadas
+  const ordenesActivas = await OrdenServicio.findOne({
+    cliente: id,
+    estadoOS: { $ne: 'finalizado' },
+  });
+
+  if (ordenesActivas) {
+    console.log('🔴 [Service] Cliente con orden de servicio en proceso');
+    throw new Error(
+      'No puedes editar un cliente con órdenes de servicio activas'
+    );
   }
 
   // 1. Verificar que el DNI no cambie

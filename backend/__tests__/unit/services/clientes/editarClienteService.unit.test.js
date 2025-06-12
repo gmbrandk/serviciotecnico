@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const editarClienteService = require('@services/clientes/editarClienteService');
 const Cliente = require('@models/Cliente');
+const OrdenServicio = require('@models/OrdenServicio');
 
 jest.mock('@models/Cliente');
+jest.mock('@models/OrdenServicio');
 
 describe('🧪 editarClienteService (unitario)', () => {
   afterEach(() => jest.clearAllMocks());
@@ -20,6 +22,30 @@ describe('🧪 editarClienteService (unitario)', () => {
     calificacion: 'bueno',
   };
 
+  it('debería lanzar error si el cliente tiene OS no finalizadas', async () => {
+    // Mock: encontrar cliente
+    Cliente.findById.mockResolvedValue(clienteMock);
+
+    // Mock: hay una orden en proceso
+    OrdenServicio.findOne.mockResolvedValue({
+      _id: 'orden123',
+      estadoOS: 'en_proceso',
+    });
+
+    // Ejecutar
+    await expect(
+      editarClienteService(idValido, { email: 'nuevo@email.com' })
+    ).rejects.toThrow(
+      'No puedes editar un cliente con órdenes de servicio activas'
+    );
+
+    expect(Cliente.findById).toHaveBeenCalledWith(idValido);
+    expect(OrdenServicio.findOne).toHaveBeenCalledWith({
+      cliente: idValido,
+      estadoOS: { $ne: 'finalizado' },
+    });
+  });
+
   it('✅ Actualiza cliente correctamente (sin DNI)', async () => {
     Cliente.findById.mockResolvedValue({ ...clienteMock });
     Cliente.findOne.mockResolvedValue(null);
@@ -27,6 +53,8 @@ describe('🧪 editarClienteService (unitario)', () => {
       ...clienteMock,
       nombre: 'Nuevo Nombre',
     });
+
+    OrdenServicio.findOne.mockResolvedValue(null); // 🔁 Sin órdenes activas
 
     const resultado = await editarClienteService(idValido, {
       nombre: 'Nuevo Nombre',
