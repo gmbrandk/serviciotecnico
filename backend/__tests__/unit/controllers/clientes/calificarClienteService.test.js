@@ -5,7 +5,7 @@ const Cliente = require('@models/Cliente');
 const OrdenServicio = require('@models/OrdenServicio');
 const {
   crearClienteYOrdenes,
-} = require('../../../helpers/crearClienteyOrdenes');
+} = require('../../../../__tests__/helpers/crearClienteYOrdenes');
 
 describe('🧪 Calificar Cliente - Integración', () => {
   beforeAll(async () => {

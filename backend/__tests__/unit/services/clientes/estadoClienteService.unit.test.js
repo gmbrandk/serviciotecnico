@@ -1,113 +1,141 @@
 const mongoose = require('mongoose');
-const Cliente = require('@models/Cliente');
+const estadoClienteController = require('@controllers/clientes/estadoClienteController');
 const estadoClienteService = require('@services/clientes/estadoClienteService');
+const { sendSuccess, sendError } = require('@utils/httpResponse');
 
-jest.mock('@models/Cliente');
+jest.mock('@services/clientes/estadoClienteService');
+jest.mock('@utils/httpResponse', () => ({
+  sendSuccess: jest.fn(),
+  sendError: jest.fn(),
+}));
 
-describe('🧪 estadoClienteService (unitario)', () => {
-  afterEach(() => jest.clearAllMocks());
+describe('🧪 estadoClienteController (unitario)', () => {
+  const mockReq = (id) => ({ params: { id } });
+  const res = {}; // no necesitamos simular res porque sendSuccess/sendError ya están mockeados
 
   const idValido = new mongoose.Types.ObjectId().toHexString();
-
-  const clienteActivo = {
+  const clienteMock = {
     _id: idValido,
+    nombre: 'Cliente Uno',
     estado: 'activo',
+    isActivo: true,
     calificacion: 'bueno',
-    save: jest.fn().mockResolvedValue(true),
   };
 
-  const clienteSuspendido = {
-    _id: idValido,
-    estado: 'suspendido',
-    calificacion: 'malo',
-    save: jest.fn().mockResolvedValue(true),
-  };
+  afterEach(() => jest.clearAllMocks());
 
-  const clienteBaneado = {
-    _id: idValido,
-    estado: 'baneado',
-    calificacion: 'muy_malo',
-    save: jest.fn().mockResolvedValue(true),
-  };
-
-  describe('🔸 suspenderCliente', () => {
-    it('debería suspender al cliente si está activo', async () => {
-      Cliente.findById.mockResolvedValueOnce({ ...clienteActivo });
-
-      const res = await estadoClienteService.suspenderCliente(idValido);
-
-      expect(res.cliente.estado).toBe('suspendido');
-      expect(res.cliente.calificacion).toBe('malo');
-      expect(res.yaEstaSuspendido).toBe(false);
-    });
-
-    it('debería no hacer nada si ya está suspendido', async () => {
-      Cliente.findById.mockResolvedValueOnce({
-        ...clienteSuspendido,
-        estado: 'suspendido', // asegúrate que esté correctamente definido
-        calificacion: 'malo',
-        save: jest.fn().mockResolvedValue(true),
+  describe('🔸 suspender', () => {
+    it('debería suspender al cliente correctamente', async () => {
+      estadoClienteService.suspenderCliente.mockResolvedValue({
+        yaEstaSuspendido: false,
+        cliente: clienteMock,
       });
 
-      const res = await estadoClienteService.suspenderCliente(idValido);
+      await estadoClienteController.suspender(mockReq(idValido), res);
 
-      expect(res.yaEstaSuspendido).toBe(true);
+      expect(sendSuccess).toHaveBeenCalledWith(
+        res,
+        200,
+        'Cliente suspendido correctamente',
+        { cliente: clienteMock }
+      );
     });
 
-    it('debería lanzar error si no se encuentra el cliente', async () => {
-      Cliente.findById.mockResolvedValueOnce(null);
+    it('debería retornar que ya está suspendido', async () => {
+      estadoClienteService.suspenderCliente.mockResolvedValue({
+        yaEstaSuspendido: true,
+        cliente: clienteMock,
+      });
 
-      await expect(
-        estadoClienteService.suspenderCliente(idValido)
-      ).rejects.toThrow('Cliente no encontrado');
+      await estadoClienteController.suspender(mockReq(idValido), res);
+
+      expect(sendSuccess).toHaveBeenCalledWith(
+        res,
+        200,
+        'El cliente ya se encuentra suspendido',
+        { cliente: clienteMock }
+      );
+    });
+
+    it('debería retornar error si ID es inválido', async () => {
+      await estadoClienteController.suspender(mockReq('invalido'), res);
+      expect(sendError).toHaveBeenCalledWith(res, 400, 'ID inválido');
+    });
+
+    it('debería manejar errores del servicio', async () => {
+      estadoClienteService.suspenderCliente.mockRejectedValue(
+        new Error('Error de prueba')
+      );
+      await estadoClienteController.suspender(mockReq(idValido), res);
+      expect(sendError).toHaveBeenCalledWith(res, 400, 'Error de prueba');
     });
   });
 
-  describe('🔸 reactivarCliente', () => {
-    it('debería reactivar al cliente si está suspendido', async () => {
-      Cliente.findById.mockResolvedValueOnce({ ...clienteSuspendido });
+  describe('🔸 reactivar', () => {
+    it('debería reactivar al cliente correctamente', async () => {
+      estadoClienteService.reactivarCliente.mockResolvedValue({
+        yaEstaActivo: false,
+        cliente: clienteMock,
+      });
 
-      const res = await estadoClienteService.reactivarCliente(idValido);
+      await estadoClienteController.reactivar(mockReq(idValido), res);
 
-      expect(res.cliente.estado).toBe('activo');
-      expect(res.cliente.calificacion).toBe('bueno');
-      expect(res.yaEstaActivo).toBe(false);
+      expect(sendSuccess).toHaveBeenCalledWith(
+        res,
+        200,
+        'Cliente reactivado correctamente',
+        { cliente: clienteMock }
+      );
     });
 
-    it('debería no hacer nada si ya está activo', async () => {
-      Cliente.findById.mockResolvedValueOnce({ ...clienteActivo });
+    it('debería retornar que ya está activo', async () => {
+      estadoClienteService.reactivarCliente.mockResolvedValue({
+        yaEstaActivo: true,
+        cliente: clienteMock,
+      });
 
-      const res = await estadoClienteService.reactivarCliente(idValido);
+      await estadoClienteController.reactivar(mockReq(idValido), res);
 
-      expect(res.yaEstaActivo).toBe(true);
+      expect(sendSuccess).toHaveBeenCalledWith(
+        res,
+        200,
+        'El cliente ya está activo',
+        { cliente: clienteMock }
+      );
     });
   });
 
-  describe('🔸 confirmarBajaCliente', () => {
-    it('debería dar de baja definitiva a un cliente suspendido', async () => {
-      Cliente.findById.mockResolvedValueOnce({ ...clienteSuspendido });
+  describe('🔸 confirmarBaja', () => {
+    it('debería dar de baja al cliente correctamente', async () => {
+      estadoClienteService.confirmarBajaCliente.mockResolvedValue({
+        yaEstaBaneado: false,
+        cliente: clienteMock,
+      });
 
-      const res = await estadoClienteService.confirmarBajaCliente(idValido);
+      await estadoClienteController.confirmarBaja(mockReq(idValido), res);
 
-      expect(res.cliente.estado).toBe('baneado');
-      expect(res.cliente.calificacion).toBe('muy_malo');
-      expect(res.yaEstaBaneado).toBe(false);
+      expect(sendSuccess).toHaveBeenCalledWith(
+        res,
+        200,
+        'Baja definitiva confirmada correctamente',
+        { cliente: clienteMock }
+      );
     });
 
-    it('debería no hacer nada si ya está baneado', async () => {
-      Cliente.findById.mockResolvedValueOnce({ ...clienteBaneado });
+    it('debería retornar que ya fue baneado', async () => {
+      estadoClienteService.confirmarBajaCliente.mockResolvedValue({
+        yaEstaBaneado: true,
+        cliente: clienteMock,
+      });
 
-      const res = await estadoClienteService.confirmarBajaCliente(idValido);
+      await estadoClienteController.confirmarBaja(mockReq(idValido), res);
 
-      expect(res.yaEstaBaneado).toBe(true);
-    });
-
-    it('debería lanzar error si no se encuentra el cliente', async () => {
-      Cliente.findById.mockResolvedValueOnce(null);
-
-      await expect(
-        estadoClienteService.confirmarBajaCliente(idValido)
-      ).rejects.toThrow('Cliente no encontrado');
+      expect(sendSuccess).toHaveBeenCalledWith(
+        res,
+        200,
+        'El cliente ya fue dado de baja permanentemente',
+        { cliente: clienteMock }
+      );
     });
   });
 });
