@@ -15,14 +15,13 @@ beforeAll(async () => {
   }
 });
 
-describe('Dummy test', () => {
+/*describe('Dummy test', () => {
   it('should run without issues', () => {
     expect(true).toBe(true);
   });
-});
+});*/
 
 afterAll(async () => {
   // Cerrar la conexión después de todas las pruebas
   await mongoose.connection.close();
 });
-

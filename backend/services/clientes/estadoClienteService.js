@@ -1,20 +1,19 @@
+// @services/clientes/estadoClienteService.js
 const Cliente = require('@models/Cliente');
 const OrdenServicio = require('@models/OrdenServicio');
 
-const ESTADOS_INVALIDOS = ['baneado', 'suspendido'];
-const CALIFICACIONES_NEGATIVAS = ['malo', 'muy_malo'];
-
-// ✅ Suspender cliente temporalmente
 const suspenderCliente = async (id) => {
   const cliente = await Cliente.findById(id);
   if (!cliente) throw new Error('Cliente no encontrado');
 
-  // Si ya está inactivo o suspendido, evitar acción redundante
-  if (cliente.estado === 'suspendido' && cliente.isActivo === false) {
+  if (cliente.estado === 'baneado') {
+    throw new Error('No se puede suspender un cliente que ya está baneado');
+  }
+
+  if (!cliente.isActivo && cliente.estado === 'suspendido') {
     return { yaEstaSuspendido: true, cliente };
   }
 
-  // Reglas de negocio
   const ordenActiva = await OrdenServicio.findOne({
     cliente: id,
     estadoOS: { $ne: 'finalizado' },
@@ -32,10 +31,13 @@ const suspenderCliente = async (id) => {
   return { yaEstaSuspendido: false, cliente };
 };
 
-// ✅ Reactivar cliente
 const reactivarCliente = async (id) => {
   const cliente = await Cliente.findById(id);
   if (!cliente) throw new Error('Cliente no encontrado');
+
+  if (cliente.estado === 'baneado') {
+    throw new Error('No se puede reactivar un cliente que ha sido baneado');
+  }
 
   if (cliente.isActivo && cliente.estado === 'activo') {
     return { yaEstaActivo: true, cliente };
@@ -43,13 +45,12 @@ const reactivarCliente = async (id) => {
 
   cliente.isActivo = true;
   cliente.estado = 'activo';
-  cliente.calificacion = 'bueno'; // o la calificación previa si la almacenas
+  cliente.calificacion = 'bueno';
   await cliente.save();
 
   return { yaEstaActivo: false, cliente };
 };
 
-// ✅ Confirmar baja definitiva
 const confirmarBajaCliente = async (id) => {
   const cliente = await Cliente.findById(id);
   if (!cliente) throw new Error('Cliente no encontrado');

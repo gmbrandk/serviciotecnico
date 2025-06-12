@@ -18,6 +18,10 @@ const ClienteSchema = new mongoose.Schema({
     enum: ['muy_malo', 'malo', 'regular', 'bueno', 'muy_bueno'],
     default: 'regular',
   },
+  isActivo: {
+    type: Boolean,
+    default: true,
+  },
   fechaRegistro: { type: Date, default: Date.now },
 });
 
