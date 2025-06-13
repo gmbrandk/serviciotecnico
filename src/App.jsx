@@ -8,7 +8,7 @@ import NotFound from '@pages/NotFound';
 import DashboardPage from '@pages/DashboardPage';
 import ProtectedRoute from '@components/routes/ProtectedRoute';
 import PublicRoute from '@components/routes/PublicRoute';
-
+import { UsuariosProvider } from '@context/UsuariosContext';
 import dashboardRoutes from '@routes/dashboardRoutes';
 
 import TestingPage from '@pages/TestingPage';
@@ -39,7 +39,11 @@ const App = () => {
           path="/dashboard/*"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <UsuariosProvider>
+                {' '}
+                {/* ✅ Se monta solo cuando hay sesión */}
+                <DashboardPage />
+              </UsuariosProvider>
             </ProtectedRoute>
           }
         >

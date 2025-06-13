@@ -6,14 +6,11 @@ import '@config/init/usuarioServiceInit'; // ⬅️ Asegúrate de que esté arri
 
 import { AuthProvider } from '@context/authContext';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { UsuariosProvider } from '@context/UsuariosContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>
     <AuthProvider>
-      <UsuariosProvider>
-        <App />
-      </UsuariosProvider>
+      <App />
     </AuthProvider>
   </Router>
 );

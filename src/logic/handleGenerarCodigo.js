@@ -8,15 +8,15 @@ export const handleGenerarCodigo = async ({
   usosSeleccionados,
   activarSpotlight,
   setSpotlightActivoId,
-  setBotonGenerado,          // (opcional): Para marcar botón como generado
-  startLoading,              // Requiere ser pasado desde el context
+  setBotonGenerado, // (opcional): Para marcar botón como generado
+  startLoading, // Requiere ser pasado desde el context
   stopLoading,
 }) => {
   if (hayCodigoActivo) {
     showToast('Ya existe un código activo');
 
     // Activamos spotlight en el código activo actual
-    const codigoActivo = codigos.find(c => c.estado === 'activo');
+    const codigoActivo = codigos.find((c) => c.estado === 'activo');
     if (codigoActivo) {
       activarSpotlight(setSpotlightActivoId, normalizedId(codigoActivo));
     }
@@ -25,9 +25,6 @@ export const handleGenerarCodigo = async ({
 
   try {
     startLoading?.(); // ✅ Evitamos error si no se pasa
-
-    // Simulamos delay (opcional, útil para mostrar spinner)
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const response = await fetch('http://localhost:5000/api/codigos/generar', {
       method: 'POST',
@@ -48,14 +45,13 @@ export const handleGenerarCodigo = async ({
 
     // Aseguramos que el nuevo código tenga `_id` unificado
     const nuevoCodigo = { ...data.codigo, _id: normalizedId(data.codigo) };
-    setCodigos(prev => [{ ...nuevoCodigo }, ...prev]);
+    setCodigos((prev) => [{ ...nuevoCodigo }, ...prev]);
 
     // Spotlight al nuevo código generado
     activarSpotlight(setSpotlightActivoId, nuevoCodigo._id);
 
     // ✅ Indicamos que el botón fue usado (si se provee)
     setBotonGenerado?.(true);
-
   } catch (error) {
     toast.error(error.message);
   } finally {
