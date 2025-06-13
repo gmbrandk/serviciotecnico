@@ -3,13 +3,18 @@
  * Función pura: sin efectos secundarios.
  */
 const calcularCalificacionBase = (ordenes) => {
-  if (!ordenes.length) return 'regular';
+  // ✅ Positivas
+  const buenas = ordenes.filter((os) => os.estadoEquipo === 'reparado').length;
 
-  const buenas = ordenes.filter((os) => os.estadoFinal === 'reparado').length;
+  // ❌ Negativas por decisión del cliente
   const malas = ordenes.filter(
-    (os) => os.estadoFinal === 'no_reparado' || os.retiroSinReparar
+    (os) => os.estadoEquipo === 'retiro_cliente'
   ).length;
-  const total = ordenes.length;
+
+  // ⚖️ Ignoramos 'irreparable' para no penalizar indebidamente
+  const total = buenas + malas;
+
+  if (total === 0) return 'regular'; // Sin data relevante para calificar
 
   const porcentajeBueno = (buenas / total) * 100;
 

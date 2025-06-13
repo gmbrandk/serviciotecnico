@@ -20,7 +20,7 @@ const calificarClienteService = async (clienteId) => {
   // 📦 Cargar órdenes finalizadas
   const ordenes = await OrdenServicio.find({
     cliente: cliente._id,
-    estado: 'finalizado',
+    estadoOS: 'finalizado',
   });
 
   // 🧮 Paso 1: Calcular calificación base
