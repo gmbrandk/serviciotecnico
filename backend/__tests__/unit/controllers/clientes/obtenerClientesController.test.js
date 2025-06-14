@@ -1,7 +1,7 @@
-jest.mock('../../../../services/clientes/obtenerClientesService');
+jest.mock('@services/clientes/obtenerClientesService');
 
-const obtenerClientesController = require('../../../../controllers/clientes/obtenerClientesController');
-const obtenerClientesService = require('../../../../services/clientes/obtenerClientesService');
+const obtenerClientesController = require('@controllers/clientes/obtenerClientesController');
+const obtenerClientesService = require('@services/clientes/obtenerClientesService');
 
 const buildRes = () => ({
   status: jest.fn().mockReturnThis(),

@@ -9,9 +9,9 @@ const OrdenServicio = require('@models/OrdenServicio');
  * @param {string} opciones.estadoCliente - Estado del cliente.
  * @param {string} opciones.observaciones - Observaciones del cliente.
  * @param {number} opciones.numOrdenes - Total de órdenes.
- * @param {number} opciones.reparadas - Cantidad con estadoFinal "reparado".
- * @param {number} opciones.noReparadas - Cantidad con estadoFinal "no_reparado".
- * @param {number} opciones.retiroSinReparar - Cantidad con retiroSinReparar = true.
+ * @param {number} opciones.reparadas - Cantidad con estadoEquipo "reparado".
+ * @param {number} opciones.retiroSinReparar - Cantidad con estadoEquipo "retiro_cliente".
+ * @param {number} opciones.irreparables - Cantidad con estadoEquipo "irreparable".
  * @param {number} opciones.observacionesNegativas - Cantidad con observaciones negativas.
  * @returns {Promise<Cliente>} Cliente con sus órdenes creadas.
  */
@@ -20,8 +20,8 @@ const crearClienteYOrdenes = async ({
   observaciones = '',
   numOrdenes = 0,
   reparadas = 0,
-  noReparadas = 0,
   retiroSinReparar = 0,
+  irreparables = 0,
   observacionesNegativas = 0,
 } = {}) => {
   // 📌 1. Crear cliente válido
@@ -49,7 +49,7 @@ const crearClienteYOrdenes = async ({
       representante: cliente._id,
       tecnico: fakeTecnicoId,
       equipo: fakeEquipoId,
-      estado: 'finalizado',
+      estadoOS: 'finalizado',
       observaciones: 'Todo bien',
       defectosReportados: 'Ninguno',
       diagnosticoCliente: 'Correcto',
@@ -64,13 +64,13 @@ const crearClienteYOrdenes = async ({
       ],
     };
 
-    // Simulación de estado final personalizado
+    // Asignar estadoEquipo
     if (i < reparadas) {
-      orden.estadoFinal = 'reparado';
-    } else if (i < reparadas + noReparadas) {
-      orden.estadoFinal = 'no_reparado';
-    } else if (i < reparadas + noReparadas + retiroSinReparar) {
-      orden.retiroSinReparar = true;
+      orden.estadoEquipo = 'reparado';
+    } else if (i < reparadas + retiroSinReparar) {
+      orden.estadoEquipo = 'retiro_cliente';
+    } else {
+      orden.estadoEquipo = 'irreparable';
     }
 
     if (i < observacionesNegativas) {

@@ -1,6 +1,10 @@
 // jest.config.js
 module.exports = {
+  rootDir: './', // ✅ Estás en "backend", esto asegura que todas las rutas partan de aquí
   setupFiles: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
+  testEnvironment: 'node',
+  testMatch: ['**/__tests__/**/*.test.js'],
   moduleNameMapper: {
     '^@controllers(.*)$': '<rootDir>/controllers$1',
     '^@routes(.*)$': '<rootDir>/routes$1',
@@ -11,7 +15,4 @@ module.exports = {
     '^@services(.*)$': '<rootDir>/services$1',
     '^app$': '<rootDir>/app.js',
   },
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
-  testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.test.js'],
 };

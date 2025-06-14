@@ -8,7 +8,7 @@ const Cliente = require('@models/Cliente');
  * @param {Object} options.filtros - Filtros de búsqueda (estado, nombre, etc.).
  * @param {Object} options.opciones - Paginación y ordenamiento.
  */
-const obtenerClientesBase = async ({
+const obtenerClientesService = async ({
   id = null,
   filtros = {},
   opciones = {},
@@ -41,4 +41,4 @@ const obtenerClientesBase = async ({
   return { clientes, total };
 };
 
-module.exports = obtenerClientesBase;
+module.exports = obtenerClientesService;

@@ -1,4 +1,4 @@
-const obtenerClientesBase = require('@services/clientes/obtenerClientesService');
+const obtenerClientesService = require('@services/clientes/obtenerClientesService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const obtenerClientesController = async (req, res) => {
@@ -11,7 +11,7 @@ const obtenerClientesController = async (req, res) => {
     if (calificacion) filtros.calificacion = calificacion;
     if (nombre) filtros.nombre = new RegExp(nombre, 'i');
 
-    const { clientes, total } = await obtenerClientesBase({
+    const { clientes, total } = await obtenerClientesService({
       filtros,
       opciones: { page, limit, sortBy, order },
     });

@@ -1,9 +1,9 @@
-const obtenerClientesBase = require('@services/clientes/obtenerClientesService');
+const obtenerClientesService = require('@services/clientes/obtenerClientesService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const obtenerClientePorIdController = async (req, res) => {
   try {
-    const cliente = await obtenerClientesBase({ id: req.params.id });
+    const cliente = await obtenerClientesService({ id: req.params.id });
     return sendSuccess(res, 200, 'Cliente encontrado', { cliente });
   } catch (error) {
     return sendError(
