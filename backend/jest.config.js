@@ -13,6 +13,7 @@ module.exports = {
     '^@config(.*)$': '<rootDir>/config$1',
     '^@utils(.*)$': '<rootDir>/utils$1',
     '^@services(.*)$': '<rootDir>/services$1',
+    '^@helpers(.*)$': '<rootDir>/helpers$1',
     '^app$': '<rootDir>/app.js',
   },
 };

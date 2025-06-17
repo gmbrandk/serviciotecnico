@@ -13,7 +13,8 @@
     "@routes": "routes",
     "@models": "models",
     "@utils": "utils",
-    "@services": "services"
+    "@services": "services",
+    "@helpers": "helpers"
   },
   "keywords": [],
   "author": "",

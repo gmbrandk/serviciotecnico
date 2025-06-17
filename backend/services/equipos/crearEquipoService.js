@@ -1,33 +1,59 @@
-// 📁 services/equipos/crearEquipoService.js
-
-const Equipo = require('../../models/Equipo');
-const vincularFichaTecnica = require('../../helpers/equipos/vincularFichaTecnica');
-const inicializarHistorialClientes = require('../../helpers/equipos/inicializarHistorialClientes');
+const Equipo = require('@models/Equipo');
+const FichaTecnica = require('@models/FichaTecnica');
+const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
+const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
 
 const crearEquipoService = async (data) => {
-  const { tipo, marca, modelo, sku, nroSerie, clienteActual, ...resto } = data;
+  const {
+    tipo,
+    marca,
+    modelo,
+    sku,
+    nroSerie,
+    clienteActual,
+    fichaTecnicaManual,
+    ...resto
+  } = data;
 
   if (!tipo || !modelo || !clienteActual) {
-    throw new Error('Tipo, modelo y clienteActual son requeridos');
+    throw new Error('Los campos tipo, modelo y clienteActual son obligatorios');
   }
 
-  // Validar duplicado por nroSerie si viene
-  if (nroSerie) {
-    const existente = await Equipo.findOne({ nroSerie: nroSerie.trim() });
-    if (existente) {
+  if (nroSerie?.trim()) {
+    const yaExiste = await Equipo.findOne({ nroSerie: nroSerie.trim() });
+    if (yaExiste) {
       throw new Error('Ya existe un equipo con ese número de serie');
     }
   }
 
-  // Buscar ficha técnica por sku o modelo
-  const fichaTecnica = await vincularFichaTecnica({ modelo, sku });
+  // Paso 1: Buscar ficha técnica existente
+  let fichaTecnica = await vincularFichaTecnica({ modelo, sku });
+  console.log(
+    '[crearEquipoService] fichaTecnica encontrada:',
+    fichaTecnica?._id || null
+  );
 
-  // Historial inicial
+  // Paso 2: Crear manualmente si no existe ninguna y viene una fichaManual
+  if (!fichaTecnica && fichaTecnicaManual) {
+    const fichaManualData = {
+      ...fichaTecnicaManual,
+      modelo: modelo?.trim(),
+      sku: sku?.trim(),
+      fuente: 'manual',
+    };
+    console.log(
+      '[crearEquipoService] No se encontró ficha, creando manual:',
+      fichaManualData
+    );
+    fichaTecnica = await FichaTecnica.create(fichaManualData);
+  }
+
+  // Paso 3: Inicializar historial de clientes
   const historialClientes = inicializarHistorialClientes(clienteActual);
 
   const nuevoEquipo = new Equipo({
-    tipo,
-    marca,
+    tipo: tipo.trim(),
+    marca: marca?.trim(),
     modelo: modelo.trim(),
     sku: sku?.trim(),
     nroSerie: nroSerie?.trim(),
@@ -38,7 +64,6 @@ const crearEquipoService = async (data) => {
   });
 
   await nuevoEquipo.save();
-
   return nuevoEquipo;
 };
 
