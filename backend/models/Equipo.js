@@ -35,6 +35,46 @@ const EquipoSchema = new mongoose.Schema({
     ref: 'FichaTecnica',
     default: null,
   },
+  especificacionesActuales: {
+    ram: {
+      valor: { type: String },
+      fuente: {
+        type: String,
+        enum: ['template', 'manual', 'api'],
+        default: 'template',
+      },
+    },
+    almacenamiento: {
+      valor: { type: String },
+      fuente: {
+        type: String,
+        enum: ['template', 'manual', 'api'],
+        default: 'template',
+      },
+    },
+    cpu: {
+      valor: { type: String },
+      fuente: {
+        type: String,
+        enum: ['template', 'manual', 'api'],
+        default: 'template',
+      },
+    },
+    gpu: {
+      valor: { type: String },
+      fuente: {
+        type: String,
+        enum: ['template', 'manual', 'api'],
+        default: 'template',
+      },
+    },
+    // Agrega más campos si es necesario
+  },
+
+  repotenciado: {
+    type: Boolean,
+    default: false,
+  },
 
   historialPropietarios: [HistorialPropietarioSchema],
 });

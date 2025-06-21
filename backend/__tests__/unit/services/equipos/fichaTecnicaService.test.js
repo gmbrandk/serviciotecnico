@@ -111,4 +111,93 @@ describe('crearEquipoService', () => {
       'Los campos tipo, modelo y clienteActual son obligatorios'
     );
   });
+
+  it('✅ Crea equipo con ficha técnica existente + campos sobrescritos (repotenciado)', async () => {
+    // 🔧 Ficha técnica base con todos los campos definidos
+    const fichaBase = {
+      _id: 'ficha123',
+      ram: '8GB',
+      almacenamiento: '256GB SSD',
+      cpu: 'Intel i5',
+      gpu: 'Intel UHD',
+    };
+
+    vincularFichaTecnica.mockResolvedValue(fichaBase);
+    FichaTecnica.create.mockResolvedValue(null); // No debe llamarse
+
+    const equipo = await crearEquipoService({
+      tipo: 'laptop',
+      modelo: 'Asus VivoBook',
+      sku: 'ASUS-XYZ',
+      clienteActual: 'cliente123',
+      fichaTecnicaManual: {
+        ram: '16GB', // sobrescrito
+        almacenamiento: '256GB SSD', // igual al template
+        cpu: 'Intel i7', // sobrescrito
+        gpu: 'Intel UHD', // igual al template
+      },
+    });
+
+    // ✅ Verificamos que use la ficha técnica existente
+    expect(equipo.fichaTecnica).toBe(fichaBase._id);
+
+    // ✅ Verificamos las especificaciones actuales con fuentes correctas
+    expect(equipo.especificacionesActuales).toEqual({
+      ram: { valor: '16GB', fuente: 'manual' },
+      almacenamiento: { valor: '256GB SSD', fuente: 'template' },
+      cpu: { valor: 'Intel i7', fuente: 'manual' },
+      gpu: { valor: 'Intel UHD', fuente: 'template' },
+    });
+  });
+
+  it('✅ Valida que la fuente se setee correctamente para cada campo', async () => {
+    const fichaBase = {
+      _id: 'fichaABC',
+      ram: '8GB',
+      almacenamiento: '256GB SSD',
+      cpu: 'Intel i5',
+      gpu: 'Intel UHD',
+    };
+    vincularFichaTecnica.mockResolvedValue(fichaBase);
+    FichaTecnica.create.mockResolvedValue(null);
+
+    const equipo = await crearEquipoService({
+      tipo: 'laptop',
+      modelo: 'HP Envy',
+      sku: 'HP-ENVY-456',
+      clienteActual: 'cliente456',
+      fichaTecnicaManual: {
+        ram: '16GB', // sobrescrito → manual
+        cpu: 'Intel i5', // igual → template
+        gpu: 'Intel UHD', // igual → template
+        almacenamiento: '512GB SSD', // sobrescrito → manual
+      },
+    });
+
+    expect(equipo.fichaTecnica).toBe(fichaBase._id);
+    expect(equipo.especificacionesActuales).toEqual({
+      ram: { valor: '16GB', fuente: 'manual' },
+      almacenamiento: { valor: '512GB SSD', fuente: 'manual' },
+      cpu: { valor: 'Intel i5', fuente: 'template' },
+      gpu: { valor: 'Intel UHD', fuente: 'template' },
+    });
+  });
+
+  it('✅ Crea equipo aunque no haya ficha técnica ni fichaTecnicaManual', async () => {
+    // No se encuentra ficha técnica
+    vincularFichaTecnica.mockResolvedValue(null);
+    // No se intenta crear ninguna ficha técnica
+    FichaTecnica.create.mockResolvedValue(null);
+
+    const equipo = await crearEquipoService({
+      tipo: 'laptop',
+      modelo: 'Desconocido',
+      sku: 'UNK-000',
+      clienteActual: 'cliente123',
+    });
+
+    expect(FichaTecnica.create).not.toHaveBeenCalled();
+    expect(equipo.fichaTecnica).toBe(null);
+    expect(equipo.especificacionesActuales).toEqual({}); // ← campos vacíos permitidos
+  });
 });

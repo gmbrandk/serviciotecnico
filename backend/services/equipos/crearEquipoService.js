@@ -2,6 +2,7 @@ const Equipo = require('@models/Equipo');
 const FichaTecnica = require('@models/FichaTecnica');
 const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
 const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
+const calcularEspecificacionesEquipo = require('@helpers/equipos/calcularEspecificacionesEquipo');
 
 const crearEquipoService = async (data) => {
   const {
@@ -26,14 +27,14 @@ const crearEquipoService = async (data) => {
     }
   }
 
-  // Paso 1: Buscar ficha técnica existente
+  // Paso 1: Buscar plantilla de ficha técnica
   let fichaTecnica = await vincularFichaTecnica({ modelo, sku });
   console.log(
     '[crearEquipoService] fichaTecnica encontrada:',
     fichaTecnica?._id || null
   );
 
-  // Paso 2: Crear manualmente si no existe ninguna y viene una fichaManual
+  // Paso 2: Crear ficha técnica manual si no existe
   if (!fichaTecnica && fichaTecnicaManual) {
     const fichaManualData = {
       ...fichaTecnicaManual,
@@ -48,8 +49,12 @@ const crearEquipoService = async (data) => {
     fichaTecnica = await FichaTecnica.create(fichaManualData);
   }
 
-  // Paso 3: Inicializar historial de clientes
+  // Paso 3: Inicializar historial
   const historialClientes = inicializarHistorialClientes(clienteActual);
+
+  // Paso 4: Calcular especificaciones actuales y si es repotenciado
+  const { especificacionesActuales, repotenciado } =
+    calcularEspecificacionesEquipo(fichaTecnica, fichaTecnicaManual || {});
 
   const nuevoEquipo = new Equipo({
     tipo: tipo.trim(),
@@ -60,6 +65,8 @@ const crearEquipoService = async (data) => {
     clienteActual,
     fichaTecnica: fichaTecnica?._id || null,
     historialClientes,
+    especificacionesActuales,
+    repotenciado,
     ...resto,
   });
 
