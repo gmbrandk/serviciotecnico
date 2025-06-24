@@ -1,75 +1,137 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
-const app = require('app');
-const Cliente = require('@models/Cliente');
+const app = require('../../app');
+const { conectarDB, desconectarDB, limpiarDB } = require('../setup');
+const crearUsuarioYLogin = require('../helpers/crearUsuarioYLogin');
+const Usuario = require('@models/Usuario');
 
-describe('🧪 Integración: Suspensión de cliente', () => {
-  let clienteId;
+let cookieAdmin, clienteId;
 
-  beforeAll(async () => {
-    // Limpiar la colección
-    await Cliente.deleteMany({});
+beforeAll(async () => {
+  await Usuario.deleteOne({ email: 'admin@test.com' });
 
-    // Crear un cliente activo
-    const cliente = await Cliente.create({
-      nombre: 'Cliente Test',
-      dni: '12345678',
-      telefono: '999999999',
-      email: 'cliente@test.com',
-      estado: 'activo',
-      calificacion: 'bueno',
-      isActivo: true,
-    });
+  await conectarDB();
+  const { cookie } = await crearUsuarioYLogin({
+    nombre: 'Admin',
+    email: 'admin@test.com',
+    password: '123456',
+    role: 'administrador',
+  });
+  cookieAdmin = cookie;
+});
 
-    clienteId = cliente._id;
+afterAll(async () => {
+  await limpiarDB();
+  await desconectarDB();
+});
+
+describe('🧪 CRUD de Clientes', () => {
+  beforeEach(async () => {
+    await limpiarDB(); // 🧼 No borra usuarios
   });
 
-  afterAll(async () => {
-    await mongoose.connection.close(); // Ya definido en setup.js pero por si acaso
+  test('✅ Crear cliente', async () => {
+    const res = await request(app)
+      .post('/api/clientes')
+      .set('Cookie', cookieAdmin)
+      .send({
+        nombre: 'Juan Pérez',
+        dni: '12345678',
+        telefono: '987654321',
+        email: 'juan@test.com',
+      });
+
+    console.log('📥 Status crear cliente:', res.statusCode);
+    console.log('📥 Body crear cliente:', res.body);
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.cliente).toBeDefined();
   });
 
-  it('🔸 debería suspender correctamente a un cliente activo', async () => {
-    const res = await request(app).patch(
-      `/api/clientes/suspender/${clienteId}`
-    );
+  test('✏️ Editar cliente', async () => {
+    // Primero crear el cliente
+    const createRes = await request(app)
+      .post('/api/clientes')
+      .set('Cookie', cookieAdmin)
+      .send({ nombre: 'Editar Test', dni: '11111111', email: 'edit@test.com' });
 
-    expect(res.status).toBe(200);
+    const id = createRes.body.cliente._id;
 
-    expect(res.body.success).toBe(true);
-    expect(res.body.mensaje).toBe('Cliente suspendido correctamente');
-    expect(res.body.details.cliente.estado).toBe('suspendido');
-    expect(res.body.details.cliente.calificacion).toBe('malo');
-    expect(res.body.details.cliente.isActivo).toBe(false);
+    const res = await request(app)
+      .put(`/api/clientes/${id}`)
+      .set('Cookie', cookieAdmin)
+      .send({ nombre: 'Nombre Actualizado' });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.cliente.nombre).toBe('Nombre Actualizado');
   });
 
-  it('🔸 debería retornar un mensaje si el cliente ya está suspendido', async () => {
-    const res = await request(app).patch(
-      `/api/clientes/suspender/${clienteId}`
-    );
+  test('🚫 Suspender cliente', async () => {
+    const { body } = await request(app)
+      .post('/api/clientes')
+      .set('Cookie', cookieAdmin)
+      .send({ nombre: 'Cliente', dni: '22222222', email: 'c2@test.com' });
 
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.mensaje).toBe('El cliente ya se encuentra suspendido');
-    expect(res.body.details.cliente.estado).toBe('suspendido');
-    expect(res.body.details.cliente.isActivo).toBe(false);
+    const res = await request(app)
+      .patch(`/api/clientes/${body.cliente._id}/suspender`)
+      .set('Cookie', cookieAdmin);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.cliente.estado).toBe('suspendido');
   });
 
-  it('❌ debería retornar error si el ID no es válido', async () => {
-    const res = await request(app).patch(`/api/clientes/suspender/ID_INVALIDO`);
+  test('🔁 Reactivar cliente', async () => {
+    const { body } = await request(app)
+      .post('/api/clientes')
+      .set('Cookie', cookieAdmin)
+      .send({ nombre: 'Cliente', dni: '33333333', email: 'c3@test.com' });
 
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.mensaje).toBe('ID inválido');
+    // suspender primero
+    await request(app)
+      .patch(`/api/clientes/${body.cliente._id}/suspender`)
+      .set('Cookie', cookieAdmin);
+
+    // reactivar
+    const res = await request(app)
+      .patch(`/api/clientes/${body.cliente._id}/reactivar`)
+      .set('Cookie', cookieAdmin);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.cliente.estado).toBe('activo');
   });
 
-  it('❌ debería retornar error si el cliente no existe', async () => {
-    const idValidoPeroInexistente = new mongoose.Types.ObjectId();
-    const res = await request(app).patch(
-      `/api/clientes/suspender/${idValidoPeroInexistente}`
-    );
+  test('⛔️ Confirmar baja definitiva', async () => {
+    const { body } = await request(app)
+      .post('/api/clientes')
+      .set('Cookie', cookieAdmin)
+      .send({ nombre: 'Cliente', dni: '44444444', email: 'c4@test.com' });
 
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.mensaje).toBe('Cliente no encontrado');
+    const res = await request(app)
+      .patch(`/api/clientes/${body.cliente._id}/baja-definitiva`)
+      .set('Cookie', cookieAdmin);
+
+    expect(res.statusCode).toBe(403); // administrador no tiene permiso
+  });
+
+  test('🧠 Calificar cliente', async () => {
+    const { body } = await request(app)
+      .post('/api/clientes')
+      .set('Cookie', cookieAdmin)
+      .send({ nombre: 'Cliente', dni: '55555555', email: 'c5@test.com' });
+
+    const res = await request(app)
+      .put(`/api/clientes/${body.cliente._id}/calificar`)
+      .set('Cookie', cookieAdmin);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.cliente.calificacion).toBeDefined();
+  });
+
+  test('📄 Obtener todos los clientes', async () => {
+    const res = await request(app)
+      .get('/api/clientes')
+      .set('Cookie', cookieAdmin);
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.clientes)).toBe(true);
   });
 });

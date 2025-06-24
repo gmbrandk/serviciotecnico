@@ -1,7 +1,7 @@
 // Permite que un usuario se edite a sí mismo.
 // En otros casos, compara jerarquías.
 
-const rolesJerarquia = require('../rolesJerarquia');
+const rolesJerarquia = require('../../rolesJerarquia');
 
 module.exports = ({ solicitante, objetivo }) => {
   const esAutoedicion = solicitante._id.toString() === objetivo._id.toString();

@@ -1,14 +1,22 @@
 // utils/permisos/verificarPermiso.js
 const rolesJerarquia = require('./permisos/rolesJerarquia');
 const acciones = {
-  cambiarRolUsuario: require('./permisos/accionesPermiso/cambiarRolUsuario'),
-  cambiarEstado: require('./permisos/accionesPermiso/cambiarEstado'),
-  editarUsuario: require('./permisos/accionesPermiso/editarUsuario'),
-  eliminar: require('./permisos/accionesPermiso/eliminarUsuario'),
-  cambiarEstado: require('./permisos/accionesPermiso/cambiarEstado'),
-  generarCodigo: require('./permisos/accionesPermiso/generarCodigoAcceso'),
-  obtenerCodigo: require('./permisos/accionesPermiso/obtenerCodigoAcceso'),
-  obtenerUsuario: require('./permisos/accionesPermiso/obtenerUsuario'),
+  cambiarRolUsuario: require('./permisos/accionesPermiso/usuario/cambiarRolUsuario'),
+  cambiarEstado: require('./permisos/accionesPermiso/usuario/cambiarEstado'),
+  editarUsuario: require('./permisos/accionesPermiso/usuario/editarUsuario'),
+  eliminar: require('./permisos/accionesPermiso/usuario/eliminarUsuario'),
+  cambiarEstado: require('./permisos/accionesPermiso/usuario/cambiarEstado'),
+  generarCodigo: require('./permisos/accionesPermiso/usuario/generarCodigoAcceso'),
+  obtenerCodigo: require('./permisos/accionesPermiso/usuario/obtenerCodigoAcceso'),
+  obtenerUsuario: require('./permisos/accionesPermiso/usuario/obtenerUsuario'),
+
+  // Clientes (controlados por usuarios)
+  'cliente:crear': require('./permisos/accionesPermiso/cliente/crearCliente'),
+  'cliente:editar': require('./permisos/accionesPermiso/cliente/editarCliente'),
+  'cliente:suspender': require('./permisos/accionesPermiso/cliente/suspenderCliente'),
+  'cliente:reactivar': require('./permisos/accionesPermiso/cliente/reactivarCliente'),
+  'cliente:baja_definitiva': require('./permisos/accionesPermiso/cliente/bajaDefinitivaCliente'),
+  'cliente:calificar': require('./permisos/accionesPermiso/cliente/calificarCliente'),
 };
 
 const verificarPermiso = ({
@@ -24,6 +32,7 @@ const verificarPermiso = ({
   const jerarquiaObjetivo = rolObjetivo ? rolesJerarquia[rolObjetivo] : -1;
 
   if (!acciones[accion]) {
+    console.warn(`[❌ verificarPermiso] Acción "${accion}" no registrada.`);
     return { permitido: false, mensaje: 'Acción no válida.' };
   }
 

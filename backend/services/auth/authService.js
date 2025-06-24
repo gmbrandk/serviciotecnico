@@ -27,6 +27,8 @@ const loginService = async (email, password) => {
   }
 
   const esValida = await bcrypt.compare(password, usuario.password);
+  console.log('[🔍 Comparando]', { raw: password, hashed: usuario.password });
+
   if (!esValida) {
     throw { status: 401, mensaje: 'Contraseña incorrecta' };
   }

@@ -2,14 +2,12 @@ const xss = require('xss');
 const mongoose = require('mongoose');
 const editarClienteService = require('@services/clientes/editarClienteService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
+const crearMovimiento = require('@controllers/movimiento/crearMovimientoController');
 
 const editarClienteController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('🟢 [Controller] ID recibido:', id);
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      console.log('🔴 [Controller] ID inválido');
       return sendError(res, 400, 'ID inválido');
     }
 
@@ -23,14 +21,10 @@ const editarClienteController = async (req, res) => {
       'calificacion',
     ];
 
-    const camposRecibidos = Object.keys(req.body);
-    console.log('🟢 [Controller] Campos recibidos:', camposRecibidos);
-
-    const camposInvalidos = camposRecibidos.filter(
+    const camposInvalidos = Object.keys(req.body).filter(
       (campo) => !camposPermitidos.includes(campo)
     );
     if (camposInvalidos.length > 0) {
-      console.log('🔴 [Controller] Campos no permitidos:', camposInvalidos);
       return sendError(
         res,
         400,
@@ -45,7 +39,6 @@ const editarClienteController = async (req, res) => {
       if (req.body[campo]) {
         const valor = req.body[campo];
         if (typeof valor === 'string' && /<|>/.test(valor)) {
-          console.log('🔴 [Controller] Campo peligroso:', campo);
           return sendError(
             res,
             400,
@@ -55,23 +48,29 @@ const editarClienteController = async (req, res) => {
         bodySanitizado[campo] = xss(valor);
       }
     }
-    console.log('🟢 [Controller] Body sanitizado:', bodySanitizado);
 
     if (bodySanitizado.email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(bodySanitizado.email)) {
-        console.log('🔴 [Controller] Email con formato inválido');
         return sendError(res, 400, 'El correo tiene un formato inválido');
       }
     }
 
-    console.log('🟡 [Controller] Llamando al service...');
     const cliente = await editarClienteService(id, bodySanitizado);
-    console.log('🟢 [Controller] Cliente actualizado:', cliente);
+
+    // 🧾 Registrar movimiento
+    await crearMovimiento({
+      tipo: 'modificacion',
+      descripcion: `Se editó al cliente ${cliente.nombre}`,
+      entidad: 'cliente',
+      entidadId: cliente._id,
+      usuarioId: req.usuario._id,
+      usadoPor: req.usuario.nombre,
+    });
 
     return sendSuccess(res, 200, 'Cliente editado correctamente', { cliente });
   } catch (error) {
-    console.error('💥 [Controller] Error al editar cliente:', error.message);
+    console.error('💥 [editarClienteController]', error.message);
     const status = error.message === 'Cliente no encontrado' ? 404 : 400;
     return sendError(res, status, error.message);
   }

@@ -11,19 +11,79 @@ const {
   obtenerClientePorIdController,
   obtenerClientesController,
 } = require('@controllers/clientesController');
+const { verificarToken } = require('@middlewares/authMiddleware');
+const verificarAcceso = require('@middlewares/verificarAcceso');
 
-// 👉 Aquí defines el endpoint esperado
-router.put('/calificar/:id', calificarClienteController);
+// ✅ Obtener todos los clientes (con filtros opcionales)
+router.get('/', obtenerClientesController);
 
-router.post('/crear', crearClienteController);
-router.post('/editar/:id', editarClienteController);
+// ✅ Obtener cliente por ID
+router.get('/:id', obtenerClientePorIdController);
 
-// PATCH: Suspender cliente
-router.patch('/suspender/:id', suspender);
+// ✅ Crear cliente
+router.post(
+  '/',
+  verificarToken, // ✅ Asegura que sea un usuario del sistema
+  verificarAcceso({
+    accion: 'cliente:crear',
+    rolesPermitidos: ['tecnico', 'administrador', 'superadministrador'],
+  }),
+  crearClienteController
+);
 
-// PATCH: Reactivar cliente
-router.patch('/reactivar/:id', reactivar);
+// ✅ Editar cliente
+router.put(
+  '/:id',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cliente:editar',
+    rolesPermitidos: ['tecnico', 'administrador', 'superadministrador'],
+  }),
+  editarClienteController
+);
 
-// PATCH: Confirmar baja definitiva
-router.patch('/confirmar-baja/:id', confirmarBaja);
+// ✅ Suspender temporalmente
+router.patch(
+  '/:id/suspender',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cliente:suspender',
+    rolesPermitidos: ['administrador', 'superadministrador'],
+  }),
+  suspender
+);
+
+// ✅ Reactivar cliente
+router.patch(
+  '/:id/reactivar',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cliente:reactivar',
+    rolesPermitidos: ['administrador', 'superadministrador'],
+  }),
+  reactivar
+);
+
+// ✅ Confirmar baja definitiva (ban)
+router.patch(
+  '/:id/baja-definitiva',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cliente:baja_definitiva',
+    rolesPermitidos: ['superadministrador'],
+  }),
+  confirmarBaja
+);
+
+// ✅ Calificar cliente automáticamente según OS
+router.put(
+  '/:id/calificar',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cliente:calificar',
+    rolesPermitidos: ['administrador', 'superadministrador'],
+  }),
+  calificarClienteController
+);
+
 module.exports = router;

@@ -2,7 +2,7 @@
 // 1. El solicitante es de mayor jerarquía que el objetivo.
 // 2. El nuevo rol es inferior al del solicitante.
 
-const rolesJerarquia = require('../rolesJerarquia');
+const rolesJerarquia = require('../../rolesJerarquia');
 
 module.exports = ({ solicitante, objetivo, nuevoRol }) => {
   const jerarquiaSolicitante = rolesJerarquia[solicitante.role.toLowerCase()];

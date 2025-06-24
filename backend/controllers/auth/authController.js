@@ -21,6 +21,8 @@ const login = async (req, res) => {
 
   try {
     const { token, usuario } = await loginService(email, password);
+    console.log('[🔑 Login] Email recibido:', email);
+    console.log('[🔑 Login] Password recibido:', password);
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -35,7 +37,8 @@ const login = async (req, res) => {
       usuario,
     });
   } catch (error) {
-    console.error('Error en login:', error);
+    console.error('[❌ Login] Error en login:', error);
+
     res.status(error.status || 500).json({
       success: false,
       mensaje: error.mensaje || 'Error al iniciar sesión',
