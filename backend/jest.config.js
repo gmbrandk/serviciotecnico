@@ -1,6 +1,5 @@
-// jest.config.js
 module.exports = {
-  rootDir: './', // ✅ Estás en "backend", esto asegura que todas las rutas partan de aquí
+  rootDir: './',
   setupFiles: ['<rootDir>/jest.setup.js'],
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
   testEnvironment: 'node',
@@ -16,4 +15,18 @@ module.exports = {
     '^@helpers(.*)$': '<rootDir>/helpers$1',
     '^app$': '<rootDir>/app.js',
   },
+  reporters: [
+    'default',
+    [
+      'jest-html-reporter',
+      {
+        pageTitle: '🧪 Reporte de Pruebas',
+        outputPath: './__tests__/report/test-report.html',
+        includeFailureMsg: true,
+        includeConsoleLog: true,
+        sort: 'status',
+        theme: 'darkTheme',
+      },
+    ],
+  ],
 };

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const editarClienteService = require('@services/clientes/editarClienteService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
 const crearMovimiento = require('@controllers/movimiento/crearMovimientoController');
+const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 
 const editarClienteController = async (req, res) => {
   try {
@@ -60,12 +61,11 @@ const editarClienteController = async (req, res) => {
 
     // 🧾 Registrar movimiento
     await crearMovimiento({
-      tipo: 'modificacion',
+      tipo: TIPOS_MOVIMIENTO.EDITAR,
       descripcion: `Se editó al cliente ${cliente.nombre}`,
       entidad: 'cliente',
       entidadId: cliente._id,
       usuarioId: req.usuario._id,
-      usadoPor: req.usuario.nombre,
     });
 
     return sendSuccess(res, 200, 'Cliente editado correctamente', { cliente });

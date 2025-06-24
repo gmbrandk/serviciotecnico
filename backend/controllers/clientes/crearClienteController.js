@@ -3,6 +3,7 @@ const crearClienteService = require('@services/clientes/crearClienteService');
 const Cliente = require('@models/Cliente');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
 const crearMovimiento = require('@controllers/movimiento/crearMovimientoController');
+const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 
 const crearClienteController = async (req, res) => {
   try {
@@ -70,12 +71,11 @@ const crearClienteController = async (req, res) => {
 
     // 🧾 Registrar movimiento
     await crearMovimiento({
-      tipo: 'creacion',
+      tipo: TIPOS_MOVIMIENTO.CREAR,
       descripcion: `Se registró al cliente ${cliente.nombre}`,
       entidad: 'cliente',
       entidadId: cliente._id,
       usuarioId: req.usuario._id,
-      usadoPor: req.usuario.nombre,
     });
 
     return sendSuccess(res, 201, 'Cliente creado correctamente', { cliente });

@@ -6,6 +6,7 @@ const {
 } = require('@services/clientes/estadoClienteService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
 const crearMovimiento = require('@controllers/movimiento/crearMovimientoController');
+const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 
 const validarId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -23,12 +24,11 @@ const suspender = async (req, res) => {
 
     if (!resultado.yaEstaSuspendido) {
       await crearMovimiento({
-        tipo: 'modificacion',
+        tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se suspendió al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        usadoPor: req.usuario.nombre,
       });
     }
 
@@ -52,12 +52,11 @@ const reactivar = async (req, res) => {
 
     if (!resultado.yaEstaActivo) {
       await crearMovimiento({
-        tipo: 'modificacion',
+        tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se reactivó al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        usadoPor: req.usuario.nombre,
       });
     }
 
@@ -81,12 +80,11 @@ const confirmarBaja = async (req, res) => {
 
     if (!resultado.yaEstaBaneado) {
       await crearMovimiento({
-        tipo: 'modificacion',
+        tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se dio de baja definitivamente al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        usadoPor: req.usuario.nombre,
       });
     }
 

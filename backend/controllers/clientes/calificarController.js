@@ -1,5 +1,6 @@
 const calificarClienteService = require('@services/clientes/calificarClienteService');
 const crearMovimiento = require('@controllers/movimiento/crearMovimientoController');
+const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 
 const calificarClienteController = async (req, res) => {
   try {
@@ -9,12 +10,11 @@ const calificarClienteController = async (req, res) => {
     // 🔍 Registrar movimiento si hay un usuario autenticado
     if (req.usuario) {
       await crearMovimiento({
-        tipo: 'modificacion',
+        tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se recalificó manualmente al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        usadoPor: req.usuario.nombre,
       });
     }
 

@@ -2,9 +2,10 @@ const request = require('supertest');
 const app = require('../../app');
 const { conectarDB, desconectarDB, limpiarDB } = require('../setup');
 const crearUsuarioYLogin = require('../helpers/crearUsuarioYLogin');
+const crearClienteTest = require('../helpers/crearClienteTest');
 const Usuario = require('@models/Usuario');
 
-let cookieAdmin, clienteId;
+let cookieAdmin;
 
 beforeAll(async () => {
   await Usuario.deleteOne({ email: 'admin@test.com' });
@@ -20,8 +21,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await limpiarDB();
-  await desconectarDB();
+  try {
+    await limpiarDB();
+    await desconectarDB();
+  } catch (error) {
+    console.error('❌ Error en afterAll:', error);
+  }
 });
 
 describe('🧪 CRUD de Clientes', () => {
@@ -30,96 +35,64 @@ describe('🧪 CRUD de Clientes', () => {
   });
 
   test('✅ Crear cliente', async () => {
-    const res = await request(app)
-      .post('/api/clientes')
-      .set('Cookie', cookieAdmin)
-      .send({
-        nombre: 'Juan Pérez',
-        dni: '12345678',
-        telefono: '987654321',
-        email: 'juan@test.com',
-      });
-
-    console.log('📥 Status crear cliente:', res.statusCode);
-    console.log('📥 Body crear cliente:', res.body);
-
-    expect(res.statusCode).toBe(201);
-    expect(res.body.cliente).toBeDefined();
+    const cliente = await crearClienteTest(cookieAdmin);
+    expect(cliente).toBeDefined();
+    expect(cliente.nombre).toMatch(/Cliente Test/);
   });
 
   test('✏️ Editar cliente', async () => {
-    // Primero crear el cliente
-    const createRes = await request(app)
-      .post('/api/clientes')
-      .set('Cookie', cookieAdmin)
-      .send({ nombre: 'Editar Test', dni: '11111111', email: 'edit@test.com' });
-
-    const id = createRes.body.cliente._id;
+    const cliente = await crearClienteTest(cookieAdmin);
 
     const res = await request(app)
-      .put(`/api/clientes/${id}`)
+      .put(`/api/clientes/${cliente._id}`)
       .set('Cookie', cookieAdmin)
       .send({ nombre: 'Nombre Actualizado' });
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.cliente.nombre).toBe('Nombre Actualizado');
+    expect(res.body.details.cliente.nombre).toBe('Nombre Actualizado');
   });
 
   test('🚫 Suspender cliente', async () => {
-    const { body } = await request(app)
-      .post('/api/clientes')
-      .set('Cookie', cookieAdmin)
-      .send({ nombre: 'Cliente', dni: '22222222', email: 'c2@test.com' });
+    const cliente = await crearClienteTest(cookieAdmin);
 
     const res = await request(app)
-      .patch(`/api/clientes/${body.cliente._id}/suspender`)
+      .patch(`/api/clientes/${cliente._id}/suspender`)
       .set('Cookie', cookieAdmin);
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.cliente.estado).toBe('suspendido');
+    expect(res.body.details.cliente.estado).toBe('suspendido');
   });
 
   test('🔁 Reactivar cliente', async () => {
-    const { body } = await request(app)
-      .post('/api/clientes')
-      .set('Cookie', cookieAdmin)
-      .send({ nombre: 'Cliente', dni: '33333333', email: 'c3@test.com' });
+    const cliente = await crearClienteTest(cookieAdmin);
 
-    // suspender primero
     await request(app)
-      .patch(`/api/clientes/${body.cliente._id}/suspender`)
+      .patch(`/api/clientes/${cliente._id}/suspender`)
       .set('Cookie', cookieAdmin);
 
-    // reactivar
     const res = await request(app)
-      .patch(`/api/clientes/${body.cliente._id}/reactivar`)
+      .patch(`/api/clientes/${cliente._id}/reactivar`)
       .set('Cookie', cookieAdmin);
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.cliente.estado).toBe('activo');
+    expect(res.body.details.cliente.estado).toBe('activo');
   });
 
   test('⛔️ Confirmar baja definitiva', async () => {
-    const { body } = await request(app)
-      .post('/api/clientes')
-      .set('Cookie', cookieAdmin)
-      .send({ nombre: 'Cliente', dni: '44444444', email: 'c4@test.com' });
+    const cliente = await crearClienteTest(cookieAdmin);
 
     const res = await request(app)
-      .patch(`/api/clientes/${body.cliente._id}/baja-definitiva`)
+      .patch(`/api/clientes/${cliente._id}/baja-definitiva`)
       .set('Cookie', cookieAdmin);
 
     expect(res.statusCode).toBe(403); // administrador no tiene permiso
   });
 
   test('🧠 Calificar cliente', async () => {
-    const { body } = await request(app)
-      .post('/api/clientes')
-      .set('Cookie', cookieAdmin)
-      .send({ nombre: 'Cliente', dni: '55555555', email: 'c5@test.com' });
+    const cliente = await crearClienteTest(cookieAdmin);
 
     const res = await request(app)
-      .put(`/api/clientes/${body.cliente._id}/calificar`)
+      .put(`/api/clientes/${cliente._id}/calificar`)
       .set('Cookie', cookieAdmin);
 
     expect(res.statusCode).toBe(200);
@@ -127,11 +100,15 @@ describe('🧪 CRUD de Clientes', () => {
   });
 
   test('📄 Obtener todos los clientes', async () => {
+    await crearClienteTest(cookieAdmin);
+    await crearClienteTest(cookieAdmin);
+
     const res = await request(app)
       .get('/api/clientes')
       .set('Cookie', cookieAdmin);
 
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body.clientes)).toBe(true);
+    expect(Array.isArray(res.body.details.clientes)).toBe(true);
+    expect(res.body.details.clientes.length).toBeGreaterThanOrEqual(2);
   });
 });
