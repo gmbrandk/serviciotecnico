@@ -1,65 +1,21 @@
 const { exec } = require('child_process');
-const open = require('open').default;
+const open = require('open').default; // ✅ corrección
 const path = require('path');
-const fs = require('fs');
 
-const testFile = process.argv[2];
-const withCoverage = process.argv.includes('--coverage');
+const testFile = process.argv[2]; // archivo de test (opcional)
+const withCoverage = process.argv.includes('--coverage'); // activar cobertura
 
-const testFileName = testFile
-  ? path.basename(testFile).replace(/\.[jt]sx?$/, '')
-  : 'all-tests';
-
-const reportFileName = `test-report-${testFileName}.html`;
-const reportPath = path.resolve(__dirname, '__tests__/report', reportFileName);
-
-// 🧠 Generar config dinámica de Jest completa
-const jestConfigPath = path.resolve(__dirname, 'jest.config.report.js');
-const jestConfig = `
-module.exports = {
-  rootDir: './',
-  setupFiles: ['<rootDir>/jest.setup.js'],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
-  testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.test.js'],
-  moduleNameMapper: {
-    '^@controllers(.*)$': '<rootDir>/controllers$1',
-    '^@routes(.*)$': '<rootDir>/routes$1',
-    '^@models(.*)$': '<rootDir>/models$1',
-    '^@middlewares(.*)$': '<rootDir>/middlewares$1',
-    '^@config(.*)$': '<rootDir>/config$1',
-    '^@utils(.*)$': '<rootDir>/utils$1',
-    '^@services(.*)$': '<rootDir>/services$1',
-    '^@helpers(.*)$': '<rootDir>/helpers$1',
-    '^app$': '<rootDir>/app.js'
-  },
-  reporters: [
-    'default',
-    [
-      'jest-html-reporter',
-      {
-        pageTitle: '🧪 Reporte de Pruebas - ${testFileName}',
-        outputPath: '${reportPath.replace(/\\/g, '\\\\')}',
-        includeFailureMsg: true,
-        includeConsoleLog: true,
-        sort: 'status',
-        theme: 'darkTheme'
-      }
-    ]
-  ]
-};
-`;
-
-fs.writeFileSync(jestConfigPath, jestConfig);
+const reportPath = path.resolve(__dirname, '__tests__/report/test-report.html');
 
 const jestCommand = [
   'npx jest',
   testFile || '',
-  `--config=${jestConfigPath}`,
   '--runInBand',
   '--forceExit',
   '--detectOpenHandles',
   '--verbose',
+  '--reporters=default',
+  '--reporters=jest-html-reporter',
   withCoverage ? '--coverage' : '',
 ].join(' ');
 
