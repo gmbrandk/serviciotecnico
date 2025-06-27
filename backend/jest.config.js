@@ -18,14 +18,12 @@ module.exports = {
   reporters: [
     'default',
     [
-      'jest-html-reporter',
+      'jest-html-reporters',
       {
+        publicPath: './html-report',
+        filename: 'report.html',
+        expand: true,
         pageTitle: '🧪 Reporte de Pruebas',
-        outputPath: './__tests__/report/test-report.html',
-        includeFailureMsg: true,
-        includeConsoleLog: true,
-        sort: 'status',
-        theme: 'darkTheme',
       },
     ],
   ],
