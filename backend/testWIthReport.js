@@ -2,15 +2,13 @@ const { exec } = require('child_process');
 const open = require('open').default;
 const path = require('path');
 const fs = require('fs');
-const testLogger = require('./testLogger');
+const { initLogger, log, closeLogger } = require('./testLogger'); // ✅ destructurado
 
-// 🧪 Archivo test (opcional) y cobertura
-const testFile = process.argv[2]; // ej: __tests__/clientes.int.test.js
+const testFile = process.argv[2];
 const withCoverage = process.argv.includes('--coverage');
 
-// 📄 Nombre del archivo base para el reporte y log
 const testFileName = testFile
-  ? path.basename(testFile).replace(/\.[jt]sx?$/, '') // sin extensión
+  ? path.basename(testFile).replace(/\.[jt]sx?$/, '')
   : 'all-tests';
 
 const reportFileName = `test-report-${testFileName}.html`;
@@ -33,10 +31,8 @@ fs.writeFileSync(
 );
 
 // 🧾 Iniciar logger de este test
-testLogger.initLogger(testFile); // ✅ ahora sí
-testLogger.log(
-  `🚀 Iniciando ejecución de: ${testFile || 'todos los tests'}...`
-);
+initLogger(testFile);
+log(`🚀 Iniciando ejecución de: ${testFile || 'todos los tests'}...`);
 
 const jestCommand = [
   'npx jest',
@@ -54,21 +50,21 @@ const jestCommand = [
 exec(jestCommand, async (err, stdout, stderr) => {
   if (stdout) {
     console.log(stdout);
-    testLogger.log(stdout);
+    log(stdout);
   }
   if (stderr) {
     console.error(stderr);
-    testLogger.log(stderr);
+    log(stderr);
   }
 
   if (err) {
-    testLogger.log('❌ Fallo en los tests');
-    testLogger.closeLogger();
+    log('❌ Fallo en los tests');
+    closeLogger();
     process.exit(1);
   }
 
-  testLogger.log('✅ Tests finalizados correctamente');
-  testLogger.closeLogger();
+  log('✅ Tests finalizados correctamente');
+  closeLogger();
 
   console.log(`\n📄 Abriendo reporte: ${reportPath}`);
   await open(reportPath);

@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>🧪 Reporte de Tests</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #eee;
+      padding: 2rem;
+    }
+    h1 { color: #4fc3f7; }
+
+    .summary {
+      background: #1e1e1e;
+      border-left: 5px solid #4caf50;
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .test-file {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #1a1a1a;
+      border-left: 5px solid #fbc02d;
+      position: relative;
+    }
+
+    .test {
+      margin-left: 1rem;
+      padding: 0.5rem;
+      background: #2a2a2a;
+      margin-bottom: 0.5rem;
+      border-left: 4px solid;
+    }
+
+    .passed { border-color: #4caf50; }
+    .failed { border-color: #f44336; }
+    .skipped { border-color: #9e9e9e; }
+
+    .error {
+      margin-top: 0.5rem;
+      background: #3a1a1a;
+      padding: 0.5rem;
+      font-family: monospace;
+      color: #ff8a80;
+      white-space: pre-wrap;
+    }
+
+    .log-btn {
+      background: #2196f3;
+      border: none;
+      padding: 0.4rem 1rem;
+      color: white;
+      cursor: pointer;
+      margin-top: 1rem;
+      border-radius: 5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background-color: #222;
+      padding: 1.5rem;
+      border-radius: 10px;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .modal-content pre {
+      background: #111;
+      color: #9effff;
+      padding: 1rem;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+
+    .close-btn {
+      background: crimson;
+      border: none;
+      color: white;
+      float: right;
+      font-size: 1rem;
+      padding: 0.3rem 0.7rem;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Reporte de Tests</h1>
+
+  <div class="summary">
+    <p><strong>Total:</strong> 7</p>
+    <p><strong>Aprobados:</strong> ✅ 7</p>
+    <p><strong>Fallados:</strong> ❌ 0</p>
+    <p><strong>Saltados:</strong> ⏭️ 0</p>
+    <p><strong>Duración:</strong> 🕒 
+      0 ms
+    </p>
+  </div>
+
+
+  
+
+  <div class="test-file">
+    <h2>📂 clientes.int.test</h2>
+
+    
+      <div class="test passed">
+        <strong>✅ Crear cliente</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+      <div class="test passed">
+        <strong>✏️ Editar cliente</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+      <div class="test passed">
+        <strong>🚫 Suspender cliente</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+      <div class="test passed">
+        <strong>🔁 Reactivar cliente</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+      <div class="test passed">
+        <strong>⛔️ Confirmar baja definitiva</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+      <div class="test passed">
+        <strong>🧠 Calificar cliente</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+      <div class="test passed">
+        <strong>📄 Obtener todos los clientes</strong>
+        
+      </div>
+       <button class="log-btn" onclick="openModal('clientes.int.test')">📄 Ver Log</button>
+    
+
+   
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal-clientes.int.test">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('clientes.int.test')">X</button>
+      <h3>📄 Log: clientes.int.test</h3>
+      <pre>[2025-06-27T02:26:15.441Z] [✅ Crear cliente] 
+🧪 Test: ✅ Crear cliente
+
+[2025-06-27T02:26:15.488Z[2025-06-27T02:26:16.283Z]   console.log
+    🧪 Conectado a MongoDB de test
+
+      at log (__tests__/setup.js:13:13)
+
+  console.log
+    👉 Creando usuario con email: admin@test.com
+
+      at log (__tests__/helpers/crearUsuarioYLogin.js:11:11)
+
+  console.log
+    🧪 Usuario creado. Intentando login...
+
+      at log (__tests__/helpers/crearUsuarioYLogin.js:21:11)
+
+  console.log
+    [🔍 Comparando] {
+      raw: &#39;123456&#39;,
+      hashed: &#39;$2b$10$i.avP2M7l/bChHKHvHjf5eBfFbhCX70OihWkD.t7LDa5owjkwgnvS&#39;
+    }
+
+      at log (services/auth/authService.js:30:11)
+
+  console.log
+    [🔑 Login] Email recibido: admin@test.com
+
+      at log (controllers/auth/authController.js:24:13)
+
+  console.log
+    [🔑 Login] Password recibido: 123456
+
+      at log (controllers/auth/authController.js:25:13)
+
+  console.log
+    🧪 Login respuesta status: 200
+
+      at log (__tests__/helpers/crearUsuarioYLogin.js:27:11)
+
+  console.log
+    🧪 Login respuesta body: {
+      success: true,
+      mensaje: &#39;Inicio de sesión exitoso&#39;,
+      usuario: {
+        _id: &#39;685e0147836a3b48c4012131&#39;,
+        nombre: &#39;Admin&#39;,
+        email: &#39;admin@test.com&#39;,
+        role: &#39;administrador&#39;
+      }
+    }
+
+      at log (__tests__/helpers/crearUsuarioYLogin.js:28:11)
+
+  console.log
+    🧪 Cookies: [
+      &#39;token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWUwMTQ3ODM2YTNiNDhjNDAxMjEzMSIsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJyb2xlIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc1MDk5MTE3NSwiZXhwIjoxNzUwOTk0Nzc1fQ.4C0WIFD3uyJ_p4Xo5dBE8JEdgPMXU7aV_mZ-dGwyfWg; Max-Age=3600; Path=/; Expires=Fri, 27 Jun 2025 03:26:15 GMT; HttpOnly; SameSite=Lax&#39;
+    ]
+
+      at log (__tests__/helpers/crearUsuarioYLogin.js:29:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.441Z] [✅ Crear cliente] 
+    🧪 Test: ✅ Crear cliente
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175445
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [2025-06-27T02:26:15.488Z] [✅ Crear cliente] Cliente creado: Cliente Test 1750991175445
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.509Z] [✏️ Editar cliente] 
+    🧪 Test: ✏️ Editar cliente
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175509
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    🟡 [Service] ID recibido: 685e0147836a3b48c4012151
+
+      at log (services/clientes/editarClienteService.js:5:11)
+
+  console.log
+    🟡 [Service] Data recibida: { nombre: &#39;Nombre Actualizado&#39; }
+
+      at log (services/clientes/editarClienteService.js:6:11)
+
+  console.log
+    🟡 [Service] Actualizando cliente...
+
+      at log (services/clientes/editarClienteService.js:70:11)
+
+  console.log
+    🟢 [Service] Cliente actualizado correctamente
+
+      at log (services/clientes/editarClienteService.js:78:11)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se editó al cliente Nombre Actualizado
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [2025-06-27T02:26:15.582Z] [✏️ Editar cliente] Respuesta: 200
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.600Z] [🚫 Suspender cliente] 
+    🧪 Test: 🚫 Suspender cliente
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175601
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se suspendió al cliente Cliente Test 1750991175601
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [2025-06-27T02:26:15.672Z] [🚫 Suspender cliente] Estado nuevo: suspendido
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.689Z] [🔁 Reactivar cliente] 
+    🧪 Test: 🔁 Reactivar cliente
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175690
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se suspendió al cliente Cliente Test 1750991175690
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se reactivó al cliente Cliente Test 1750991175690
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [2025-06-27T02:26:15.780Z] [🔁 Reactivar cliente] Estado reactivado: activo
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.797Z] [⛔️ Confirmar baja definitiva] 
+    🧪 Test: ⛔️ Confirmar baja definitiva
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175798
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    [2025-06-27T02:26:15.844Z] [⛔️ Confirmar baja definitiva] Intento de baja - Código: 403
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.862Z] [🧠 Calificar cliente] 
+    🧪 Test: 🧠 Calificar cliente
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175862
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se recalificó manualmente al cliente Cliente Test 1750991175862
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [2025-06-27T02:26:15.924Z] [🧠 Calificar cliente] Calificación recibida: regular
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    🧼 Base de datos limpiada
+
+      at log (__tests__/setup.js:30:11)
+
+  console.log
+    [2025-06-27T02:26:15.940Z] [📄 Obtener todos los clientes] 
+    🧪 Test: 📄 Obtener todos los clientes
+
+      at log (testLogger.js:32:11)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175941
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    [Middleware] ✅ Token encontrado. Verificando...
+
+      at log (middlewares/authMiddleware.js:15:13)
+
+  console.log
+    [Middleware] 🔓 Token decodificado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;,
+      iat: 1750991175,
+      exp: 1750994775
+    }
+
+      at log (middlewares/authMiddleware.js:17:13)
+
+  console.log
+    [Middleware] 👤 Usuario autenticado: {
+      id: &#39;685e0147836a3b48c4012131&#39;,
+      nombre: &#39;Admin&#39;,
+      email: &#39;admin@test.com&#39;,
+      role: &#39;administrador&#39;
+    }
+
+      at log (middlewares/authMiddleware.js:34:13)
+
+  console.log
+    [🛡️ VerificarAcceso] Rol del solicitante: administrador
+
+      at log (middlewares/verificarAcceso.js:57:15)
+
+  console.log
+    [🛡️ VerificarAcceso] Roles permitidos: [ &#39;tecnico&#39;, &#39;administrador&#39;, &#39;superadministrador&#39; ]
+
+      at log (middlewares/verificarAcceso.js:61:15)
+
+  console.log
+    Descripción recibida en crearMovimiento: Se registró al cliente Cliente Test 1750991175971
+
+      at log (controllers/movimiento/crearMovimientoController.js:9:13)
+
+  console.log
+    📌 crearMovimiento() recibió usuarioId: new ObjectId(&#39;685e0147836a3b48c4012131&#39;)
+
+      at log (controllers/movimiento/crearMovimientoController.js:10:13)
+
+  console.log
+    ✅ Clientes obtenidos: [
+      {
+        _id: new ObjectId(&#39;685e0147836a3b48c40121bf&#39;),
+        nombre: &#39;Cliente Test 1750991175941&#39;,
+        dni: &#39;DNI30471&#39;,
+        telefono: &#39;9679498400&#39;,
+        email: &#39;cliente787@test.com&#39;,
+        observaciones: &#39;&#39;,
+        estado: &#39;activo&#39;,
+        calificacion: &#39;regular&#39;,
+        isActivo: true,
+        fechaRegistro: 2025-06-27T02:26:15.961Z,
+        __v: 0
+      },
+      {
+        _id: new ObjectId(&#39;685e0147836a3b48c40121c7&#39;),
+        nombre: &#39;Cliente Test 1750991175971&#39;,
+        dni: &#39;DNI22816&#39;,
+        telefono: &#39;9463700277&#39;,
+        email: &#39;cliente2844@test.com&#39;,
+        observaciones: &#39;&#39;,
+        estado: &#39;activo&#39;,
+        calificacion: &#39;regular&#39;,
+        isActivo: true,
+        fechaRegistro: 2025-06-27T02:26:15.991Z,
+        __v: 0
+      }
+    ]
+
+      at log (controllers/clientes/obtenerClientesController.js:19:13)
+
+  console.log
+    [2025-06-27T02:26:16.021Z] [📄 Obtener todos los clientes] Total de clientes: 2
+
+      at Object.log (testLogger.js:32:11)
+
+  console.log
+    🛑 Conexión a MongoDB cerrada
+
+      at log (__tests__/setup.js:37:13)
+
+  console.warn
+    ⚠️ No hay conexión activa, se omite limpieza
+
+    [0m [90m 18 |[39m [36mconst[39m limpiarDB [33m=[39m [36masync[39m () [33m=&gt;[39m {
+     [90m 19 |[39m   [36mif[39m (mongoose[33m.[39mconnection[33m.[39mreadyState [33m!==[39m [35m1[39m) {
+    [31m[1m&gt;[22m[39m[90m 20 |[39m     console[33m.[39mwarn([32m&#39;⚠️ No hay conexión activa, se omite limpieza&#39;[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 21 |[39m     [36mreturn[39m[33m;[39m
+     [90m 22 |[39m   }
+     [90m 23 |[39m[0m
+
+      at warn (__tests__/setup.js:20:13)
+      at Object.limpiarDB (__tests__/integration/clientes.int.test.js:28:11)
+
+
+[2025-06-27T02:26:16.297Z] PASS __tests__/integration/clientes.int.test.js
+  🧪 CRUD de Clientes
+    √ ✅ Crear cliente (73 ms)
+    √ ✏️ Editar cliente (92 ms)
+    √ 🚫 Suspender cliente (90 ms)
+    √ 🔁 Reactivar cliente (107 ms)
+    √ ⛔️ Confirmar baja definitiva (64 ms)
+    √ 🧠 Calificar cliente (79 ms)
+    √ 📄 Obtener todos los clientes (97 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       7 passed, 7 total
+Snapshots:   0 total
+Time:        2.418 s
+Ran all test suites matching /__tests__\\integration\\clientes.int.test.js/i.
+
+[2025-06-27T02:26:16.298Z] ✅ Tests finalizados correctamente
+</pre>
+    </div>
+  </div>
+
+
+  <script>
+    function openModal(id) {
+      document.getElementById('modal-' + id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById('modal-' + id).style.display = 'none';
+    }
+  </script>
+</body>
+</html>
