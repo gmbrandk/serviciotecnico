@@ -1,0 +1,8 @@
+{
+  "pageTitle": "🧪 Reporte de Pruebas",
+  "theme": "darkTheme",
+  "includeFailureMsg": true,
+  "includeSuiteFailure": true,
+  "includeConsoleLog": true,
+  "outputPath": "./__tests__/report/test-report.html"
+}

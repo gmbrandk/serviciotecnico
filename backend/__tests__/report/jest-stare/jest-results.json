@@ -1,0 +1,1983 @@
+{
+  "numFailedTestSuites": 9,
+  "numFailedTests": 19,
+  "numPassedTestSuites": 14,
+  "numPassedTests": 84,
+  "numPendingTestSuites": 0,
+  "numPendingTests": 0,
+  "numRuntimeErrorTestSuites": 2,
+  "numTodoTests": 0,
+  "numTotalTestSuites": 23,
+  "numTotalTests": 103,
+  "openHandles": [],
+  "snapshot": {
+    "added": 0,
+    "didUpdate": false,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0
+  },
+  "startTime": 1750985200569,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 Integración: Calificación de cliente"
+          ],
+          "duration": 54,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 404,
+                "expected": 200,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificacionCliente.int.test.js:71:24)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 Integración: Calificación de cliente 🔸 debería calificar como \"muy_bueno\" si tiene 5 órdenes reparadas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🔸 debería calificar como \"muy_bueno\" si tiene 5 órdenes reparadas"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Integración: Calificación de cliente"
+          ],
+          "duration": 135,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 404,
+                "expected": 200,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificacionCliente.int.test.js:130:24)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 Integración: Calificación de cliente 🔸 debería ignorar órdenes \"irreparable\" al calcular calificación",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🔸 debería ignorar órdenes \"irreparable\" al calcular calificación"
+        }
+      ],
+      "endTime": 1750985202868,
+      "message": "  ● 🧪 Integración: Calificación de cliente › 🔸 debería calificar como \"muy_bueno\" si tiene 5 órdenes reparadas\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 200\n    Received: 404\n\n    \u001b[0m \u001b[90m 69 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'🧾 Response:'\u001b[39m\u001b[33m,\u001b[39m res\u001b[33m.\u001b[39mbody)\u001b[33m;\u001b[39m\n     \u001b[90m 70 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 71 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 72 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 73 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mcalificacion)\u001b[33m.\u001b[39mtoBe(\u001b[32m'muy_bueno'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 74 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mestado)\u001b[33m.\u001b[39mtoBe(\u001b[32m'activo'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/integration/calificacionCliente.int.test.js:71:24)\n\n  ● 🧪 Integración: Calificación de cliente › 🔸 debería ignorar órdenes \"irreparable\" al calcular calificación\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 200\n    Received: 404\n\n    \u001b[0m \u001b[90m 128 |\u001b[39m\n     \u001b[90m 129 |\u001b[39m     \u001b[90m// 5. Verificar que solo las reparadas se hayan contado y se haya calificado como 'muy_bueno'\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 130 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m     |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 131 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 132 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mcalificacion)\u001b[33m.\u001b[39mtoBe(\u001b[32m'regular'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 133 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mestado)\u001b[33m.\u001b[39mtoBe(\u001b[32m'activo'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/integration/calificacionCliente.int.test.js:130:24)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificacionCliente.int.test.js",
+      "startTime": 1750985200631,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🛣️ Test de rutas /api/clientes"
+          ],
+          "duration": 24,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🛣️ Test de rutas /api/clientes 🔐 Debe rechazar acceso a POST /api/clientes sin token",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔐 Debe rechazar acceso a POST /api/clientes sin token"
+        },
+        {
+          "ancestorTitles": [
+            "🛣️ Test de rutas /api/clientes"
+          ],
+          "duration": 52,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "message": "expect(received).toBeDefined()\n\nReceived: undefined",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBeDefined()\n\nReceived: undefined\n    at Object.toBeDefined (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\clientes.routes.test.js:40:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🛣️ Test de rutas /api/clientes ✅ Debe permitir acceso a POST /api/clientes con token válido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "✅ Debe permitir acceso a POST /api/clientes con token válido"
+        },
+        {
+          "ancestorTitles": [
+            "🛣️ Test de rutas /api/clientes"
+          ],
+          "duration": 46,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "message": "expect(received).toBeDefined()\n\nReceived: undefined",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBeDefined()\n\nReceived: undefined\n    at Object.toBeDefined (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\clientes.routes.test.js:58:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🛣️ Test de rutas /api/clientes ✅ Crear cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "✅ Crear cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🛣️ Test de rutas /api/clientes"
+          ],
+          "duration": 39,
+          "failureDetails": [
+            {}
+          ],
+          "failureMessages": [
+            "TypeError: Cannot read properties of undefined (reading '_id')\n    at Object._id (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\clientes.routes.test.js:73:47)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🛣️ Test de rutas /api/clientes 🚫 Debe rechazar PATCH /api/clientes/:id/baja-definitiva a administrador",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🚫 Debe rechazar PATCH /api/clientes/:id/baja-definitiva a administrador"
+        }
+      ],
+      "endTime": 1750985203558,
+      "message": "  ● 🛣️ Test de rutas /api/clientes › ✅ Debe permitir acceso a POST /api/clientes con token válido\n\n    expect(received).toBeDefined()\n\n    Received: undefined\n\n    \u001b[0m \u001b[90m 38 |\u001b[39m\n     \u001b[90m 39 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatusCode)\u001b[33m.\u001b[39mtoBe(\u001b[35m201\u001b[39m)\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente)\u001b[33m.\u001b[39mtoBeDefined()\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 41 |\u001b[39m   })\u001b[33m;\u001b[39m\n     \u001b[90m 42 |\u001b[39m\n     \u001b[90m 43 |\u001b[39m   test(\u001b[32m'✅ Crear cliente'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\n      at Object.toBeDefined (__tests__/integration/clientes.routes.test.js:40:30)\n\n  ● 🛣️ Test de rutas /api/clientes › ✅ Crear cliente\n\n    expect(received).toBeDefined()\n\n    Received: undefined\n\n    \u001b[0m \u001b[90m 56 |\u001b[39m\n     \u001b[90m 57 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatusCode)\u001b[33m.\u001b[39mtoBe(\u001b[35m201\u001b[39m)\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 58 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente)\u001b[33m.\u001b[39mtoBeDefined()\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 59 |\u001b[39m   })\u001b[33m;\u001b[39m\n     \u001b[90m 60 |\u001b[39m\n     \u001b[90m 61 |\u001b[39m   test(\u001b[32m'🚫 Debe rechazar PATCH /api/clientes/:id/baja-definitiva a administrador'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\n      at Object.toBeDefined (__tests__/integration/clientes.routes.test.js:58:30)\n\n  ● 🛣️ Test de rutas /api/clientes › 🚫 Debe rechazar PATCH /api/clientes/:id/baja-definitiva a administrador\n\n    TypeError: Cannot read properties of undefined (reading '_id')\n\n    \u001b[0m \u001b[90m 71 |\u001b[39m       })\u001b[33m;\u001b[39m\n     \u001b[90m 72 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 73 |\u001b[39m     \u001b[36mconst\u001b[39m clienteId \u001b[33m=\u001b[39m clienteRes\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39m_id\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 74 |\u001b[39m\n     \u001b[90m 75 |\u001b[39m     \u001b[36mconst\u001b[39m res \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request(app)\n     \u001b[90m 76 |\u001b[39m       \u001b[33m.\u001b[39mpatch(\u001b[32m`/api/clientes/${clienteId}/baja-definitiva`\u001b[39m)\u001b[0m\n\n      at Object._id (__tests__/integration/clientes.routes.test.js:73:47)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\clientes.routes.test.js",
+      "startTime": 1750985202876,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteController"
+          ],
+          "duration": 31,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 500,
+                "expected": 201,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 201\nReceived: 500",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 201\nReceived: 500\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\crearClienteController.test.js:31:34)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 crearClienteController ✅ Crea un cliente correctamente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "✅ Crea un cliente correctamente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteController"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteController ❌ Error si falta nombre, dni o teléfono",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Error si falta nombre, dni o teléfono"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteController"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteController ❌ Error si el DNI ya existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Error si el DNI ya existe"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteController"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteController ❌ Error si el correo tiene formato inválido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Error si el correo tiene formato inválido"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteController"
+          ],
+          "duration": 10,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "message": "expect(received).toMatch(expected)\n\nExpected pattern: /observaciones contienen contenido no permitido/i\nReceived string:  \"El campo observaciones contiene caracteres no permitidos\"",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toMatch(expected)\n\nExpected pattern: /observaciones contienen contenido no permitido/i\nReceived string:  \"El campo observaciones contiene caracteres no permitidos\"\n    at Object.toMatch (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\crearClienteController.test.js:113:26)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 crearClienteController ❌ Error si las observaciones contienen XSS",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "❌ Error si las observaciones contienen XSS"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteController"
+          ],
+          "duration": 7,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteController ❌ Error interno del servicio",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Error interno del servicio"
+        }
+      ],
+      "endTime": 1750985204072,
+      "message": "  ● 🧪 crearClienteController › ✅ Crea un cliente correctamente\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 201\n    Received: 500\n\n    \u001b[0m \u001b[90m 29 |\u001b[39m\n     \u001b[90m 30 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m res\u001b[33m.\u001b[39m_getJSONData()\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     expect(res\u001b[33m.\u001b[39m_getStatusCode())\u001b[33m.\u001b[39mtoBe(\u001b[35m201\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                                  \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 32 |\u001b[39m     expect(data\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 33 |\u001b[39m     expect(data\u001b[33m.\u001b[39mmensaje)\u001b[33m.\u001b[39mtoBe(\u001b[32m'Cliente creado correctamente'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 34 |\u001b[39m     expect(data\u001b[33m.\u001b[39mdetails\u001b[33m.\u001b[39mcliente)\u001b[33m.\u001b[39mtoEqual({ nombre\u001b[33m:\u001b[39m \u001b[32m'Juan'\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/unit/controllers/clientes/crearClienteController.test.js:31:34)\n\n  ● 🧪 crearClienteController › ❌ Error si las observaciones contienen XSS\n\n    expect(received).toMatch(expected)\n\n    Expected pattern: /observaciones contienen contenido no permitido/i\n    Received string:  \"El campo observaciones contiene caracteres no permitidos\"\n\n    \u001b[0m \u001b[90m 111 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m res\u001b[33m.\u001b[39m_getJSONData()\u001b[33m;\u001b[39m\n     \u001b[90m 112 |\u001b[39m     expect(res\u001b[33m.\u001b[39m_getStatusCode())\u001b[33m.\u001b[39mtoBe(\u001b[35m400\u001b[39m)\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 113 |\u001b[39m     expect(data\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoMatch(\n     \u001b[90m     |\u001b[39m                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 114 |\u001b[39m       \u001b[35m/observaciones contienen contenido no permitido/i\u001b[39m\n     \u001b[90m 115 |\u001b[39m     )\u001b[33m;\u001b[39m\n     \u001b[90m 116 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toMatch (__tests__/unit/controllers/clientes/crearClienteController.test.js:113:26)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\crearClienteController.test.js",
+      "startTime": 1750985203562,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 Calificar Cliente - Integración"
+          ],
+          "duration": 39,
+          "failureDetails": [
+            {}
+          ],
+          "failureMessages": [
+            "TypeError: crearClienteYOrdenes is not a function\n    at Object.crearClienteYOrdenes (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificarClienteService.test.js:23:27)\n    at Promise.then.completed (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+          ],
+          "fullName": "🧪 Calificar Cliente - Integración ✅ Cliente con 6 órdenes reparadas debe ser \"muy_bueno\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "✅ Cliente con 6 órdenes reparadas debe ser \"muy_bueno\""
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Calificar Cliente - Integración"
+          ],
+          "duration": 13,
+          "failureDetails": [
+            {}
+          ],
+          "failureMessages": [
+            "TypeError: crearClienteYOrdenes is not a function\n    at Object.crearClienteYOrdenes (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificarClienteService.test.js:38:27)\n    at Promise.then.completed (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+          ],
+          "fullName": "🧪 Calificar Cliente - Integración 🚫 Cliente baneado debe recibir \"muy_malo\" y estado \"suspendido\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🚫 Cliente baneado debe recibir \"muy_malo\" y estado \"suspendido\""
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Calificar Cliente - Integración"
+          ],
+          "duration": 14,
+          "failureDetails": [
+            {}
+          ],
+          "failureMessages": [
+            "TypeError: crearClienteYOrdenes is not a function\n    at Object.crearClienteYOrdenes (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificarClienteService.test.js:53:27)\n    at Promise.then.completed (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+          ],
+          "fullName": "🧪 Calificar Cliente - Integración 😠 Cliente con 2 observaciones negativas debe ser \"muy_malo\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "😠 Cliente con 2 observaciones negativas debe ser \"muy_malo\""
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Calificar Cliente - Integración"
+          ],
+          "duration": 14,
+          "failureDetails": [
+            {}
+          ],
+          "failureMessages": [
+            "TypeError: crearClienteYOrdenes is not a function\n    at Object.crearClienteYOrdenes (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificarClienteService.test.js:68:27)\n    at Promise.then.completed (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+          ],
+          "fullName": "🧪 Calificar Cliente - Integración 🥇 Cliente frecuente con calificación base \"regular\" sube a \"bueno\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🥇 Cliente frecuente con calificación base \"regular\" sube a \"bueno\""
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Calificar Cliente - Integración"
+          ],
+          "duration": 30,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "expected": false,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: false\nReceived: undefined",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: false\nReceived: undefined\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificarClienteService.test.js:88:30)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 Calificar Cliente - Integración 🔍 Cliente inexistente debe lanzar 404",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🔍 Cliente inexistente debe lanzar 404"
+        }
+      ],
+      "endTime": 1750985204445,
+      "message": "  ● 🧪 Calificar Cliente - Integración › ✅ Cliente con 6 órdenes reparadas debe ser \"muy_bueno\"\n\n    TypeError: crearClienteYOrdenes is not a function\n\n    \u001b[0m \u001b[90m 21 |\u001b[39m\n     \u001b[90m 22 |\u001b[39m   it(\u001b[32m'✅ Cliente con 6 órdenes reparadas debe ser \"muy_bueno\"'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m     \u001b[36mconst\u001b[39m cliente \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m crearClienteYOrdenes({\n     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 24 |\u001b[39m       numOrdenes\u001b[33m:\u001b[39m \u001b[35m6\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 25 |\u001b[39m       reparadas\u001b[33m:\u001b[39m \u001b[35m6\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 26 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.crearClienteYOrdenes (__tests__/integration/calificarClienteService.test.js:23:27)\n\n  ● 🧪 Calificar Cliente - Integración › 🚫 Cliente baneado debe recibir \"muy_malo\" y estado \"suspendido\"\n\n    TypeError: crearClienteYOrdenes is not a function\n\n    \u001b[0m \u001b[90m 36 |\u001b[39m\n     \u001b[90m 37 |\u001b[39m   it(\u001b[32m'🚫 Cliente baneado debe recibir \"muy_malo\" y estado \"suspendido\"'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m     \u001b[36mconst\u001b[39m cliente \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m crearClienteYOrdenes({\n     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 39 |\u001b[39m       estadoCliente\u001b[33m:\u001b[39m \u001b[32m'baneado'\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 40 |\u001b[39m       numOrdenes\u001b[33m:\u001b[39m \u001b[35m0\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.crearClienteYOrdenes (__tests__/integration/calificarClienteService.test.js:38:27)\n\n  ● 🧪 Calificar Cliente - Integración › 😠 Cliente con 2 observaciones negativas debe ser \"muy_malo\"\n\n    TypeError: crearClienteYOrdenes is not a function\n\n    \u001b[0m \u001b[90m 51 |\u001b[39m\n     \u001b[90m 52 |\u001b[39m   it(\u001b[32m'😠 Cliente con 2 observaciones negativas debe ser \"muy_malo\"'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mconst\u001b[39m cliente \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m crearClienteYOrdenes({\n     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 54 |\u001b[39m       numOrdenes\u001b[33m:\u001b[39m \u001b[35m5\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 55 |\u001b[39m       reparadas\u001b[33m:\u001b[39m \u001b[35m5\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 56 |\u001b[39m       observacionesNegativas\u001b[33m:\u001b[39m \u001b[35m2\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\n      at Object.crearClienteYOrdenes (__tests__/integration/calificarClienteService.test.js:53:27)\n\n  ● 🧪 Calificar Cliente - Integración › 🥇 Cliente frecuente con calificación base \"regular\" sube a \"bueno\"\n\n    TypeError: crearClienteYOrdenes is not a function\n\n    \u001b[0m \u001b[90m 66 |\u001b[39m\n     \u001b[90m 67 |\u001b[39m   it(\u001b[32m'🥇 Cliente frecuente con calificación base \"regular\" sube a \"bueno\"'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 68 |\u001b[39m     \u001b[36mconst\u001b[39m cliente \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m crearClienteYOrdenes({\n     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 69 |\u001b[39m       numOrdenes\u001b[33m:\u001b[39m \u001b[35m4\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 70 |\u001b[39m       reparadas\u001b[33m:\u001b[39m \u001b[35m2\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 71 |\u001b[39m       observaciones\u001b[33m:\u001b[39m \u001b[32m'cliente frecuente'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\n      at Object.crearClienteYOrdenes (__tests__/integration/calificarClienteService.test.js:68:27)\n\n  ● 🧪 Calificar Cliente - Integración › 🔍 Cliente inexistente debe lanzar 404\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: false\n    Received: undefined\n\n    \u001b[0m \u001b[90m 86 |\u001b[39m\n     \u001b[90m 87 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mtoBe(\u001b[35m404\u001b[39m)\u001b[33m;\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 88 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mfalse\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 89 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mmensaje)\u001b[33m.\u001b[39mtoMatch(\u001b[35m/no encontrado/i\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 90 |\u001b[39m   })\u001b[33m;\u001b[39m\n     \u001b[90m 91 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/integration/calificarClienteService.test.js:88:30)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\calificarClienteService.test.js",
+      "startTime": 1750985204076,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 Integración: Estado de cliente"
+          ],
+          "duration": 48,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 Integración: Estado de cliente 🧪 debería responder 404 si la ruta no existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🧪 debería responder 404 si la ruta no existe"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Integración: Estado de cliente"
+          ],
+          "duration": 39,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 404,
+                "expected": 200,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\estadoCliente.int.test.js:44:24)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 Integración: Estado de cliente 🔸 debería suspender correctamente a un cliente activo",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🔸 debería suspender correctamente a un cliente activo"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Integración: Estado de cliente"
+          ],
+          "duration": 26,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 404,
+                "expected": 200,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\estadoCliente.int.test.js:67:24)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 Integración: Estado de cliente 🔸 debería reactivar un cliente suspendido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🔸 debería reactivar un cliente suspendido"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 Integración: Estado de cliente"
+          ],
+          "duration": 24,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "actual": 404,
+                "expected": 200,
+                "message": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+                "name": "toBe",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at Object.toBe (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\estadoCliente.int.test.js:90:24)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 Integración: Estado de cliente 🔸 debería dar de baja definitivamente a un cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "🔸 debería dar de baja definitivamente a un cliente"
+        }
+      ],
+      "endTime": 1750985204849,
+      "message": "  ● 🧪 Integración: Estado de cliente › 🔸 debería suspender correctamente a un cliente activo\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 200\n    Received: 404\n\n    \u001b[0m \u001b[90m 42 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'🔍 BODY:'\u001b[39m\u001b[33m,\u001b[39m res\u001b[33m.\u001b[39mbody)\u001b[33m;\u001b[39m\n     \u001b[90m 43 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 44 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 45 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 46 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mmensaje)\u001b[33m.\u001b[39mtoBe(\u001b[32m'Cliente suspendido correctamente'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 47 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mdetails\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mestado)\u001b[33m.\u001b[39mtoBe(\u001b[32m'suspendido'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/integration/estadoCliente.int.test.js:44:24)\n\n  ● 🧪 Integración: Estado de cliente › 🔸 debería reactivar un cliente suspendido\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 200\n    Received: 404\n\n    \u001b[0m \u001b[90m 65 |\u001b[39m     )\u001b[33m;\u001b[39m\n     \u001b[90m 66 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 67 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 68 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 69 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mmensaje)\u001b[33m.\u001b[39mtoBe(\u001b[32m'Cliente reactivado correctamente'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 70 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mdetails\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mestado)\u001b[33m.\u001b[39mtoBe(\u001b[32m'activo'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/integration/estadoCliente.int.test.js:67:24)\n\n  ● 🧪 Integración: Estado de cliente › 🔸 debería dar de baja definitivamente a un cliente\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 200\n    Received: 404\n\n    \u001b[0m \u001b[90m 88 |\u001b[39m     )\u001b[33m;\u001b[39m\n     \u001b[90m 89 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 90 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 91 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39msuccess)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 92 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mmensaje)\u001b[33m.\u001b[39mtoBe(\u001b[32m'Baja definitiva confirmada correctamente'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 93 |\u001b[39m     expect(res\u001b[33m.\u001b[39mbody\u001b[33m.\u001b[39mdetails\u001b[33m.\u001b[39mcliente\u001b[33m.\u001b[39mestado)\u001b[33m.\u001b[39mtoBe(\u001b[32m'baneado'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\n      at Object.toBe (__tests__/integration/estadoCliente.int.test.js:90:24)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\estadoCliente.int.test.js",
+      "startTime": 1750985204449,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 suspender"
+          ],
+          "duration": 14,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "message": "expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\nExpected: {}, 200, \"Cliente suspendido correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\nNumber of calls: 0",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\nExpected: {}, 200, \"Cliente suspendido correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\nNumber of calls: 0\n    at Object.toHaveBeenCalledWith (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\estadoClienteService.unit.test.js:36:27)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 suspender debería suspender al cliente correctamente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "debería suspender al cliente correctamente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 suspender"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 suspender debería retornar que ya está suspendido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería retornar que ya está suspendido"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 suspender"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 suspender debería retornar error si ID es inválido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería retornar error si ID es inválido"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 suspender"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 suspender debería manejar errores del servicio",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería manejar errores del servicio"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 reactivar"
+          ],
+          "duration": 6,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "message": "expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\nExpected: {}, 200, \"Cliente reactivado correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\nNumber of calls: 0",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\nExpected: {}, 200, \"Cliente reactivado correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\nNumber of calls: 0\n    at Object.toHaveBeenCalledWith (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\estadoClienteService.unit.test.js:83:27)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 reactivar debería reactivar al cliente correctamente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "debería reactivar al cliente correctamente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 reactivar"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 reactivar debería retornar que ya está activo",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería retornar que ya está activo"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 confirmarBaja"
+          ],
+          "duration": 3,
+          "failureDetails": [
+            {
+              "matcherResult": {
+                "message": "expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\nExpected: {}, 200, \"Baja definitiva confirmada correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\nNumber of calls: 0",
+                "pass": false
+              }
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\nExpected: {}, 200, \"Baja definitiva confirmada correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\nNumber of calls: 0\n    at Object.toHaveBeenCalledWith (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\estadoClienteService.unit.test.js:117:27)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+          ],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 confirmarBaja debería dar de baja al cliente correctamente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "debería dar de baja al cliente correctamente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 estadoClienteController (unitario)",
+            "🔸 confirmarBaja"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 estadoClienteController (unitario) 🔸 confirmarBaja debería retornar que ya fue baneado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería retornar que ya fue baneado"
+        }
+      ],
+      "endTime": 1750985205172,
+      "message": "  ● 🧪 estadoClienteController (unitario) › 🔸 suspender › debería suspender al cliente correctamente\n\n    expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\n    Expected: {}, 200, \"Cliente suspendido correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\n    Number of calls: 0\n\n    \u001b[0m \u001b[90m 34 |\u001b[39m       \u001b[36mawait\u001b[39m estadoClienteController\u001b[33m.\u001b[39msuspender(mockReq(idValido)\u001b[33m,\u001b[39m res)\u001b[33m;\u001b[39m\n     \u001b[90m 35 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 36 |\u001b[39m       expect(sendSuccess)\u001b[33m.\u001b[39mtoHaveBeenCalledWith(\n     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 37 |\u001b[39m         res\u001b[33m,\u001b[39m\n     \u001b[90m 38 |\u001b[39m         \u001b[35m200\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 39 |\u001b[39m         \u001b[32m'Cliente suspendido correctamente'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\n      at Object.toHaveBeenCalledWith (__tests__/unit/services/clientes/estadoClienteService.unit.test.js:36:27)\n\n  ● 🧪 estadoClienteController (unitario) › 🔸 reactivar › debería reactivar al cliente correctamente\n\n    expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\n    Expected: {}, 200, \"Cliente reactivado correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\n    Number of calls: 0\n\n    \u001b[0m \u001b[90m 81 |\u001b[39m       \u001b[36mawait\u001b[39m estadoClienteController\u001b[33m.\u001b[39mreactivar(mockReq(idValido)\u001b[33m,\u001b[39m res)\u001b[33m;\u001b[39m\n     \u001b[90m 82 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 |\u001b[39m       expect(sendSuccess)\u001b[33m.\u001b[39mtoHaveBeenCalledWith(\n     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 84 |\u001b[39m         res\u001b[33m,\u001b[39m\n     \u001b[90m 85 |\u001b[39m         \u001b[35m200\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 86 |\u001b[39m         \u001b[32m'Cliente reactivado correctamente'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\n      at Object.toHaveBeenCalledWith (__tests__/unit/services/clientes/estadoClienteService.unit.test.js:83:27)\n\n  ● 🧪 estadoClienteController (unitario) › 🔸 confirmarBaja › debería dar de baja al cliente correctamente\n\n    expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\n    Expected: {}, 200, \"Baja definitiva confirmada correctamente\", {\"cliente\": {\"_id\": \"685de9f5c0ca359d113adb13\", \"calificacion\": \"bueno\", \"estado\": \"activo\", \"isActivo\": true, \"nombre\": \"Cliente Uno\"}}\n\n    Number of calls: 0\n\n    \u001b[0m \u001b[90m 115 |\u001b[39m       \u001b[36mawait\u001b[39m estadoClienteController\u001b[33m.\u001b[39mconfirmarBaja(mockReq(idValido)\u001b[33m,\u001b[39m res)\u001b[33m;\u001b[39m\n     \u001b[90m 116 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 117 |\u001b[39m       expect(sendSuccess)\u001b[33m.\u001b[39mtoHaveBeenCalledWith(\n     \u001b[90m     |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 118 |\u001b[39m         res\u001b[33m,\u001b[39m\n     \u001b[90m 119 |\u001b[39m         \u001b[35m200\u001b[39m\u001b[33m,\u001b[39m\n     \u001b[90m 120 |\u001b[39m         \u001b[32m'Baja definitiva confirmada correctamente'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\n      at Object.toHaveBeenCalledWith (__tests__/unit/services/clientes/estadoClienteService.unit.test.js:117:27)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\estadoClienteService.unit.test.js",
+      "startTime": 1750985204852,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Modelo CodigoAcceso - Validaciones"
+          ],
+          "duration": 44,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo CodigoAcceso - Validaciones debería fallar si el código no es único",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería fallar si el código no es único"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo CodigoAcceso - Validaciones"
+          ],
+          "duration": 10,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo CodigoAcceso - Validaciones debería fallar si el código no tiene el formato adecuado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería fallar si el código no tiene el formato adecuado"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo CodigoAcceso - Validaciones"
+          ],
+          "duration": 14,
+          "failureDetails": [
+            {
+              "message": "expect(received).rejects.toThrow()\n\nReceived promise resolved instead of rejected\nResolved to value: {\"__v\": 0, \"_id\": \"685de9f53059d95aa2d5bcbe\", \"codigo\": \"1845ZGH9\", \"creadoPor\": \"685de9f53059d95aa2d5bcbd\", \"estado\": \"activo\", \"fechaCreacion\": 2025-06-27T00:46:45.382Z, \"usosDisponibles\": 0}"
+            }
+          ],
+          "failureMessages": [
+            "Error: expect(received).rejects.toThrow()\n\nReceived promise resolved instead of rejected\nResolved to value: {\"__v\": 0, \"_id\": \"685de9f53059d95aa2d5bcbe\", \"codigo\": \"1845ZGH9\", \"creadoPor\": \"685de9f53059d95aa2d5bcbd\", \"estado\": \"activo\", \"fechaCreacion\": 2025-06-27T00:46:45.382Z, \"usosDisponibles\": 0}\n    at expect (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\expect\\build\\index.js:113:15)\n    at Object.expect (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\models\\codigoAcceso.test.js:62:11)\n    at Promise.then.completed (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\DELL\\serviciotecnico-v29\\backend\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+          ],
+          "fullName": "Modelo CodigoAcceso - Validaciones debería fallar si los usosDisponibles son menores que 1",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "failed",
+          "title": "debería fallar si los usosDisponibles son menores que 1"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo CodigoAcceso - Validaciones"
+          ],
+          "duration": 9,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo CodigoAcceso - Validaciones debería fallar si el estado no es válido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería fallar si el estado no es válido"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo CodigoAcceso - Validaciones"
+          ],
+          "duration": 10,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo CodigoAcceso - Validaciones debería guardar un código válido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería guardar un código válido"
+        }
+      ],
+      "endTime": 1750985205442,
+      "message": "  ● Modelo CodigoAcceso - Validaciones › debería fallar si los usosDisponibles son menores que 1\n\n    expect(received).rejects.toThrow()\n\n    Received promise resolved instead of rejected\n    Resolved to value: {\"__v\": 0, \"_id\": \"685de9f53059d95aa2d5bcbe\", \"codigo\": \"1845ZGH9\", \"creadoPor\": \"685de9f53059d95aa2d5bcbd\", \"estado\": \"activo\", \"fechaCreacion\": 2025-06-27T00:46:45.382Z, \"usosDisponibles\": 0}\n\n    \u001b[0m \u001b[90m 60 |\u001b[39m\n     \u001b[90m 61 |\u001b[39m     \u001b[90m// La validación debería fallar por el mínimo de usos\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 62 |\u001b[39m     \u001b[36mawait\u001b[39m expect(codigo\u001b[33m.\u001b[39msave())\u001b[33m.\u001b[39mrejects\u001b[33m.\u001b[39mtoThrow(\u001b[32m'El número mínimo de usos debe ser 1'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 63 |\u001b[39m   })\u001b[33m;\u001b[39m\n     \u001b[90m 64 |\u001b[39m\n     \u001b[90m 65 |\u001b[39m   it(\u001b[32m'debería fallar si el estado no es válido'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\n      at expect (node_modules/expect/build/index.js:113:15)\n      at Object.expect (__tests__/models/codigoAcceso.test.js:62:11)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\models\\codigoAcceso.test.js",
+      "startTime": 1750985205177,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 52,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes ✅ Crear cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Crear cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 85,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes ✏️ Editar cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✏️ Editar cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 84,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes 🚫 Suspender cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🚫 Suspender cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 105,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes 🔁 Reactivar cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔁 Reactivar cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 70,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes ⛔️ Confirmar baja definitiva",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "⛔️ Confirmar baja definitiva"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 84,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes 🧠 Calificar cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🧠 Calificar cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 CRUD de Clientes"
+          ],
+          "duration": 107,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 CRUD de Clientes 📄 Obtener todos los clientes",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "📄 Obtener todos los clientes"
+        }
+      ],
+      "endTime": 1750985206534,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\integration\\clientes.int.test.js",
+      "startTime": 1750985205453,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 9,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) debería lanzar error si el cliente tiene OS no finalizadas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería lanzar error si el cliente tiene OS no finalizadas"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ✅ Actualiza cliente correctamente (sin DNI)",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Actualiza cliente correctamente (sin DNI)"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si cliente no existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si cliente no existe"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si se intenta cambiar el DNI",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si se intenta cambiar el DNI"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si estado es \"suspendido\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si estado es \"suspendido\""
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si calificación es \"muy_malo\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si calificación es \"muy_malo\""
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 6,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si el email ya existe en otro cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si el email ya existe en otro cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si el teléfono ya existe en otro cliente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si el teléfono ya existe en otro cliente"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 editarClienteService (unitario)"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 editarClienteService (unitario) ❌ Lanza error si cliente no se encuentra al actualizar",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si cliente no se encuentra al actualizar"
+        }
+      ],
+      "endTime": 1750985206940,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\editarClienteService.unit.test.js",
+      "startTime": 1750985206538,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 16,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService debe crear un equipo correctamente con ficha técnica y historial",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 4,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debe crear un equipo correctamente con ficha técnica y historial"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 9,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService debe lanzar error si falta tipo, modelo o clienteActual",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debe lanzar error si falta tipo, modelo o clienteActual"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService debe lanzar error si el nroSerie ya existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debe lanzar error si el nroSerie ya existe"
+        }
+      ],
+      "endTime": 1750985207337,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\equipos\\crearEquipoService.test.js",
+      "startTime": 1750985206944,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ✅ Usa ficha técnica existente e ignora fichaTecnicaManual",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Usa ficha técnica existente e ignora fichaTecnicaManual"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ✅ Crea ficha técnica manual si no existe ninguna",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Crea ficha técnica manual si no existe ninguna"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ❌ No crea ficha técnica si no hay existente ni fichaTecnicaManual",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ No crea ficha técnica si no hay existente ni fichaTecnicaManual"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 7,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ❌ Lanza error si ya existe un equipo con el mismo número de serie",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si ya existe un equipo con el mismo número de serie"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ❌ Lanza error si falta tipo, modelo o clienteActual",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Lanza error si falta tipo, modelo o clienteActual"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ✅ Crea equipo con ficha técnica existente + campos sobrescritos (repotenciado)",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Crea equipo con ficha técnica existente + campos sobrescritos (repotenciado)"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ✅ Valida que la fuente se setee correctamente para cada campo",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Valida que la fuente se setee correctamente para cada campo"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoService ✅ Crea equipo aunque no haya ficha técnica ni fichaTecnicaManual",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Crea equipo aunque no haya ficha técnica ni fichaTecnicaManual"
+        }
+      ],
+      "endTime": 1750985207651,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\equipos\\fichaTecnicaService.test.js",
+      "startTime": 1750985207341,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 calificarClienteController - Unit Test"
+          ],
+          "duration": 15,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 calificarClienteController - Unit Test ✅ Responde con 200 y datos del cliente si todo va bien",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Responde con 200 y datos del cliente si todo va bien"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 calificarClienteController - Unit Test"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 calificarClienteController - Unit Test 🚫 Devuelve 404 si el cliente no existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🚫 Devuelve 404 si el cliente no existe"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 calificarClienteController - Unit Test"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 calificarClienteController - Unit Test 🔥 Devuelve 500 si ocurre un error inesperado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔥 Devuelve 500 si ocurre un error inesperado"
+        }
+      ],
+      "endTime": 1750985207917,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\calificarClienteController.test.js",
+      "startTime": 1750985207663,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "crearEquipoController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoController debe responder 201 cuando el equipo se crea correctamente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debe responder 201 cuando el equipo se crea correctamente"
+        },
+        {
+          "ancestorTitles": [
+            "crearEquipoController"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "crearEquipoController debe responder 400 cuando el servicio lanza un error",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debe responder 400 cuando el servicio lanza un error"
+        }
+      ],
+      "endTime": 1750985208167,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\equipos\\crearEquiposController.test.js",
+      "startTime": 1750985207922,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteService"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteService ✅ Crea cliente exitosamente con datos válidos",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ Crea cliente exitosamente con datos válidos"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteService"
+          ],
+          "duration": 6,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteService ❌ Rechaza creación con estado suspendido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Rechaza creación con estado suspendido"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteService ❌ Rechaza creación con estado baneado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Rechaza creación con estado baneado"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteService ❌ Rechaza creación con calificación muy_malo",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Rechaza creación con calificación muy_malo"
+        },
+        {
+          "ancestorTitles": [
+            "🧪 crearClienteService"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 crearClienteService ❌ Rechaza creación con calificación malo",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ Rechaza creación con calificación malo"
+        }
+      ],
+      "endTime": 1750985208450,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\crearClienteServices.test.js",
+      "startTime": 1750985208170,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Modelo Cliente - Validaciones"
+          ],
+          "duration": 28,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente - Validaciones debería guardar un cliente válido con calificación por defecto",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería guardar un cliente válido con calificación por defecto"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo Cliente - Validaciones"
+          ],
+          "duration": 10,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente - Validaciones debería fallar con una calificación inválida",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería fallar con una calificación inválida"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo Cliente - Validaciones"
+          ],
+          "duration": 11,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente - Validaciones debería permitir guardar con calificación \"bueno\"",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería permitir guardar con calificación \"bueno\""
+        }
+      ],
+      "endTime": 1750985208671,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\models\\clienteModel.test.js",
+      "startTime": 1750985208453,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "obtenerClientesController"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesController ✅ responde sin filtros",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ responde sin filtros"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesController 🔍 responde filtrando por nombre",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔍 responde filtrando por nombre"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesController 🔍 responde filtrando por estado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔍 responde filtrando por estado"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesController 🔍 responde filtrando por estado y calificación",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔍 responde filtrando por estado y calificación"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesController 🔍 responde con paginación y ordenamiento",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🔍 responde con paginación y ordenamiento"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesController"
+          ],
+          "duration": 6,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesController ❌ responde con error si falla el servicio",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ responde con error si falla el servicio"
+        }
+      ],
+      "endTime": 1750985208965,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\obtenerClientesController.test.js",
+      "startTime": 1750985208675,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Modelo Cliente"
+          ],
+          "duration": 25,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente debería crear un cliente válido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería crear un cliente válido"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo Cliente"
+          ],
+          "duration": 28,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente debería rechazar clientes con DNI duplicado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería rechazar clientes con DNI duplicado"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo Cliente"
+          ],
+          "duration": 9,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente debería rechazar un estado inválido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería rechazar un estado inválido"
+        },
+        {
+          "ancestorTitles": [
+            "Modelo Cliente"
+          ],
+          "duration": 12,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Modelo Cliente debería aceptar observaciones personalizadas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "debería aceptar observaciones personalizadas"
+        }
+      ],
+      "endTime": 1750985209214,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\models\\cliente.test.js",
+      "startTime": 1750985208969,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "obtenerClientePorIdController"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientePorIdController ✅ responde con cliente encontrado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ responde con cliente encontrado"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientePorIdController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientePorIdController ❌ responde con error si ID es inválido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ responde con error si ID es inválido"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientePorIdController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientePorIdController ❌ responde con error si cliente no existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ responde con error si cliente no existe"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientePorIdController"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientePorIdController ❌ responde con error 500 si ocurre un error inesperado",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ responde con error 500 si ocurre un error inesperado"
+        }
+      ],
+      "endTime": 1750985209490,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\obtenerClientePorIdController.test.js",
+      "startTime": 1750985209224,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "obtenerClientesBase",
+            "🔍 Buscar por ID"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesBase 🔍 Buscar por ID ✅ devuelve cliente si ID es válido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ devuelve cliente si ID es válido"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesBase",
+            "🔍 Buscar por ID"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesBase 🔍 Buscar por ID ❌ lanza error si ID es inválido",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ lanza error si ID es inválido"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesBase",
+            "🔍 Buscar por ID"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesBase 🔍 Buscar por ID ❌ lanza error si cliente no existe",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "❌ lanza error si cliente no existe"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesBase",
+            "📋 Buscar múltiples clientes"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesBase 📋 Buscar múltiples clientes ✅ devuelve lista de clientes y total con filtros",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 3,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ devuelve lista de clientes y total con filtros"
+        },
+        {
+          "ancestorTitles": [
+            "obtenerClientesBase",
+            "📋 Buscar múltiples clientes"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "obtenerClientesBase 📋 Buscar múltiples clientes ✅ aplica paginación y ordenamiento correctamente",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 4,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ aplica paginación y ordenamiento correctamente"
+        }
+      ],
+      "endTime": 1750985209669,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\services\\clientes\\obtenerClientesService.test.js",
+      "startTime": 1750985209499,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna regular si no hay órdenes relevantes",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna regular si no hay órdenes relevantes"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna regular si solo hay una negativa",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna regular si solo hay una negativa"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna regular si hay 2 malas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna regular si hay 2 malas"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna bueno con 3 de 4 buenas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna bueno con 3 de 4 buenas"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna muy_bueno si 9 de 10 son buenas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna muy_bueno si 9 de 10 son buenas"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna muy_malo si 5 de 5 son malas",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna muy_malo si 5 de 5 son malas"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ ignora órdenes irreparables",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ ignora órdenes irreparables"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna malo si 2 de 5 son buenas (40%)",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna malo si 2 de 5 son buenas (40%)"
+        },
+        {
+          "ancestorTitles": [
+            "🧠 calcularCalificacionBase"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧠 calcularCalificacionBase ✅ retorna regular si no califica para ningún otro caso",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "✅ retorna regular si no califica para ningún otro caso"
+        }
+      ],
+      "endTime": 1750985209831,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\utils\\calculaCalificacionBase.unit.test.js",
+      "startTime": 1750985209672,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "🧪 Sanity test: la conexión a MongoDB funciona",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "🧪 Sanity test: la conexión a MongoDB funciona"
+        }
+      ],
+      "endTime": 1750985209985,
+      "message": "",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\sanity.test.js",
+      "startTime": 1750985209834,
+      "status": "passed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [],
+      "coverage": {},
+      "endTime": 1750985210465,
+      "message": "  ● Test suite failed to run\n\n    Configuration error:\n\n    Could not locate module @services/clientes/obtenerClientePorIdService mapped as:\n    C:\\Users\\DELL\\serviciotecnico-v29\\backend\\services$1.\n\n    Please check your configuration for these entries:\n    {\n      \"moduleNameMapper\": {\n        \"/^@services(.*)$/\": \"C:\\Users\\DELL\\serviciotecnico-v29\\backend\\services$1\"\n      },\n      \"resolver\": undefined\n    }\n\n    \u001b[0m \u001b[90m  9 |\u001b[39m \u001b[36mconst\u001b[39m eliminarClienteController \u001b[33m=\u001b[39m require(\u001b[32m'@controllers/clientes/eliminacion/eliminarClienteController'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 10 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 11 |\u001b[39m jest\u001b[33m.\u001b[39mmock(\u001b[32m'@services/clientes/obtenerClientePorIdService'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 12 |\u001b[39m jest\u001b[33m.\u001b[39mmock(\u001b[32m'@services/clientes/obtenerClientesService'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 13 |\u001b[39m jest\u001b[33m.\u001b[39mmock(\u001b[32m'@services/clientes/crearClienteService'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 14 |\u001b[39m jest\u001b[33m.\u001b[39mmock(\u001b[32m'@services/clientes/editarClienteService'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\n      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/resolver.js:759:17)\n      at Object.<anonymous> (__tests__/unit/controllers/clientes/clientesController.test.js:11:59)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\clientes\\clientesController.test.js",
+      "startTime": 1750985210465,
+      "status": "failed",
+      "summary": ""
+    },
+    {
+      "assertionResults": [],
+      "coverage": {},
+      "endTime": 1750985210465,
+      "message": "  ● Test suite failed to run\n\n    Cannot find module '../../models/CodigoAcceso' from '__tests__/unit/controllers/codigoController.test.js'\n\n    \u001b[0m \u001b[90m  8 |\u001b[39m \u001b[36mconst\u001b[39m { logError } \u001b[33m=\u001b[39m require(\u001b[32m'../../../utils/logger'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m  9 |\u001b[39m\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 10 |\u001b[39m jest\u001b[33m.\u001b[39mmock(\u001b[32m'../../models/CodigoAcceso'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 11 |\u001b[39m jest\u001b[33m.\u001b[39mmock(\u001b[32m'../../utils/logger'\u001b[39m)\u001b[33m;\u001b[39m\n     \u001b[90m 12 |\u001b[39m \u001b[36mconst\u001b[39m mockSave \u001b[33m=\u001b[39m jest\u001b[33m.\u001b[39mfn()\u001b[33m;\u001b[39m\n     \u001b[90m 13 |\u001b[39m\u001b[0m\n\n      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)\n      at Object.<anonymous> (__tests__/unit/controllers/codigoController.test.js:10:39)\n",
+      "name": "C:\\Users\\DELL\\serviciotecnico-v29\\backend\\__tests__\\unit\\controllers\\codigoController.test.js",
+      "startTime": 1750985210465,
+      "status": "failed",
+      "summary": ""
+    }
+  ],
+  "wasInterrupted": false
+}

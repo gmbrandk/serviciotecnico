@@ -1,11 +1,42 @@
 const { exec } = require('child_process');
-const open = require('open').default; // ✅ corrección
+const open = require('open').default;
 const path = require('path');
+const fs = require('fs');
+const testLogger = require('./testLogger');
 
-const testFile = process.argv[2]; // archivo de test (opcional)
-const withCoverage = process.argv.includes('--coverage'); // activar cobertura
+// 🧪 Archivo test (opcional) y cobertura
+const testFile = process.argv[2]; // ej: __tests__/clientes.int.test.js
+const withCoverage = process.argv.includes('--coverage');
 
-const reportPath = path.resolve(__dirname, '__tests__/report/test-report.html');
+// 📄 Nombre del archivo base para el reporte y log
+const testFileName = testFile
+  ? path.basename(testFile).replace(/\.[jt]sx?$/, '') // sin extensión
+  : 'all-tests';
+
+const reportFileName = `test-report-${testFileName}.html`;
+const reportPath = path.resolve(__dirname, '__tests__/report', reportFileName);
+
+// 📝 Configuración temporal del reporter
+const reporterConfigPath = path.resolve(
+  __dirname,
+  '__tests__/reporter-config.json'
+);
+fs.writeFileSync(
+  reporterConfigPath,
+  JSON.stringify({
+    pageTitle: `Test Report - ${testFileName}`,
+    outputPath: reportPath,
+    includeFailureMsg: true,
+    includeSuiteFailure: true,
+    theme: 'darkTheme',
+  })
+);
+
+// 🧾 Iniciar logger de este test
+testLogger.initLogger(testFile); // ✅ ahora sí
+testLogger.log(
+  `🚀 Iniciando ejecución de: ${testFile || 'todos los tests'}...`
+);
 
 const jestCommand = [
   'npx jest',
@@ -14,21 +45,30 @@ const jestCommand = [
   '--forceExit',
   '--detectOpenHandles',
   '--verbose',
-  '--reporters=default',
-  '--reporters=jest-html-reporter',
+  `--reporters=default`,
+  `--reporters=jest-html-reporter`,
+  `--reporter-options=configFile=${reporterConfigPath}`,
   withCoverage ? '--coverage' : '',
 ].join(' ');
 
-console.log(`🚀 Ejecutando tests: ${testFile || 'todos los archivos'}...\n`);
-
 exec(jestCommand, async (err, stdout, stderr) => {
-  if (stdout) console.log(stdout);
-  if (stderr) console.error(stderr);
+  if (stdout) {
+    console.log(stdout);
+    testLogger.log(stdout);
+  }
+  if (stderr) {
+    console.error(stderr);
+    testLogger.log(stderr);
+  }
 
   if (err) {
-    console.error('❌ Fallo en los tests');
+    testLogger.log('❌ Fallo en los tests');
+    testLogger.closeLogger();
     process.exit(1);
   }
+
+  testLogger.log('✅ Tests finalizados correctamente');
+  testLogger.closeLogger();
 
   console.log(`\n📄 Abriendo reporte: ${reportPath}`);
   await open(reportPath);
