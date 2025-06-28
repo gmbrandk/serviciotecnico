@@ -1,5 +1,6 @@
+require('module-alias/register'); // 👈 Esto habilita los aliases
 const mongoose = require('mongoose');
-const app = require('./app');
+const app = require('app');
 
 // Conectar a la DB
 const uri =

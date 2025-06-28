@@ -1,5 +1,5 @@
 // backend/app.js
-require('module-alias/register');
+//require('module-alias/register');
 
 const path = require('path');
 const express = require('express');

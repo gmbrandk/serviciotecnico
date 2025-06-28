@@ -7,7 +7,6 @@ const ClienteSchema = new mongoose.Schema({
   telefono: String,
   email: String,
   direccion: String,
-  observaciones: String, // Notas generales, no usadas para automatizar reglas
   estado: {
     type: String,
     enum: ['activo', 'suspendido', 'baneado'],
