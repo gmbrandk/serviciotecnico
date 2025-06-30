@@ -90,7 +90,7 @@ const verificarAcceso = (config) => {
         accion,
         nuevoRol,
       });
-      console.error('accion a realizar:', accion);
+      //console.error('accion a realizar:', accion);
       if (!permiso.permitido) {
         return sendError(res, 403, permiso.mensaje);
       }

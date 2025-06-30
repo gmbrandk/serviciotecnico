@@ -8,6 +8,24 @@ const editarClienteService = async (id, data) => {
 
   const { dni, email, telefono } = data;
 
+  // Campos sensibles que no deben modificarse desde esta ruta
+  const camposProhibidos = ['estado', 'calificacion'];
+  const camposNoPermitidos = camposProhibidos.filter((campo) =>
+    data.hasOwnProperty(campo)
+  );
+
+  if (camposNoPermitidos.length > 0) {
+    console.log(
+      '🔴 [Service] Modificación no permitida de campos:',
+      camposNoPermitidos
+    );
+    throw new Error(
+      `No se permite modificar los siguientes campos desde esta ruta: ${camposNoPermitidos.join(
+        ', '
+      )}`
+    );
+  }
+
   // 0. Obtener cliente original
   const clienteOriginal = await Cliente.findById(id);
   if (!clienteOriginal) {

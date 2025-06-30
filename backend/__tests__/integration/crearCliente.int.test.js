@@ -39,8 +39,9 @@ describe('🧪 Validaciones - Crear Cliente', () => {
         dni: '12345678',
         telefono: '999999999',
         email: 'juan@test.com',
-        observaciones: 'Ninguna',
       });
+
+    console.log(res.body); // 👈 agrega esto temporalmente
 
     expect(res.statusCode).toBe(201);
     expect(res.body?.details?.cliente?.nombre).toBe('Juan Pérez');
@@ -57,12 +58,12 @@ describe('🧪 Validaciones - Crear Cliente', () => {
   });
 
   test('❌ DNI duplicado', async () => {
-    await Cliente.create({ nombre: 'X', dni: '9999', telefono: '1' });
+    await Cliente.create({ nombre: 'X', dni: '9999', telefono: '999999999' });
 
     const res = await request(app)
       .post(endpoint)
       .set('Cookie', cookieAdmin)
-      .send({ nombre: 'Y', dni: '9999', telefono: '2' });
+      .send({ nombre: 'Y', dni: '9999', telefono: '999999999' });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.mensaje).toMatch(/DNI/);
@@ -72,7 +73,12 @@ describe('🧪 Validaciones - Crear Cliente', () => {
     const res = await request(app)
       .post(endpoint)
       .set('Cookie', cookieAdmin)
-      .send({ nombre: 'X', dni: '123', telefono: '456', email: 'correo@no' });
+      .send({
+        nombre: 'X',
+        dni: '123',
+        telefono: '999999999',
+        email: 'correo@no',
+      });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.mensaje).toMatch(/formato inválido/i);
@@ -105,9 +111,7 @@ describe('🧪 Validaciones - Crear Cliente', () => {
       .send({ nombre: 'X', dni: '111', telefono: '456', estado: 'suspendido' });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.mensaje).toBe(
-      'Los siguientes campos no están permitidos: estado'
-    );
+    expect(res.body.mensaje).toMatch(/no están permitidos: estado/i);
   });
 
   test('❌ Calificación inválida (negada en servicio)', async () => {

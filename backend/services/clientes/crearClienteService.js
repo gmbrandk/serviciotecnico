@@ -1,24 +1,31 @@
 const Cliente = require('@models/Cliente');
 
 const crearClienteService = async (data) => {
-  const { estado, calificacion } = data;
+  // Valores seguros por defecto
+  const clienteData = {
+    ...data,
+    estado: 'activo',
+    calificacion: 'regular',
+  };
 
-  // Validar estado al crear
-  if (estado && ['suspendido', 'baneado'].includes(estado)) {
+  // Validación explícita (por si inyectan estado o calificación manualmente)
+  if (data.estado && ['suspendido', 'baneado'].includes(data.estado)) {
     throw new Error(
       'No puedes crear un cliente con estado suspendido o baneado'
     );
   }
 
-  // Validar calificación al crear
-  if (calificacion && ['malo', 'muy_malo'].includes(calificacion)) {
+  if (
+    data.calificacion &&
+    ['malo', 'muy_malo', 'bueno', 'muy_bueno'].includes(data.calificacion)
+  ) {
     throw new Error(
-      'No puedes crear un cliente con calificación mala o muy mala'
+      'No puedes crear un cliente con calificación negativa o positiva'
     );
   }
 
   // Crear cliente
-  const cliente = new Cliente(data);
+  const cliente = new Cliente(clienteData);
   return await cliente.save();
 };
 

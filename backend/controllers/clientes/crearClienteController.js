@@ -18,7 +18,10 @@ const crearClienteController = async (req, res) => {
     ];
     const bodyRecibido = req.body;
     const bodyFiltrado = {};
-    const camposInvalidos = [];
+
+    const camposInvalidos = Object.keys(req.body).filter(
+      (campo) => !camposPermitidos.includes(campo)
+    );
 
     for (const campo in bodyRecibido) {
       const valor = bodyRecibido[campo];
@@ -72,7 +75,16 @@ const crearClienteController = async (req, res) => {
     }
 
     // Validar email generado o recibido
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+
+    if (bodySanitizado.email.includes('..')) {
+      return sendError(
+        res,
+        400,
+        'El correo tiene un formato inválido (doble punto)'
+      );
+    }
+
     if (!emailRegex.test(email)) {
       return sendError(res, 400, 'El correo tiene un formato inválido');
     }

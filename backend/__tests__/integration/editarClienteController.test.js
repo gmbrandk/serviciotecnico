@@ -135,6 +135,121 @@ describe('🔁 PUT /api/clientes/:id - Edición con validación y mock de órden
       });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.mensaje).toMatch(/no están permitidos: rol/i);
+    expect(res.body.mensaje).toMatch(/no están permitidos en esta ruta: rol/i);
+  });
+
+  test('🛑 Rechaza estado inválido (suspendido o baneado)', async () => {
+    OrdenServicio.findOne.mockResolvedValue(null);
+
+    const cliente = await Cliente.create({
+      nombre: 'Estado Test',
+      dni: '12341234',
+      telefono: '+51922222222',
+      email: 'estado@correo.com',
+    });
+
+    const res = await request(app)
+      .put(`/api/clientes/${cliente._id}`)
+      .set('Cookie', cookieAdmin)
+      .send({ estado: 'baneado' });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.mensaje).toMatch(
+      /Los siguientes campos no están permitidos/i
+    );
+  });
+
+  test('🛑 Rechaza calificación negativa (malo o muy_malo)', async () => {
+    OrdenServicio.findOne.mockResolvedValue(null);
+
+    const cliente = await Cliente.create({
+      nombre: 'Calificación Test',
+      dni: '43214321',
+      telefono: '+51933333333',
+      email: 'calificacion@correo.com',
+    });
+
+    const res = await request(app)
+      .put(`/api/clientes/${cliente._id}`)
+      .set('Cookie', cookieAdmin)
+      .send({ calificacion: 'muy_malo' });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.mensaje).toMatch(
+      /Los siguientes campos no están permitidos/i
+    );
+  });
+
+  test('🛑 Rechaza calificación positiva (bueno o muy_bueno)', async () => {
+    OrdenServicio.findOne.mockResolvedValue(null);
+
+    const cliente = await Cliente.create({
+      nombre: 'Calificación Test',
+      dni: '43214321',
+      telefono: '+51933333333',
+      email: 'calificacion@correo.com',
+    });
+
+    const res = await request(app)
+      .put(`/api/clientes/${cliente._id}`)
+      .set('Cookie', cookieAdmin)
+      .send({ calificacion: 'bueno' });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.mensaje).toMatch(
+      /Los siguientes campos no están permitidos/i
+    );
+  });
+
+  test('🛑 Rechaza email duplicado', async () => {
+    OrdenServicio.findOne.mockResolvedValue(null);
+
+    await Cliente.create({
+      nombre: 'Cliente Original',
+      dni: '11112222',
+      telefono: '+51944444444',
+      email: 'duplicado@correo.com',
+    });
+
+    const cliente = await Cliente.create({
+      nombre: 'Cliente Editado',
+      dni: '33334444',
+      telefono: '+51955555555',
+      email: 'editado@correo.com',
+    });
+
+    const res = await request(app)
+      .put(`/api/clientes/${cliente._id}`)
+      .set('Cookie', cookieAdmin)
+      .send({ email: 'duplicado@correo.com' });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.mensaje).toMatch(/ya existe un cliente con ese correo/i);
+  });
+
+  test('🛑 Rechaza teléfono duplicado', async () => {
+    OrdenServicio.findOne.mockResolvedValue(null);
+
+    await Cliente.create({
+      nombre: 'Cliente Tel 1',
+      dni: '66667777',
+      telefono: '+51966666666',
+      email: 'uno@correo.com',
+    });
+
+    const cliente = await Cliente.create({
+      nombre: 'Cliente Tel 2',
+      dni: '77778888',
+      telefono: '+51977777777',
+      email: 'dos@correo.com',
+    });
+
+    const res = await request(app)
+      .put(`/api/clientes/${cliente._id}`)
+      .set('Cookie', cookieAdmin)
+      .send({ telefono: '966666666' }); // se normaliza a +51966666666
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.mensaje).toMatch(/ya existe un cliente con ese teléfono/i);
   });
 });
