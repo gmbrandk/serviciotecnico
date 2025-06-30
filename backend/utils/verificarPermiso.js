@@ -5,10 +5,10 @@ const acciones = {
   cambiarEstado: require('./permisos/accionesPermiso/usuario/cambiarEstado'),
   editarUsuario: require('./permisos/accionesPermiso/usuario/editarUsuario'),
   eliminar: require('./permisos/accionesPermiso/usuario/eliminarUsuario'),
-  cambiarEstado: require('./permisos/accionesPermiso/usuario/cambiarEstado'),
   generarCodigo: require('./permisos/accionesPermiso/usuario/generarCodigoAcceso'),
   obtenerCodigo: require('./permisos/accionesPermiso/usuario/obtenerCodigoAcceso'),
   obtenerUsuario: require('./permisos/accionesPermiso/usuario/obtenerUsuario'),
+  obtenerMovimiento: require('./permisos/accionesPermiso/usuario/obtenerMovimiento'),
 
   // Clientes (controlados por usuarios)
   'cliente:crear': require('./permisos/accionesPermiso/cliente/crearCliente'),

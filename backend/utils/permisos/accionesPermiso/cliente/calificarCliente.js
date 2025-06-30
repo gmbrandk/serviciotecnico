@@ -1,9 +1,11 @@
-module.exports = ({ solicitante }) => {
-  const rol = solicitante.role?.toLowerCase();
+// utils/permisos/accionesPermiso/cliente/calificarCliente.js
 
-  const rolesPermitidos = ['administrador', 'superadministrador'];
+const rolesJerarquia = require('../../rolesJerarquia');
 
-  if (!rolesPermitidos.includes(rol)) {
+module.exports = ({ jerarquiaSolicitante }) => {
+  const jerarquiaMinima = rolesJerarquia['administrador'];
+
+  if (jerarquiaSolicitante < jerarquiaMinima) {
     return {
       permitido: false,
       mensaje: 'No tienes permiso para calificar clientes.',

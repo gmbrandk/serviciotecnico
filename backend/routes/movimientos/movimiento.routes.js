@@ -1,15 +1,21 @@
 const express = require('express');
-const { verificarToken, verificarRolesPermitidos } = require('@middlewares/authMiddleware');
+const {
+  verificarToken,
+  verificarRolesPermitidos,
+} = require('@middlewares/authMiddleware');
 const { obtenerMovimiento } = require('@controllers/movimientoController');
+const verificarAcceso = require('@middlewares/verificarAcceso');
 
 const router = express.Router();
 
 router.get(
-    '/',
-    verificarToken,
-    verificarRolesPermitidos(['superadministrador', 'administrador']),
-    obtenerMovimiento
-  );
-  
+  '/',
+  verificarToken,
+  verificarAcceso({
+    accion: 'obtenerMovimiento',
+    rolesPermitidos: ['superadministrador', 'administrador'],
+  }),
+  obtenerMovimiento
+);
 
-module.exports =  router;
+module.exports = router;

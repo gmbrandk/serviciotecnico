@@ -1,11 +1,14 @@
-module.exports = ({ solicitante }) => {
-  const rol = solicitante.role?.toLowerCase();
+// utils/permisos/accionesPermiso/cliente/calificarCliente.js
 
-  if (rol !== 'superadministrador') {
+const rolesJerarquia = require('../../rolesJerarquia');
+
+module.exports = ({ jerarquiaSolicitante }) => {
+  const jerarquiaMinima = rolesJerarquia['superadministrador'];
+
+  if (jerarquiaSolicitante < jerarquiaMinima) {
     return {
       permitido: false,
-      mensaje:
-        'Solo los superadministradores pueden dar de baja definitivamente.',
+      mensaje: 'No tienes permiso para banear clientes.',
     };
   }
 

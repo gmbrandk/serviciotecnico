@@ -5,6 +5,7 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 const crearMovimiento = require('@controllers/movimiento/crearMovimientoController');
 const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 const generarEmailFicticio = require('@utils/generarEmailFicticio');
+const validarYFormatearTelefono = require('@utils/telefonia/validarYFormatearTelefono');
 
 const crearClienteController = async (req, res) => {
   try {
@@ -14,7 +15,6 @@ const crearClienteController = async (req, res) => {
       'telefono',
       'direccion',
       'email',
-      'observaciones',
     ];
     const bodyRecibido = req.body;
     const bodyFiltrado = {};
@@ -53,6 +53,14 @@ const crearClienteController = async (req, res) => {
       return sendError(res, 400, 'Nombre, DNI y Teléfono son obligatorios');
     }
 
+    // ☎️ Validar y formatear número de teléfono
+    try {
+      const infoTelefono = validarYFormatearTelefono(telefono);
+      bodyFiltrado.telefono = infoTelefono.telefonoFormateado; // sobrescribimos con formato internacional
+    } catch (error) {
+      return sendError(res, 400, error.message);
+    }
+
     const existeDni = await Cliente.findOne({ dni });
     if (existeDni)
       return sendError(res, 400, 'Ya existe un cliente con ese DNI');
@@ -73,7 +81,9 @@ const crearClienteController = async (req, res) => {
     if (existeEmail)
       return sendError(res, 400, 'Ya existe un cliente con ese correo');
 
-    const existeTelefono = await Cliente.findOne({ telefono });
+    const existeTelefono = await Cliente.findOne({
+      telefono: bodyFiltrado.telefono,
+    });
     if (existeTelefono)
       return sendError(res, 400, 'Ya existe un cliente con ese teléfono');
 

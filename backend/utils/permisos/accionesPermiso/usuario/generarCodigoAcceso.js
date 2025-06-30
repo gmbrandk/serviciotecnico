@@ -1,9 +1,12 @@
 // utils/permisos/accionesPermiso/generarCodigo.js
-module.exports = ({ solicitante }) => {
-  const rol = solicitante.role?.toLowerCase();
-  const rolesPermitidos = ['superadministrador', 'administrador'];
+// permisos/accionesPermiso/usuario/generarCodigoAcceso.js
 
-  if (!rolesPermitidos.includes(rol)) {
+const rolesJerarquia = require('../../rolesJerarquia');
+
+module.exports = ({ solicitante, jerarquiaSolicitante }) => {
+  const jerarquiaMinima = rolesJerarquia['administrador'];
+
+  if (jerarquiaSolicitante < jerarquiaMinima) {
     return {
       permitido: false,
       mensaje: 'Solo administradores o superiores pueden generar códigos.',

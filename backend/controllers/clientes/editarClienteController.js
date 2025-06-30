@@ -17,7 +17,7 @@ const editarClienteController = async (req, res) => {
       'dni',
       'telefono',
       'email',
-      'observaciones',
+      'direccion',
       'estado',
       'calificacion',
     ];

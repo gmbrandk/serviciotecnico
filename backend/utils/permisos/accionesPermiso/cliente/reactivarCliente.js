@@ -1,12 +1,14 @@
-module.exports = ({ solicitante }) => {
-  const rol = solicitante.role?.toLowerCase();
+// utils/permisos/accionesPermiso/cliente/calificarCliente.js
 
-  const rolesPermitidos = ['administrador', 'superadministrador'];
+const rolesJerarquia = require('../../rolesJerarquia');
 
-  if (!rolesPermitidos.includes(rol)) {
+module.exports = ({ jerarquiaSolicitante }) => {
+  const jerarquiaMinima = rolesJerarquia['tecnico'];
+
+  if (jerarquiaSolicitante < jerarquiaMinima) {
     return {
       permitido: false,
-      mensaje: 'Solo los administradores pueden reactivar clientes.',
+      mensaje: 'No tienes permiso para reactivar clientes.',
     };
   }
 

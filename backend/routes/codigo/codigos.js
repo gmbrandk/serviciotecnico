@@ -22,7 +22,7 @@ router.get(
   '/',
   verificarToken,
   verificarAcceso({
-    accion: 'generarCodigo',
+    accion: 'obtenerCodigo',
     rolesPermitidos: ['superadministrador', 'administrador'],
   }),
   obtenerCodigos

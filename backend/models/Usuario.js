@@ -7,7 +7,7 @@ const usuarioSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: {
     type: String,
-    enum: ['superadministrador', 'administrador', 'tecnico'],
+    enum: ['cliente', 'superadministrador', 'administrador', 'tecnico'],
     default: 'tecnico',
   },
   accessCode: {

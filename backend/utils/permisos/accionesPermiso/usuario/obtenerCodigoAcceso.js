@@ -1,12 +1,16 @@
-// utils/permisos/accionesPermiso/obtenerCodigoAcceso.js
-module.exports = ({ solicitante }) => {
-  // Solo superadministradores o administradores pueden ver los códigos
-  if (['superadministrador', 'administrador'].includes(solicitante.role)) {
-    return { permitido: true };
+// utils/permisos/accionesPermiso/usuario/obtenerCodigoAcceso.js
+
+const rolesJerarquia = require('../../rolesJerarquia');
+
+module.exports = ({ jerarquiaSolicitante }) => {
+  const jerarquiaMinima = rolesJerarquia['administrador'];
+
+  if (jerarquiaSolicitante < jerarquiaMinima) {
+    return {
+      permitido: false,
+      mensaje: 'No tienes permiso para ver los códigos de acceso.',
+    };
   }
 
-  return {
-    permitido: false,
-    mensaje: 'No tienes permiso para ver los códigos de acceso.',
-  };
+  return { permitido: true };
 };

@@ -8,11 +8,7 @@ const {
   cambiarPasswordController,
   actualizarRolUsuario,
 } = require('@controllers/usuariosControllers');
-const {
-  verificarToken,
-  verificarRolesPermitidos,
-} = require('@middlewares/authMiddleware');
-const verificarEliminacion = require('@middlewares/verificarEliminacionMiddleware');
+const { verificarToken } = require('@middlewares/authMiddleware');
 const verificarAcceso = require('@middlewares/verificarAcceso');
 
 router.patch(
@@ -20,10 +16,22 @@ router.patch(
   verificarToken, // ✅ Primero: verificar que el usuario esté autenticado
   verificarAcceso({
     accion: 'cambiarRolUsuario',
+    rolesPermitidos: ['superadministrador', 'administrador'],
     requiereUsuarioObjetivo: true,
     obtenerNuevoRol: (req) => req.body.nuevoRol,
   }),
   actualizarRolUsuario
+);
+// Ruta para cambiar el estado activo (activar/desactivar)
+router.patch(
+  '/editar/:id/estado',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cambiarEstado',
+    rolesPermitidos: ['superadministrador', 'administrador'],
+    requiereUsuarioObjetivo: true, // ✅ Activar esto
+  }),
+  cambiarEstadoActivo
 );
 
 router.get(
@@ -58,23 +66,14 @@ router.post(
   cambiarPasswordController
 );
 
-// Ruta para cambiar el estado activo (activar/desactivar)
-router.patch(
-  '/editar/:id/estado',
-  verificarToken,
-  verificarAcceso({
-    accion: 'cambiarEstado',
-    rolesPermitidos: ['superadministrador', 'administrador'],
-    requiereUsuarioObjetivo: true, // ✅ Activar esto
-  }),
-  cambiarEstadoActivo
-);
-
 router.delete(
   '/:id',
   verificarToken,
-  verificarRolesPermitidos(['superadministrador', 'administrador']),
-  verificarEliminacion,
+  verificarAcceso({
+    accion: 'eliminar',
+    rolesPermitidos: ['superadministrador', 'administrador', 'tecnico'],
+    requiereUsuarioObjetivo: true,
+  }),
   eliminarUsuario
 );
 

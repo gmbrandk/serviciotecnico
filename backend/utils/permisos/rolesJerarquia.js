@@ -1,5 +1,6 @@
 module.exports = {
-  'tecnico': 1,
-  'administrador': 2,
-  'superadministrador': 3
+  cliente: 1,
+  tecnico: 2,
+  administrador: 3,
+  superadministrador: 4,
 };
