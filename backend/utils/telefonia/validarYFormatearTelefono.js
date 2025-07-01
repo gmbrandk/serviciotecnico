@@ -8,6 +8,12 @@ const prefijosTelefonicos = require('./prefijosTelefonicos.json'); // Datos unif
  */
 function validarYFormatearTelefono(numeroEntrada) {
   const entrada = numeroEntrada.replace(/\s|-/g, ''); // limpiar espacios y guiones
+  // Validar caracteres no numéricos (excepto + al inicio)
+  if (!/^\+?\d+$/.test(entrada)) {
+    throw new Error(
+      'El número solo debe contener dígitos y un "+" al inicio si es internacional'
+    );
+  }
 
   // Si empieza con +, buscar prefijo internacional
   if (entrada.startsWith('+')) {
@@ -29,10 +35,17 @@ function validarYFormatearTelefono(numeroEntrada) {
 
     const { codigo, longitudEsperada } = paisDetectado;
     const numeroSinPrefijo = entrada.slice(codigo.length);
+    const esLongitudValida = Array.isArray(longitudEsperada)
+      ? longitudEsperada.includes(numeroSinPrefijo.length)
+      : numeroSinPrefijo.length === longitudEsperada;
 
-    if (longitudEsperada && numeroSinPrefijo.length !== longitudEsperada) {
+    if (!esLongitudValida) {
+      const longitudesEsperadas = Array.isArray(longitudEsperada)
+        ? longitudEsperada.join(' o ')
+        : longitudEsperada;
+
       throw new Error(
-        `El número debe tener ${longitudEsperada} dígitos para ${paisDetectado.pais}`
+        `El número debe tener ${longitudesEsperadas} dígitos para ${paisDetectado.pais}`
       );
     }
 

@@ -17,15 +17,15 @@ const crearClienteController = async (req, res) => {
       'email',
     ];
     const bodyRecibido = req.body;
-    const bodyFiltrado = {};
+    const bodySanitizado = {};
 
-    const camposInvalidos = Object.keys(req.body).filter(
+    const camposInvalidos = Object.keys(bodyRecibido).filter(
       (campo) => !camposPermitidos.includes(campo)
     );
 
-    for (const campo in bodyRecibido) {
+    for (const campo of camposPermitidos) {
       const valor = bodyRecibido[campo];
-      if (camposPermitidos.includes(campo)) {
+      if (valor) {
         if (typeof valor === 'string' && /<|>/.test(valor)) {
           return sendError(
             res,
@@ -33,9 +33,7 @@ const crearClienteController = async (req, res) => {
             `El campo ${campo} contiene caracteres no permitidos`
           );
         }
-        bodyFiltrado[campo] = xss(valor);
-      } else {
-        camposInvalidos.push(campo);
+        bodySanitizado[campo] = xss(valor);
       }
     }
 
@@ -49,17 +47,24 @@ const crearClienteController = async (req, res) => {
       );
     }
 
-    const { nombre, dni, telefono } = bodyFiltrado;
-    let { email } = bodyFiltrado;
+    const { nombre, dni, telefono } = bodySanitizado;
 
-    if (!nombre || !dni || !telefono) {
-      return sendError(res, 400, 'Nombre, DNI y Teléfono son obligatorios');
+    if (!nombre?.trim()) {
+      return sendError(res, 400, 'El nombre es obligatorio');
+    }
+
+    if (!dni?.trim()) {
+      return sendError(res, 400, 'El DNI es obligatorio');
+    }
+
+    if (!telefono?.trim()) {
+      return sendError(res, 400, 'El teléfono es obligatorio');
     }
 
     // ☎️ Validar y formatear número de teléfono
     try {
       const infoTelefono = validarYFormatearTelefono(telefono);
-      bodyFiltrado.telefono = infoTelefono.telefonoFormateado; // sobrescribimos con formato internacional
+      bodySanitizado.telefono = infoTelefono.telefonoFormateado;
     } catch (error) {
       return sendError(res, 400, error.message);
     }
@@ -68,13 +73,12 @@ const crearClienteController = async (req, res) => {
     if (existeDni)
       return sendError(res, 400, 'Ya existe un cliente con ese DNI');
 
-    // 💡 Email obligatorio: generar si está vacío
-    if (!email || email.trim() === '') {
-      email = generarEmailFicticio({ nombre, dni });
-      bodyFiltrado.email = email;
+    // 📧 Email obligatorio: generar si está vacío
+    if (!bodySanitizado.email || bodySanitizado.email.trim() === '') {
+      bodySanitizado.email = generarEmailFicticio({ nombre, dni });
     }
 
-    // Validar email generado o recibido
+    // 📧 Validar email final
     const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
     if (bodySanitizado.email.includes('..')) {
@@ -85,21 +89,22 @@ const crearClienteController = async (req, res) => {
       );
     }
 
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(bodySanitizado.email)) {
       return sendError(res, 400, 'El correo tiene un formato inválido');
     }
 
-    const existeEmail = await Cliente.findOne({ email });
+    const existeEmail = await Cliente.findOne({ email: bodySanitizado.email });
     if (existeEmail)
       return sendError(res, 400, 'Ya existe un cliente con ese correo');
 
     const existeTelefono = await Cliente.findOne({
-      telefono: bodyFiltrado.telefono,
+      telefono: bodySanitizado.telefono,
     });
     if (existeTelefono)
       return sendError(res, 400, 'Ya existe un cliente con ese teléfono');
 
-    const cliente = await crearClienteService(bodyFiltrado);
+    // 🛠 Crear cliente
+    const cliente = await crearClienteService(bodySanitizado);
 
     await crearMovimiento({
       tipo: TIPOS_MOVIMIENTO.CREAR,
