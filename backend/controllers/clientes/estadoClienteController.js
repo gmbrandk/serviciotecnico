@@ -16,21 +16,20 @@ const suspender = async (req, res) => {
     if (!validarId(id)) return sendError(res, 400, 'ID inválido');
 
     const resultado = await suspenderCliente(id);
-    const cliente = resultado.cliente;
-    const metadata = resultado.metadata; // ✅ asegúrate de extraer esto
+    const { cliente, metadata, yaEstaSuspendido } = resultado;
 
-    const mensaje = resultado.yaEstaSuspendido
+    const mensaje = yaEstaSuspendido
       ? 'El cliente ya se encuentra suspendido'
       : 'Cliente suspendido correctamente';
 
-    if (!resultado.yaEstaSuspendido) {
+    if (!yaEstaSuspendido) {
       await crearMovimiento({
         tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se suspendió al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        metadata: resultado.metadata, // 👈 asegúrate que sea un objeto real
+        metadata,
       });
     }
 
@@ -46,20 +45,20 @@ const reactivar = async (req, res) => {
     if (!validarId(id)) return sendError(res, 400, 'ID inválido');
 
     const resultado = await reactivarCliente(id);
-    const cliente = resultado.cliente;
+    const { cliente, metadata, yaEstaActivo } = resultado;
 
-    const mensaje = resultado.yaEstaActivo
+    const mensaje = yaEstaActivo
       ? 'El cliente ya está activo'
       : 'Cliente reactivado correctamente';
 
-    if (!resultado.yaEstaActivo) {
+    if (!yaEstaActivo) {
       await crearMovimiento({
         tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se reactivó al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        metadata: resultado.metadata, // 👈 nuevo
+        metadata,
       });
     }
 
@@ -72,23 +71,36 @@ const reactivar = async (req, res) => {
 const confirmarBaja = async (req, res) => {
   try {
     const { id } = req.params;
+    const { motivo } = req.body;
+
     if (!validarId(id)) return sendError(res, 400, 'ID inválido');
 
-    const resultado = await confirmarBajaCliente(id);
-    const cliente = resultado.cliente;
+    const motivoLimpio = motivo?.trim();
+    if (!motivoLimpio || motivoLimpio.length < 10) {
+      return sendError(
+        res,
+        400,
+        'Debes ingresar un motivo válido (mínimo 10 caracteres)'
+      );
+    }
 
-    const mensaje = resultado.yaEstaBaneado
+    const resultado = await confirmarBajaCliente(id);
+    const { cliente, yaEstaBaneado } = resultado;
+
+    const mensaje = yaEstaBaneado
       ? 'El cliente ya fue dado de baja permanentemente'
       : 'Baja definitiva confirmada correctamente';
 
-    if (!resultado.yaEstaBaneado) {
+    if (!yaEstaBaneado) {
       await crearMovimiento({
         tipo: TIPOS_MOVIMIENTO.EDITAR,
         descripcion: `Se dio de baja definitivamente al cliente ${cliente.nombre}`,
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
-        metadata: resultado.metadata, // 👈 nuevo
+        metadata: {
+          motivo: motivoLimpio,
+        },
       });
     }
 

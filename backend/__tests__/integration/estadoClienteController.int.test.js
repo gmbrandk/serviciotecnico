@@ -74,6 +74,7 @@ describe('📂 Movimiento con metadata - Cambio de estado de cliente', () => {
       isActivo: false,
     });
 
+    console.log(cliente);
     const res = await request(app)
       .patch(`/api/clientes/${cliente._id}/reactivar`)
       .set('Cookie', cookieAdmin);
@@ -82,6 +83,8 @@ describe('📂 Movimiento con metadata - Cambio de estado de cliente', () => {
     expect(res.body.mensaje).toMatch(/reactivado/i);
 
     const movimiento = await Movimiento.findOne({ entidadId: cliente._id });
+    console.log(movimiento);
+
     expect(Object.fromEntries(movimiento.metadata)).toMatchObject({
       estadoAnterior: 'suspendido',
       calificacionAnterior: 'malo',
@@ -89,29 +92,32 @@ describe('📂 Movimiento con metadata - Cambio de estado de cliente', () => {
     });
   });
 
-  test('✅ Al dar baja definitiva se crea movimiento con metadata', async () => {
+  test('✅ Al dar de baja a un cliente se registra un movimiento con motivo', async () => {
     const cliente = await Cliente.create({
-      nombre: 'Carlos Rojas',
-      dni: '45678912',
-      telefono: '+51977777777',
-      email: 'carlos@test.com',
-      estado: 'suspendido',
-      calificacion: 'malo',
-      isActivo: false,
+      nombre: 'Ana Test',
+      dni: '99999999',
+      telefono: '+51911111111',
+      email: 'ana@test.com',
+      estado: 'activo',
+      calificacion: 'bueno',
+      isActivo: true,
     });
 
     const res = await request(app)
       .patch(`/api/clientes/${cliente._id}/baja-definitiva`)
-      .set('Cookie', cookieAdmin);
+      .set('Cookie', cookieAdmin)
+      .send({ motivo: 'Incumplimiento grave de términos del servicio' });
 
     expect(res.statusCode).toBe(200);
     expect(res.body.mensaje).toMatch(/baja/i);
 
     const movimiento = await Movimiento.findOne({ entidadId: cliente._id });
-    expect(Object.fromEntries(movimiento.metadata)).toMatchObject({
-      estadoAnterior: 'suspendido',
-      calificacionAnterior: 'malo',
-      cambioPorBaja: true,
-    });
+    expect(movimiento).toBeTruthy();
+    const metadataObj =
+      movimiento.metadata instanceof Map
+        ? Object.fromEntries(movimiento.metadata.entries())
+        : movimiento.metadata;
+
+    expect(metadataObj?.motivo).toMatch(/términos del servicio/i);
   });
 });
