@@ -48,7 +48,7 @@ router.patch(
   verificarToken,
   verificarAcceso({
     accion: 'cliente:suspender',
-    rolesPermitidos: ['administrador', 'superadministrador'],
+    rolesPermitidos: ['tecnico', 'administrador', 'superadministrador'],
   }),
   suspender
 );
@@ -59,7 +59,7 @@ router.patch(
   verificarToken,
   verificarAcceso({
     accion: 'cliente:reactivar',
-    rolesPermitidos: ['administrador', 'superadministrador'],
+    rolesPermitidos: ['tecnico', 'administrador', 'superadministrador'],
   }),
   reactivar
 );

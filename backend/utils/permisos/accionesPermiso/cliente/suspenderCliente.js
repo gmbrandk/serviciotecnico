@@ -3,7 +3,7 @@
 const rolesJerarquia = require('../../rolesJerarquia');
 
 module.exports = ({ jerarquiaSolicitante }) => {
-  const jerarquiaMinima = rolesJerarquia['administrador'];
+  const jerarquiaMinima = rolesJerarquia['tecnico'];
 
   if (jerarquiaSolicitante < jerarquiaMinima) {
     return {

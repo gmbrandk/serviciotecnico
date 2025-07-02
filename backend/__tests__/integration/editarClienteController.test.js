@@ -113,7 +113,7 @@ describe('🔁 PUT /api/clientes/:id - Edición con validación y mock de órden
       .send({ telefono: 'abc123' });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.mensaje).toMatch(/El número debe tener/i);
+    expect(res.body.mensaje).toMatch(/El número solo debe contener/i);
   });
 
   test('🛑 Rechaza campos no permitidos', async () => {

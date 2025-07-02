@@ -35,6 +35,6 @@ app.use('/api/codigos', codigoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/superadmin', superadminRoutes);
 app.use('/api/movimientos', movimientoRoutes);
-app.use('/api/clientes', clientesRoutes); // 👈 Prefijo correcto
+app.use('/api/clientes', clientesRoutes); //
 
 module.exports = app;

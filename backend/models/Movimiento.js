@@ -29,6 +29,11 @@ const movimientoSchema = new mongoose.Schema({
     ref: 'Usuario',
     required: false,
   },
+  metadata: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
+    default: undefined, // no aparecerá si no se usa
+  },
   fecha: {
     type: Date,
     default: Date.now,

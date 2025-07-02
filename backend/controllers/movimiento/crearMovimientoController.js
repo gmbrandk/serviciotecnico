@@ -1,7 +1,15 @@
 const crearMovimientoService = require('@services/movimientos/crearMovimientoService');
 
 const crearMovimientoController = async (datos, opciones = {}) => {
-  const { tipo, descripcion, entidad, entidadId, usuarioId, usadoPor } = datos;
+  const {
+    tipo,
+    descripcion,
+    entidad,
+    entidadId,
+    usuarioId,
+    usadoPor,
+    metadata, // ✅ añadir metadata aquí
+  } = datos;
 
   const { session = null } = opciones;
 
@@ -16,11 +24,11 @@ const crearMovimientoController = async (datos, opciones = {}) => {
       entidadId,
       usuarioId,
       usadoPor,
+      metadata, // ✅ pasar metadata al service
       session,
     });
   } catch (error) {
     console.error('Error al registrar movimiento:', error.message);
-    // Si decides escalar el error, podrías lanzar una excepción aquí
     // throw error;
   }
 };

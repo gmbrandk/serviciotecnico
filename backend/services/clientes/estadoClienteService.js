@@ -1,4 +1,3 @@
-// @services/clientes/estadoClienteService.js
 const Cliente = require('@models/Cliente');
 const OrdenServicio = require('@models/OrdenServicio');
 
@@ -23,12 +22,23 @@ const suspenderCliente = async (id) => {
     throw new Error('No puedes suspender un cliente con órdenes activas');
   }
 
+  const estadoAnterior = cliente.estado;
+  const calificacionAnterior = cliente.calificacion;
+
   cliente.isActivo = false;
   cliente.estado = 'suspendido';
   cliente.calificacion = 'malo';
   await cliente.save();
 
-  return { yaEstaSuspendido: false, cliente };
+  return {
+    yaEstaSuspendido: false,
+    cliente,
+    metadata: {
+      estadoAnterior,
+      calificacionAnterior,
+      cambioPorSuspension: true,
+    },
+  };
 };
 
 const reactivarCliente = async (id) => {

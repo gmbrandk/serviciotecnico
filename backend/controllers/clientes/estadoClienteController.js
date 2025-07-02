@@ -17,6 +17,7 @@ const suspender = async (req, res) => {
 
     const resultado = await suspenderCliente(id);
     const cliente = resultado.cliente;
+    const metadata = resultado.metadata; // ✅ asegúrate de extraer esto
 
     const mensaje = resultado.yaEstaSuspendido
       ? 'El cliente ya se encuentra suspendido'
@@ -29,6 +30,7 @@ const suspender = async (req, res) => {
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
+        metadata: resultado.metadata, // 👈 asegúrate que sea un objeto real
       });
     }
 
@@ -57,6 +59,7 @@ const reactivar = async (req, res) => {
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
+        metadata: resultado.metadata, // 👈 nuevo
       });
     }
 
@@ -85,6 +88,7 @@ const confirmarBaja = async (req, res) => {
         entidad: 'cliente',
         entidadId: cliente._id,
         usuarioId: req.usuario._id,
+        metadata: resultado.metadata, // 👈 nuevo
       });
     }
 

@@ -8,6 +8,7 @@ const crearMovimientoService = async ({
   usuarioId,
   usadoPor,
   session = null, // soporte para transacciones
+  metadata,
 }) => {
   const movimiento = new Movimiento({
     tipo,
@@ -16,6 +17,7 @@ const crearMovimientoService = async ({
     entidadId,
     realizadoPor: usuarioId,
     usadoPor,
+    metadata,
   });
 
   await movimiento.save({ session: session || undefined });
