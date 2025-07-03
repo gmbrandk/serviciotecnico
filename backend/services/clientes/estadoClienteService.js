@@ -1,4 +1,3 @@
-// @services/clientes/estadoClienteService.js
 const Cliente = require('@models/Cliente');
 const OrdenServicio = require('@models/OrdenServicio');
 const Movimiento = require('@models/Movimiento');
@@ -84,40 +83,42 @@ const reactivarCliente = async (id) => {
     return meta?.cambioPorSuspension;
   });
 
+  let calificacionRestaurada = false;
+
   if (ultimoMovimiento) {
-    console.log(
-      '[✅ Reactivación] Movimiento de suspensión encontrado con metadata:',
-      {
-        metadata: Object.fromEntries(ultimoMovimiento.metadata),
-      }
-    );
-  } else {
-    console.warn(
-      '[⚠️ Reactivación] No se encontró movimiento con metadata.cambioPorSuspension === true'
-    );
-  }
-
-  cliente.isActivo = true;
-  cliente.estado = 'activo';
-
-  if (ultimoMovimiento?.metadata?.calificacionAnterior) {
     const meta =
       ultimoMovimiento.metadata instanceof Map
         ? Object.fromEntries(ultimoMovimiento.metadata)
         : ultimoMovimiento.metadata;
 
-    cliente.calificacion = meta.calificacionAnterior;
-    console.log('[🟢 Reactivación] Calificación restaurada desde metadata:', {
-      calificacionAnterior,
-      calificacionRestaurada: cliente.calificacion,
-    });
-  } else {
     console.log(
-      '[🟠 Reactivación] No se restauró calificación, se mantiene la actual:',
-      cliente.calificacion
+      '[✅ Reactivación] Movimiento de suspensión encontrado con metadata:',
+      {
+        metadata: meta,
+      }
+    );
+
+    if (meta?.calificacionAnterior) {
+      cliente.calificacion = meta.calificacionAnterior;
+      calificacionRestaurada = true;
+
+      console.log('[🟢 Reactivación] Calificación restaurada desde metadata:', {
+        calificacionAnterior,
+        calificacionRestaurada: cliente.calificacion,
+      });
+    } else {
+      console.warn(
+        '[⚠️ Reactivación] Movimiento encontrado pero sin calificación anterior.'
+      );
+    }
+  } else {
+    console.warn(
+      '[⚠️ Reactivación] No se encontró movimiento con cambioPorSuspension.'
     );
   }
 
+  cliente.isActivo = true;
+  cliente.estado = 'activo';
   await cliente.save();
 
   return {
@@ -127,6 +128,8 @@ const reactivarCliente = async (id) => {
       estadoAnterior,
       calificacionAnterior,
       restauracionDesdeMetadata: Boolean(ultimoMovimiento),
+      calificacionRestaurada,
+      sinCalificacionAnterior: !calificacionRestaurada,
       cambioPorReactivacion: true,
     },
   };
@@ -138,6 +141,13 @@ const confirmarBajaCliente = async (id) => {
 
   if (cliente.estado === 'baneado' && cliente.calificacion === 'muy_malo') {
     return { yaEstaBaneado: true, cliente };
+  }
+
+  // 🚫 No permitir baja definitiva si no está suspendido
+  if (cliente.estado !== 'suspendido') {
+    throw new Error(
+      'Para dar de baja definitiva a un cliente, este debe estar suspendido previamente'
+    );
   }
 
   cliente.isActivo = false;

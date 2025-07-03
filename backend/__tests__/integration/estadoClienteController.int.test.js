@@ -94,30 +94,39 @@ describe('📂 Movimiento con metadata - Cambio de estado de cliente', () => {
 
   test('✅ Al dar de baja a un cliente se registra un movimiento con motivo', async () => {
     const cliente = await Cliente.create({
-      nombre: 'Ana Test',
-      dni: '99999999',
-      telefono: '+51911111111',
-      email: 'ana@test.com',
+      nombre: 'Skyler White',
+      dni: '11112222',
+      telefono: '+51955555555',
+      email: 'skyler@test.com',
       estado: 'activo',
-      calificacion: 'bueno',
+      calificacion: 'regular',
       isActivo: true,
     });
+
+    // Paso intermedio: suspenderlo
+    await request(app)
+      .patch(`/api/clientes/${cliente._id}/suspender`)
+      .set('Cookie', cookieAdmin);
+
+    // Ahora: baja definitiva
+    const motivo = 'Incumplimiento grave de términos del servicio';
 
     const res = await request(app)
       .patch(`/api/clientes/${cliente._id}/baja-definitiva`)
       .set('Cookie', cookieAdmin)
-      .send({ motivo: 'Incumplimiento grave de términos del servicio' });
+      .send({ motivo });
 
     expect(res.statusCode).toBe(200);
     expect(res.body.mensaje).toMatch(/baja/i);
 
-    const movimiento = await Movimiento.findOne({ entidadId: cliente._id });
-    expect(movimiento).toBeTruthy();
-    const metadataObj =
-      movimiento.metadata instanceof Map
-        ? Object.fromEntries(movimiento.metadata.entries())
-        : movimiento.metadata;
+    const movimiento = await Movimiento.findOne({
+      entidadId: cliente._id,
+      descripcion: /baja definitivamente/i,
+    }).sort({ fecha: -1 });
 
-    expect(metadataObj?.motivo).toMatch(/términos del servicio/i);
+    expect(movimiento).toBeTruthy();
+    expect(Object.fromEntries(movimiento.metadata)).toMatchObject({
+      motivo,
+    });
   });
 });
