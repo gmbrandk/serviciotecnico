@@ -1,8 +1,15 @@
+// 📁 services/equipos/crearEquipoService.js
+
 const Equipo = require('@models/Equipo');
 const FichaTecnica = require('@models/FichaTecnica');
 const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
 const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
 const calcularEspecificacionesEquipo = require('@helpers/equipos/calcularEspecificacionesEquipo');
+const {
+  ValidationError,
+  DuplicateError,
+  NotFoundError,
+} = require('@utils/errors');
 
 const crearEquipoService = async (data) => {
   const {
@@ -17,18 +24,26 @@ const crearEquipoService = async (data) => {
   } = data;
 
   if (!tipo || !modelo || !clienteActual) {
-    throw new Error('Los campos tipo, modelo y clienteActual son obligatorios');
+    throw new ValidationError(
+      'Los campos tipo, modelo y clienteActual son obligatorios'
+    );
   }
 
   if (nroSerie?.trim()) {
     const yaExiste = await Equipo.findOne({ nroSerie: nroSerie.trim() });
     if (yaExiste) {
-      throw new Error('Ya existe un equipo con ese número de serie');
+      throw new DuplicateError('Ya existe un equipo con ese número de serie');
     }
   }
 
   // Paso 1: Buscar plantilla de ficha técnica
-  let fichaTecnica = await vincularFichaTecnica({ modelo, sku });
+  let fichaTecnica;
+  try {
+    fichaTecnica = await vincularFichaTecnica({ modelo, sku });
+  } catch (err) {
+    throw new Error('Error al buscar la ficha técnica: ' + err.message);
+  }
+
   console.log(
     '[crearEquipoService] fichaTecnica encontrada:',
     fichaTecnica?._id || null
@@ -42,15 +57,17 @@ const crearEquipoService = async (data) => {
       sku: sku?.trim(),
       fuente: 'manual',
     };
-    console.log(
-      '[crearEquipoService] No se encontró ficha, creando manual:',
-      fichaManualData
-    );
-    fichaTecnica = await FichaTecnica.create(fichaManualData);
+    try {
+      fichaTecnica = await FichaTecnica.create(fichaManualData);
+    } catch (err) {
+      throw new ValidationError(
+        'Error al crear la ficha técnica manual: ' + err.message
+      );
+    }
   }
 
   // Paso 3: Inicializar historial
-  const historialClientes = inicializarHistorialClientes(clienteActual);
+  const historialPropietarios = inicializarHistorialClientes(clienteActual);
 
   // Paso 4: Calcular especificaciones actuales y si es repotenciado
   const { especificacionesActuales, repotenciado } =
@@ -64,13 +81,18 @@ const crearEquipoService = async (data) => {
     nroSerie: nroSerie?.trim(),
     clienteActual,
     fichaTecnica: fichaTecnica?._id || null,
-    historialClientes,
+    historialPropietarios,
     especificacionesActuales,
     repotenciado,
     ...resto,
   });
 
-  await nuevoEquipo.save();
+  try {
+    await nuevoEquipo.save();
+  } catch (err) {
+    throw new Error('Error al guardar el equipo: ' + err.message);
+  }
+
   return nuevoEquipo;
 };
 

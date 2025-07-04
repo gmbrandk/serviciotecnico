@@ -1,23 +1,16 @@
-// 📁 controllers/equipos/crearEquipoController.js
-
-const crearEquipoService = require('../../services/equipos/crearEquipoService');
+const crearEquipoService = require('@services/equipos/crearEquipoService');
+const { sendSuccess, sendError } = require('@utils/httpResponse');
+const { ValidationError } = require('@utils/errors');
 
 const crearEquipoController = async (req, res) => {
   try {
     const equipo = await crearEquipoService(req.body);
-
-    return res.status(201).json({
-      success: true,
-      mensaje: 'Equipo creado correctamente',
-      equipo,
-    });
+    return sendSuccess(res, 201, 'Equipo creado correctamente', equipo);
   } catch (error) {
     console.error('[crearEquipoController] Error:', error.message);
 
-    return res.status(400).json({
-      success: false,
-      mensaje: error.message || 'Error al crear el equipo',
-    });
+    const status = error instanceof ValidationError ? error.status : 500;
+    return sendError(res, status, error.message);
   }
 };
 
