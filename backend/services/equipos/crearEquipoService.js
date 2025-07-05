@@ -12,6 +12,7 @@ const {
 } = require('@utils/errors');
 
 const crearEquipoService = async (data) => {
+  // ✨ Desestructurar campos esperados del payload
   const {
     tipo,
     marca,
@@ -23,23 +24,40 @@ const crearEquipoService = async (data) => {
     ...resto
   } = data;
 
-  if (!tipo || !modelo || !clienteActual) {
-    throw new ValidationError(
-      'Los campos tipo, modelo y clienteActual son obligatorios'
-    );
+  // 🚨 Validación mínima obligatoria
+  // 🚨 Validaciones explícitas y separadas
+  if (!tipo) {
+    throw new ValidationError('El campo "tipo" es obligatorio');
   }
 
-  if (nroSerie?.trim()) {
-    const yaExiste = await Equipo.findOne({ nroSerie: nroSerie.trim() });
+  if (!modelo) {
+    throw new ValidationError('El campo "modelo" es obligatorio');
+  }
+
+  if (!clienteActual) {
+    throw new ValidationError('El campo "clienteActual" es obligatorio');
+  }
+
+  // 🧼 Sanitización y formateo
+  const modeloSanitizado = modelo.trim().toUpperCase();
+  const skuSanitizado = sku?.trim().toUpperCase();
+  const nroSerieSanitizado = nroSerie?.trim().toUpperCase();
+
+  // 🔍 Validar duplicado de número de serie
+  if (nroSerieSanitizado) {
+    const yaExiste = await Equipo.findOne({ nroSerie: nroSerieSanitizado });
     if (yaExiste) {
       throw new DuplicateError('Ya existe un equipo con ese número de serie');
     }
   }
 
-  // Paso 1: Buscar plantilla de ficha técnica
+  // 🔍 Buscar plantilla técnica automática (de base de datos o API)
   let fichaTecnica;
   try {
-    fichaTecnica = await vincularFichaTecnica({ modelo, sku });
+    fichaTecnica = await vincularFichaTecnica({
+      modelo: modeloSanitizado,
+      sku: skuSanitizado,
+    });
   } catch (err) {
     throw new Error('Error al buscar la ficha técnica: ' + err.message);
   }
@@ -49,36 +67,50 @@ const crearEquipoService = async (data) => {
     fichaTecnica?._id || null
   );
 
-  // Paso 2: Crear ficha técnica manual si no existe
+  // 🧠 Si no se encontró una ficha automática Y se mandó fichaManual => crearla
   if (!fichaTecnica && fichaTecnicaManual) {
-    const fichaManualData = {
-      ...fichaTecnicaManual,
-      modelo: modelo?.trim(),
-      sku: sku?.trim(),
-      fuente: 'manual',
-    };
-    try {
-      fichaTecnica = await FichaTecnica.create(fichaManualData);
-    } catch (err) {
-      throw new ValidationError(
-        'Error al crear la ficha técnica manual: ' + err.message
-      );
+    // 🛡️ Verificar si ya existe una ficha técnica manual con modelo + sku
+    const fichaExistente = await FichaTecnica.findOne({
+      modelo: modeloSanitizado,
+      sku: skuSanitizado,
+      fuente: 'manual', // Solo buscamos fichas ingresadas manualmente
+    });
+
+    if (fichaExistente) {
+      fichaTecnica = fichaExistente; // ✅ Usamos la ya existente
+    } else {
+      // ✅ Creamos una nueva ficha técnica manual
+      const fichaManualData = {
+        ...fichaTecnicaManual,
+        modelo: modeloSanitizado,
+        sku: skuSanitizado,
+        fuente: 'manual',
+      };
+
+      try {
+        fichaTecnica = await FichaTecnica.create(fichaManualData);
+      } catch (err) {
+        throw new ValidationError(
+          'Error al crear la ficha técnica manual: ' + err.message
+        );
+      }
     }
   }
 
-  // Paso 3: Inicializar historial
+  // 📜 Inicializamos historial de propietarios
   const historialPropietarios = inicializarHistorialClientes(clienteActual);
 
-  // Paso 4: Calcular especificaciones actuales y si es repotenciado
+  // 🧠 Calculamos las especificaciones actuales y si está repotenciado
   const { especificacionesActuales, repotenciado } =
     calcularEspecificacionesEquipo(fichaTecnica, fichaTecnicaManual || {});
 
+  // 🛠️ Creamos el nuevo equipo
   const nuevoEquipo = new Equipo({
     tipo: tipo.trim(),
     marca: marca?.trim(),
-    modelo: modelo.trim(),
-    sku: sku?.trim(),
-    nroSerie: nroSerie?.trim(),
+    modelo: modeloSanitizado,
+    sku: skuSanitizado,
+    nroSerie: nroSerieSanitizado,
     clienteActual,
     fichaTecnica: fichaTecnica?._id || null,
     historialPropietarios,
@@ -87,6 +119,7 @@ const crearEquipoService = async (data) => {
     ...resto,
   });
 
+  // 💾 Guardamos en la base de datos
   try {
     await nuevoEquipo.save();
   } catch (err) {

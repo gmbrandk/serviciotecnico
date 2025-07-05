@@ -35,10 +35,15 @@ describe('🧪 crearEquipoController', () => {
   it('✅ debería crear el equipo y responder con status 201', async () => {
     const equipoMock = {
       _id: 'abc123',
-      ...req.body,
+      tipo: 'laptop',
+      marca: 'HP',
+      modelo: 'EliteBook 840',
+      sku: 'HP-840-001',
+      nroSerie: 'ABC123XYZ',
+      clienteActual: '64ff1d2a2a4c9d2f04b5b012',
       historialPropietarios: [
         {
-          clienteId: req.body.clienteActual,
+          clienteId: '64ff1d2a2a4c9d2f04b5b012',
           fechaAsignacion: new Date(),
         },
       ],
@@ -51,7 +56,9 @@ describe('🧪 crearEquipoController', () => {
       repotenciado: false,
     };
 
-    crearEquipoService.mockResolvedValue(equipoMock);
+    crearEquipoService.mockImplementation(async (input) => {
+      return equipoMock;
+    });
 
     await crearEquipoController(req, res);
     res._getData();
@@ -60,7 +67,7 @@ describe('🧪 crearEquipoController', () => {
     expect(res.statusCode).toBe(201);
     expect(data.success).toBe(true);
     expect(data.mensaje).toBe('Equipo creado correctamente');
-    expect(data.equipo).toMatchObject(equipoMock);
+    expect(data.details).toMatchObject(JSON.parse(JSON.stringify(equipoMock)));
   });
 
   it('❌ debería capturar errores de validación del servicio', async () => {
