@@ -6,7 +6,8 @@ const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
 const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
 const calcularEspecificacionesEquipo = require('@helpers/equipos/calcularEspecificacionesEquipo');
 const { ValidationError, DuplicateError } = require('@utils/errors');
-const xss = require('xss'); // ✅ Protección anti-XSS
+const xss = require('xss');
+const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico');
 
 const crearEquipoService = async (data) => {
   const {
@@ -17,23 +18,27 @@ const crearEquipoService = async (data) => {
     nroSerie,
     clienteActual,
     fichaTecnicaManual,
+    permitirCrearFichaTecnicaManual = false, // 🔍 Campo clave
     ...resto
   } = data;
 
-  // 🚨 Validaciones explícitas
+  // 🚨 Validaciones obligatorias
   if (!tipo) throw new ValidationError('El campo "tipo" es obligatorio');
   if (!modelo) throw new ValidationError('El campo "modelo" es obligatorio');
   if (!clienteActual)
     throw new ValidationError('El campo "clienteActual" es obligatorio');
 
-  // 🧼 Sanitización + Protección XSS + Formato
+  // 🧼 Sanitización + XSS
   const tipoSanitizado = xss(tipo.trim());
-  const marcaSanitizada = marca ? xss(marca.trim()) : undefined;
-  const modeloSanitizado = xss(modelo.trim().toUpperCase());
+  const marcaSanitizada = marca ? xss(marca.trim()) : '';
+  const modeloSanitizado = xss(modelo.trim());
   const skuSanitizado = sku ? xss(sku.trim().toUpperCase()) : undefined;
   const nroSerieSanitizado = nroSerie
     ? xss(nroSerie.trim().toUpperCase())
     : undefined;
+
+  // 🧠 Generar nombre técnico unificado
+  const nombreTecnico = generarNombreTecnico(marcaSanitizada, modeloSanitizado);
 
   // 🔍 Validar duplicado de número de serie
   if (nroSerieSanitizado) {
@@ -43,12 +48,12 @@ const crearEquipoService = async (data) => {
     }
   }
 
-  // 🔍 Buscar plantilla técnica automática
+  // 🔍 Buscar plantilla técnica automática (modelo técnico)
   let fichaTecnica;
   try {
     fichaTecnica = await vincularFichaTecnica({
+      marca: marcaSanitizada,
       modelo: modeloSanitizado,
-      sku: skuSanitizado,
     });
   } catch (err) {
     throw new Error('Error al buscar la ficha técnica: ' + err.message);
@@ -62,15 +67,15 @@ const crearEquipoService = async (data) => {
   // 🧠 Crear ficha técnica manual si no existe
   if (!fichaTecnica && fichaTecnicaManual) {
     const fichaExistente = await FichaTecnica.findOne({
-      modelo: modeloSanitizado,
+      modelo: nombreTecnico,
       sku: skuSanitizado,
       fuente: 'manual',
     });
 
     if (fichaExistente) {
       fichaTecnica = fichaExistente;
-    } else {
-      // 🧼 Limpiar campos internos de ficha técnica
+    } else if (permitirCrearFichaTecnicaManual) {
+      // Solo creamos si se ha permitido explícitamente
       const fichaManualSanitizada = {
         cpu: fichaTecnicaManual.cpu
           ? xss(fichaTecnicaManual.cpu.trim())
@@ -91,7 +96,8 @@ const crearEquipoService = async (data) => {
 
       const fichaManualData = {
         ...fichaManualSanitizada,
-        modelo: modeloSanitizado,
+        modelo: nombreTecnico,
+        modeloOriginal: modeloSanitizado,
         sku: skuSanitizado,
         fuente: 'manual',
       };
@@ -106,10 +112,10 @@ const crearEquipoService = async (data) => {
     }
   }
 
-  // 📜 Inicializar historial
+  // 🧾 Inicializar historial del cliente
   const historialPropietarios = inicializarHistorialClientes(clienteActual);
 
-  // 🧠 Especificaciones + repotenciado
+  // ⚙️ Calcular especificaciones actuales y si fue repotenciado
   const { especificacionesActuales, repotenciado } =
     calcularEspecificacionesEquipo(fichaTecnica, fichaTecnicaManual || {});
 
@@ -117,7 +123,7 @@ const crearEquipoService = async (data) => {
   const nuevoEquipo = new Equipo({
     tipo: tipoSanitizado,
     marca: marcaSanitizada,
-    modelo: modeloSanitizado,
+    modelo: modeloSanitizado.toUpperCase(), // conservar original en mayúsculas
     sku: skuSanitizado,
     nroSerie: nroSerieSanitizado,
     clienteActual,

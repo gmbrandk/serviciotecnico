@@ -89,16 +89,16 @@ describe('🧪 Integración: Crear Equipo', () => {
     expect(res2.body.mensaje).toMatch(/número de serie/i);
   });
 
-  it('🧼 limpia XSS y convierte modelo/nroSerie/SKU a mayúsculas', async () => {
+  it('🚫 rechaza campos con XSS (etiquetas HTML no permitidas)', async () => {
     const res = await request(app)
       .post('/api/equipos')
       .set('Cookie', cookie)
       .send({
         tipo: 'laptop',
         marca: 'Lenovo',
-        modelo: 'X1 <script>alert(1)</script>',
-        sku: 'sku<script>',
-        nroSerie: 'nro<script>',
+        modelo: 'X1 <script>alert(1)</script>', // ❌ código malicioso
+        sku: 'sku<script>', // ❌
+        nroSerie: 'nro<script>', // ❌
         clienteActual: cliente._id,
         fichaTecnicaManual: {
           cpu: 'Intel i5',
@@ -112,13 +112,9 @@ describe('🧪 Integración: Crear Equipo', () => {
     console.log('[🔍 STATUS]', res.statusCode);
     console.log('[🔍 BODY]', JSON.stringify(res.body, null, 2));
 
-    const equipo = res.body.details;
-
-    expect(res.statusCode).toBe(201);
-    expect(equipo.modelo).toContain('ALERT(1)');
-    expect(equipo.modelo).not.toMatch(/<script>/i);
-    expect(equipo.nroSerie).toBe('NRO');
-    expect(equipo.sku).toContain('SKU');
+    expect(res.statusCode).toBe(400);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message || res.body.mensaje).toMatch(/no permitido/i);
   });
 
   it('🚫 lanza error si no se envía clienteActual', async () => {

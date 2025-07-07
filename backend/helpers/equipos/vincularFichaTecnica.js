@@ -1,16 +1,14 @@
-const FichaTecnica = require('../../models/FichaTecnica');
+// 📁 helpers/equipos/vincularFichaTecnica.js
 
-const vincularFichaTecnica = async ({ modelo, sku }) => {
-  if (!modelo && !sku) return null;
+const FichaTecnica = require('@models/FichaTecnica');
+const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico');
 
-  const query = [];
-  if (sku?.trim()) query.push({ sku: sku.trim() });
-  if (modelo?.trim()) query.push({ modelo: modelo.trim() });
+const vincularFichaTecnica = async ({ marca, modelo }) => {
+  const nombreTecnico = generarNombreTecnico(marca, modelo);
+  if (!nombreTecnico) return null;
 
-  if (!query.length) return null;
-
-  const ficha = await FichaTecnica.findOne({ $or: query });
-  return ficha ?? null;
+  const ficha = await FichaTecnica.findOne({ modelo: nombreTecnico });
+  return ficha;
 };
 
 module.exports = vincularFichaTecnica;

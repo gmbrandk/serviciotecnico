@@ -10,10 +10,15 @@ const calcularEspecificacionesEquipo = (fichaBase = {}, sobrescritos = {}) => {
     const manual = sobrescritos[campo];
     const base = fichaBase?.[campo];
 
-    if (manual && manual !== base) {
+    if (manual !== undefined) {
+      // ⚠️ Si hay ficha base y difiere => repotenciado
+      if (base !== undefined && manual !== base) {
+        repotenciado = true;
+      }
+
+      // Siempre se incluye si viene desde input
       resultado[campo] = { valor: manual, fuente: 'manual' };
-      repotenciado = true;
-    } else if (base) {
+    } else if (base !== undefined) {
       resultado[campo] = { valor: base, fuente: 'template' };
     }
   });

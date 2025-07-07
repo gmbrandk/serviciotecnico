@@ -1,5 +1,6 @@
 // Archivo índice para centralizar y exponer todos los validadores
 
+const prohibirEtiquetasHTML = require('./prohibirEtiquetasHTML');
 const { validarBooleano, esBooleano } = require('./validarBooleano');
 
 // Cuando agregues más validadores (como validarString, validarNumero, etc.),
@@ -8,6 +9,7 @@ const { validarBooleano, esBooleano } = require('./validarBooleano');
 module.exports = {
   validarBooleano,
   esBooleano,
+  prohibirEtiquetasHTML,
   // validarString,
   // validarNumero,
   // validarFecha,
