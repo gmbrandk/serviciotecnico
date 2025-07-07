@@ -12,9 +12,8 @@ const crearClienteTest = async (cookie, overrides = {}) => {
   const clienteBase = {
     nombre: `Cliente Test ${Date.now()}`,
     dni: `DNI${Math.floor(Math.random() * 100000)}`,
-    telefono: `9${Math.floor(100000000 + Math.random() * 899999999)}`,
+    telefono: `9${Math.floor(10000000 + Math.random() * 90000000)}`,
     email: `cliente${Math.floor(Math.random() * 10000)}@test.com`,
-    observaciones: '',
     ...overrides,
   };
 

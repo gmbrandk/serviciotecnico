@@ -11,7 +11,7 @@ class DuplicateError extends Error {
   constructor(message, details = null) {
     super(message);
     this.name = 'DuplicateError';
-    this.status = 409;
+    this.status = 400;
     this.details = details;
   }
 }

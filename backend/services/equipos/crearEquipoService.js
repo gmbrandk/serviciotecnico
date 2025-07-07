@@ -5,14 +5,10 @@ const FichaTecnica = require('@models/FichaTecnica');
 const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
 const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
 const calcularEspecificacionesEquipo = require('@helpers/equipos/calcularEspecificacionesEquipo');
-const {
-  ValidationError,
-  DuplicateError,
-  NotFoundError,
-} = require('@utils/errors');
+const { ValidationError, DuplicateError } = require('@utils/errors');
+const xss = require('xss'); // ✅ Protección anti-XSS
 
 const crearEquipoService = async (data) => {
-  // ✨ Desestructurar campos esperados del payload
   const {
     tipo,
     marca,
@@ -24,24 +20,20 @@ const crearEquipoService = async (data) => {
     ...resto
   } = data;
 
-  // 🚨 Validación mínima obligatoria
-  // 🚨 Validaciones explícitas y separadas
-  if (!tipo) {
-    throw new ValidationError('El campo "tipo" es obligatorio');
-  }
-
-  if (!modelo) {
-    throw new ValidationError('El campo "modelo" es obligatorio');
-  }
-
-  if (!clienteActual) {
+  // 🚨 Validaciones explícitas
+  if (!tipo) throw new ValidationError('El campo "tipo" es obligatorio');
+  if (!modelo) throw new ValidationError('El campo "modelo" es obligatorio');
+  if (!clienteActual)
     throw new ValidationError('El campo "clienteActual" es obligatorio');
-  }
 
-  // 🧼 Sanitización y formateo
-  const modeloSanitizado = modelo.trim().toUpperCase();
-  const skuSanitizado = sku?.trim().toUpperCase();
-  const nroSerieSanitizado = nroSerie?.trim().toUpperCase();
+  // 🧼 Sanitización + Protección XSS + Formato
+  const tipoSanitizado = xss(tipo.trim());
+  const marcaSanitizada = marca ? xss(marca.trim()) : undefined;
+  const modeloSanitizado = xss(modelo.trim().toUpperCase());
+  const skuSanitizado = sku ? xss(sku.trim().toUpperCase()) : undefined;
+  const nroSerieSanitizado = nroSerie
+    ? xss(nroSerie.trim().toUpperCase())
+    : undefined;
 
   // 🔍 Validar duplicado de número de serie
   if (nroSerieSanitizado) {
@@ -51,7 +43,7 @@ const crearEquipoService = async (data) => {
     }
   }
 
-  // 🔍 Buscar plantilla técnica automática (de base de datos o API)
+  // 🔍 Buscar plantilla técnica automática
   let fichaTecnica;
   try {
     fichaTecnica = await vincularFichaTecnica({
@@ -67,21 +59,38 @@ const crearEquipoService = async (data) => {
     fichaTecnica?._id || null
   );
 
-  // 🧠 Si no se encontró una ficha automática Y se mandó fichaManual => crearla
+  // 🧠 Crear ficha técnica manual si no existe
   if (!fichaTecnica && fichaTecnicaManual) {
-    // 🛡️ Verificar si ya existe una ficha técnica manual con modelo + sku
     const fichaExistente = await FichaTecnica.findOne({
       modelo: modeloSanitizado,
       sku: skuSanitizado,
-      fuente: 'manual', // Solo buscamos fichas ingresadas manualmente
+      fuente: 'manual',
     });
 
     if (fichaExistente) {
-      fichaTecnica = fichaExistente; // ✅ Usamos la ya existente
+      fichaTecnica = fichaExistente;
     } else {
-      // ✅ Creamos una nueva ficha técnica manual
+      // 🧼 Limpiar campos internos de ficha técnica
+      const fichaManualSanitizada = {
+        cpu: fichaTecnicaManual.cpu
+          ? xss(fichaTecnicaManual.cpu.trim())
+          : undefined,
+        gpu: fichaTecnicaManual.gpu
+          ? xss(fichaTecnicaManual.gpu.trim())
+          : undefined,
+        ram: fichaTecnicaManual.ram
+          ? xss(fichaTecnicaManual.ram.trim())
+          : undefined,
+        almacenamiento: fichaTecnicaManual.almacenamiento
+          ? xss(fichaTecnicaManual.almacenamiento.trim())
+          : undefined,
+        pantalla: fichaTecnicaManual.pantalla
+          ? xss(fichaTecnicaManual.pantalla.trim())
+          : undefined,
+      };
+
       const fichaManualData = {
-        ...fichaTecnicaManual,
+        ...fichaManualSanitizada,
         modelo: modeloSanitizado,
         sku: skuSanitizado,
         fuente: 'manual',
@@ -97,17 +106,17 @@ const crearEquipoService = async (data) => {
     }
   }
 
-  // 📜 Inicializamos historial de propietarios
+  // 📜 Inicializar historial
   const historialPropietarios = inicializarHistorialClientes(clienteActual);
 
-  // 🧠 Calculamos las especificaciones actuales y si está repotenciado
+  // 🧠 Especificaciones + repotenciado
   const { especificacionesActuales, repotenciado } =
     calcularEspecificacionesEquipo(fichaTecnica, fichaTecnicaManual || {});
 
-  // 🛠️ Creamos el nuevo equipo
+  // 🛠️ Crear equipo
   const nuevoEquipo = new Equipo({
-    tipo: tipo.trim(),
-    marca: marca?.trim(),
+    tipo: tipoSanitizado,
+    marca: marcaSanitizada,
     modelo: modeloSanitizado,
     sku: skuSanitizado,
     nroSerie: nroSerieSanitizado,
@@ -119,7 +128,6 @@ const crearEquipoService = async (data) => {
     ...resto,
   });
 
-  // 💾 Guardamos en la base de datos
   try {
     await nuevoEquipo.save();
   } catch (err) {

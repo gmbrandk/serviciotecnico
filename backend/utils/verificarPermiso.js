@@ -17,6 +17,9 @@ const acciones = {
   'cliente:reactivar': require('./permisos/accionesPermiso/cliente/reactivarCliente'),
   'cliente:baja_definitiva': require('./permisos/accionesPermiso/cliente/bajaDefinitivaCliente'),
   'cliente:calificar': require('./permisos/accionesPermiso/cliente/calificarCliente'),
+
+  // Equipos (controlados por usuarios)
+  'equipo:crear': require('./permisos/accionesPermiso/equipo/crearEquipo'),
 };
 
 const verificarPermiso = ({

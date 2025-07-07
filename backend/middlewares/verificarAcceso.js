@@ -1,7 +1,8 @@
 const Usuario = require('@models/Usuario');
+const Cliente = require('@models/Cliente');
 const verificarPermiso = require('@utils/verificarPermiso');
-const { httpResponse, sendError } = require('@utils/httpResponse');
-const { validarBooleano, esBooleano } = require('@utils/validadores'); // ✅ Importación del validador
+const { sendError } = require('@utils/httpResponse');
+const { validarBooleano, esBooleano } = require('@utils/validadores');
 
 const verificarAcceso = (config) => {
   return async (req, res, next) => {
@@ -9,43 +10,44 @@ const verificarAcceso = (config) => {
       const {
         accion,
         requiereUsuarioObjetivo = false,
+        requiereClienteObjetivo = false,
         obtenerIdObjetivo = () => req.params.id,
+        obtenerIdCliente = () => {
+          const bodyId = req?.body?.clienteActual;
+          const paramId = req?.params?.clienteId;
+          const queryId = req?.query?.clienteId;
+
+          console.log('📦 verificarAcceso: req.body.clienteActual:', bodyId);
+          console.log('📦 verificarAcceso: req.params.clienteId:', paramId);
+          console.log('📦 verificarAcceso: req.query.clienteId:', queryId);
+
+          return bodyId || paramId || queryId || null;
+        },
         obtenerNuevoRol,
         rolesPermitidos = null,
       } = config;
 
       const solicitante = req.usuario;
+      console.log('👤 Usuario solicitante:', {
+        id: solicitante?._id?.toString(),
+        role: solicitante?.role,
+      });
+
       const rolesPermitidosNormalizados =
         rolesPermitidos?.map((r) => r.toLowerCase()) || [];
 
-      let nuevoRol;
-      try {
-        nuevoRol = obtenerNuevoRol ? obtenerNuevoRol(req) : undefined;
-      } catch (e) {
-        nuevoRol = undefined; // Falla segura
-      }
-
-      // ✅ Validar campo booleano "activo" si está presente en el body
-      // Normalizar campo "activo" antes de validar
+      // ✅ Validación del campo booleano "activo"
       if (req.body && 'activo' in req.body) {
         const val = req.body.activo;
 
-        // Normalizar si viene como string
         if (typeof val === 'string') {
-          if (val.toLowerCase() === 'true') req.body.activo = true;
-          else if (val.toLowerCase() === 'false') req.body.activo = false;
+          req.body.activo = val.toLowerCase() === 'true';
         }
 
-        // Validación estricta sin excepción para control
         if (!esBooleano(req.body.activo)) {
-          return sendError(
-            res,
-            400,
-            'El campo "activo" debe ser booleano (true o false).'
-          );
+          return sendError(res, 400, 'El campo "activo" debe ser booleano.');
         }
 
-        // O si quieres usar la versión que lanza error para asegurarte:
         try {
           validarBooleano(req.body.activo, 'activo');
         } catch (err) {
@@ -53,20 +55,12 @@ const verificarAcceso = (config) => {
         }
       }
 
-      // Si hay una lista de roles permitidos global (como en GET /usuarios), validarla directamente
-      console.log(
-        '[🛡️ VerificarAcceso] Rol del solicitante:',
-        solicitante?.role
-      );
-      console.log(
-        '[🛡️ VerificarAcceso] Roles permitidos:',
-        rolesPermitidosNormalizados
-      );
-
+      // 🛡️ Validación de roles global
       if (
         rolesPermitidosNormalizados.length > 0 &&
         !rolesPermitidosNormalizados.includes(solicitante?.role?.toLowerCase())
       ) {
+        console.warn('❌ Rol no autorizado:', solicitante?.role);
         return sendError(
           res,
           403,
@@ -74,14 +68,43 @@ const verificarAcceso = (config) => {
         );
       }
 
-      // Si se requiere un objetivo (otro usuario), buscarlo
+      // 👤 Buscar usuario objetivo
       let objetivo = null;
       if (requiereUsuarioObjetivo) {
         const id = obtenerIdObjetivo(req);
+        console.log('🔍 Buscando usuario objetivo con ID:', id);
         objetivo = await Usuario.findById(id);
         if (!objetivo) {
           return sendError(res, 404, 'Usuario objetivo no encontrado.');
         }
+      }
+
+      // 👥 Buscar cliente objetivo
+      let clienteObjetivo = null;
+      if (requiereClienteObjetivo) {
+        const clienteId = obtenerIdCliente(req);
+        console.log('🔍 Buscando cliente objetivo con ID:', clienteId);
+
+        if (!clienteId) {
+          return sendError(
+            res,
+            400,
+            'clienteActual es requerido para esta operación.'
+          );
+        }
+
+        clienteObjetivo = await Cliente.findById(clienteId);
+        if (!clienteObjetivo) {
+          return sendError(res, 404, 'Cliente no encontrado.');
+        }
+      }
+
+      // 🔐 Verificación de permisos
+      let nuevoRol;
+      try {
+        nuevoRol = obtenerNuevoRol ? obtenerNuevoRol(req) : undefined;
+      } catch (e) {
+        nuevoRol = undefined;
       }
 
       const permiso = verificarPermiso({
@@ -89,17 +112,22 @@ const verificarAcceso = (config) => {
         objetivo,
         accion,
         nuevoRol,
+        clienteObjetivo,
       });
-      //console.error('accion a realizar:', accion);
+
+      console.log('🔐 Resultado verificación permisos:', permiso);
+
       if (!permiso.permitido) {
         return sendError(res, 403, permiso.mensaje);
       }
 
+      // ✅ Inyectar en el request
       if (objetivo) req.usuarioObjetivo = objetivo;
+      if (clienteObjetivo) req.clienteObjetivo = clienteObjetivo;
 
       next();
     } catch (error) {
-      console.error('Error en verificación de acceso:', error);
+      console.error('❌ Error interno en verificarAcceso:', error);
       return sendError(res, 500, 'Error interno del servidor.');
     }
   };
