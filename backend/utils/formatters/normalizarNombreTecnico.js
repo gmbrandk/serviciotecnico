@@ -1,4 +1,4 @@
-// 📁 helpers/equipos/generarNombreTecnico.js
+// 📁 utils/formatters/normalizarNombreTecnico.js
 
 const normalizar = (texto) => {
   return texto
