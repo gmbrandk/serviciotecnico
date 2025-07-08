@@ -1,16 +1,25 @@
-// 📁 utils/normalizarNombreTecnico.js
+// 📁 helpers/equipos/generarNombreTecnico.js
 
-const quitarTildes = (texto) =>
-  texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const normalizar = (texto) => {
+  return texto
+    ?.toUpperCase()
+    .normalize('NFD') // elimina tildes
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Z0-9\- ]/gi, '')
+    .replace(/\s+/g, '-') // espacios por guiones
+    .trim();
+};
 
+/**
+ * Genera un nombre técnico estandarizado como: "LENOVO-LEGION-Y545-81Q6"
+ * @param {string} marca
+ * @param {string} modelo
+ * @returns {string|null}
+ */
 const generarNombreTecnico = (marca, modelo) => {
-  if (!marca || !modelo) return null;
-
-  return quitarTildes(`${marca}-${modelo}`)
-    .trim()
-    .replace(/\s+/g, '-') // Espacios por guiones
-    .replace(/[^a-zA-Z0-9\-]/g, '') // Elimina caracteres especiales
-    .toUpperCase();
+  if (!modelo) return null;
+  const partes = [marca, modelo].filter(Boolean).map(normalizar);
+  return partes.join('-');
 };
 
 module.exports = generarNombreTecnico;
