@@ -5,37 +5,41 @@ const { ValidationError, DuplicateError } = require('@utils/errors');
 
 const crearFichaTecnica = async (req, res) => {
   try {
-    const { modelo, sku, marca, cpu, gpu, ram, almacenamiento, fuente } =
-      req.body;
+    const { modelo, sku, marca, cpu, gpu, ram, almacenamiento, fuente } = req.body;
 
-    if (!modelo || !sku || !marca) {
-      throw new ValidationError('Modelo, SKU y marca son requeridos');
-    }
+    // 🔍 Validaciones unitarias por campo obligatorio
+    if (!modelo) throw new ValidationError('El campo "modelo" es obligatorio');
+    if (!sku) throw new ValidationError('El campo "sku" es obligatorio');
+    if (!marca) throw new ValidationError('El campo "marca" es obligatorio');
+    if (!cpu) throw new ValidationError('El campo "cpu" es obligatorio');
+    if (!gpu) throw new ValidationError('El campo "gpu" es obligatorio');
+    if (!ram) throw new ValidationError('El campo "ram" es obligatorio');
+    if (!almacenamiento) throw new ValidationError('El campo "almacenamiento" es obligatorio');
 
-    // 🔧 Normalizamos el modelo y lo usamos como identificador principal
+    // 🔧 Normalización
     const modeloNormalizado = generarNombreTecnico(marca, modelo);
     if (!modeloNormalizado) {
-      throw new ValidationError('Modelo o marca inválidos');
+      throw new ValidationError('Modelo o marca inválidos para generar modelo normalizado');
     }
 
-    // 🔍 Validar duplicados usando modelo y SKU (ambos normalizados)
-    const yaExiste = await FichaTecnica.findOne({
-      modelo: new RegExp(`^${modeloNormalizado}$`, 'i'),
-      sku: new RegExp(`^${sku}$`, 'i'),
-    });
-
-    if (yaExiste) {
-      throw new DuplicateError('Ficha técnica ya existe con ese modelo y SKU');
+    // 🔍 Validar duplicado exacto por modelo normalizado
+    const yaExisteModelo = await FichaTecnica.findOne({ modelo: modeloNormalizado });
+    if (yaExisteModelo) {
+      throw new DuplicateError(`Ya existe una ficha técnica con el modelo "${modeloNormalizado}"`);
     }
 
-    // 🧠 Generar tokens de búsqueda desde modelo normalizado + marca + SKU
-    const tokensBusqueda = generarTokensBusqueda(
-      `${modeloNormalizado} ${sku} ${marca}`
-    );
+    // 🔍 Validar duplicado exacto por SKU
+    const yaExisteSku = await FichaTecnica.findOne({ sku: new RegExp(`^${sku}$`, 'i') });
+    if (yaExisteSku) {
+      throw new DuplicateError(`Ya existe una ficha técnica con el SKU "${sku}"`);
+    }
 
-    // 💾 Crear nueva ficha técnica
+    // 🧠 Generar tokens de búsqueda para match inteligente
+    const tokensBusqueda = generarTokensBusqueda(`${modeloNormalizado} ${sku} ${marca}`);
+
+    // 💾 Crear ficha
     const ficha = new FichaTecnica({
-      modelo: modeloNormalizado, // reemplazamos modelo por versión normalizada
+      modelo: modeloNormalizado,
       sku,
       marca,
       cpu,
@@ -47,7 +51,9 @@ const crearFichaTecnica = async (req, res) => {
     });
 
     await ficha.save();
+
     return res.status(201).json({ ficha });
+
   } catch (err) {
     console.error('[❌ Error en crearFichaTecnica]:', err);
 

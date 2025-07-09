@@ -52,8 +52,11 @@ const fichaTecnicaSchema = new mongoose.Schema(
   }
 );
 
-fichaTecnicaSchema.index({ modelo: 1 });
-fichaTecnicaSchema.index({ sku: 1 });
+// ✅ Índices únicos
+fichaTecnicaSchema.index({ modelo: 1 }, { unique: true });
+fichaTecnicaSchema.index({ sku: 1 }, { unique: true });
+
+// 🔍 Index para búsqueda por tokens
 fichaTecnicaSchema.index({ tokensBusqueda: 1 });
 
 const FichaTecnica = mongoose.model('FichaTecnica', fichaTecnicaSchema);
