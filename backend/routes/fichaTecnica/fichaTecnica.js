@@ -1,15 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const crearFichaTecnica = require('@controllers/fichaTecnica/crearFichaTecnica');
-const obtenerFichaTecnica = require('@controllers/fichaTecnica/obtenerFichaTecnica');
-const editarFichaTecnica = require('@controllers/fichaTecnica/editarFichaTecnica');
-const eliminarFichaTecnica = require('@controllers/fichaTecnica/eliminarFichaTecnica');
 
+const {
+  crearFichaTecnica,
+  obtenerFichaTecnica,
+  editarFichaTecnica,
+  eliminarFichaTecnica,
+  suspenderFichaTecnica,
+  reactivarFichaTecnica,
+} = require('@controllers/fichaTecnicaController');
 // Protecciones opcionales: verificarToken, verificarRol etc.
 
 router.post('/', crearFichaTecnica);
 router.get('/', obtenerFichaTecnica);
 router.put('/:id', editarFichaTecnica);
-router.delete('/:id', eliminarFichaTecnica);
+
+// PATCH /api/ficha-tecnica-estado/:id/suspender
+router.patch('/:id/suspender', suspenderFichaTecnica);
+
+// PATCH /api/ficha-tecnica-estado/:id/reactivar
+router.patch('/:id/reactivar', reactivarFichaTecnica);
+
+// DELETE /api/ficha-tecnica-estado/:id
+router.delete('/:id', eliminarFichaTecnica); // Soft delete
 
 module.exports = router;

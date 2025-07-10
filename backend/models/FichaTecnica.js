@@ -46,6 +46,15 @@ const fichaTecnicaSchema = new mongoose.Schema(
       type: [String],
       index: true,
     },
+    estado: {
+      type: String,
+      enum: ['activa', 'suspendida', 'en_revision', 'eliminada'],
+      default: 'activa',
+    },
+    isActiva: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

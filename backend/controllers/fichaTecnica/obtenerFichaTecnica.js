@@ -11,18 +11,23 @@ const obtenerFichaTecnica = async (req, res) => {
 
     const filtros = [];
 
-    // Match inteligente por tokens
+    // 🎯 Match inteligente por tokens
     const tokens = generarTokensBusqueda(modelo);
     if (tokens.length > 0) {
       filtros.push({ tokensBusqueda: { $all: tokens } });
     }
 
-    // Opción raw por modelo parcial (como fallback)
+    // 🔍 Fallback si se activa el modo raw (búsqueda parcial por texto)
     if (raw) {
       filtros.push({ modelo: new RegExp(modelo, 'i') });
     }
 
-    const query = filtros.length > 0 ? { $or: filtros } : {};
+    // 🧠 Condición combinada: solo fichas activas
+    const query = {
+      isActiva: true,
+      estado: 'activa',
+      ...(filtros.length > 0 ? { $or: filtros } : {}),
+    };
 
     const fichas = await FichaTecnica.find(query).limit(10).lean();
 
