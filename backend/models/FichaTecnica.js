@@ -7,6 +7,11 @@ const fichaTecnicaSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    version: {
+      type: Number,
+      default: 1,
+      min: 1,
+    },
     sku: {
       type: String,
       required: true,
@@ -62,7 +67,7 @@ const fichaTecnicaSchema = new mongoose.Schema(
 );
 
 // ✅ Índices únicos
-fichaTecnicaSchema.index({ modelo: 1 }, { unique: true });
+fichaTecnicaSchema.index({ modelo: 1, version: 1}, { unique: true });
 fichaTecnicaSchema.index({ sku: 1 }, { unique: true });
 
 // 🔍 Index para búsqueda por tokens

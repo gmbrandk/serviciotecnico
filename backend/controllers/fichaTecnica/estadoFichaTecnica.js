@@ -12,10 +12,10 @@ const suspenderFichaTecnica = async (req, res) => {
       return res.status(404).json({ message: 'Ficha técnica no encontrada' });
     }
 
-    if (ficha.estado === 'baneada') {
+    if (ficha.estado === 'eliminada') {
       return res
         .status(400)
-        .json({ message: 'No se puede suspender una ficha baneada' });
+        .json({ message: 'No se puede suspender una ficha eliminada' });
     }
 
     if (!ficha.isActiva && ficha.estado === 'suspendida') {
@@ -53,10 +53,10 @@ const reactivarFichaTecnica = async (req, res) => {
       return res.status(404).json({ message: 'Ficha técnica no encontrada' });
     }
 
-    if (ficha.estado === 'baneada') {
+    if (ficha.estado === 'eliminada') {
       return res
         .status(400)
-        .json({ message: 'No se puede reactivar una ficha baneada' });
+        .json({ message: 'No se puede reactivar una ficha eliminada' });
     }
 
     if (ficha.isActiva && ficha.estado === 'activa') {

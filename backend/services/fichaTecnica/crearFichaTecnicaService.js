@@ -1,3 +1,5 @@
+// 📁 services/fichaTecnica/crearFichaTecnicaService.js
+
 const FichaTecnica = require('@models/FichaTecnica');
 const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico');
 const generarTokensBusqueda = require('@utils/generadores/tokens');
@@ -20,38 +22,29 @@ const crearFichaTecnicaService = async ({
   if (!cpu) throw new ValidationError('El campo "cpu" es obligatorio');
   if (!gpu) throw new ValidationError('El campo "gpu" es obligatorio');
   if (!ram) throw new ValidationError('El campo "ram" es obligatorio');
-  if (!almacenamiento)
-    throw new ValidationError('El campo "almacenamiento" es obligatorio');
+  if (!almacenamiento) throw new ValidationError('El campo "almacenamiento" es obligatorio');
 
-  const modeloNormalizado = generarNombreTecnico(marca, modelo);
-  if (!modeloNormalizado) {
-    throw new ValidationError(
-      'Modelo o marca inválidos para generar modelo normalizado'
-    );
+  const modeloBase = generarNombreTecnico(marca, modelo);
+  if (!modeloBase) {
+    throw new ValidationError('Modelo o marca inválidos para generar modelo normalizado');
   }
 
-  const yaExisteModelo = await FichaTecnica.findOne({
-    modelo: modeloNormalizado,
-  });
-  if (yaExisteModelo) {
-    throw new DuplicateError(
-      `Ya existe una ficha técnica con el modelo "${modeloNormalizado}"`
-    );
-  }
-
-  const yaExisteSku = await FichaTecnica.findOne({
-    sku: new RegExp(`^${sku}$`, 'i'),
-  });
+  // 🔍 Verificar si el SKU ya existe (es único e inmutable)
+  const yaExisteSku = await FichaTecnica.findOne({ sku: new RegExp(`^${sku}$`, 'i') });
   if (yaExisteSku) {
     throw new DuplicateError(`Ya existe una ficha técnica con el SKU "${sku}"`);
   }
 
-  const tokensBusqueda = generarTokensBusqueda(
-    `${modeloNormalizado} ${sku} ${marca}`
-  );
+  // 🔍 Contar cuántas versiones ya existen con el mismo modelo base
+  const coincidencias = await FichaTecnica.find({ modelo: new RegExp(`^${modeloBase}( v\\.\\d+)?$`, 'i') });
+  const version = coincidencias.length + 1;
+  const modeloFinal = `${modeloBase} v.${version}`;
+
+  const tokensBusqueda = generarTokensBusqueda(`${modeloFinal} ${sku} ${marca}`);
 
   const ficha = new FichaTecnica({
-    modelo: modeloNormalizado,
+    modelo: modeloFinal,
+    version,
     sku,
     marca,
     cpu,
