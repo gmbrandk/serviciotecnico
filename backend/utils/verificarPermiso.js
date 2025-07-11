@@ -20,6 +20,9 @@ const acciones = {
 
   // Equipos (controlados por usuarios)
   'equipo:crear': require('./permisos/accionesPermiso/equipo/crearEquipo'),
+  'equipo:editar': require('./permisos/accionesPermiso/equipo/editarEquipo'),
+  'equipo:obtener': require('./permisos/accionesPermiso/equipo/obtenerEquipo'),
+  'equipo:cambiarEstado': require('./permisos/accionesPermiso/equipo/cambiarEstadoEquipo'),
 };
 
 const verificarPermiso = ({
