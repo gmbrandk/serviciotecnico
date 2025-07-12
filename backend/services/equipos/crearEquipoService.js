@@ -59,7 +59,10 @@ const crearEquipoService = async (data) => {
     throw new Error('Error al buscar la ficha técnica: ' + err.message);
   }
 
-  console.log('[crearEquipoService] fichaTecnica encontrada:', fichaTecnica?._id || null);
+  console.log(
+    '[crearEquipoService] fichaTecnica encontrada:',
+    fichaTecnica?._id || null
+  );
 
   // 🧠 Crear ficha técnica manual si no existe
   if (!fichaTecnica && fichaTecnicaManual) {
@@ -72,6 +75,13 @@ const crearEquipoService = async (data) => {
     if (fichaExistente) {
       fichaTecnica = fichaExistente;
     } else if (permitirCrearFichaTecnicaManual) {
+      // ⚠️ Validar que se haya proporcionado un SKU
+      if (!skuSanitizado) {
+        throw new ValidationError(
+          'Para crear una ficha técnica manual se requiere un SKU válido'
+        );
+      }
+
       try {
         fichaTecnica = await crearFichaTecnicaService({
           modelo: modeloSanitizado,
@@ -85,7 +95,9 @@ const crearEquipoService = async (data) => {
           estado: 'en_revision', // 🟡 Forzado para todos
         });
       } catch (err) {
-        throw new ValidationError('Error al crear ficha técnica manual: ' + err.message);
+        throw new ValidationError(
+          'Error al crear ficha técnica manual: ' + err.message
+        );
       }
     }
   }
@@ -94,10 +106,8 @@ const crearEquipoService = async (data) => {
   const historialPropietarios = inicializarHistorialClientes(clienteActual);
 
   // ⚙️ Especificaciones y repotenciación
-  const { especificacionesActuales, repotenciado } = calcularEspecificacionesEquipo(
-    fichaTecnica,
-    fichaTecnicaManual || {}
-  );
+  const { especificacionesActuales, repotenciado } =
+    calcularEspecificacionesEquipo(fichaTecnica, fichaTecnicaManual || {});
 
   // 🛠️ Crear equipo
   const nuevoEquipo = new Equipo({

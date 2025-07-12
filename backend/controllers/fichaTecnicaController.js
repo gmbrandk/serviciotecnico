@@ -6,6 +6,7 @@ const {
   eliminarFichaTecnica,
 } = require('./fichaTecnica/estadoFichaTecnica');
 const obtenerFichaTecnica = require('./fichaTecnica/obtenerFichaTecnica');
+const buscarFichaTecnicaPorSKUController = require('./fichaTecnica/obtenerFichaTecnicaPorSKU');
 
 module.exports = {
   crearFichaTecnica,
@@ -14,4 +15,5 @@ module.exports = {
   reactivarFichaTecnica,
   eliminarFichaTecnica,
   obtenerFichaTecnica,
+  buscarFichaTecnicaPorSKUController,
 };

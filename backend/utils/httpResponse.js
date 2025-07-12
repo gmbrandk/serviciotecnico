@@ -1,31 +1,61 @@
-// utils/httpResponse.js
-
-// 🔁 Función centralizada para dar formato uniforme a las respuestas HTTP
 const httpResponse = (
   res,
   { status = 500, success = false, message, details = null }
 ) => {
   const payload = {
     success,
-    ok: success, // 🔁 Compatibilidad con frontends que esperan "ok" en lugar de "success"
-    message, // 🧠 Mensaje en inglés
-    mensaje: message, // 🔁 Alias en español para mayor legibilidad o compatibilidad
+    ok: success,
+    message,
+    mensaje: message,
   };
 
   if (details) payload.details = details;
 
-  return res.status(Number(status)).json(payload); // ✅ Se asegura que status sea número
+  return res.status(Number(status)).json(payload);
 };
 
-// 🟥 Error genérico con objeto de opciones
-const sendError = (res, { status = 500, message, details = null }) =>
-  httpResponse(res, { status, success: false, message, details });
+// 🔴 Compatibilidad con ambos formatos (viejo y nuevo)
+const sendError = (res, arg1, arg2, arg3) => {
+  if (typeof arg1 === 'object') {
+    // Nuevo formato: sendError(res, { status, message, details })
+    return httpResponse(res, {
+      status: arg1.status || 500,
+      success: false,
+      message: arg1.message,
+      details: arg1.details || null,
+    });
+  } else {
+    // Formato antiguo: sendError(res, status, message, details)
+    return httpResponse(res, {
+      status: arg1 || 500,
+      success: false,
+      message: arg2,
+      details: arg3 || null,
+    });
+  }
+};
 
-// 🟩 Éxito genérico con objeto de opciones
-const sendSuccess = (res, { status = 200, message, details = null }) =>
-  httpResponse(res, { status, success: true, message, details });
+// 🟢 Compatibilidad con ambos formatos (viejo y nuevo)
+const sendSuccess = (res, arg1, arg2, arg3) => {
+  if (typeof arg1 === 'object') {
+    // Nuevo formato: sendSuccess(res, { status, message, details })
+    return httpResponse(res, {
+      status: arg1.status || 200,
+      success: true,
+      message: arg1.message,
+      details: arg1.details || null,
+    });
+  } else {
+    // Formato antiguo: sendSuccess(res, status, message, details)
+    return httpResponse(res, {
+      status: arg1 || 200,
+      success: true,
+      message: arg2,
+      details: arg3 || null,
+    });
+  }
+};
 
-// ✅ Exportamos los helpers centralizados
 module.exports = {
   httpResponse,
   sendError,

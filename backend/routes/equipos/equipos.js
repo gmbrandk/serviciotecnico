@@ -42,7 +42,7 @@ router.post(
 );
 
 // ✅ Editar equipo
-router.put(
+router.patch(
   '/:id',
   verificarToken,
   verificarAcceso({

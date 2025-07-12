@@ -67,10 +67,7 @@
     "iso": "AR",
     "codigo": "+54",
     "bandera": "https://flagcdn.com/ar.svg",
-    "longitudEsperada": [
-      10,
-      11
-    ]
+    "longitudEsperada": [10, 11]
   },
   {
     "pais": "Armenia",
@@ -1120,7 +1117,7 @@
     "iso": "NI",
     "codigo": "+505",
     "bandera": "https://flagcdn.com/ni.svg",
-    "longitudEsperada": null
+    "longitudEsperada": 8
   },
   {
     "pais": "Niger",

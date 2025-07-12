@@ -8,6 +8,7 @@ const {
   eliminarFichaTecnica,
   suspenderFichaTecnica,
   reactivarFichaTecnica,
+  buscarFichaTecnicaPorSKUController,
 } = require('@controllers/fichaTecnicaController');
 // Protecciones opcionales: verificarToken, verificarRol etc.
 
@@ -23,5 +24,8 @@ router.patch('/:id/reactivar', reactivarFichaTecnica);
 
 // DELETE /api/ficha-tecnica-estado/:id
 router.delete('/:id', eliminarFichaTecnica); // Soft delete
+
+// 🔍 Buscar ficha técnica por SKU
+router.get('/por-sku', buscarFichaTecnicaPorSKUController);
 
 module.exports = router;
