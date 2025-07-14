@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const openai = new OpenAI({
   baseURL: 'https://api.deepseek.com',
-  apiKey: 'sk-f28d8d519b4f4c4990e17f41dd478551',
+  apiKey: '',
 });
 
 async function testGPT() {
