@@ -22,6 +22,12 @@ const EquipoSchema = new mongoose.Schema({
   tipo: { type: String, required: true }, // laptop, pc, impresora, etc.
   marca: String,
   modelo: String,
+    sku: {
+    type: String,
+    required: [true, 'El campo SKU es obligatorio'],
+    trim: true,
+    set: (v) => v?.toUpperCase(), // ✨ Normalización
+  },
   nroSerie: { type: String, unique: true },
 
   clienteActual: {

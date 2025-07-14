@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
+const MarcaModelo = require('./MarcaModelo');
 
 const fichaTecnicaSchema = new mongoose.Schema(
   {
-    modelo: {
-      type: String,
+    marcaModelo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'MarcaModelo',
       required: true,
-      trim: true,
     },
     version: {
       type: Number,
@@ -16,11 +17,7 @@ const fichaTecnicaSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-    marca: {
-      type: String,
-      required: true,
-      trim: true,
+      unique: true,
     },
     cpu: {
       type: String,
@@ -66,12 +63,23 @@ const fichaTecnicaSchema = new mongoose.Schema(
   }
 );
 
-// ✅ Índices únicos
-fichaTecnicaSchema.index({ modelo: 1, version: 1}, { unique: true });
+// Índices
+fichaTecnicaSchema.index({ marcaModelo: 1, version: 1 }, { unique: true });
 fichaTecnicaSchema.index({ sku: 1 }, { unique: true });
-
-// 🔍 Index para búsqueda por tokens
 fichaTecnicaSchema.index({ tokensBusqueda: 1 });
+
+// Validación: asegurar que marcaModeloId existe
+fichaTecnicaSchema.pre('validate', async function (next) {
+  const existe = await MarcaModelo.exists({ _id: this.marcaModelo });
+
+  if (!existe) {
+    return next(
+      new Error(`❌ La referencia marcaModelo no es válida o no existe.`)
+    );
+  }
+
+  next();
+});
 
 const FichaTecnica = mongoose.model('FichaTecnica', fichaTecnicaSchema);
 module.exports = FichaTecnica;
