@@ -1,7 +1,7 @@
 // models/OrdenServicio.js
 
 const mongoose = require('mongoose');
-const LineaServicioSchema = require('./subschemas/LineaServicio');
+const LineaServicioSchema = require('./subschemas/lineaServicio');
 
 const OrdenServicioSchema = new mongoose.Schema(
   {

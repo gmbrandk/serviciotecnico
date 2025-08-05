@@ -1,5 +1,3 @@
-// models/subschemas/LineaServicio.js
-
 const mongoose = require('mongoose');
 
 const LineaServicioSchema = new mongoose.Schema(
@@ -19,11 +17,6 @@ const LineaServicioSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    subtotal: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
     garantiaPersonalizada: {
       duracionDias: {
         type: Number,
@@ -37,5 +30,13 @@ const LineaServicioSchema = new mongoose.Schema(
   },
   { _id: false }
 );
+
+// Virtual para calcular el subtotal en memoria (no persistente)
+LineaServicioSchema.virtual('subtotal').get(function () {
+  return this.precioUnitario * this.cantidad;
+});
+
+LineaServicioSchema.set('toObject', { virtuals: true });
+LineaServicioSchema.set('toJSON', { virtuals: true });
 
 module.exports = LineaServicioSchema;
