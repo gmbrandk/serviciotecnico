@@ -1,17 +1,18 @@
 const mongoose = require('mongoose');
-const MarcaModelo = require('./MarcaModelo');
 
 const fichaTecnicaSchema = new mongoose.Schema(
   {
-    marcaModelo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'MarcaModelo',
+    marca: {
+      type: String,
       required: true,
+      trim: true,
+      uppercase: true,
     },
-    version: {
-      type: Number,
-      default: 1,
-      min: 1,
+    modelo: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
     },
     sku: {
       type: String,
@@ -64,22 +65,11 @@ const fichaTecnicaSchema = new mongoose.Schema(
 );
 
 // Índices
-fichaTecnicaSchema.index({ marcaModelo: 1, version: 1 }, { unique: true });
+fichaTecnicaSchema.index({ marca: 1, modelo: 1 }, { unique: true }); // Evita duplicados lógicos
 fichaTecnicaSchema.index({ sku: 1 }, { unique: true });
 fichaTecnicaSchema.index({ tokensBusqueda: 1 });
 
-// Validación: asegurar que marcaModeloId existe
-fichaTecnicaSchema.pre('validate', async function (next) {
-  const existe = await MarcaModelo.exists({ _id: this.marcaModelo });
-
-  if (!existe) {
-    return next(
-      new Error(`❌ La referencia marcaModelo no es válida o no existe.`)
-    );
-  }
-
-  next();
-});
+// No se necesita validación pre-save de marcaModelo
 
 const FichaTecnica = mongoose.model('FichaTecnica', fichaTecnicaSchema);
 module.exports = FichaTecnica;

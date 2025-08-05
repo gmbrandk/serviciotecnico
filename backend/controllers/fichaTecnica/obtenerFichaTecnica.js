@@ -1,46 +1,54 @@
 const FichaTecnica = require('@models/FichaTecnica');
 const generarTokensBusqueda = require('@utils/generadores/tokens');
+const { sendError, sendSuccess } = require('@utils/httpResponse');
 
 const obtenerFichaTecnica = async (req, res) => {
   try {
-    const { modelo, raw = false } = req.query;
-
-    if (!modelo) {
-      return res.status(400).json({ message: 'Debes enviar el modelo' });
-    }
-
+    const { busqueda = '', raw = false } = req.query;
     const filtros = [];
 
-    // 🎯 Match inteligente por tokens
-    const tokens = generarTokensBusqueda(modelo);
-    if (tokens.length > 0) {
-      filtros.push({ tokensBusqueda: { $all: tokens } });
+    if (busqueda.trim()) {
+      const regex = new RegExp(busqueda.trim(), 'i');
+
+      if (raw === 'true') {
+        // 🔍 Búsqueda flexible en múltiples campos
+        filtros.push({
+          $or: [
+            { modelo: regex },
+            { cpu: regex },
+            { gpu: regex },
+            { ram: regex },
+            { almacenamiento: regex },
+            { sistemaOperativo: regex },
+            { pantalla: regex },
+            { puertos: regex },
+            { conectividad: regex },
+            { bateria: regex },
+            { dimensiones: regex },
+            { peso: regex },
+          ],
+        });
+      } else {
+        // Búsqueda por tokens
+        const tokens = generarTokensBusqueda(busqueda);
+        filtros.push({ tokensBusqueda: { $all: tokens } });
+      }
     }
 
-    // 🔍 Fallback si se activa el modo raw (búsqueda parcial por texto)
-    if (raw) {
-      filtros.push({ modelo: new RegExp(modelo, 'i') });
-    }
-
-    // 🧠 Condición combinada: solo fichas activas
-    const query = {
-      isActiva: true,
-      estado: 'activa',
-      ...(filtros.length > 0 ? { $or: filtros } : {}),
-    };
-
-    const fichas = await FichaTecnica.find(query).limit(10).lean();
+    const fichas = await FichaTecnica.find(
+      filtros.length ? { $and: filtros } : {}
+    ).sort({ modelo: 1 });
 
     if (!fichas.length) {
-      return res
-        .status(404)
-        .json({ message: 'No se encontraron coincidencias' });
+      return sendError(res, 404, 'No se encontraron coincidencias');
     }
 
-    return res.json({ resultados: fichas });
-  } catch (err) {
-    console.error('❗ Error en obtenerFichaTecnica:', err);
-    return res.status(500).json({ message: 'Error al buscar ficha técnica' });
+    return sendSuccess(res, {
+      message: 'Fichas Tecnicas obtenidos correctamente',
+      details: fichas,
+    });
+  } catch (error) {
+    sendError(res, 500, 'Error al buscar fichas técnicas');
   }
 };
 
