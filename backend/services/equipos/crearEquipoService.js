@@ -40,15 +40,49 @@ const crearEquipoService = async (data) => {
   // 🧠 Nombre técnico
   const nombreTecnico = generarNombreTecnico(marcaSanitizada, modeloSanitizado);
 
-  // ❗ Validar duplicado de serie
+  // ✅ Buscar si el equipo ya existe por número de serie
+  let equipoExistente = null;
   if (nroSerieSanitizado) {
-    const yaExiste = await Equipo.findOne({ nroSerie: nroSerieSanitizado });
-    if (yaExiste) {
-      throw new DuplicateError('Ya existe un equipo con ese número de serie');
-    }
+    equipoExistente = await Equipo.findOne({ nroSerie: nroSerieSanitizado });
   }
 
-  // 🔍 Buscar ficha existente automática
+  if (equipoExistente) {
+    const clienteAnteriorId = String(equipoExistente.clienteActual);
+    const clienteNuevoId = String(clienteActual);
+
+    if (clienteAnteriorId !== clienteNuevoId) {
+      // ✅ Cerrar historial anterior
+      const historialActivo = equipoExistente.historialPropietarios.find(
+        (h) => String(h.clienteId) === clienteAnteriorId && h.fechaFin == null
+      );
+
+      if (historialActivo) {
+        historialActivo.fechaFin = new Date();
+      }
+
+      // 🆕 Agregar nuevo historial
+      equipoExistente.historialPropietarios.push({
+        clienteId: clienteActual,
+        fechaAsignacion: new Date(),
+        fechaFin: null,
+      });
+
+      // 🔄 Actualizar cliente actual
+      equipoExistente.clienteActual = clienteActual;
+    }
+
+    // ⚙️ Actualizar info base (opcional)
+    equipoExistente.tipo = tipoSanitizado;
+    equipoExistente.marca = marcaSanitizada;
+    equipoExistente.modelo = modeloSanitizado.toUpperCase();
+    equipoExistente.sku = skuSanitizado;
+    Object.assign(equipoExistente, resto);
+
+    await equipoExistente.save();
+    return equipoExistente;
+  }
+
+  // 🔍 Buscar ficha técnica automática
   let fichaTecnica;
   try {
     fichaTecnica = await vincularFichaTecnica({
@@ -58,11 +92,6 @@ const crearEquipoService = async (data) => {
   } catch (err) {
     throw new Error('Error al buscar la ficha técnica: ' + err.message);
   }
-
-  console.log(
-    '[crearEquipoService] fichaTecnica encontrada:',
-    fichaTecnica?._id || null
-  );
 
   // 🧠 Crear ficha técnica manual si no existe
   if (!fichaTecnica && fichaTecnicaManual) {
@@ -75,7 +104,6 @@ const crearEquipoService = async (data) => {
     if (fichaExistente) {
       fichaTecnica = fichaExistente;
     } else if (permitirCrearFichaTecnicaManual) {
-      // ⚠️ Validar que se haya proporcionado un SKU
       if (!skuSanitizado) {
         throw new ValidationError(
           'Para crear una ficha técnica manual se requiere un SKU válido'
@@ -92,7 +120,7 @@ const crearEquipoService = async (data) => {
           ram: fichaTecnicaManual.ram,
           almacenamiento: fichaTecnicaManual.almacenamiento,
           fuente: 'manual',
-          estado: 'en_revision', // 🟡 Forzado para todos
+          estado: 'en_revision',
         });
       } catch (err) {
         throw new ValidationError(
@@ -102,14 +130,14 @@ const crearEquipoService = async (data) => {
     }
   }
 
-  // 🧾 Historial cliente
+  // 🧾 Historial cliente (nuevo equipo)
   const historialPropietarios = inicializarHistorialClientes(clienteActual);
 
-  // ⚙️ Especificaciones y repotenciación
+  // ⚙️ Especificaciones
   const { especificacionesActuales, repotenciado } =
     calcularEspecificacionesEquipo(fichaTecnica, fichaTecnicaManual || {});
 
-  // 🛠️ Crear equipo
+  // 🛠️ Crear nuevo equipo
   const nuevoEquipo = new Equipo({
     tipo: tipoSanitizado,
     marca: marcaSanitizada,
@@ -124,12 +152,7 @@ const crearEquipoService = async (data) => {
     ...resto,
   });
 
-  try {
-    await nuevoEquipo.save();
-  } catch (err) {
-    throw new Error('Error al guardar el equipo: ' + err.message);
-  }
-
+  await nuevoEquipo.save();
   return nuevoEquipo;
 };
 

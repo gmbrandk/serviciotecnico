@@ -10,6 +10,7 @@ const crearOrdenServicioController = async (req, res) => {
 
     const ordenPoblada = await OrdenServicio.findById(ordenCreada._id)
       .populate('cliente', 'nombre dni telefono')
+      .populate('representante', 'nombre dni telefono') // ✅ Agregado aquí
       .populate('tecnico', 'nombre email')
       .populate('lineasServicio.tipoTrabajo', 'nombre descripcion precioBase') // puedes agregar `precioBase` si te interesa
       .populate('equipo', 'marca sku modelo nroSerie')
