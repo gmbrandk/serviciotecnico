@@ -18,7 +18,7 @@ const fichaTecnicaSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
+      unique: true, // 👈 Esto ya crea el índice
     },
     cpu: {
       type: String,
@@ -47,7 +47,7 @@ const fichaTecnicaSchema = new mongoose.Schema(
     },
     tokensBusqueda: {
       type: [String],
-      index: true,
+      // 🔥 Se quitó index: true
     },
     estado: {
       type: String,
@@ -66,10 +66,8 @@ const fichaTecnicaSchema = new mongoose.Schema(
 
 // Índices
 fichaTecnicaSchema.index({ marca: 1, modelo: 1 }, { unique: true }); // Evita duplicados lógicos
-fichaTecnicaSchema.index({ sku: 1 }, { unique: true });
-fichaTecnicaSchema.index({ tokensBusqueda: 1 });
-
-// No se necesita validación pre-save de marcaModelo
+// 🔥 Eliminado: fichaTecnicaSchema.index({ sku: 1 }, { unique: true });
+fichaTecnicaSchema.index({ tokensBusqueda: 1 }); // Se mantuvo este
 
 const FichaTecnica = mongoose.model('FichaTecnica', fichaTecnicaSchema);
 module.exports = FichaTecnica;

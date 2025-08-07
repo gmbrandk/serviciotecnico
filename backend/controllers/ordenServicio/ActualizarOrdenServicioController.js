@@ -1,24 +1,24 @@
-const actualizarOrdenServicioService = require('@services/ordenServicio/actualizarOrdenServicioService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
+const { ValidationError } = require('@utils/errors');
+const actualizarOrdenServicioService = require('@services/ordenServicio/actualizarOrdenServicioService');
 
-const actualizarOrdenServicioController = async (req, res) => {
+const editarOrdenServicioController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const ordenActualizada = await actualizarOrdenServicioService(id, req.body);
+    // Validación mínima
+    if (!id) throw new ValidationError('Falta el ID de la orden de servicio.');
 
-    return sendSuccess(
-      res,
-      200,
-      'Orden de servicio actualizada correctamente',
-      {
-        orden: ordenActualizada,
-      }
-    );
-  } catch (err) {
-    console.error('Error al actualizar orden de servicio:', err);
-    return sendError(res, err);
+    // Pasar el body directamente al servicio
+    const ordenEditada = await actualizarOrdenServicioService(id, req.body);
+
+    return sendSuccess(res, {
+      message: 'Orden de servicio editada correctamente.',
+      details: ordenEditada,
+    });
+  } catch (error) {
+    return sendError(res, error);
   }
 };
 
-module.exports = actualizarOrdenServicioController;
+module.exports = editarOrdenServicioController;

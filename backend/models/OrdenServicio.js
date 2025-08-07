@@ -43,8 +43,17 @@ const OrdenServicioSchema = new mongoose.Schema(
     },
     estadoOS: {
       type: String,
-      enum: ['en_proceso', 'finalizado'],
-      default: 'en_proceso',
+      enum: [
+        'pendiente',
+        'diagnosticado',
+        'esperando_confirmacion',
+        'autorizado',
+        'en_proceso',
+        'esperando_repuesto',
+        'completado',
+        'cancelado',
+      ],
+      default: 'pendiente',
     },
     estadoEquipo: {
       type: String,
