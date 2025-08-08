@@ -52,6 +52,7 @@ const OrdenServicioSchema = new mongoose.Schema(
         'esperando_repuesto',
         'completado',
         'cancelado',
+        'anulado',
       ],
       default: 'pendiente',
     },

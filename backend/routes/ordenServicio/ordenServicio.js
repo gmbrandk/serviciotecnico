@@ -5,6 +5,7 @@ const {
   crearOrdenServicioController,
   obtenerOrdenServicioController,
   actualizarOrdenServicioController,
+  anularOrdenServicioController,
 } = require('@controllers/osController');
 
 router.post('/', crearOrdenServicioController);
@@ -15,5 +16,7 @@ router.get('/:id', obtenerOrdenServicioController);
 
 // Actualizar
 router.put('/:id', actualizarOrdenServicioController);
+
+router.patch('/:id/anular', anularOrdenServicioController);
 
 module.exports = router;
