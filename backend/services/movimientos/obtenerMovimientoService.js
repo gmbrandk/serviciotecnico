@@ -9,6 +9,7 @@ const obtenerMovimientoService = async ({
   desde,
   hasta,
   texto,
+  incluirMetadata, // 👈 nuevo parámetro desde query
 }) => {
   const filtro = {};
 
@@ -29,16 +30,25 @@ const obtenerMovimientoService = async ({
     .populate('usadoPor', 'nombre')
     .sort({ fecha: -1 });
 
-  const historial = movimientos.map((mov) => ({
-    _id: mov._id,
-    tipo: mov.tipo,
-    entidad: mov.entidad,
-    entidadId: mov.entidadId,
-    realizadoPor: mov.realizadoPor,
-    usadoPor: mov.usadoPor,
-    fecha: mov.fecha,
-    descripcion: generarDescripcion(mov),
-  }));
+  const historial = movimientos.map((mov) => {
+    const base = {
+      _id: mov._id,
+      tipo: mov.tipo,
+      entidad: mov.entidad,
+      entidadId: mov.entidadId,
+      realizadoPor: mov.realizadoPor,
+      usadoPor: mov.usadoPor,
+      fecha: mov.fecha,
+      descripcion: generarDescripcion(mov),
+    };
+
+    // ✅ Si se solicitó incluir metadata
+    if (String(incluirMetadata).toLowerCase() === 'true') {
+      base.metadata = mov.metadata;
+    }
+
+    return base;
+  });
 
   const historialFiltrado = texto
     ? historial.filter((mov) =>

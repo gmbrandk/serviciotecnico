@@ -1,4 +1,3 @@
-// routes/ordenServicio.js
 const express = require('express');
 const router = express.Router();
 const {
@@ -7,16 +6,19 @@ const {
   actualizarOrdenServicioController,
   anularOrdenServicioController,
 } = require('@controllers/osController');
+const { verificarToken } = require('@middlewares/authMiddleware');
 
-router.post('/', crearOrdenServicioController);
+// Crear orden (requiere autenticación si quieres registrar usuario)
+router.post('/', verificarToken, crearOrdenServicioController);
 
 // Obtener todas o por ID
-router.get('/', obtenerOrdenServicioController); // Si usas query params
-router.get('/:id', obtenerOrdenServicioController);
+router.get('/', verificarToken, obtenerOrdenServicioController);
+router.get('/:id', verificarToken, obtenerOrdenServicioController);
 
 // Actualizar
-router.put('/:id', actualizarOrdenServicioController);
+router.put('/:id', verificarToken, actualizarOrdenServicioController);
 
-router.patch('/:id/anular', anularOrdenServicioController);
+// Anular (requiere autenticación para registrar movimiento con usuarioId)
+router.patch('/:id/anular', verificarToken, anularOrdenServicioController);
 
 module.exports = router;
