@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Usuario = require('../models/Usuario');
+const Usuario = require('@models/Usuario');
 const conectarDB = require('../config/db');
 
 const crearSuperAdmin = async () => {
@@ -32,7 +32,6 @@ const crearSuperAdmin = async () => {
 
     await nuevoUsuario.save();
     console.log('✅ Superadministrador creado con éxito.');
-
   } catch (error) {
     console.error('❌ Error al crear superadministrador:', error);
   } finally {

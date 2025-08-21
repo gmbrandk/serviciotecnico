@@ -1,32 +1,13 @@
+// services/ordenServicio/crearOrdenServicioService.js
 const OrdenServicio = require('@models/OrdenServicio');
 const Cliente = require('@models/Cliente');
-require('@models/TipodeTrabajo');
 const Equipo = require('@models/Equipo');
 const { ValidationError } = require('@utils/errors');
 const mongoose = require('mongoose');
+
 const crearClienteService = require('@services/clientes/crearClienteService');
+const obtenerClientesService = require('@services/clientes/obtenerClientesService');
 const crearEquipoService = require('@services/equipos/crearEquipoService');
-
-// 🔁 Reutilizable: busca o crea cliente/representante
-const buscarOCrearCliente = async (persona) => {
-  if (typeof persona === 'string') {
-    const existente = await Cliente.findById(persona);
-    if (!existente) throw new ValidationError('ID no encontrado');
-    return existente;
-  }
-
-  let encontrado =
-    (await Cliente.findOne({ dni: persona.dni })) ||
-    (await Cliente.findOne({ email: persona.email })) ||
-    (await Cliente.findOne({ telefono: persona.telefono }));
-
-  if (!encontrado) {
-    encontrado = new Cliente(persona);
-    await encontrado.save();
-  }
-
-  return encontrado;
-};
 
 const crearOrdenServicioService = async (data) => {
   console.log('▶️ Iniciando creación de Orden de Servicio...');
@@ -42,41 +23,82 @@ const crearOrdenServicioService = async (data) => {
     diagnostico,
     estado,
     tipo,
+    observaciones,
   } = data;
 
-  // 1. Cliente
-  const clienteFinal = await buscarOCrearCliente(cliente);
-  console.log('✅ Cliente listo:', clienteFinal._id);
+  // 1. Resolver cliente
+  let clienteFinal;
+  if (typeof cliente === 'string') {
+    console.log('🔎 Buscando cliente por ID:', cliente);
+    clienteFinal = await obtenerClientesService({ id: cliente });
+  } else {
+    console.log('🔎 Buscando cliente con datos:', cliente);
+
+    let existente = null;
+
+    if (cliente.dni) {
+      existente = await Cliente.findOne({ dni: cliente.dni }).exec();
+      if (existente)
+        console.log('✅ Cliente encontrado por DNI:', existente._id);
+    }
+
+    if (!existente && cliente.email && cliente.email.trim() !== '') {
+      existente = await Cliente.findOne({ email: cliente.email }).exec();
+      if (existente)
+        console.log('✅ Cliente encontrado por email:', existente._id);
+    }
+
+    if (!existente && cliente.telefono) {
+      existente = await Cliente.findOne({ telefono: cliente.telefono }).exec();
+      if (existente)
+        console.log('✅ Cliente encontrado por teléfono:', existente._id);
+    }
+
+    if (existente) {
+      clienteFinal = existente;
+    } else {
+      console.log('🆕 No se encontró cliente, creando...');
+      clienteFinal = await crearClienteService(cliente);
+      console.log('✅ Cliente creado:', clienteFinal._id);
+    }
+  }
+
+  if (!clienteFinal) {
+    throw new ValidationError('No se pudo resolver el cliente');
+  }
+
+  console.log('📌 Cliente final listo:', clienteFinal._id);
 
   // 2. Representante (opcional)
   let representanteFinal = null;
-
   if (representante) {
-    representanteFinal = await buscarOCrearCliente(representante);
-    console.log('✅ Representante proporcionado:', representanteFinal._id);
+    if (typeof representante === 'string') {
+      representanteFinal = await obtenerClientesService({ id: representante });
+    } else {
+      representanteFinal =
+        (await Cliente.findOne({ dni: representante.dni }).exec()) ||
+        (await crearClienteService(representante));
+    }
   } else {
     representanteFinal = clienteFinal;
-    console.log(
-      '👤 Representante no enviado. Usando cliente como representante:',
-      representanteFinal._id
-    );
   }
+  console.log('📌 Representante listo:', representanteFinal._id);
 
   // 3. Equipo
   let equipoFinal;
-
   if (typeof equipo === 'string') {
-    equipoFinal = await Equipo.findById(equipo);
+    equipoFinal = await Equipo.findById(equipo).exec();
     if (!equipoFinal) throw new ValidationError('Equipo no encontrado');
-    console.log('✅ Equipo encontrado por ID:', equipoFinal._id);
+    console.log('📌 Equipo encontrado por ID:', equipoFinal._id);
   } else {
     equipoFinal = await crearEquipoService({
       ...equipo,
       clienteActual: clienteFinal._id,
     });
-    console.log('✅ Equipo creado mediante servicio:', equipoFinal._id);
+    console.log('📌 Equipo creado:', equipoFinal._id);
   }
 
+  // 4. Validar líneas de servicio
   if (!Array.isArray(lineasServicio) || lineasServicio.length === 0) {
     throw new ValidationError('Se requiere al menos una línea de servicio.');
   }
@@ -109,29 +131,30 @@ const crearOrdenServicioService = async (data) => {
     };
   });
 
-  // ✅ Lógica simple de sumatoria total
-  const totalCalculado = lineasServicioFinal.reduce((sum, linea) => {
-    return sum + linea.precioUnitario * linea.cantidad;
-  }, 0);
+  const totalCalculado = lineasServicioFinal.reduce(
+    (sum, linea) => sum + linea.precioUnitario * linea.cantidad,
+    0
+  );
 
-  // 4. Crear la Orden de Servicio
+  // 5. Crear orden de servicio
   const ordenServicio = new OrdenServicio({
     cliente: clienteFinal._id,
     representante: representanteFinal._id,
     equipo: equipoFinal._id,
     lineasServicio: lineasServicioFinal,
     tecnico,
-    total: totalCalculado, // <- ✅ aquí está la suma final real
+    total: totalCalculado,
     fechaIngreso,
     diagnostico,
     estado,
     tipo,
+    observaciones,
   });
 
   await ordenServicio.save();
   console.log('✅ Orden de Servicio guardada:', ordenServicio._id);
 
-  // 5. Populate para respuesta legible
+  // 6. Populate para respuesta
   await ordenServicio.populate([
     { path: 'cliente' },
     { path: 'representante' },
@@ -139,7 +162,7 @@ const crearOrdenServicioService = async (data) => {
     { path: 'lineasServicio.tipoTrabajo' },
   ]);
 
-  console.log('✅ Orden de Servicio populada. Lista para retornar.');
+  console.log('✅ Orden de Servicio populada y lista para retornar');
   return ordenServicio;
 };
 

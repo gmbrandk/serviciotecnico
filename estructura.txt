@@ -1,0 +1,112 @@
+├── .git
+│   ├── COMMIT_EDITMSG
+│   ├── HEAD
+│   ├── config
+│   ├── description
+│   ├── hooks
+│   │   └── ... (oculto)
+│   ├── index
+│   ├── info
+│   │   └── ... (oculto)
+│   ├── logs
+│   │   └── ... (oculto)
+│   ├── objects
+│   │   └── ... (oculto)
+│   ├── packed-refs
+│   └── refs
+│       └── ... (oculto)
+├── .gitignore
+├── README.md
+├── backend
+│   ├── .env
+│   ├── .env.test
+│   ├── __mocks__
+│   │   └── ... (oculto)
+│   ├── __tests__
+│   │   └── ... (oculto)
+│   ├── app.js
+│   ├── config
+│   │   └── ... (oculto)
+│   ├── controllers
+│   │   └── ... (oculto)
+│   ├── coverage
+│   │   └── ... (oculto)
+│   ├── docs
+│   │   └── ... (oculto)
+│   ├── helpers
+│   │   └── ... (oculto)
+│   ├── html-report
+│   │   └── ... (oculto)
+│   ├── jest.config.js
+│   ├── jest.config.report.js
+│   ├── jest.setup.js
+│   ├── middlewares
+│   │   └── ... (oculto)
+│   ├── models
+│   │   └── ... (oculto)
+│   ├── node_modules
+│   │   └── ... (oculto)
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── routes
+│   │   └── ... (oculto)
+│   ├── scripts
+│   │   └── ... (oculto)
+│   ├── server.js
+│   ├── services
+│   │   └── ... (oculto)
+│   ├── utils
+│   │   └── ... (oculto)
+│   └── verificarRutas.js
+├── eslint.config.js
+├── estructura.txt
+├── estructura_general.txt
+├── estructura_general_backend.txt
+├── estructura_general_fronted.txt
+├── file_tree.py
+├── idea general.txt
+├── index.html
+├── jsconfig.json
+├── logs
+├── package-lock.json
+├── package.json
+├── public
+│   ├── empty-box.svg
+│   ├── empty.svg
+│   └── vite.svg
+├── serviciotecnico-v20.rar
+├── src
+│   ├── App.css
+│   ├── App.jsx
+│   ├── __mock__
+│   │   └── ... (oculto)
+│   ├── assets
+│   │   └── ... (oculto)
+│   ├── codigoGeneracionMock.js
+│   ├── components
+│   │   └── ... (oculto)
+│   ├── config
+│   │   └── ... (oculto)
+│   ├── context
+│   │   └── ... (oculto)
+│   ├── data
+│   │   └── ... (oculto)
+│   ├── helpers
+│   │   └── ... (oculto)
+│   ├── hooks
+│   │   └── ... (oculto)
+│   ├── index.css
+│   ├── logic
+│   │   └── ... (oculto)
+│   ├── main.jsx
+│   ├── pages
+│   │   └── ... (oculto)
+│   ├── routes
+│   │   └── ... (oculto)
+│   ├── services
+│   │   └── ... (oculto)
+│   ├── styles
+│   │   └── ... (oculto)
+│   └── utils
+│       └── ... (oculto)
+└── vite.config.js

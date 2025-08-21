@@ -1,7 +1,7 @@
 // desactivarCodigos.js
 require('dotenv').config(); // Asegúrate de tener tu .env con MONGODB_URI
 const mongoose = require('mongoose');
-const CodigoAcceso = require('../models/CodigoAcceso'); // Ajusta según tu estructura
+const CodigoAcceso = require('@models/CodigoAcceso'); // Ajusta según tu estructura
 
 async function desactivarTodosLosCodigos() {
   try {

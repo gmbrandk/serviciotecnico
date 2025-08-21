@@ -1,5 +1,4 @@
 // backend/app.js
-//require('module-alias/register');
 
 const path = require('path');
 const express = require('express');
@@ -32,6 +31,7 @@ const clientesRoutes = require('@routes/clientes/clientes');
 const equiposRoutes = require('@routes/equipos/equipos');
 const fichaTecnicaRoutes = require('./routes/fichaTecnica/fichaTecnica');
 const ordenServicioRoutes = require('./routes/ordenServicio/ordenServicio');
+const tipoTrabajoRoutes = require('./routes/tipoTrabajo/tipoTrabajo');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/codigos', codigoRoutes);
@@ -42,5 +42,6 @@ app.use('/api/clientes', clientesRoutes);
 app.use('/api/equipos', equiposRoutes);
 app.use('/api/ficha-tecnica', fichaTecnicaRoutes);
 app.use('/api/os', ordenServicioRoutes);
+app.use('/api/tipo-trabajo', tipoTrabajoRoutes);
 
 module.exports = app;

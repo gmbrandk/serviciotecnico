@@ -1,7 +1,7 @@
 // scripts/testPromptGPT.js
 
 require('dotenv').config();
-const fetchLaptopSpecs = require('../helpers/fetchLaptopSpecs');
+const fetchLaptopSpecs = require('@helpers/fetchLaptopSpecs');
 
 (async () => {
   try {

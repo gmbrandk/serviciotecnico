@@ -7,6 +7,17 @@ const LineaServicioSchema = new mongoose.Schema(
       ref: 'TipoDeTrabajo',
       required: true,
     },
+    // 📌 Snapshot para trazabilidad
+    nombreTrabajo: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    descripcionTrabajo: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     cantidad: {
       type: Number,
       default: 1,
