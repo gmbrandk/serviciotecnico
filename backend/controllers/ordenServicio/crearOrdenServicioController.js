@@ -1,5 +1,4 @@
 // controllers/ordenServicio/crearOrdenServicioController.js
-
 const crearOrdenServicioService = require('@services/ordenServicio/crearOrdenServicioService');
 const OrdenServicio = require('@models/OrdenServicio');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
@@ -10,14 +9,16 @@ const crearOrdenServicioController = async (req, res) => {
 
     const ordenPoblada = await OrdenServicio.findById(ordenCreada._id)
       .populate('cliente', 'nombre dni telefono')
-      .populate('representante', 'nombre dni telefono') // ✅ Agregado aquí
+      .populate('representante', 'nombre dni telefono')
       .populate('tecnico', 'nombre email')
-      .populate('lineasServicio.tipoTrabajo', 'nombre descripcion precioBase') // puedes agregar `precioBase` si te interesa
+      .populate('lineasServicio.tipoTrabajo', 'nombre descripcion precioBase')
       .populate('equipo', 'marca sku modelo nroSerie')
-      .lean(); // más eficiente si solo vas a devolver el objeto
+      .lean();
 
-    return sendSuccess(res, 201, 'Orden de servicio creada correctamente', {
-      orden: ordenPoblada,
+    return sendSuccess(res, {
+      status: 201,
+      message: `Orden de servicio ${ordenPoblada.codigo} creada correctamente`,
+      details: { orden: ordenPoblada },
     });
   } catch (err) {
     console.error('Error al crear orden de servicio:', err);
