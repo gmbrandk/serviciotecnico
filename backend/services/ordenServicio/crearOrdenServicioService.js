@@ -3,6 +3,7 @@ const OrdenServicio = require('@models/OrdenServicio');
 const Cliente = require('@models/Cliente');
 const Equipo = require('@models/Equipo');
 const { ValidationError } = require('@utils/errors');
+const TipoTrabajo = require('@models/TipodeTrabajo');
 const mongoose = require('mongoose');
 
 const crearClienteService = require('@services/clientes/crearClienteService');
@@ -103,33 +104,43 @@ const crearOrdenServicioService = async (data) => {
     throw new ValidationError('Se requiere al menos una línea de servicio.');
   }
 
-  const lineasServicioFinal = lineasServicio.map((linea, index) => {
-    if (!linea.tipoTrabajo) {
-      throw new ValidationError(
-        `La línea ${index + 1} debe tener un tipoTrabajo.`
-      );
-    }
+  const lineasServicioFinal = await Promise.all(
+    lineasServicio.map(async (linea, index) => {
+      if (!mongoose.Types.ObjectId.isValid(linea.tipoTrabajo)) {
+        throw new ValidationError(
+          `El tipoTrabajo en la línea ${index + 1} no es un ObjectId válido.`
+        );
+      }
 
-    if (!mongoose.Types.ObjectId.isValid(linea.tipoTrabajo)) {
-      throw new ValidationError(
-        `El tipoTrabajo en la línea ${index + 1} no es un ObjectId válido.`
-      );
-    }
+      const tipoTrabajo = await TipoTrabajo.findById(linea.tipoTrabajo);
+      if (!tipoTrabajo) {
+        throw new ValidationError(
+          `El tipoTrabajo en la línea ${
+            index + 1
+          } no existe en la base de datos.`
+        );
+      }
 
-    if (
-      typeof linea.precioUnitario !== 'number' ||
-      typeof linea.cantidad !== 'number'
-    ) {
-      throw new ValidationError(
-        `La línea ${index + 1} debe tener precioUnitario y cantidad numéricos.`
-      );
-    }
+      if (
+        typeof linea.precioUnitario !== 'number' ||
+        typeof linea.cantidad !== 'number'
+      ) {
+        throw new ValidationError(
+          `La línea ${
+            index + 1
+          } debe tener precioUnitario y cantidad numéricos.`
+        );
+      }
 
-    return {
-      ...linea,
-      tipoTrabajo: new mongoose.Types.ObjectId(linea.tipoTrabajo),
-    };
-  });
+      return {
+        tipoTrabajo: tipoTrabajo._id,
+        nombreTrabajo: linea.nombreTrabajo,
+        descripcionTrabajo: linea.descripcion || '', // 👈 FIX para no perder descripción
+        precioUnitario: linea.precioUnitario,
+        cantidad: linea.cantidad,
+      };
+    })
+  );
 
   const totalCalculado = lineasServicioFinal.reduce(
     (sum, linea) => sum + linea.precioUnitario * linea.cantidad,
@@ -144,9 +155,9 @@ const crearOrdenServicioService = async (data) => {
     lineasServicio: lineasServicioFinal,
     tecnico,
     total: totalCalculado,
-    fechaIngreso,
+    fechaIngreso: fechaIngreso || new Date(),
     diagnostico,
-    estado,
+    estadoOS: estado || 'pendiente', // 👈 usar mismo nombre que en el modelo
     tipo,
     observaciones,
   });

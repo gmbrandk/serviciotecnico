@@ -1,0 +1,281 @@
+<div
+  class="markdown prose dark:prose-invert w-full break-words dark markdown-new-styling"
+>
+  <p data-start="0" data-end="229">
+    Perfecto, hagamos una
+    <strong data-start="22" data-end="57"
+      >versión priorizada del ToDoList</strong
+    >
+    que involucre a los tres actores:
+    <strong data-start="92" data-end="104">Clientes</strong>,
+    <strong data-start="106" data-end="117">Equipos</strong> y
+    <strong data-start="120" data-end="143">Órdenes de Servicio</strong>,
+    organizada por prioridad alta, media y baja para trabajar de manera más
+    eficiente:
+  </p>
+  <hr data-start="231" data-end="234" />
+  <h2 data-start="236" data-end="292">
+    <strong data-start="239" data-end="292"
+      >📝 ToDoList Prioritario – Clientes / Equipos / OS</strong
+    >
+  </h2>
+  <h3 data-start="294" data-end="319">
+    <strong data-start="298" data-end="319">🔴 Alta prioridad</strong>
+  </h3>
+  <ol data-start="320" data-end="1237">
+    <li data-start="320" data-end="655">
+      <p data-start="323" data-end="335">
+        <strong data-start="323" data-end="335">Clientes</strong>
+      </p>
+      <ul data-start="339" data-end="655">
+        <li data-start="339" data-end="427">
+          <p data-start="341" data-end="427">
+            Validar que DNI tenga
+            <strong data-start="363" data-end="376">8 dígitos</strong> y
+            teléfono siga formato correcto (+51 + número).
+          </p>
+        </li>
+        <li data-start="431" data-end="492">
+          <p data-start="433" data-end="492">
+            Evitar duplicados con
+            <code data-start="455" data-end="471">DuplicateError</code> y
+            mensajes claros.
+          </p>
+        </li>
+        <li data-start="496" data-end="586">
+          <p data-start="498" data-end="586">
+            Implementar
+            <code data-start="510" data-end="525">did you mean?</code> para
+            sugerir coincidencias cercanas en DNI/email/telefono.
+          </p>
+        </li>
+        <li data-start="590" data-end="655">
+          <p data-start="592" data-end="655">
+            Mejorar logs de creación de clientes y errores para depuración.
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li data-start="657" data-end="1038">
+      <p data-start="660" data-end="688">
+        <strong data-start="660" data-end="688"
+          >Órdenes de Servicio (OS)</strong
+        >
+      </p>
+      <ul data-start="692" data-end="1038">
+        <li data-start="692" data-end="777">
+          <p data-start="694" data-end="777">
+            Validar <code data-start="702" data-end="715">tipoTrabajo</code> de
+            cada línea de servicio: verificar existencia real en DB.
+          </p>
+        </li>
+        <li data-start="781" data-end="862">
+          <p data-start="783" data-end="862">
+            Calcular correctamente
+            <code data-start="806" data-end="813">total</code> y asegurar que
+            líneas inválidas no se guarden.
+          </p>
+        </li>
+        <li data-start="866" data-end="935">
+          <p data-start="868" data-end="935">
+            Manejar representante diferente al cliente titular correctamente.
+          </p>
+        </li>
+        <li data-start="939" data-end="1038">
+          <p data-start="941" data-end="1038">
+            Uniformizar errores con estilo JSON claro (<code
+              data-start="984"
+              data-end="1001"
+              >ValidationError</code
+            >, <code data-start="1003" data-end="1019">DuplicateError</code>,
+            <code data-start="1021" data-end="1036">NotFoundError</code>).
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li data-start="1040" data-end="1237">
+      <p data-start="1043" data-end="1064">
+        <strong data-start="1043" data-end="1064">Rutas y seguridad</strong>
+      </p>
+      <ul data-start="1068" data-end="1237">
+        <li data-start="1068" data-end="1167">
+          <p data-start="1070" data-end="1167">
+            Corregir orden de rutas (<code data-start="1095" data-end="1113"
+              >/clientes/search</code
+            >
+            antes de <code data-start="1123" data-end="1129">/:id</code>) para
+            evitar errores “ID inválido”.
+          </p>
+        </li>
+        <li data-start="1171" data-end="1237">
+          <p data-start="1173" data-end="1237">
+            Limitar resultados en autocomplete para no saturar la respuesta.
+          </p>
+        </li>
+      </ul>
+    </li>
+  </ol>
+  <hr data-start="1239" data-end="1242" />
+  <h3 data-start="1244" data-end="1270">
+    <strong data-start="1248" data-end="1270">🟠 Media prioridad</strong>
+  </h3>
+  <ol data-start="1271" data-end="1838">
+    <li data-start="1271" data-end="1449">
+      <p data-start="1274" data-end="1286">
+        <strong data-start="1274" data-end="1286">Clientes</strong>
+      </p>
+      <ul data-start="1290" data-end="1449">
+        <li data-start="1290" data-end="1362">
+          <p data-start="1292" data-end="1362">
+            Endpoint potente
+            <code data-start="1309" data-end="1345"
+              >/clientes/search?mode=autocomplete</code
+            >
+            para frontend.
+          </p>
+        </li>
+        <li data-start="1366" data-end="1449">
+          <p data-start="1368" data-end="1449">
+            Retornar solo campos necesarios para sugerencias (nombre, DNI, email
+            opcional).
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li data-start="1451" data-end="1587">
+      <p data-start="1454" data-end="1465">
+        <strong data-start="1454" data-end="1465">Equipos</strong>
+      </p>
+      <ul data-start="1469" data-end="1587">
+        <li data-start="1469" data-end="1521">
+          <p data-start="1471" data-end="1521">
+            Validar existencia del equipo antes de crear OS.
+          </p>
+        </li>
+        <li data-start="1525" data-end="1587">
+          <p data-start="1527" data-end="1587">
+            Asociar equipo al cliente correcto sin duplicar registros.
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li data-start="1589" data-end="1838">
+      <p data-start="1592" data-end="1620">
+        <strong data-start="1592" data-end="1620"
+          >Órdenes de Servicio (OS)</strong
+        >
+      </p>
+      <ul data-start="1624" data-end="1838">
+        <li data-start="1624" data-end="1709">
+          <p data-start="1626" data-end="1709">
+            Populate de cliente, representante, equipo y tipoTrabajo para
+            respuesta completa.
+          </p>
+        </li>
+        <li data-start="1713" data-end="1781">
+          <p data-start="1715" data-end="1781">
+            Logs más específicos sobre ID usados y número de lineasServicio.
+          </p>
+        </li>
+        <li data-start="1785" data-end="1838">
+          <p data-start="1787" data-end="1838">
+            Manejar observaciones y diagnósticos correctamente.
+          </p>
+        </li>
+      </ul>
+    </li>
+  </ol>
+  <hr data-start="1840" data-end="1843" />
+  <h3 data-start="1845" data-end="1870">
+    <strong data-start="1849" data-end="1870">🟢 Baja prioridad</strong>
+  </h3>
+  <ol data-start="1871" data-end="2534">
+    <li data-start="1871" data-end="2117">
+      <p data-start="1874" data-end="1886">
+        <strong data-start="1874" data-end="1886">Frontend</strong>
+      </p>
+      <ul data-start="1890" data-end="2117">
+        <li data-start="1890" data-end="1966">
+          <p data-start="1892" data-end="1966">
+            Autocomplete con selección visual y guardado de
+            <code data-start="1940" data-end="1945">_id</code> real para
+            backend.
+          </p>
+        </li>
+        <li data-start="1970" data-end="2056">
+          <p data-start="1972" data-end="2056">
+            Mostrar advertencias intuitivas de digitación incorrecta o posibles
+            coincidencias.
+          </p>
+        </li>
+        <li data-start="2060" data-end="2117">
+          <p data-start="2062" data-end="2117">
+            UX para “titular vs representante” claro en formulario.
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li data-start="2119" data-end="2301">
+      <p data-start="2122" data-end="2141">
+        <strong data-start="2122" data-end="2141">Infraestructura</strong>
+      </p>
+      <ul data-start="2145" data-end="2301">
+        <li data-start="2145" data-end="2225">
+          <p data-start="2147" data-end="2225">
+            Indexar campos <code data-start="2162" data-end="2167">dni</code>,
+            <code data-start="2169" data-end="2179">telefono</code>,
+            <code data-start="2181" data-end="2188">email</code> en MongoDB para
+            búsquedas rápidas.
+          </p>
+        </li>
+        <li data-start="2229" data-end="2301">
+          <p data-start="2231" data-end="2301">
+            Revisar performance en búsquedas autocomplete y cálculo de totales
+            OS.
+          </p>
+        </li>
+      </ul>
+    </li>
+    <li data-start="2303" data-end="2534">
+      <p data-start="2306" data-end="2325">
+        <strong data-start="2306" data-end="2325">Futuro / Extras</strong>
+      </p>
+      <ul data-start="2329" data-end="2534">
+        <li data-start="2329" data-end="2398">
+          <p data-start="2331" data-end="2398">
+            Implementar fuzzy search opcional para coincidencias aproximadas.
+          </p>
+        </li>
+        <li data-start="2402" data-end="2478">
+          <p data-start="2404" data-end="2478">
+            Pruebas unitarias e integración para creación de OS, clientes y
+            equipos.
+          </p>
+        </li>
+        <li data-start="2482" data-end="2534">
+          <p data-start="2484" data-end="2534">
+            Documentar endpoints para frontend y equipo de QA.
+          </p>
+        </li>
+      </ul>
+    </li>
+  </ol>
+  <hr data-start="2536" data-end="2539" />
+  <p data-start="2541" data-end="2820">
+    Si quieres, puedo armar
+    <strong data-start="2565" data-end="2622"
+      >un mini-diagrama de flujo combinando los tres actores</strong
+    >
+    mostrando cómo interactúan Cliente → Equipo → OS y dónde entran las
+    validaciones y autocomplete, para que tengas un mapa visual completo. Esto
+    ayuda mucho a organizar el desarrollo y el frontend.
+  </p>
+  <p
+    data-start="2822"
+    data-end="2853"
+    data-is-last-node=""
+    data-is-only-node=""
+  >
+    ¿Quieres que haga ese diagrama?
+  </p>
+</div>

@@ -24,4 +24,14 @@ const ClienteSchema = new mongoose.Schema({
   fechaRegistro: { type: Date, default: Date.now },
 });
 
+// models/Cliente.js (fragmento)
+ClienteSchema.index({ dni: 1 }, { unique: true, sparse: false });
+ClienteSchema.index({ telefono: 1 }, { unique: true, sparse: true });
+ClienteSchema.index({ email: 1 }, { unique: true, sparse: true });
+// Para nombre, mejor index normal + collation o text si lo usas mucho:
+ClienteSchema.index(
+  { nombre: 1 },
+  { collation: { locale: 'es', strength: 1 } }
+);
+
 module.exports = mongoose.model('Cliente', ClienteSchema);

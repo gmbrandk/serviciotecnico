@@ -10,9 +10,20 @@ const {
   confirmarBaja,
   obtenerClientePorIdController,
   obtenerClientesController,
+  buscarClientesController,
 } = require('@controllers/clientesController');
 const { verificarToken } = require('@middlewares/authMiddleware');
 const verificarAcceso = require('@middlewares/verificarAcceso');
+
+router.get(
+  '/search',
+  verificarToken,
+  verificarAcceso({
+    accion: 'cliente:buscar',
+    rolesPermitidos: ['administrador', 'superadministrador'],
+  }),
+  buscarClientesController
+);
 
 // ✅ Obtener todos los clientes (con filtros opcionales)
 router.get('/', obtenerClientesController);

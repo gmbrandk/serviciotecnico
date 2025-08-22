@@ -1,9 +1,17 @@
 class ValidationError extends Error {
   constructor(message, details = null) {
-    super(message);
+    if (typeof message === 'object' && message !== null) {
+      super(message.message || 'Error de validación');
+      this.details = message.details || message.clienteExistente || null;
+      this.code = message.code || 'VALIDATION_ERROR';
+    } else {
+      super(message);
+      this.details = details;
+      this.code = 'VALIDATION_ERROR';
+    }
+
     this.name = 'ValidationError';
     this.status = 400;
-    this.details = details;
   }
 }
 

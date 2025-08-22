@@ -1,3 +1,4 @@
+const buscarClientesController = require('./clientes/buscarClientesController');
 const calificarClienteController = require('./clientes/calificarController');
 const crearClienteController = require('./clientes/crearClienteController');
 const editarClienteController = require('./clientes/editarClienteController');
@@ -18,4 +19,5 @@ module.exports = {
   confirmarBaja,
   obtenerClientePorIdController,
   obtenerClientesController,
+  buscarClientesController,
 };
