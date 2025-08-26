@@ -1,9 +1,10 @@
+// services/equipos/crearEquipoService.js
 const Equipo = require('@models/Equipo');
 const FichaTecnica = require('@models/FichaTecnica');
 const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
 const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
 const calcularEspecificacionesEquipo = require('@helpers/equipos/calcularEspecificacionesEquipo');
-const { ValidationError, DuplicateError } = require('@utils/errors');
+const { ValidationError } = require('@utils/errors');
 const xss = require('xss');
 const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico');
 const crearFichaTecnicaService = require('@services/fichaTecnica/crearFichaTecnicaService');
@@ -15,13 +16,15 @@ const crearEquipoService = async (data) => {
     modelo,
     sku,
     nroSerie,
+    macAddress,
+    imei,
     clienteActual,
     fichaTecnicaManual,
     permitirCrearFichaTecnicaManual = false,
     ...resto
   } = data;
 
-  // 🔍 Validaciones
+  // 🔍 Validaciones base
   if (!tipo) throw new ValidationError('El campo "tipo" es obligatorio');
   if (!modelo) throw new ValidationError('El campo "modelo" es obligatorio');
   if (!clienteActual) {
@@ -29,29 +32,69 @@ const crearEquipoService = async (data) => {
   }
 
   // 🧼 Sanitización
-  const tipoSanitizado = xss(tipo.trim());
+  const tipoSanitizado = xss(tipo.trim().toLowerCase());
   const marcaSanitizada = marca ? xss(marca.trim()) : '';
   const modeloSanitizado = xss(modelo.trim());
-  const skuSanitizado = sku ? xss(sku.trim().toUpperCase()) : undefined;
-  const nroSerieSanitizado = nroSerie
-    ? xss(nroSerie.trim().toUpperCase())
+  let skuSanitizado = sku ? xss(sku.trim().toUpperCase()) : null;
+  let nroSerieSanitizado = nroSerie ? xss(nroSerie.trim().toUpperCase()) : null;
+  const macSanitizado = macAddress
+    ? xss(macAddress.trim().toUpperCase())
     : undefined;
+  const imeiSanitizado = imei ? xss(imei.trim()) : undefined;
+
+  // 🚩 Estado de identificación
+  let estadoIdentificacion = 'definitiva';
+
+  // 🚨 SKU obligatorio (pero puede generarse temporal)
+  if (!skuSanitizado) {
+    skuSanitizado = `TMP-SKU-${Date.now()}`;
+    estadoIdentificacion = 'temporal';
+  }
+
+  // 🚨 Nro de serie opcional (si no hay → generar temporal)
+  if (!nroSerieSanitizado) {
+    nroSerieSanitizado = `TMP-SN-${Date.now()}-${Math.floor(
+      Math.random() * 9999
+    )}`;
+    estadoIdentificacion = 'temporal';
+  }
 
   // 🧠 Nombre técnico
   const nombreTecnico = generarNombreTecnico(marcaSanitizada, modeloSanitizado);
 
-  // ✅ Buscar si el equipo ya existe por número de serie
+  // 🚨 Validación condicional según tipo
+  if (tipoSanitizado === 'celular') {
+    if (!imeiSanitizado) {
+      throw new ValidationError(
+        'El campo "imei" es obligatorio para celulares'
+      );
+    }
+  } else {
+    // evitar que laptops/pcs guarden basura
+    data.imei = undefined;
+  }
+
+  // ✅ Buscar si el equipo ya existe (prioridad: nroSerie > imei > macAddress)
   let equipoExistente = null;
+
   if (nroSerieSanitizado) {
     equipoExistente = await Equipo.findOne({ nroSerie: nroSerieSanitizado });
   }
 
+  if (!equipoExistente && imeiSanitizado) {
+    equipoExistente = await Equipo.findOne({ imei: imeiSanitizado });
+  }
+
+  if (!equipoExistente && macSanitizado) {
+    equipoExistente = await Equipo.findOne({ macAddress: macSanitizado });
+  }
+
   if (equipoExistente) {
+    // ... 🔄 lógica de actualización de cliente e historial ...
     const clienteAnteriorId = String(equipoExistente.clienteActual);
     const clienteNuevoId = String(clienteActual);
 
     if (clienteAnteriorId !== clienteNuevoId) {
-      // ✅ Cerrar historial anterior
       const historialActivo = equipoExistente.historialPropietarios.find(
         (h) => String(h.clienteId) === clienteAnteriorId && h.fechaFin == null
       );
@@ -60,22 +103,24 @@ const crearEquipoService = async (data) => {
         historialActivo.fechaFin = new Date();
       }
 
-      // 🆕 Agregar nuevo historial
       equipoExistente.historialPropietarios.push({
         clienteId: clienteActual,
         fechaAsignacion: new Date(),
         fechaFin: null,
       });
 
-      // 🔄 Actualizar cliente actual
       equipoExistente.clienteActual = clienteActual;
     }
 
-    // ⚙️ Actualizar info base (opcional)
     equipoExistente.tipo = tipoSanitizado;
     equipoExistente.marca = marcaSanitizada;
     equipoExistente.modelo = modeloSanitizado.toUpperCase();
     equipoExistente.sku = skuSanitizado;
+    equipoExistente.nroSerie = nroSerieSanitizado;
+    equipoExistente.macAddress = macSanitizado;
+    equipoExistente.imei =
+      tipoSanitizado === 'celular' ? imeiSanitizado : undefined;
+    equipoExistente.estadoIdentificacion = estadoIdentificacion;
     Object.assign(equipoExistente, resto);
 
     await equipoExistente.save();
@@ -104,29 +149,23 @@ const crearEquipoService = async (data) => {
     if (fichaExistente) {
       fichaTecnica = fichaExistente;
     } else if (permitirCrearFichaTecnicaManual) {
-      if (!skuSanitizado) {
+      if (skuSanitizado.startsWith('TMP-SKU')) {
         throw new ValidationError(
-          'Para crear una ficha técnica manual se requiere un SKU válido'
+          'Para crear una ficha técnica manual se requiere un SKU válido (no temporal)'
         );
       }
 
-      try {
-        fichaTecnica = await crearFichaTecnicaService({
-          modelo: modeloSanitizado,
-          sku: skuSanitizado,
-          marca: marcaSanitizada,
-          cpu: fichaTecnicaManual.cpu,
-          gpu: fichaTecnicaManual.gpu,
-          ram: fichaTecnicaManual.ram,
-          almacenamiento: fichaTecnicaManual.almacenamiento,
-          fuente: 'manual',
-          estado: 'en_revision',
-        });
-      } catch (err) {
-        throw new ValidationError(
-          'Error al crear ficha técnica manual: ' + err.message
-        );
-      }
+      fichaTecnica = await crearFichaTecnicaService({
+        modelo: modeloSanitizado,
+        sku: skuSanitizado,
+        marca: marcaSanitizada,
+        cpu: fichaTecnicaManual.cpu,
+        gpu: fichaTecnicaManual.gpu,
+        ram: fichaTecnicaManual.ram,
+        almacenamiento: fichaTecnicaManual.almacenamiento,
+        fuente: 'manual',
+        estado: 'en_revision',
+      });
     }
   }
 
@@ -144,6 +183,9 @@ const crearEquipoService = async (data) => {
     modelo: modeloSanitizado.toUpperCase(),
     sku: skuSanitizado,
     nroSerie: nroSerieSanitizado,
+    macAddress: macSanitizado,
+    imei: tipoSanitizado === 'celular' ? imeiSanitizado : undefined,
+    estadoIdentificacion,
     clienteActual,
     fichaTecnica: fichaTecnica?._id || null,
     historialPropietarios,

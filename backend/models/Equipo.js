@@ -19,16 +19,26 @@ const HistorialPropietarioSchema = new mongoose.Schema({
 });
 
 const EquipoSchema = new mongoose.Schema({
-  tipo: { type: String, required: true }, // laptop, pc, impresora, etc.
+  tipo: { type: String, required: true }, // laptop, pc, celular, impresora, etc.
   marca: String,
   modelo: String,
-    sku: {
+
+  sku: {
     type: String,
     required: [true, 'El campo SKU es obligatorio'],
     trim: true,
     set: (v) => v?.toUpperCase(), // ✨ Normalización
   },
-  nroSerie: { type: String, unique: true },
+
+  nroSerie: { type: String, unique: true, sparse: true }, // opcional para laptops/pcs
+  macAddress: { type: String, unique: true, sparse: true }, // opcional
+  imei: { type: String, unique: true, sparse: true }, // opcional, requerido si es celular
+  // 🚩 Estado de identificación (temporal o definitiva)
+  estadoIdentificacion: {
+    type: String,
+    enum: ['definitiva', 'temporal'],
+    default: 'definitiva',
+  },
 
   clienteActual: {
     type: mongoose.Schema.Types.ObjectId,
@@ -41,6 +51,7 @@ const EquipoSchema = new mongoose.Schema({
     ref: 'FichaTecnica',
     default: null,
   },
+
   especificacionesActuales: {
     ram: {
       valor: { type: String },
@@ -74,7 +85,6 @@ const EquipoSchema = new mongoose.Schema({
         default: 'template',
       },
     },
-    // Agrega más campos si es necesario
   },
 
   repotenciado: {
