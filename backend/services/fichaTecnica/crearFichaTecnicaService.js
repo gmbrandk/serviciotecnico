@@ -5,6 +5,7 @@ const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico'
 const generarTokensBusqueda = require('@utils/generadores/tokens');
 const { ValidationError, DuplicateError } = require('@utils/errors');
 const normalizarFichaTecnica = require('@utils/formatters/normalizarFichaTecnica');
+const normalizarSku = require('@utils/formatters/normalizarSku');
 
 const crearFichaTecnicaService = async ({
   modelo,
@@ -38,12 +39,15 @@ const crearFichaTecnicaService = async ({
     almacenamiento,
   });
 
-  // 🔍 Validar SKU duplicado
-  const yaExisteSku = await FichaTecnica.findOne({
-    sku: new RegExp(`^${sku}$`, 'i'),
-  });
+  // ✅ Normalizar SKU antes de usarlo
+  const skuNormalizado = normalizarSku(sku);
+
+  // Validar SKU duplicado en base al campo normalizado
+  const yaExisteSku = await FichaTecnica.findOne({ sku: skuNormalizado });
   if (yaExisteSku) {
-    throw new DuplicateError(`Ya existe una ficha técnica con el SKU "${sku}"`);
+    throw new DuplicateError(
+      `Ya existe una ficha técnica con el SKU "${skuNormalizado}"`
+    );
   }
 
   // ⚙️ Generar nombre técnico para tokens (uso interno)
@@ -54,7 +58,13 @@ const crearFichaTecnicaService = async ({
 
   // ✅ Crear nueva ficha técnica
   const ficha = new FichaTecnica({
-    ...fichaFormateada,
+    modelo,
+    marca,
+    sku: skuNormalizado,
+    cpu,
+    gpu,
+    ram,
+    almacenamiento,
     fuente,
     estado,
     tokensBusqueda,
