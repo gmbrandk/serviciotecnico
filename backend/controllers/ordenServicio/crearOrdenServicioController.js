@@ -8,8 +8,8 @@ const crearOrdenServicioController = async (req, res) => {
     const ordenCreada = await crearOrdenServicioService(req.body);
 
     const ordenPoblada = await OrdenServicio.findById(ordenCreada._id)
-      .populate('cliente', 'nombre dni telefono')
-      .populate('representante', 'nombre dni telefono')
+      .populate('cliente', 'nombres apellidos dni telefono email')
+      .populate('representante', 'nombres apellidos dni telefono email')
       .populate('tecnico', 'nombre email')
       .populate('lineasServicio.tipoTrabajo', 'nombre descripcion precioBase')
       .populate('equipo', 'marca sku modelo nroSerie')

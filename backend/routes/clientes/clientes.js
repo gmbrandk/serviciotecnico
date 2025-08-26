@@ -14,6 +14,7 @@ const {
 } = require('@controllers/clientesController');
 const { verificarToken } = require('@middlewares/authMiddleware');
 const verificarAcceso = require('@middlewares/verificarAcceso');
+const { sugerirEmails } = require('@controllers/email.controller');
 
 router.get(
   '/search',
@@ -96,5 +97,8 @@ router.put(
   }),
   calificarClienteController
 );
+
+// POST /api/generar-emails
+router.post('/generar-emails', sugerirEmails);
 
 module.exports = router;

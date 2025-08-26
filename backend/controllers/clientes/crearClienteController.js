@@ -7,7 +7,8 @@ const TIPOS_MOVIMIENTO = require('@utils/constantes/tiposMovimiento');
 const crearClienteController = async (req, res) => {
   try {
     const camposPermitidos = [
-      'nombre',
+      'nombres',
+      'apellidos',
       'dni',
       'telefono',
       'direccion',

@@ -14,7 +14,8 @@ const editarClienteController = async (req, res) => {
 
     // Solo campos seguros permitidos en esta ruta
     const camposPermitidos = [
-      'nombre',
+      'nombres',
+      'apellidos',
       'dni',
       'telefono',
       'email',

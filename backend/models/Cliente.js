@@ -1,12 +1,12 @@
-// 📦 models/Cliente.js
 const mongoose = require('mongoose');
 
 const ClienteSchema = new mongoose.Schema({
-  nombre: { type: String, required: true },
+  nombres: { type: String, required: true, trim: true }, // 👈 ahora plural y obligatorio
+  apellidos: { type: String, required: true, trim: true }, // 👈 nuevo campo obligatorio
   dni: { type: String, required: true, unique: true, trim: true },
   email: { type: String, trim: true, lowercase: true, unique: true },
-  telefono: String,
-  direccion: String,
+  telefono: { type: String, trim: true },
+  direccion: { type: String, trim: true },
   estado: {
     type: String,
     enum: ['activo', 'suspendido', 'baneado'],
@@ -17,20 +17,18 @@ const ClienteSchema = new mongoose.Schema({
     enum: ['muy_malo', 'malo', 'regular', 'bueno', 'muy_bueno'],
     default: 'regular',
   },
-  isActivo: {
-    type: Boolean,
-    default: true,
-  },
+  isActivo: { type: Boolean, default: true },
   fechaRegistro: { type: Date, default: Date.now },
 });
 
-// models/Cliente.js (fragmento)
+// 📌 Índices
 ClienteSchema.index({ dni: 1 }, { unique: true, sparse: false });
 ClienteSchema.index({ telefono: 1 }, { unique: true, sparse: true });
 ClienteSchema.index({ email: 1 }, { unique: true, sparse: true });
-// Para nombre, mejor index normal + collation o text si lo usas mucho:
+
+// Para búsquedas por nombre/apellido con collation en español
 ClienteSchema.index(
-  { nombre: 1 },
+  { nombres: 1, apellidos: 1 },
   { collation: { locale: 'es', strength: 1 } }
 );
 
