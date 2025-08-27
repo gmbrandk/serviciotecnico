@@ -3,43 +3,36 @@ const { generarEmailsFicticiosCliente } = require('@services/email.service');
 const validarYFormatearTelefono = require('@utils/telefonia/validarYFormatearTelefono');
 const { ValidationError } = require('@utils/errors');
 
-const crearClienteService = async (data) => {
+const crearClienteService = async (data, { session } = {}) => {
   console.log('▶️ [crearClienteService] Iniciando con data:', data);
 
   const { nombres, apellidos, dni, telefono } = data;
 
   // 🔹 Validaciones obligatorias
-  if (!nombres?.trim()) {
+  if (!nombres?.trim())
     throw new ValidationError({
       code: 'REQUIRED_FIELD',
       message: 'El campo "nombres" es obligatorio',
       details: { field: 'nombres' },
     });
-  }
-
-  if (!apellidos?.trim()) {
+  if (!apellidos?.trim())
     throw new ValidationError({
       code: 'REQUIRED_FIELD',
       message: 'El campo "apellidos" es obligatorio',
       details: { field: 'apellidos' },
     });
-  }
-
-  if (!dni?.trim()) {
+  if (!dni?.trim())
     throw new ValidationError({
       code: 'REQUIRED_FIELD',
       message: 'El DNI es obligatorio',
       details: { field: 'dni' },
     });
-  }
-
-  if (!telefono?.trim()) {
+  if (!telefono?.trim())
     throw new ValidationError({
       code: 'REQUIRED_FIELD',
       message: 'El teléfono es obligatorio',
       details: { field: 'telefono' },
     });
-  }
 
   // 🔹 Validar y formatear teléfono
   let telefonoFinal;
@@ -60,61 +53,58 @@ const crearClienteService = async (data) => {
   let emailFinal = data.email?.trim();
   if (!emailFinal) {
     const opciones = generarEmailsFicticiosCliente({ nombres, apellidos });
-    emailFinal = opciones[0]; // 👈 toma la primera opción como email por defecto
+    emailFinal = opciones[0];
     console.log(
       '📧 [crearClienteService] Email ficticio generado:',
       emailFinal
     );
   }
 
-  // 🔹 Validar unicidad
-  const existenteDni = await Cliente.findOne({ dni });
-  if (existenteDni) {
-    console.error('❌ [crearClienteService] DNI duplicado:', dni);
+  // 🔹 Validar unicidad con session
+  const existenteDni = await Cliente.findOne({ dni: dni.trim() }).session(
+    session || undefined
+  );
+  if (existenteDni)
     throw new ValidationError({
       code: 'DUPLICATE_DNI',
-      message: `El DNI ${dni} ya está registrado a nombre de "${existenteDni.nombres} ${existenteDni.apellidos}"`,
-      details: existenteDni,
+      message: `El DNI ${dni} ya está registrado`,
     });
-  }
 
-  const existenteTelefono = await Cliente.findOne({ telefono: telefonoFinal });
-  if (existenteTelefono) {
-    console.error(
-      '❌ [crearClienteService] Teléfono duplicado:',
-      telefonoFinal
-    );
+  const existenteTelefono = await Cliente.findOne({
+    telefono: telefonoFinal,
+  }).session(session || undefined);
+  if (existenteTelefono)
     throw new ValidationError({
       code: 'DUPLICATE_PHONE',
-      message: `El teléfono ${telefonoFinal} ya está registrado a nombre de "${existenteTelefono.nombres} ${existenteTelefono.apellidos}"`,
-      details: existenteTelefono,
+      message: `Teléfono ya registrado`,
     });
-  }
 
-  const existenteEmail = await Cliente.findOne({ email: emailFinal });
-  if (existenteEmail) {
-    console.error('❌ [crearClienteService] Email duplicado:', emailFinal);
+  const existenteEmail = await Cliente.findOne({ email: emailFinal }).session(
+    session || undefined
+  );
+  if (existenteEmail)
     throw new ValidationError({
       code: 'DUPLICATE_EMAIL',
-      message: `El correo ${emailFinal} ya está registrado a nombre de "${existenteEmail.nombres} ${existenteEmail.apellidos}"`,
-      details: existenteEmail,
+      message: `Email ya registrado`,
     });
-  }
 
   // 🔹 Crear cliente
-  const clienteData = {
-    ...data,
+  const cliente = new Cliente({
+    nombres: nombres.trim(),
+    apellidos: apellidos.trim(),
+    dni: dni.trim(),
     telefono: telefonoFinal,
     email: emailFinal,
     estado: 'activo',
     calificacion: 'regular',
-  };
+  });
 
-  console.log('📝 [crearClienteService] Datos finales cliente:', clienteData);
+  console.log(
+    '📝 [crearClienteService] Datos finales cliente:',
+    cliente.toObject()
+  );
 
-  const cliente = new Cliente(clienteData);
-  const saved = await cliente.save();
-
+  const saved = await cliente.save({ session });
   console.log('✅ [crearClienteService] Cliente creado con _id:', saved._id);
 
   return saved;

@@ -203,7 +203,8 @@ const crearOrdenServicioService = async (data) => {
     observaciones,
   });
 
-  await ordenServicio.save();
+  await ordenServicio.save({ session });
+
   console.log('✅ Orden de Servicio guardada:', ordenServicio._id);
 
   // 6. Populate para respuesta
