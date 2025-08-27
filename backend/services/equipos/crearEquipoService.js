@@ -8,9 +8,19 @@ const { ValidationError } = require('@utils/errors');
 const xss = require('xss');
 const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico');
 const crearFichaTecnicaService = require('@services/fichaTecnica/crearFichaTecnicaService');
+const {
+  compararNroSeries,
+  compararMacs,
+  compararImeis,
+} = require('@utils/validadores/validarIdentificadores');
 
-const crearEquipoService = async (data) => {
-  console.log('▶️ [crearEquipoService] Iniciando con data:', data);
+const crearEquipoService = async (data, { strict = true } = {}) => {
+  console.log(
+    '▶️ [crearEquipoService] Iniciando con data:',
+    data,
+    'modo strict:',
+    strict
+  );
 
   const {
     tipo,
@@ -89,41 +99,101 @@ const crearEquipoService = async (data) => {
     });
   }
 
-  // 🔍 Validar duplicados (nroSerie > imei > mac)
-  if (nroSerieSanitizado) {
-    const existeSerie = await Equipo.findOne({ nroSerie: nroSerieSanitizado });
-    if (existeSerie) {
+  // =====================================================
+  // 🔍 Validar duplicados nroSerie / imei / mac
+  // =====================================================
+  const verificarDuplicado = (eq, tipo, valor, validador) => {
+    const { esExacto, esSimilar, sugerencia } = validador(valor, eq[tipo]);
+
+    if (esExacto) {
+      if (strict) {
+        throw new ValidationError({
+          code: `DUPLICATE_${tipo.toUpperCase()}`,
+          message: `${tipo.toUpperCase()} "${valor}" ya está registrado en el sistema.`,
+          details: {
+            equipoId: eq._id,
+            marca: eq.marca,
+            modelo: eq.modelo,
+            clienteActual: eq.clienteActual,
+          },
+        });
+      } else {
+        console.log(
+          `♻️ [crearEquipoService] Reutilizando equipo existente por ${tipo}:`,
+          eq._id
+        );
+        return eq; // 👉 reutilizar
+      }
+    }
+
+    if (esSimilar) {
       throw new ValidationError({
-        code: 'DUPLICATE_NROSERIE',
-        message: `Ya existe un equipo con el número de serie "${nroSerieSanitizado}"`,
-        details: existeSerie,
+        code: `POSSIBLE_DUPLICATE_${tipo.toUpperCase()}`,
+        message: `${tipo.toUpperCase()} ingresado es muy similar a "${
+          eq[tipo]
+        }". ¿Quizás quisiste decir ese?`,
+        details: {
+          equipoId: eq._id,
+          marca: eq.marca,
+          modelo: eq.modelo,
+          clienteActual: eq.clienteActual,
+          sugerencia,
+        },
       });
+    }
+
+    return null;
+  };
+
+  // Buscar duplicados existentes
+  if (nroSerieSanitizado) {
+    const equiposConSerie = await Equipo.find({
+      nroSerie: { $exists: true, $ne: null },
+    });
+    for (const eq of equiposConSerie) {
+      const encontrado = verificarDuplicado(
+        eq,
+        'nroSerie',
+        nroSerieSanitizado,
+        compararNroSeries
+      );
+      if (encontrado) return encontrado;
     }
   }
 
   if (imeiSanitizado) {
-    const existeImei = await Equipo.findOne({ imei: imeiSanitizado });
-    if (existeImei) {
-      throw new ValidationError({
-        code: 'DUPLICATE_IMEI',
-        message: `Ya existe un equipo con el IMEI "${imeiSanitizado}"`,
-        details: existeImei,
-      });
+    const equiposConImei = await Equipo.find({
+      imei: { $exists: true, $ne: null },
+    });
+    for (const eq of equiposConImei) {
+      const encontrado = verificarDuplicado(
+        eq,
+        'imei',
+        imeiSanitizado,
+        compararImeis
+      );
+      if (encontrado) return encontrado;
     }
   }
 
   if (macSanitizado) {
-    const existeMac = await Equipo.findOne({ macAddress: macSanitizado });
-    if (existeMac) {
-      throw new ValidationError({
-        code: 'DUPLICATE_MAC',
-        message: `Ya existe un equipo con la MAC "${macSanitizado}"`,
-        details: existeMac,
-      });
+    const equiposConMac = await Equipo.find({
+      macAddress: { $exists: true, $ne: null },
+    });
+    for (const eq of equiposConMac) {
+      const encontrado = verificarDuplicado(
+        eq,
+        'macAddress',
+        macSanitizado,
+        compararMacs
+      );
+      if (encontrado) return encontrado;
     }
   }
 
+  // =====================================================
   // 🔍 Buscar ficha técnica automática
+  // =====================================================
   let fichaTecnica;
   try {
     fichaTecnica = await vincularFichaTecnica({

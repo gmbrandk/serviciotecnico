@@ -87,16 +87,57 @@ const crearOrdenServicioService = async (data) => {
 
   // 3. Equipo
   let equipoFinal;
+
   if (typeof equipo === 'string') {
     equipoFinal = await Equipo.findById(equipo).exec();
     if (!equipoFinal) throw new ValidationError('Equipo no encontrado');
     console.log('📌 Equipo encontrado por ID:', equipoFinal._id);
   } else {
-    equipoFinal = await crearEquipoService({
-      ...equipo,
-      clienteActual: clienteFinal._id,
-    });
-    console.log('📌 Equipo creado:', equipoFinal._id);
+    // 🔎 Normalizar nroSerie para evitar duplicados por confusiones
+    const normalizarSerie = (str = '') =>
+      str
+        .toUpperCase()
+        .replace(/O/g, '0') // O → 0
+        .replace(/I/g, '1') // I → 1
+        .replace(/L/g, '1') // L → 1
+        .replace(/S/g, '5'); // S → 5
+
+    const nroSerieNormalizada = equipo.nroSerie
+      ? normalizarSerie(equipo.nroSerie)
+      : null;
+
+    // Buscar coincidencia exacta con normalización y case-insensitive
+    let existente = null;
+    if (nroSerieNormalizada) {
+      const posibles = await Equipo.find({
+        nroSerie: { $exists: true },
+      }).exec();
+      existente = posibles.find(
+        (eq) => normalizarSerie(eq.nroSerie) === nroSerieNormalizada
+      );
+    }
+
+    // Si no hay por nroSerie, intentar con IMEI / MAC exactos
+    if (!existente) {
+      existente = await Equipo.findOne({
+        $or: [
+          equipo.imei ? { imei: equipo.imei } : null,
+          equipo.macAddress ? { macAddress: equipo.macAddress } : null,
+        ].filter(Boolean),
+      }).exec();
+    }
+
+    if (existente) {
+      console.log('✅ Equipo existente encontrado:', existente._id);
+      equipoFinal = existente;
+    } else {
+      // Solo si no existe, crear uno nuevo
+      equipoFinal = await crearEquipoService({
+        ...equipo,
+        clienteActual: clienteFinal._id,
+      });
+      console.log('📌 Equipo creado:', equipoFinal._id);
+    }
   }
 
   // 4. Validar líneas de servicio
@@ -135,7 +176,7 @@ const crearOrdenServicioService = async (data) => {
       return {
         tipoTrabajo: tipoTrabajo._id,
         nombreTrabajo: linea.nombreTrabajo,
-        descripcionTrabajo: linea.descripcion || '', // 👈 FIX para no perder descripción
+        descripcionTrabajo: linea.descripcion || '',
         precioUnitario: linea.precioUnitario,
         cantidad: linea.cantidad,
       };
@@ -157,7 +198,7 @@ const crearOrdenServicioService = async (data) => {
     total: totalCalculado,
     fechaIngreso: fechaIngreso || new Date(),
     diagnostico,
-    estadoOS: estado || 'pendiente', // 👈 usar mismo nombre que en el modelo
+    estadoOS: estado || 'pendiente',
     tipo,
     observaciones,
   });

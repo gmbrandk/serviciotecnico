@@ -1,10 +1,11 @@
 const stringSimilarity = require('string-similarity');
+const levenshtein = require('fast-levenshtein');
 
 /**
  * 🔍 Normaliza un número de serie:
  * - Mayúsculas
  * - Trim
- * - Reemplazos comunes (O→0, I→1, l→1, S→5, B↔8)
+ * - Reemplazos comunes (O→0, I/L→1, S→5, B→8)
  */
 function normalizarNroSerie(nroSerie) {
   if (!nroSerie) return null;
@@ -13,24 +14,24 @@ function normalizarNroSerie(nroSerie) {
     .trim()
     .toUpperCase()
     .replace(/O/g, '0')
-    .replace(/[I|L]/g, '1')
+    .replace(/[IL]/g, '1') // fix regex
     .replace(/S/g, '5')
     .replace(/B/g, '8');
 }
 
 /**
- * 🔍 Valida si un nroSerie es sospechosamente similar a otro
+ * 🔍 Compara dos números de serie y detecta similitud sospechosa
  * @param {string} nroSerieIngresado → lo que escribió el usuario
  * @param {string} nroSerieExistente → uno guardado en DB
  * @param {number} [umbral=0.9] → similitud mínima aceptada
- * @returns {object} → { esSimilar: boolean, similitud: number, sugerencia?: string }
+ * @returns {object} → { esExacto, esSimilar, similitud, distancia, sugerencia? }
  */
 function compararNroSeries(nroSerieIngresado, nroSerieExistente, umbral = 0.9) {
   const normalizadoIngresado = normalizarNroSerie(nroSerieIngresado);
   const normalizadoExistente = normalizarNroSerie(nroSerieExistente);
 
   if (!normalizadoIngresado || !normalizadoExistente) {
-    return { esSimilar: false, similitud: 0 };
+    return { esExacto: false, esSimilar: false, similitud: 0, distancia: null };
   }
 
   const similitud = stringSimilarity.compareTwoStrings(
@@ -38,17 +39,17 @@ function compararNroSeries(nroSerieIngresado, nroSerieExistente, umbral = 0.9) {
     normalizadoExistente
   );
 
-  const diferenciaLongitud = Math.abs(
-    normalizadoIngresado.length - normalizadoExistente.length
-  );
+  const distancia = levenshtein.get(normalizadoIngresado, normalizadoExistente);
+  const esExacto = normalizadoIngresado === normalizadoExistente;
 
-  const esSimilar =
-    (similitud >= umbral || diferenciaLongitud === 1) &&
-    normalizadoIngresado !== normalizadoExistente;
+  // Caso sospechoso → alto score de similitud o distancia <= 1 (error humano)
+  const esSimilar = !esExacto && (similitud >= umbral || distancia <= 1);
 
   return {
+    esExacto,
     esSimilar,
     similitud,
+    distancia,
     sugerencia: esSimilar ? normalizadoExistente : null,
   };
 }

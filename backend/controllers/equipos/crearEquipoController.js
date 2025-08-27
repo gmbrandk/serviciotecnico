@@ -10,7 +10,11 @@ const crearEquipoController = async (req, res) => {
     console.error('[crearEquipoController] Error:', error.message);
 
     const status = error.status || 500; // ✅ Esto cubre DuplicateError y ValidationError
-    return sendError(res, status, error.message);
+    return sendError(res, {
+      status,
+      message: error.message,
+      details: error.details || null,
+    });
   }
 };
 
