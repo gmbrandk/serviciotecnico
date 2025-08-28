@@ -13,6 +13,12 @@ const {
   compararImeis,
 } = require('@utils/validadores/validarIdentificadores');
 
+const {
+  generarSkuTemporal,
+  generarNroSerieTemporal,
+  generarMacProvisional,
+} = require('@utils/generadores/generarIdentificadoresTemporales');
+
 // 🛠️ Nuestro normalizador configurable
 const normalizeField = require('@utils/normalizeField');
 
@@ -86,19 +92,16 @@ const crearEquipoService = async (
   // 🚩 Estado de identificación
   let estadoIdentificacion = 'definitiva';
 
-  let skuFinal = skuOriginal;
-  if (!skuFinal) {
-    skuFinal = `TMP-SKU-${Date.now()}`;
-    estadoIdentificacion = 'temporal';
-  }
+  let skuFinal = skuOriginal || generarSkuTemporal();
+  if (!skuOriginal) estadoIdentificacion = 'temporal';
 
-  let nroSerieFinal = nroSerieOriginal;
-  let nroSerieNormFinal = nroSerieNormalizado;
-  if (!nroSerieFinal) {
-    nroSerieFinal = `TMP-SN-${Date.now()}-${Math.floor(Math.random() * 9999)}`;
-    nroSerieNormFinal = nroSerieFinal; // el mismo tmp como normalizado
-    estadoIdentificacion = 'temporal';
-  }
+  let nroSerieFinal = nroSerieOriginal || generarNroSerieTemporal();
+  let nroSerieNormFinal = nroSerieNormalizado || nroSerieFinal;
+  if (!nroSerieOriginal) estadoIdentificacion = 'temporal';
+
+  let macFinal = macOriginal || generarMacProvisional();
+  let macNormFinal = macNormalizado || macFinal;
+  if (!macOriginal) estadoIdentificacion = 'temporal';
 
   // 🔹 Validación condicional por tipo
   if (tipoSanitizado === 'celular' && !imeiNormalizado) {
@@ -208,8 +211,8 @@ const crearEquipoService = async (
     skuNormalizado,
     nroSerie: nroSerieFinal,
     nroSerieNormalizado: nroSerieNormFinal,
-    macAddress: macOriginal,
-    macAddressNormalizado: macNormalizado,
+    macAddress: macFinal,
+    macAddressNormalizado: macNormFinal,
     imei: tipoSanitizado === 'celular' ? imeiOriginal : undefined,
     imeiNormalizado: tipoSanitizado === 'celular' ? imeiNormalizado : undefined,
     estadoIdentificacion,
