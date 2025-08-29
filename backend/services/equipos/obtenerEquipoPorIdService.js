@@ -1,6 +1,6 @@
 // 📁 services/equipos/obtenerEquipoPorIdService.js
 
-const Equipo = require('@models/Equipo');
+const { Equipo } = require('@models/Equipo');
 const { ValidationError } = require('@utils/errors');
 
 const obtenerEquipoPorIdService = async (id) => {

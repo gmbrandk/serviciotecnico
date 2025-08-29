@@ -5,15 +5,27 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const obtenerEquiposController = async (req, res) => {
   try {
-    const { clienteId, estado, texto, limite, pagina, sort } = req.query;
+    const { clienteId, estado, texto, marca, tipo, limite, pagina, sort } =
+      req.query;
+
+    // ✅ Normalización de valores
+    const clienteIdFinal =
+      clienteId && clienteId.trim() !== '' ? clienteId : null;
 
     const resultado = await obtenerEquiposService({
-      clienteId,
-      estado,
-      texto,
-      limite: Number(limite),
-      pagina: Number(pagina),
-      sort,
+      filtros: {
+        clienteId: clienteIdFinal,
+        estado: estado || null,
+        texto: texto || null,
+        marca: marca || null,
+        tipo: tipo || null,
+      },
+      opciones: {
+        limit: limite ? Number(limite) : 20,
+        page: pagina ? Number(pagina) : 1,
+        sortBy: sort || 'createdAt',
+        order: sort && sort.startsWith('-') ? 'desc' : 'asc',
+      },
     });
 
     return sendSuccess(res, {
@@ -25,6 +37,8 @@ const obtenerEquiposController = async (req, res) => {
     return sendError(res, {
       status: error.status || 500,
       message: error.message || 'Error al obtener equipos',
+      code: error.code || 'UNKNOWN_ERROR',
+      details: error.details || null,
     });
   }
 };

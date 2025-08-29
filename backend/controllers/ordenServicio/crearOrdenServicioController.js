@@ -12,7 +12,10 @@ const crearOrdenServicioController = async (req, res) => {
       .populate('representante', 'nombres apellidos dni telefono email')
       .populate('tecnico', 'nombre email')
       .populate('lineasServicio.tipoTrabajo', 'nombre descripcion precioBase')
-      .populate('equipo', 'marca sku modelo nroSerie')
+      .populate(
+        'equipo',
+        'tipo marca modelo sku nroSerie macAddress imei estadoIdentificacion'
+      )
       .lean();
 
     return sendSuccess(res, {
