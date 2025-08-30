@@ -13,14 +13,16 @@ const normalizarSerie = (str = '') =>
 
 /**
  * Resuelve un equipo a partir de un ID o un objeto de datos.
- * ⚠️ Nota: NO asigna clienteActual. Eso se hace en el servicio principal.
+ * ⚠️ Si es nuevo, se puede inicializar con clienteActual.
  */
-const resolverEquipo = async (equipo, session) => {
+const resolverEquipo = async (equipo, session, clienteId = null) => {
   if (!equipo) return null;
 
   // 📌 Caso: viene como string (ObjectId)
   if (typeof equipo === 'string') {
-    const encontrado = await Equipo.findById(equipo).session(session);
+    const encontrado = await Equipo.findById(equipo)
+      .populate('clienteActual')
+      .session(session);
     if (!encontrado) throw new ValidationError('Equipo no encontrado');
     return encontrado;
   }
@@ -31,7 +33,9 @@ const resolverEquipo = async (equipo, session) => {
   if (equipo.nroSerie) {
     existente = await Equipo.findOne({
       nroSerieNormalizado: normalizarSerie(equipo.nroSerie),
-    }).session(session);
+    })
+      .populate('clienteActual')
+      .session(session);
   }
 
   // Si no se encontró por serie, intentar por IMEI o MAC
@@ -41,7 +45,9 @@ const resolverEquipo = async (equipo, session) => {
         equipo.imei ? { imei: equipo.imei } : null,
         equipo.macAddress ? { macAddress: equipo.macAddress } : null,
       ].filter(Boolean),
-    }).session(session);
+    })
+      .populate('clienteActual')
+      .session(session);
   }
 
   // Crear equipo si no existe
@@ -49,6 +55,7 @@ const resolverEquipo = async (equipo, session) => {
     existente = await crearEquipoService(
       {
         ...equipo,
+        clienteActual: clienteId, // 👈 ahora sí se asigna si lo recibimos
         nroSerieNormalizado: equipo.nroSerie
           ? normalizarSerie(equipo.nroSerie)
           : undefined,
@@ -57,7 +64,10 @@ const resolverEquipo = async (equipo, session) => {
     );
   }
 
-  return existente;
+  // 📌 Aseguramos devolver siempre clienteActual poblado
+  return await Equipo.findById(existente._id)
+    .populate('clienteActual')
+    .session(session);
 };
 
 module.exports = resolverEquipo;
