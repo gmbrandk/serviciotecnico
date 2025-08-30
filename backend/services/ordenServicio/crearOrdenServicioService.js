@@ -17,9 +17,8 @@ const crearOrdenServicioService = async (data) => {
 
   try {
     const {
-      cliente,
-      representante,
-      equipo,
+      representante, // persona que viene al taller
+      equipo, // equipo en cuestión
       lineasServicio,
       tecnico,
       total,
@@ -30,28 +29,43 @@ const crearOrdenServicioService = async (data) => {
       observaciones,
     } = data;
 
-    // ─────────────────────────────
-    // 1. Resolver cliente
-    // ─────────────────────────────
-    const clienteFinal = await resolverPersona(cliente, session);
-    if (!clienteFinal)
-      throw new ValidationError('No se pudo resolver el cliente');
-
-    // ─────────────────────────────
-    // 2. Representante
-    // ─────────────────────────────
-
+    // 1. Resolver representante (puede ser null)
     const representanteFinal =
-      (await resolverPersona(representante, session)) || clienteFinal;
+      (await resolverPersona(representante, session)) || null;
 
-    // ─────────────────────────────
-    // 3. Equipo
-    // ─────────────────────────────
-    const equipoFinal = await resolverEquipo(equipo, clienteFinal, session);
+    // 2. Resolver equipo (puede existir o ser nuevo)
+    const equipoFinal = await resolverEquipo(equipo, null, session);
 
-    /** ─────────────────────────────
-     * 4. Validar líneas de servicio
-     * ───────────────────────────── */
+    // 3. Resolver cliente según equipo.clienteActual o fallback a data.cliente
+    let clienteFinal;
+    if (equipoFinal.clienteActual) {
+      clienteFinal = await Cliente.findById(equipoFinal.clienteActual).session(
+        session
+      );
+      if (!clienteFinal) {
+        throw new ValidationError(
+          `El equipo con nroSerie ${equipoFinal.nroSerie} tiene un clienteActual inválido.`
+        );
+      }
+    } else {
+      if (!data.cliente) {
+        throw new ValidationError(
+          'El equipo no tiene clienteActual y no se proporcionó cliente en la petición.'
+        );
+      }
+      clienteFinal = await resolverPersona(data.cliente, session);
+      equipoFinal.clienteActual = clienteFinal._id;
+      equipoFinal.historialPropietarios.push({
+        clienteId: clienteFinal._id,
+        fechaAsignacion: new Date(),
+      });
+      await equipoFinal.save({ session });
+    }
+
+    // 4. Si no hay representante explícito, usamos cliente
+    const representanteDef = representanteFinal || clienteFinal;
+
+    // 5. Validar líneas de servicio
     if (!Array.isArray(lineasServicio) || lineasServicio.length === 0) {
       throw new ValidationError('Se requiere al menos una línea de servicio.');
     }
@@ -97,12 +111,10 @@ const crearOrdenServicioService = async (data) => {
       0
     );
 
-    /** ─────────────────────────────
-     * 5. Crear orden de servicio
-     * ───────────────────────────── */
+    // 6. Crear orden de servicio
     const ordenServicio = new OrdenServicio({
       cliente: clienteFinal._id,
-      representante: representanteFinal._id,
+      representante: representanteDef._id,
       equipo: equipoFinal._id,
       lineasServicio: lineasServicioFinal,
       tecnico,
@@ -127,9 +139,7 @@ const crearOrdenServicioService = async (data) => {
       { path: 'lineasServicio.tipoTrabajo' },
     ]);
 
-    /** ─────────────────────────────
-     * 6. Commit de la transacción
-     * ───────────────────────────── */
+    // 7. Commit de la transacción
     await session.commitTransaction();
     session.endSession();
 

@@ -48,6 +48,12 @@ const obtenerEquiposService = async ({
     query.tipo = new RegExp(filtros.tipo.trim(), 'i');
   }
 
+  // 🔹 Filtrar por número de serie
+  if (filtros.nroSerie && filtros.nroSerie.trim()) {
+    query.nroSerie = new RegExp(`^${filtros.nroSerie.trim()}$`, 'i');
+    // 🔸 ^...$ asegura coincidencia exacta (pero case-insensitive)
+  }
+
   // 🔹 Filtrar por texto libre (modelo, sku, nroSerie)
   if (filtros.texto && filtros.texto.trim()) {
     const regex = new RegExp(filtros.texto.trim(), 'i');

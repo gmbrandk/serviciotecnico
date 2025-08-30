@@ -1,7 +1,13 @@
 // 📌 services/clientes/helpers/resolverPersona.js
 const Cliente = require('@models/Cliente');
 const crearClienteService = require('@services/clientes/crearClienteService');
-const obtenerClientesService = require('@services/clientes/obtenerClientesService');
+const { ValidationError } = require('@utils/errors');
+
+/**
+ * Normaliza datos clave para evitar duplicados por formato.
+ */
+const normalizarEmail = (email = '') => email.trim().toLowerCase();
+const normalizarTelefono = (tel = '') => tel.replace(/\D/g, ''); // solo dígitos
 
 /**
  * Resuelve un cliente/representante.
@@ -10,40 +16,42 @@ const obtenerClientesService = require('@services/clientes/obtenerClientesServic
  * @returns {Promise<Cliente>}
  */
 const resolverPersona = async (persona, session) => {
-  let personaFinal = null;
-
   if (!persona) return null;
 
   // 📌 Caso: viene como string (ObjectId)
   if (typeof persona === 'string') {
-    personaFinal = await obtenerClientesService({ id: persona });
-    return personaFinal;
+    const encontrado = await Cliente.findById(persona).session(session);
+    if (!encontrado) throw new ValidationError('Cliente no encontrado');
+    return encontrado;
   }
 
   // 📌 Caso: objeto con datos
+  const query = [];
+  if (persona.dni) query.push({ dni: persona.dni });
+  if (persona.email) query.push({ email: normalizarEmail(persona.email) });
+  if (persona.telefono)
+    query.push({ telefono: normalizarTelefono(persona.telefono) });
+
   let existente = null;
-
-  if (persona.dni) {
-    existente = await Cliente.findOne({ dni: persona.dni }).session(session);
-  }
-  if (!existente && persona.email) {
-    existente = await Cliente.findOne({ email: persona.email }).session(
-      session
-    );
-  }
-  if (!existente && persona.telefono) {
-    existente = await Cliente.findOne({ telefono: persona.telefono }).session(
-      session
-    );
+  if (query.length > 0) {
+    existente = await Cliente.findOne({ $or: query }).session(session);
   }
 
-  if (existente) {
-    personaFinal = existente;
-  } else {
-    personaFinal = await crearClienteService(persona, { session });
-  }
+  if (existente) return existente;
 
-  return personaFinal;
+  // Crear nuevo cliente
+  const nuevo = await crearClienteService(
+    {
+      ...persona,
+      email: persona.email ? normalizarEmail(persona.email) : undefined,
+      telefono: persona.telefono
+        ? normalizarTelefono(persona.telefono)
+        : undefined,
+    },
+    { session }
+  );
+
+  return nuevo;
 };
 
 module.exports = resolverPersona;

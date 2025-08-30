@@ -5,8 +5,17 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const obtenerEquiposController = async (req, res) => {
   try {
-    const { clienteId, estado, texto, marca, tipo, limite, pagina, sort } =
-      req.query;
+    const {
+      clienteId,
+      estado,
+      texto,
+      marca,
+      tipo,
+      limite,
+      pagina,
+      sort,
+      nroSerie,
+    } = req.query;
 
     // ✅ Normalización de valores
     const clienteIdFinal =
@@ -19,6 +28,7 @@ const obtenerEquiposController = async (req, res) => {
         texto: texto || null,
         marca: marca || null,
         tipo: tipo || null,
+        nroSerie: nroSerie || null,
       },
       opciones: {
         limit: limite ? Number(limite) : 20,

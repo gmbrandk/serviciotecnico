@@ -210,7 +210,9 @@ const crearEquipoService = async (
   }
 
   // 🧾 Historial propietario
-  const historialPropietarios = inicializarHistorialClientes(clienteId);
+  const historialPropietarios = inicializarHistorialClientes(clienteId, {
+    usuarioId: session?.usuario?._id || null,
+  });
 
   // ⚙️ Especificaciones
   const { especificacionesActuales, repotenciado } =

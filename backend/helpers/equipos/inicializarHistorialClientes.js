@@ -1,12 +1,14 @@
-// 📁 helpers/equipos/inicializarHistorialClientes.js
-
-const inicializarHistorialClientes = (clienteId) => {
-  if (!clienteId) return [];
+// helpers/equipos/inicializarHistorialClientes.js
+const inicializarHistorialClientes = (clienteId, { usuarioId = null } = {}) => {
+  const now = new Date();
 
   return [
     {
       clienteId,
-      fechaAsignacion: new Date(),
+      fechaAsignacion: now,
+      fechaFin: null,
+      origenCambio: 'auto', // 🔹 indica que es por creación de equipo
+      usuarioResponsable: usuarioId, // 🔹 quién lo creó (opcional)
     },
   ];
 };

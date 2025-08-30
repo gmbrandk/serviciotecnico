@@ -1,40 +1,41 @@
+// 📌 services/equipos/helpers/resolverEquipo.js
 const { Equipo } = require('@models/Equipo');
 const crearEquipoService = require('@services/equipos/crearEquipoService');
 const { ValidationError } = require('@utils/errors');
 
-const resolverEquipo = async (equipo, clienteFinal, session) => {
+const normalizarSerie = (str = '') =>
+  str
+    .trim()
+    .toUpperCase()
+    .replace(/O/g, '0')
+    .replace(/I|L/g, '1')
+    .replace(/S/g, '5');
+
+/**
+ * Resuelve un equipo a partir de un ID o un objeto de datos.
+ * ⚠️ Nota: NO asigna clienteActual. Eso se hace en el servicio principal.
+ */
+const resolverEquipo = async (equipo, session) => {
   if (!equipo) return null;
 
-  let equipoFinal = null;
-
-  // 📌 Caso: ID (string)
+  // 📌 Caso: viene como string (ObjectId)
   if (typeof equipo === 'string') {
-    equipoFinal = await Equipo.findById(equipo).session(session);
-    if (!equipoFinal) throw new ValidationError('Equipo no encontrado');
-    return equipoFinal;
+    const encontrado = await Equipo.findById(equipo).session(session);
+    if (!encontrado) throw new ValidationError('Equipo no encontrado');
+    return encontrado;
   }
 
-  // 📌 Caso: objeto con datos
-  const normalizarSerie = (str = '') =>
-    str
-      .toUpperCase()
-      .replace(/O/g, '0')
-      .replace(/I/g, '1')
-      .replace(/L/g, '1')
-      .replace(/S/g, '5');
-
+  // 📌 Caso: objeto con datos → buscar por nroSerieNormalizado primero
   let existente = null;
 
   if (equipo.nroSerie) {
-    const posibles = await Equipo.find({ nroSerie: { $exists: true } }).session(
-      session
-    );
-    existente = posibles.find(
-      (eq) => normalizarSerie(eq.nroSerie) === normalizarSerie(equipo.nroSerie)
-    );
+    existente = await Equipo.findOne({
+      nroSerieNormalizado: normalizarSerie(equipo.nroSerie),
+    }).session(session);
   }
 
-  if (!existente) {
+  // Si no se encontró por serie, intentar por IMEI o MAC
+  if (!existente && (equipo.imei || equipo.macAddress)) {
     existente = await Equipo.findOne({
       $or: [
         equipo.imei ? { imei: equipo.imei } : null,
@@ -43,17 +44,20 @@ const resolverEquipo = async (equipo, clienteFinal, session) => {
     }).session(session);
   }
 
-  equipoFinal =
-    existente ||
-    (await crearEquipoService(
+  // Crear equipo si no existe
+  if (!existente) {
+    existente = await crearEquipoService(
       {
         ...equipo,
-        clienteActual: clienteFinal._id, // 🔥 forzamos clienteActual aquí
+        nroSerieNormalizado: equipo.nroSerie
+          ? normalizarSerie(equipo.nroSerie)
+          : undefined,
       },
       { session }
-    ));
+    );
+  }
 
-  return equipoFinal;
+  return existente;
 };
 
 module.exports = resolverEquipo;
