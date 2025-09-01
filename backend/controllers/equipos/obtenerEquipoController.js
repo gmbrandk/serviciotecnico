@@ -1,53 +1,89 @@
 // 📁 controllers/equipos/obtenerEquiposController.js
-
 const obtenerEquiposService = require('@services/equipos/obtenerEquiposService');
 const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const obtenerEquiposController = async (req, res) => {
   try {
+    // Lista blanca de parámetros permitidos
+    const allowedFilters = [
+      'id',
+      'clienteId',
+      'estado',
+      'texto',
+      'marca',
+      'tipo',
+      'nroSerie',
+      'imei',
+      'pagina',
+      'limite',
+      'macAddress',
+      'sortBy',
+      'order',
+    ];
+
+    // Detectar parámetros no permitidos
+    const queryKeys = Object.keys(req.query);
+    const invalidFilters = queryKeys.filter(
+      (key) => !allowedFilters.includes(key)
+    );
+
+    if (invalidFilters.length > 0) {
+      return sendError(res, {
+        status: 400,
+        message: `Parámetros no permitidos: ${invalidFilters.join(', ')}`,
+      });
+    }
+
+    // Extraer parámetros
     const {
+      id,
       clienteId,
       estado,
       texto,
       marca,
       tipo,
-      limite,
-      pagina,
-      sort,
       nroSerie,
+      pagina,
+      limite,
+      sortBy,
+      order,
+      imei,
+      macAddress,
     } = req.query;
 
-    // ✅ Normalización de valores
-    const clienteIdFinal =
-      clienteId && clienteId.trim() !== '' ? clienteId : null;
-
+    // Llamar al service
     const resultado = await obtenerEquiposService({
+      id: id || null,
       filtros: {
-        clienteId: clienteIdFinal,
-        estado: estado || null,
-        texto: texto || null,
-        marca: marca || null,
-        tipo: tipo || null,
-        nroSerie: nroSerie || null,
+        clienteId,
+        estado,
+        texto,
+        marca,
+        tipo,
+        nroSerie,
+        imei,
+        macAddress,
       },
       opciones: {
-        limit: limite ? Number(limite) : 20,
         page: pagina ? Number(pagina) : 1,
-        sortBy: sort || 'createdAt',
-        order: sort && sort.startsWith('-') ? 'desc' : 'asc',
+        limit: limite ? Number(limite) : 20,
+        sortBy: sortBy || 'createdAt',
+        order: order || 'desc',
       },
     });
 
     return sendSuccess(res, {
-      message: 'Equipos obtenidos correctamente',
+      status: 200,
+      message: id
+        ? 'Equipo obtenido correctamente'
+        : 'Equipos obtenidos correctamente',
       details: resultado,
     });
   } catch (error) {
     console.error('[❌ Error obtenerEquiposController]', error);
     return sendError(res, {
       status: error.status || 500,
-      message: error.message || 'Error al obtener equipos',
-      code: error.code || 'UNKNOWN_ERROR',
+      message: error.mensaje || 'Error al obtener equipos',
       details: error.details || null,
     });
   }

@@ -24,6 +24,7 @@ const acciones = {
   'equipo:editar': require('./permisos/accionesPermiso/equipo/editarEquipo'),
   'equipo:obtener': require('./permisos/accionesPermiso/equipo/obtenerEquipo'),
   'equipo:cambiarEstado': require('./permisos/accionesPermiso/equipo/cambiarEstadoEquipo'),
+  'equipo:buscar': require('./permisos/accionesPermiso/equipo/buscarEquipo'),
 };
 
 const verificarPermiso = ({

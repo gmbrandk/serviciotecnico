@@ -2,15 +2,9 @@
 const OrdenServicio = require('@models/OrdenServicio');
 const Cliente = require('@models/Cliente');
 const { Equipo } = require('@models/Equipo');
-const { ValidationError } = require('@utils/errors');
 const TipoTrabajo = require('@models/TipodeTrabajo');
+const { ValidationError } = require('@utils/errors');
 const mongoose = require('mongoose');
-
-const resolverPersona = require('@helpers/resolverPersona');
-const resolverEquipo = require('@helpers/resolverEquipo');
-
-const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
-const buscarEquipoPorIdentificador = require('@helpers/equipos/buscarEquipoPorIdentificador');
 
 const crearOrdenServicioService = async (data) => {
   console.log('▶️ Iniciando creación de Orden de Servicio...');
@@ -20,48 +14,25 @@ const crearOrdenServicioService = async (data) => {
 
   try {
     const {
-      representante, // persona que viene al taller
-      equipo, // equipo en cuestión
+      representanteId, // 👈 viene del body
+      equipoId, // 👈 viene del body
       lineasServicio,
       tecnico,
       total,
       fechaIngreso,
-      diagnostico,
+      diagnosticoCliente,
       estado,
       tipo,
       observaciones,
     } = data;
 
-    // 1. Resolver representante (puede ser null)
-    const representanteFinal =
-      (await resolverPersona(representante, session)) || null;
-
-    if (!representanteFinal) {
-      throw new ValidationError(
-        'Debe especificarse un representante para crear la orden de servicio.'
-      );
-    }
-
-    // 2. Resolver equipo (existente o nuevo)
-    let equipoFinal = await resolverEquipo(
-      equipo,
-      session,
-      representanteFinal._id
-    );
-
+    // 1. Validar equipo y cliente actual
+    const equipoFinal = await Equipo.findById(equipoId).session(session);
+    if (!equipoFinal) throw new ValidationError('Equipo no válido');
     if (!equipoFinal.clienteActual) {
-      // Equipo existente sin propietario → asignamos representante
-      equipoFinal.clienteActual = representanteFinal._id;
-      equipoFinal.historialPropietarios.push({
-        clienteId: representanteFinal._id,
-        fechaAsignacion: new Date(),
-        origenCambio: 'asignacion_representante',
-        usuarioResponsable: session?.usuario?._id || null,
-      });
-      await equipoFinal.save({ session });
+      throw new ValidationError('El equipo no tiene un clienteActual asignado');
     }
 
-    // 3. Resolver cliente final (siempre consistente)
     const clienteFinal = await Cliente.findById(
       equipoFinal.clienteActual
     ).session(session);
@@ -71,37 +42,22 @@ const crearOrdenServicioService = async (data) => {
       );
     }
 
-    // 4. Representante final = el que vino, si no, el cliente
-    const representanteDef = representanteFinal || clienteFinal;
+    // 2. Representante → si no se envía, usamos al cliente mismo
+    const representanteDef = representanteId || clienteFinal._id;
 
-    // 5. Validar líneas de servicio
+    // 3. Validar líneas de servicio
     if (!Array.isArray(lineasServicio) || lineasServicio.length === 0) {
       throw new ValidationError('Se requiere al menos una línea de servicio.');
     }
 
     const lineasServicioFinal = await Promise.all(
       lineasServicio.map(async (linea, index) => {
-        if (!mongoose.Types.ObjectId.isValid(linea.tipoTrabajo)) {
-          throw new ValidationError(
-            `El tipoTrabajo en la línea ${index + 1} no es un ObjectId válido.`
-          );
-        }
         const tipoTrabajo = await TipoTrabajo.findById(
           linea.tipoTrabajo
         ).session(session);
         if (!tipoTrabajo) {
           throw new ValidationError(
             `El tipoTrabajo en la línea ${index + 1} no existe.`
-          );
-        }
-        if (
-          typeof linea.precioUnitario !== 'number' ||
-          typeof linea.cantidad !== 'number'
-        ) {
-          throw new ValidationError(
-            `La línea ${
-              index + 1
-            } debe tener precioUnitario y cantidad numéricos.`
           );
         }
 
@@ -120,16 +76,16 @@ const crearOrdenServicioService = async (data) => {
       0
     );
 
-    // 6. Crear orden de servicio
+    // 4. Crear OS
     const ordenServicio = new OrdenServicio({
-      cliente: clienteFinal._id,
-      representante: representanteDef._id,
+      cliente: clienteFinal._id, // 🔑 sacado de equipo.clienteActual
+      representante: representanteDef,
       equipo: equipoFinal._id,
       lineasServicio: lineasServicioFinal,
       tecnico,
       total: total || totalCalculado,
       fechaIngreso: fechaIngreso || new Date(),
-      diagnostico,
+      diagnosticoCliente,
       estadoOS: estado || 'pendiente',
       tipo,
       observaciones,
@@ -137,18 +93,26 @@ const crearOrdenServicioService = async (data) => {
 
     await ordenServicio.save({ session });
 
+    // 5. Populate enriquecido
     await ordenServicio.populate([
-      { path: 'cliente' },
-      { path: 'representante' },
+      { path: 'cliente', select: 'nombres apellidos dni telefono email' },
+      { path: 'representante', select: 'nombres apellidos dni telefono email' },
+      { path: 'tecnico', select: 'nombre email' },
       {
         path: 'equipo',
         select:
-          'tipo marca modelo sku nroSerie macAddress imei estadoIdentificacion',
+          'tipo marca modelo sku nroSerie macAddress imei estadoIdentificacion clienteActual',
+        populate: {
+          path: 'clienteActual',
+          select: 'nombres apellidos dni telefono email',
+        }, // 👈 faltaba nombres/apellidos
       },
-      { path: 'lineasServicio.tipoTrabajo' },
+      {
+        path: 'lineasServicio.tipoTrabajo',
+        select: 'nombre descripcion precioBase',
+      },
     ]);
 
-    // 7. Commit de la transacción
     await session.commitTransaction();
     session.endSession();
 

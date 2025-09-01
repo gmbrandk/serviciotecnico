@@ -13,7 +13,7 @@ const editarEquipoController = async (req, res) => {
 
     return sendSuccess(res, {
       message: 'Equipo editado correctamente',
-      equipo: equipoActualizado,
+      details: equipoActualizado, // 🔹 siempre bajo data
     });
   } catch (error) {
     console.error('❌ Error en editarEquipoController:', error);

@@ -1,13 +1,19 @@
-const Equipo = require('@models/Equipo');
+// 📁 services/equipos/editarEquipoService.js
+const { Equipo } = require('@models/Equipo');
 const FichaTecnica = require('@models/FichaTecnica');
 const vincularFichaTecnica = require('@helpers/equipos/vincularFichaTecnica');
-const inicializarHistorialClientes = require('@helpers/equipos/inicializarHistorialClientes');
+const actualizarHistorialClientes = require('@helpers/equipos/actualizarHistorialClientes');
 const calcularEspecificacionesEquipo = require('@helpers/equipos/calcularEspecificacionesEquipo');
 const { ValidationError } = require('@utils/errors');
 const xss = require('xss');
 const generarNombreTecnico = require('@utils/formatters/normalizarNombreTecnico');
 const crearFichaTecnicaService = require('@services/fichaTecnica/crearFichaTecnicaService');
 const normalizarSKU = require('@utils/formatters/normalizarSKU');
+
+const {
+  compararMacs,
+  compararImeis,
+} = require('@utils/validadores/validarIdentificadores');
 
 const editarEquipoService = async (idEquipo, data) => {
   const {
@@ -20,6 +26,8 @@ const editarEquipoService = async (idEquipo, data) => {
     permitirCrearFichaTecnicaManual = false,
     usuarioSolicitante,
     nroSerie,
+    macAddress,
+    imei,
     ...resto
   } = data;
 
@@ -54,44 +62,58 @@ const editarEquipoService = async (idEquipo, data) => {
   const tipoSanitizado = xss(tipo.trim());
   const marcaSanitizada = xss(marca?.trim() || '');
   const modeloSanitizado = xss(modelo?.trim() || '');
-  const skuSanitizado = normalizarSKU(sku); // ✅ Normalización real
+  const skuSanitizado = normalizarSKU(sku);
   const nombreTecnico = generarNombreTecnico(marcaSanitizada, modeloSanitizado);
 
-  // 🔍 Validación explícita del SKU en conflicto con otra ficha
-  const fichaConEseSKU = await FichaTecnica.findOne({ sku: skuSanitizado });
-  if (fichaConEseSKU) {
-    const mismaMarca =
-      fichaConEseSKU.marca.trim().toUpperCase() ===
-      marcaSanitizada.toUpperCase();
-    const mismoModelo =
-      fichaConEseSKU.modelo.trim().toUpperCase() ===
-      modeloSanitizado.toUpperCase();
-
-    if (!mismaMarca || !mismoModelo) {
-      console.warn(
-        '⚠️ [Service] SKU en uso por otra ficha con diferente marca/modelo'
-      );
-      throw new ValidationError(
-        `El SKU "${skuSanitizado}" ya está asignado a otra ficha técnica con diferente marca o modelo: "${fichaConEseSKU.marca} ${fichaConEseSKU.modelo}".`
-      );
+  // =====================================================
+  // 🔍 Validar duplicados (IMEI, MAC) solo si cambian
+  // =====================================================
+  if (imei && tipoSanitizado.toLowerCase() === 'smartphone') {
+    if (imei !== equipo.imei) {
+      const equiposConImei = await Equipo.find({
+        imeiNormalizado: imei.trim().toUpperCase(),
+      });
+      for (const eq of equiposConImei) {
+        const encontrado = compararImeis(
+          imei.trim().toUpperCase(),
+          eq.imeiNormalizado
+        );
+        if (
+          encontrado.esExacto &&
+          eq._id.toString() !== equipo._id.toString()
+        ) {
+          throw new ValidationError(
+            `El IMEI "${imei}" ya está registrado en otro equipo`
+          );
+        }
+      }
     }
   }
 
-  // 🔍 Buscar ficha técnica existente (ya se hacía)
+  if (macAddress && macAddress !== equipo.macAddress) {
+    const macNormalizado = macAddress.trim().toUpperCase();
+    const equiposConMac = await Equipo.find({
+      macAddressNormalizado: macNormalizado,
+    });
+    for (const eq of equiposConMac) {
+      const encontrado = compararMacs(macNormalizado, eq.macAddressNormalizado);
+      if (encontrado.esExacto && eq._id.toString() !== equipo._id.toString()) {
+        throw new ValidationError(
+          `La dirección MAC "${macAddress}" ya está registrada en otro equipo`
+        );
+      }
+    }
+  }
+
+  // =====================================================
+  // 🔍 Vincular o crear ficha técnica
+  // =====================================================
   let fichaTecnicaNueva = await vincularFichaTecnica({
     sku: skuSanitizado,
     marca: marcaSanitizada,
     modelo: modeloSanitizado,
   });
 
-  if (fichaTecnicaNueva) {
-    console.log(
-      '🟢 [Service] Ficha técnica encontrada:',
-      fichaTecnicaNueva._id
-    );
-  }
-
-  // 🧠 Crear ficha técnica manual si se permite (ya se hacía)
   if (
     !fichaTecnicaNueva &&
     fichaTecnicaManual &&
@@ -104,11 +126,9 @@ const editarEquipoService = async (idEquipo, data) => {
     });
 
     if (fichaExistente) {
-      console.log('🟠 [Service] Reutilizando ficha técnica manual existente');
       fichaTecnicaNueva = fichaExistente;
     } else {
       try {
-        console.log('🟠 [Service] Creando ficha técnica manual...');
         fichaTecnicaNueva = await crearFichaTecnicaService({
           modelo: modeloSanitizado,
           sku: skuSanitizado,
@@ -130,56 +150,27 @@ const editarEquipoService = async (idEquipo, data) => {
 
   const fichaFinal = fichaTecnicaNueva?._id || equipo.fichaTecnica || null;
 
-  // ⚖️ Validación flexible si el equipo ya tiene ficha y se intenta cambiar el SKU
-  if (equipo.fichaTecnica && skuSanitizado) {
-    const fichaActual = await FichaTecnica.findById(equipo.fichaTecnica);
-    const skuActual = normalizarSKU(fichaActual?.sku);
-    const esDiferente = skuActual && skuActual !== skuSanitizado;
-
-    const coincideCPU =
-      fichaActual?.cpu?.trim() === fichaTecnicaManual?.cpu?.trim();
-    const coincideGPU =
-      fichaActual?.gpu?.trim() === fichaTecnicaManual?.gpu?.trim();
-
-    if (esDiferente && !(coincideCPU && coincideGPU)) {
-      console.warn(
-        '⚠️ [Service] Cambio de SKU no válido, componentes clave no coinciden.'
-      );
-      throw new ValidationError(
-        `El SKU "${skuSanitizado}" difiere del ya vinculado y los componentes clave (CPU/GPU) no coinciden.`
-      );
-    }
-  }
-
+  // =====================================================
   // 🧪 Recalcular especificaciones
-  console.log(
-    '🧩 [Service] Ficha técnica base:',
-    fichaTecnicaNueva || '❌ No definida'
-  );
-  console.log(
-    '🧩 [Service] Ficha técnica manual recibida:',
-    fichaTecnicaManual || '❌ No recibida'
-  );
-
+  // =====================================================
   const { especificacionesActuales, repotenciado } =
     calcularEspecificacionesEquipo(fichaTecnicaNueva, fichaTecnicaManual || {});
 
-  console.log('🧪 [Service] Resultado repotenciado:', repotenciado);
-  console.log(
-    '🧪 [Service] Especificaciones finales:',
-    especificacionesActuales
-  );
-
-  // 📚 Historial si cambia cliente (ya se hacía)
+  // =====================================================
+  // 📚 Historial si cambia cliente
+  // =====================================================
   let historialPropietarios = equipo.historialPropietarios || [];
   if (clienteActual.toString() !== equipo.clienteActual?.toString()) {
-    historialPropietarios = inicializarHistorialClientes(
+    historialPropietarios = actualizarHistorialClientes(
+      historialPropietarios,
       clienteActual,
-      historialPropietarios
+      { usuarioId: usuarioSolicitante?._id }
     );
   }
 
+  // =====================================================
   // 📝 Actualizar equipo
+  // =====================================================
   const actualizado = await Equipo.findByIdAndUpdate(
     idEquipo,
     {
@@ -192,6 +183,8 @@ const editarEquipoService = async (idEquipo, data) => {
       historialPropietarios,
       especificacionesActuales,
       repotenciado,
+      macAddress: macAddress || equipo.macAddress,
+      imei: imei || equipo.imei,
       ...resto,
     },
     { new: true }

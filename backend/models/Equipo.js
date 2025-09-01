@@ -177,6 +177,29 @@ LaptopSchema.pre('save', function (next) {
   next();
 });
 
+// 📌 Índices en el esquema base
+EquipoBaseSchema.index({ skuNormalizado: 1 }, { unique: true, sparse: true });
+EquipoBaseSchema.index({ marca: 1 });
+EquipoBaseSchema.index({ tipo: 1 });
+
+// 📌 Índices smartphone
+SmartphoneSchema.index(
+  { nroSerieNormalizado: 1 },
+  { unique: true, sparse: true }
+);
+SmartphoneSchema.index({ imeiNormalizado: 1 }, { unique: true, sparse: true });
+SmartphoneSchema.index(
+  { macAddressNormalizado: 1 },
+  { unique: true, sparse: true }
+);
+
+// 📌 Índices laptop
+LaptopSchema.index({ nroSerieNormalizado: 1 }, { unique: true, sparse: true });
+LaptopSchema.index(
+  { macAddressNormalizado: 1 },
+  { unique: true, sparse: true }
+);
+
 const Laptop = Equipo.discriminator('laptop', LaptopSchema);
 
 module.exports = { Equipo, Smartphone, Laptop };

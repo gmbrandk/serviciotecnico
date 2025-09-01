@@ -7,6 +7,17 @@ const { verificarToken } = require('@middlewares/authMiddleware');
 const verificarAcceso = require('@middlewares/verificarAcceso');
 const obtenerEquiposController = require('@controllers/equipos/obtenerEquipoController');
 const obtenerEquipoPorIdController = require('@controllers/equipos/obtenerEquipoPorIdController');
+const buscarEquiposController = require('@controllers/equipos/buscarEquiposController');
+
+router.get(
+  '/search',
+  verificarToken,
+  verificarAcceso({
+    accion: 'equipo:buscar',
+    rolesPermitidos: ['administrador', 'superadministrador'],
+  }),
+  buscarEquiposController
+);
 
 router.get(
   '/',
