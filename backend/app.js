@@ -1,10 +1,11 @@
 // backend/app.js
-
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 // Cargar .env correcto
 const envPath = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
@@ -20,6 +21,13 @@ const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+
+// 📘 Swagger UI (lee el YAML que creaste en backend/docs/openapi.yaml)
+const swaggerDocument = YAML.load(path.join(__dirname, './docs/openapi.yaml'));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get('/api/docs-json', (req, res) => {
+  res.json(swaggerDocument);
+});
 
 // Rutas
 const authRoutes = require('@routes/auth/auth');

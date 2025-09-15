@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: API de Clientes
+  version: 1.0.0
+  description: |
+    Documentación de la API para gestión de clientes.
+    Incluye validaciones, respuestas de éxito y errores normalizados.
+servers:
+  - url: http://localhost:5000/api
+    description: Servidor local
+
+paths:
+  /clientes:
+    post:
+      summary: Crear un nuevo cliente
+      tags:
+        - Clientes
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '201':
+          description: Cliente creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+              example:
+                cliente:
+                  _id: 68aa7a9a74b7f4c7519e3c8c
+                  nombres: Jorge
+                  apellidos: Muñante Salazar
+                  dni: '58496123'
+                  telefono: '994826849'
+                  email: 'jorge.muñante@example.com'
+                  estado: activo
+                  calificacion: regular
+        '400':
+          description: Error de validación o duplicado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                CampoRequerido:
+                  value:
+                    status: 400
+                    code: REQUIRED_FIELD
+                    message: 'El campo "nombres" es obligatorio'
+                    details: { field: 'nombres' }
+                TelefonoInvalido:
+                  value:
+                    status: 400
+                    code: INVALID_PHONE
+                    message: 'Número de teléfono inválido'
+                    details: { input: '99482' }
+                DniDuplicado:
+                  value:
+                    status: 400
+                    code: DUPLICATE_DNI
+                    message: 'El DNI 58496123 ya está registrado'
+                TelefonoDuplicado:
+                  value:
+                    status: 400
+                    code: DUPLICATE_PHONE
+                    message: 'El teléfono 994826849 ya está registrado'
+                EmailDuplicado:
+                  value:
+                    status: 400
+                    code: DUPLICATE_EMAIL
+                    message: 'El email jorge.muñante@example.com ya está registrado'
+        '401':
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+  schemas:
+    ClienteInput:
+      type: object
+      required:
+        - nombres
+        - apellidos
+        - dni
+        - telefono
+      properties:
+        nombres:
+          type: string
+          example: Jorge
+        apellidos:
+          type: string
+          example: Muñante Salazar
+        dni:
+          type: string
+          example: '58496123'
+        telefono:
+          type: string
+          example: '994826849'
+        direccion:
+          type: string
+          example: Jr. Los Laureles 123
+        email:
+          type: string
+          format: email
+          example: jorge.muñante@example.com
+
+    Cliente:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 68aa7a9a74b7f4c7519e3c8c
+        nombres:
+          type: string
+        apellidos:
+          type: string
+        dni:
+          type: string
+        telefono:
+          type: string
+        email:
+          type: string
+        estado:
+          type: string
+          enum: [activo, inactivo]
+        calificacion:
+          type: string
+          enum: [bueno, regular, malo]
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        code:
+          type: string
+          description: Código interno de error emitido por el service
+          enum:
+            - REQUIRED_FIELD
+            - INVALID_PHONE
+            - DUPLICATE_DNI
+            - DUPLICATE_PHONE
+            - DUPLICATE_EMAIL
+            - VALIDATION_ERROR
+          example: REQUIRED_FIELD
+        message:
+          type: string
+          description: Descripción legible del error
+          example: El campo "nombres" es obligatorio
+        details:
+          type: object
+          nullable: true
+          description: Información adicional sobre el error
+          examples:
+            - { field: 'nombres' }
+            - { input: '99482' }

@@ -5,16 +5,14 @@ const { ValidationError } = require('@utils/errors');
 const crearEquipoController = async (req, res) => {
   try {
     const equipo = await crearEquipoService(req.body, req.usuario);
-    return sendSuccess(res, 201, 'Equipo creado correctamente', equipo);
+    return sendSuccess(res, 201, 'Equipo creado correctamente', { equipo });
   } catch (error) {
-    console.error('[crearEquipoController] Error:', error.message);
-
-    const status = error.status || 500; // ✅ Esto cubre DuplicateError y ValidationError
-    return sendError(res, {
-      status,
-      message: error.message,
-      details: error.details || null,
-    });
+    console.error('[crearEquipoController]', error);
+    return sendError(
+      res,
+      error.status || 500,
+      error.message || 'Error al crear el equipo'
+    );
   }
 };
 

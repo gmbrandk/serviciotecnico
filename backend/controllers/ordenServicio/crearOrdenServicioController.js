@@ -4,6 +4,9 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 const crearOrdenServicioController = async (req, res) => {
   try {
+    // 🔎 Log del body recibido
+    console.log('[crearOrdenServicioController] Body recibido:', req.body);
+
     const ordenCreada = await crearOrdenServicioService(req.body);
 
     return sendSuccess(res, {

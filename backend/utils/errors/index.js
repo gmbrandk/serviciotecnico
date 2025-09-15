@@ -1,3 +1,4 @@
+// backend/utils/erros/index.js
 class ValidationError extends Error {
   constructor(message, details = null) {
     if (typeof message === 'object' && message !== null) {
