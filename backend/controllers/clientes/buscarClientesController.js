@@ -4,6 +4,7 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 module.exports = async (req, res) => {
   try {
     const result = await buscarClientesService({
+      id: req.query.id || '', // ✅ agregar esto
       dni: req.query.dni || '',
       nombre: req.query.nombre || '',
       telefono: req.query.telefono || '',

@@ -1,4 +1,4 @@
-// utils/masking.js
+// ---- CLIENTES ----
 function maskDni(dni) {
   if (!dni) return '';
   const s = String(dni);
@@ -28,4 +28,21 @@ function maskEmail(email) {
   return `${visible}@${domain}`;
 }
 
-module.exports = { maskDni, maskPhone, maskEmail };
+// ---- EQUIPOS ----
+// Oculta todo menos los últimos N caracteres
+function maskSensitive(value, visible = 4) {
+  if (!value) return '';
+  const str = String(value);
+  if (str.length <= visible) return '*'.repeat(str.length);
+  return '*'.repeat(str.length - visible) + str.slice(-visible);
+}
+
+module.exports = {
+  // clientes
+  maskDni,
+  maskPhone,
+  maskEmail,
+
+  // equipos
+  maskSensitive,
+};

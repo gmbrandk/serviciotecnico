@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { Equipo } = require('@models/Equipo');
 const { ValidationError } = require('@utils/errors');
 const normalizeField = require('@utils/normalizeField');
+const { maskSensitive } = require('@utils/masking');
 
 const MAX_LIMIT = 10;
 const MIN_CHARS = 3;
@@ -21,11 +22,12 @@ module.exports = async function buscarEquiposService({
   const isLookup = mode === 'lookup';
   const lim = Math.min(Math.max(Number(limit || MAX_LIMIT), 1), MAX_LIMIT);
 
-  // 🔍 Lookup por ID
+  // 🔍 Lookup directo por ID
   if (id) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new ValidationError({ code: 'INVALID_ID', message: 'ID inválido' });
     }
+
     const equipo = await Equipo.findById(id).lean();
     if (!equipo) {
       throw new ValidationError({
@@ -33,10 +35,28 @@ module.exports = async function buscarEquiposService({
         message: 'Equipo no encontrado',
       });
     }
-    return { count: 1, mode: 'lookup', results: [equipo] };
+
+    // 👉 Shape consistente (sin enmascarar)
+    return {
+      count: 1,
+      mode: 'lookup',
+      results: [
+        {
+          _id: equipo._id,
+          modelo: equipo.modelo || '',
+          sku: equipo.sku || '',
+          marca: equipo.marca || '',
+          tipo: equipo.tipo || '',
+          nroSerie: equipo.nroSerie || '',
+          imei: equipo.imei || '',
+          macAddress: equipo.macAddress || '',
+          estado: equipo.estado || '',
+        },
+      ],
+    };
   }
 
-  // ✅ Validar que haya algún criterio
+  // ✅ Validar criterios
   const qProvided = [texto, marca, tipo, nroSerie, sku, imei, macAddress].some(
     (v) => v && v.trim().length > 0
   );
@@ -47,7 +67,7 @@ module.exports = async function buscarEquiposService({
     });
   }
 
-  // ⚠️ Validación de longitud mínima para autocomplete
+  // ⚠️ Longitud mínima en autocomplete
   if (!isLookup) {
     const short = [texto, marca, tipo, nroSerie, sku, imei, macAddress].some(
       (v) => v && v.length < MIN_CHARS
@@ -88,7 +108,7 @@ module.exports = async function buscarEquiposService({
   if (marca) query.marca = new RegExp(marca.trim(), 'i');
   if (tipo) query.tipo = new RegExp(tipo.trim(), 'i');
 
-  // 🔍 Texto libre (regex + intentos de match normalizado)
+  // 🔍 Texto libre
   if (texto) {
     const regex = new RegExp(texto.trim(), 'i');
     const normalizedText = normalizeField(texto, {
@@ -109,12 +129,43 @@ module.exports = async function buscarEquiposService({
     ];
   }
 
-  // 🎯 Proyección de resultados
+  // 🎯 Proyección mínima
   const projection = isLookup
-    ? { modelo: 1, sku: 1, nroSerie: 1, marca: 1, tipo: 1, estado: 1 }
-    : { modelo: 1, sku: 1, nroSerie: 1, marca: 1, tipo: 1 };
+    ? {
+        modelo: 1,
+        sku: 1,
+        nroSerie: 1,
+        marca: 1,
+        tipo: 1,
+        imei: 1,
+        macAddress: 1,
+        estado: 1,
+      }
+    : {
+        modelo: 1,
+        sku: 1,
+        nroSerie: 1,
+        marca: 1,
+        tipo: 1,
+        imei: 1,
+        macAddress: 1,
+      };
 
-  const equipos = await Equipo.find(query, projection).limit(lim).lean();
+  let equipos = await Equipo.find(query, projection).limit(lim).lean();
+
+  // ✨ Post-procesamiento (solo autocomplete enmascara)
+  if (!isLookup) {
+    equipos = equipos.map((e) => ({
+      _id: e._id,
+      modelo: e.modelo || '',
+      sku: e.sku || '',
+      marca: e.marca || '',
+      tipo: e.tipo || '',
+      nroSerie: maskSensitive(e.nroSerie || ''),
+      imei: maskSensitive(e.imei || ''),
+      macAddress: maskSensitive(e.macAddress || ''),
+    }));
+  }
 
   return {
     count: equipos.length,
