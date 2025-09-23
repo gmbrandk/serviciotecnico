@@ -1,11 +1,10 @@
 // 📂 models/Equipo.js
 const mongoose = require('mongoose');
+const normalizeField = require('@utils/normalizeField');
 
-// 🛠️ Utilidad para normalizar
-const normalizeField = (value) => {
-  if (!value) return null;
-  return value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-};
+// 📌 Helper para normalizar con opciones por defecto
+const normalize = (value) =>
+  normalizeField(value, { uppercase: true, removeNonAlnum: true }).normalizado;
 
 // 📌 Historial de propietario
 const HistorialPropietarioSchema = new mongoose.Schema({
@@ -75,9 +74,19 @@ const EquipoBaseSchema = new mongoose.Schema(
   { discriminatorKey: 'tipo', timestamps: true }
 );
 
+// 📌 Hooks de normalización en save
 EquipoBaseSchema.pre('save', function (next) {
   if (this.sku) {
-    this.skuNormalizado = normalizeField(this.sku);
+    this.skuNormalizado = normalize(this.sku);
+  }
+  next();
+});
+
+// 📌 Hooks de normalización en updates
+EquipoBaseSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update.sku) {
+    update.skuNormalizado = normalize(update.sku);
   }
   next();
 });
@@ -106,11 +115,26 @@ const SmartphoneSchema = new mongoose.Schema({
   imeiNormalizado: { type: String, unique: true, sparse: true, index: true },
 });
 
+// Hooks save
 SmartphoneSchema.pre('save', function (next) {
-  if (this.nroSerie) this.nroSerieNormalizado = normalizeField(this.nroSerie);
-  if (this.macAddress)
-    this.macAddressNormalizado = normalizeField(this.macAddress);
-  if (this.imei) this.imeiNormalizado = normalizeField(this.imei);
+  if (this.nroSerie) this.nroSerieNormalizado = normalize(this.nroSerie);
+  if (this.macAddress) this.macAddressNormalizado = normalize(this.macAddress);
+  if (this.imei) this.imeiNormalizado = normalize(this.imei);
+  next();
+});
+
+// Hooks update
+SmartphoneSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update.nroSerie) {
+    update.nroSerieNormalizado = normalize(update.nroSerie);
+  }
+  if (update.macAddress) {
+    update.macAddressNormalizado = normalize(update.macAddress);
+  }
+  if (update.imei) {
+    update.imeiNormalizado = normalize(update.imei);
+  }
   next();
 });
 
@@ -170,10 +194,22 @@ const LaptopSchema = new mongoose.Schema({
   },
 });
 
+// Hooks save
 LaptopSchema.pre('save', function (next) {
-  if (this.nroSerie) this.nroSerieNormalizado = normalizeField(this.nroSerie);
-  if (this.macAddress)
-    this.macAddressNormalizado = normalizeField(this.macAddress);
+  if (this.nroSerie) this.nroSerieNormalizado = normalize(this.nroSerie);
+  if (this.macAddress) this.macAddressNormalizado = normalize(this.macAddress);
+  next();
+});
+
+// Hooks update
+LaptopSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update.nroSerie) {
+    update.nroSerieNormalizado = normalize(update.nroSerie);
+  }
+  if (update.macAddress) {
+    update.macAddressNormalizado = normalize(update.macAddress);
+  }
   next();
 });
 
