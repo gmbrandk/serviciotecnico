@@ -1,4 +1,37 @@
 // ---- CLIENTES ----
+
+function maskPartialWord(word = '') {
+  if (!word) return '';
+  if (word.length <= 2) {
+    return word[0] + '*'.repeat(Math.max(0, word.length - 1));
+  }
+  return word.slice(0, 2) + '*'.repeat(word.length - 2);
+}
+
+function maskNames(nombres = '') {
+  if (!nombres) return '';
+  const parts = nombres.trim().split(/\s+/);
+
+  if (parts.length === 1) {
+    return parts[0]; // un solo nombre → se deja completo
+  }
+
+  // primer nombre completo, segundo parcial, el resto tal cual
+  return [parts[0], maskPartialWord(parts[1]), ...parts.slice(2)].join(' ');
+}
+
+function maskApellidos(apellidos = '') {
+  if (!apellidos) return '';
+  const parts = apellidos.trim().split(/\s+/);
+
+  if (parts.length === 1) {
+    return parts[0]; // un solo apellido → se deja completo
+  }
+
+  // primer apellido completo, segundo parcial, el resto tal cual
+  return [parts[0], maskPartialWord(parts[1]), ...parts.slice(2)].join(' ');
+}
+
 function maskDni(dni) {
   if (!dni) return '';
   const s = String(dni);
@@ -42,6 +75,8 @@ module.exports = {
   maskDni,
   maskPhone,
   maskEmail,
+  maskNames,
+  maskApellidos,
 
   // equipos
   maskSensitive,

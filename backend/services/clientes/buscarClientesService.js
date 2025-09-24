@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const Cliente = require('@models/Cliente');
 const { ValidationError } = require('@utils/errors');
-const { maskDni, maskPhone, maskEmail } = require('@utils/masking');
+const {
+  maskDni,
+  maskPhone,
+  maskEmail,
+  maskNames,
+  maskApellidos,
+} = require('@utils/masking');
 const {
   normalizeDigits,
   safeLevenshtein,
@@ -122,7 +128,7 @@ module.exports = async function buscarClientesService({
 
   let docs = await Cliente.find(query, projection).limit(lim).lean();
 
-  // Post-procesamiento para autocomplete (se enmascaran campos)
+  // Post-procesamiento para autocomplete
   let clientes = docs;
   if (!isLookup) {
     if (nombre) {
@@ -140,17 +146,29 @@ module.exports = async function buscarClientesService({
     clientes = clientes.map((c) => ({
       _id: c._id,
       dni: maskDni(c.dni),
-      nombres: c.nombres,
-      apellidos: c.apellidos,
+      nombres: maskNames(c.nombres),
+      apellidos: maskApellidos(c.apellidos),
       telefono: maskPhone(c.telefono),
       email: maskEmail(c.email),
       direccion: c.direccion,
     }));
   }
 
+  // 👇 Detectar caso especial: DNI completo, válido y sin resultados
+  let isNew = false;
+  if (
+    !isLookup &&
+    dni &&
+    normalizeDigits(dni).length === 8 &&
+    clientes.length === 0
+  ) {
+    isNew = true;
+  }
+
   return {
     count: clientes.length,
     mode,
+    isNew, // 🚀 NUEVO FLAG
     results: clientes,
   };
 };
