@@ -18,12 +18,7 @@ async function buscarEquiposService(query) {
 
   const filter = {};
 
-  // 🔍 Búsqueda directa por ID
-  if (id) {
-    filter._id = id;
-  }
-
-  // 🔍 Búsqueda Google-like (regex sobre varios campos normalizados)
+  // 🔍 Búsqueda Google-like
   if (texto) {
     const norm = normalizeField(texto, {
       uppercase: true,
@@ -44,12 +39,6 @@ async function buscarEquiposService(query) {
   if (marca) filter.marca = new RegExp(marca, 'i');
   if (tipo) filter.tipo = new RegExp(tipo, 'i');
 
-  if (nroSerie) {
-    filter.nroSerieNormalizado = normalizeField(nroSerie, {
-      uppercase: true,
-      removeNonAlnum: true,
-    }).normalizado;
-  }
   if (sku) {
     filter.skuNormalizado = normalizeField(sku, {
       uppercase: true,
@@ -69,21 +58,39 @@ async function buscarEquiposService(query) {
     }).normalizado;
   }
 
-  // 🔍 Lookup: búsqueda exacta por ID (sin maskSensitive)
-  if (mode === 'lookup' && id) {
-    const equipo = await Equipo.findOne(filter).lean();
+  // 🔍 Lookup directo (por ID o nroSerie)
+  if (mode === 'lookup' && (id || nroSerie)) {
+    let equipo = null;
+
+    if (id) {
+      equipo = await Equipo.findOne({ _id: id }).lean();
+    } else if (nroSerie) {
+      const normSerie = normalizeField(nroSerie, {
+        uppercase: true,
+        removeNonAlnum: true,
+      }).normalizado;
+      equipo = await Equipo.findOne({ nroSerieNormalizado: normSerie }).lean();
+    }
+
     return equipo
-      ? { count: 1, results: [equipo], mode }
-      : { count: 0, results: [], mode };
+      ? { count: 1, results: [equipo], mode, isNew: false }
+      : { count: 0, results: [], mode, isNew: true };
   }
 
-  // 🔍 Autocomplete (default)
+  // 🔍 Autocomplete
+  if (nroSerie) {
+    filter.nroSerieNormalizado = normalizeField(nroSerie, {
+      uppercase: true,
+      removeNonAlnum: true,
+    }).normalizado;
+  }
+
   const results = await Equipo.find(filter)
     .limit(Number(limit))
     .select('modelo sku marca tipo nroSerie imei macAddress')
     .lean();
 
-  // En autocomplete se enmascaran campos sensibles
+  // 🔹 En autocomplete se enmascaran campos sensibles
   const masked = results.map((e) => ({
     ...e,
     nroSerie: e.nroSerie ? e.nroSerie.replace(/.(?=.{4})/g, '*') : null,
@@ -91,10 +98,23 @@ async function buscarEquiposService(query) {
     macAddress: e.macAddress ? e.macAddress.replace(/.(?=.{4})/g, '*') : null,
   }));
 
+  // 🔹 Calcular flag `isNew` → si el usuario buscó un nroSerie específico y no hay match
+  let isNew = false;
+  if (nroSerie) {
+    const normSerie = normalizeField(nroSerie, {
+      uppercase: true,
+      removeNonAlnum: true,
+    }).normalizado;
+
+    const exists = await Equipo.exists({ nroSerieNormalizado: normSerie });
+    isNew = !exists;
+  }
+
   return {
     count: results.length,
     results: masked,
     mode,
+    isNew,
   };
 }
 
