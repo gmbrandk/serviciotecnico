@@ -1,4 +1,3 @@
-// services/ordenServicio/crearOrdenServicioService.js
 const OrdenServicio = require('@models/OrdenServicio');
 const Cliente = require('@models/Cliente');
 const { Equipo } = require('@models/Equipo');
@@ -14,8 +13,8 @@ const crearOrdenServicioService = async (data) => {
 
   try {
     const {
-      representanteId, // 👈 viene del body
-      equipoId, // 👈 viene del body
+      representanteId,
+      equipoId,
       lineasServicio,
       tecnico,
       total,
@@ -26,7 +25,7 @@ const crearOrdenServicioService = async (data) => {
       observaciones,
     } = data;
 
-    // 1. Validar equipo y cliente actual
+    // 1. Validar equipo y cliente
     const equipoFinal = await Equipo.findById(equipoId).session(session);
     if (!equipoFinal) throw new ValidationError('Equipo no válido');
     if (!equipoFinal.clienteActual) {
@@ -42,7 +41,7 @@ const crearOrdenServicioService = async (data) => {
       );
     }
 
-    // 2. Representante → si no se envía, usamos al cliente mismo
+    // 2. Representante: si no se envía, usar cliente
     const representanteDef = representanteId || clienteFinal._id;
 
     // 3. Validar líneas de servicio
@@ -63,22 +62,21 @@ const crearOrdenServicioService = async (data) => {
 
         return {
           tipoTrabajo: tipoTrabajo._id,
-          nombreTrabajo: linea.nombreTrabajo,
-          descripcionTrabajo: linea.descripcion || '',
-          precioUnitario: linea.precioUnitario,
+          descripcion: linea.descripcion || '',
           cantidad: linea.cantidad,
+          precioUnitario: linea.precioUnitario,
         };
       })
     );
 
     const totalCalculado = lineasServicioFinal.reduce(
-      (sum, linea) => sum + linea.precioUnitario * linea.cantidad,
+      (sum, l) => sum + l.precioUnitario * l.cantidad,
       0
     );
 
-    // 4. Crear OS
+    // 4. Crear la Orden
     const ordenServicio = new OrdenServicio({
-      cliente: clienteFinal._id, // 🔑 sacado de equipo.clienteActual
+      cliente: clienteFinal._id,
       representante: representanteDef,
       equipo: equipoFinal._id,
       lineasServicio: lineasServicioFinal,
@@ -101,11 +99,7 @@ const crearOrdenServicioService = async (data) => {
       {
         path: 'equipo',
         select:
-          'tipo marca modelo sku nroSerie macAddress imei estadoIdentificacion clienteActual',
-        populate: {
-          path: 'clienteActual',
-          select: 'nombres apellidos dni telefono email',
-        }, // 👈 faltaba nombres/apellidos
+          'tipo marca modelo sku nroSerie macAddress imei estadoIdentificacion',
       },
       {
         path: 'lineasServicio.tipoTrabajo',
@@ -116,6 +110,7 @@ const crearOrdenServicioService = async (data) => {
     await session.commitTransaction();
     session.endSession();
 
+    console.log('✅ Orden de Servicio creada con éxito.');
     return ordenServicio;
   } catch (error) {
     console.error('❌ Error en crearOrdenServicioService:', error);

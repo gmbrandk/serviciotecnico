@@ -7,13 +7,7 @@ const LineaServicioSchema = new mongoose.Schema(
       ref: 'TipoDeTrabajo',
       required: true,
     },
-    // 📌 Snapshot para trazabilidad
-    nombreTrabajo: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    descripcionTrabajo: {
+    descripcion: {
       type: String,
       trim: true,
       default: '',
@@ -42,7 +36,7 @@ const LineaServicioSchema = new mongoose.Schema(
   { _id: false }
 );
 
-// Virtual para calcular el subtotal en memoria (no persistente)
+// Virtual: subtotal calculado dinámicamente
 LineaServicioSchema.virtual('subtotal').get(function () {
   return this.precioUnitario * this.cantidad;
 });
