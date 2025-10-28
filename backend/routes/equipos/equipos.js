@@ -14,7 +14,7 @@ router.get(
   verificarToken,
   verificarAcceso({
     accion: 'equipo:buscar',
-    rolesPermitidos: ['administrador', 'superadministrador'],
+    rolesPermitidos: ['tecnico', 'administrador', 'superadministrador'],
   }),
   buscarEquiposController
 );

@@ -4,29 +4,50 @@ const { ValidationError } = require('@utils/errors');
 const crearTipoDeTrabajoService = async (data) => {
   console.log('▶️ Iniciando creación de Tipo de Trabajo...');
 
-  const { nombre, descripcion, precioBase, activo } = data;
+  const {
+    nombre,
+    descripcion,
+    tipo,
+    categoria,
+    precioBase,
+    flexRange,
+    unidadMedida,
+    activo,
+    nivelServicio,
+  } = data;
 
-  if (!nombre) {
-    throw new ValidationError('El nombre es obligatorio');
-  }
+  // Validaciones básicas
+  if (!nombre) throw new ValidationError('El nombre es obligatorio');
 
   if (typeof precioBase !== 'number' || precioBase < 0) {
     throw new ValidationError('El precioBase debe ser un número válido (>= 0)');
   }
 
-  // Verificar si ya existe uno con el mismo nombre
+  // Validación de flexRange
+  if (flexRange) {
+    const { min, max } = flexRange;
+    if (min >= max) {
+      throw new ValidationError('El rango FLEX es inválido: min >= max');
+    }
+  }
+
+  // Verificar duplicado
   const existe = await TipoDeTrabajo.findOne({
     nombre: new RegExp(`^${nombre}$`, 'i'),
   });
-  if (existe) {
+  if (existe)
     throw new ValidationError('Ya existe un tipo de trabajo con ese nombre');
-  }
 
   const tipoTrabajo = new TipoDeTrabajo({
     nombre,
     descripcion,
+    tipo,
+    categoria,
     precioBase,
+    flexRange: flexRange || { min: -0.1, max: 0.25 },
+    unidadMedida,
     activo: activo !== undefined ? activo : true,
+    nivelServicio,
   });
 
   await tipoTrabajo.save();
