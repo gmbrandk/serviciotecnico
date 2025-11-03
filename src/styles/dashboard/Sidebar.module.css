@@ -51,6 +51,18 @@
   background-color: #2e2e4d;
 }
 
+/* === ENLACE ACTIVO (se aplica en <li>) === */
+.menu li.activeLink {
+  background-color: #3b3b5e;
+  border-left: 4px solid #4f9eff;
+}
+
+.menu li.activeLink span,
+.menu li.activeLink svg {
+  color: #4f9eff;
+  font-weight: 600;
+}
+
 .toggleBtn {
   position: fixed;
   top: 15px;

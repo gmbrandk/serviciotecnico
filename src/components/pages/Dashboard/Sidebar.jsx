@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import styles from '@styles/dashboard/Sidebar.module.css';
-import { FaHome, FaUsers, FaTools, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import { useAuth } from '@context/authContext';
+import styles from '@styles/dashboard/Sidebar.module.css';
+import { useEffect, useState } from 'react';
+import {
+  FaBars,
+  FaClipboardList,
+  FaHome,
+  FaSignOutAlt,
+  FaTimes,
+  FaTools,
+  FaUsers,
+} from 'react-icons/fa';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const Sidebar = () => {
   const { logout, hasRole } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const location = useLocation();
 
-  const handleLogout = () => {
-    logout(); // Usamos la función logout del contexto
-  };
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const handleLogout = () => logout();
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -30,6 +31,8 @@ const Sidebar = () => {
     if (isMobile) setIsCollapsed(false);
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
     <>
       <div className={styles.toggleBtn} onClick={toggleSidebar}>
@@ -37,7 +40,9 @@ const Sidebar = () => {
       </div>
 
       <div
-        className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobile ? styles.mobile : ''} ${isCollapsed ? styles.open : ''}`}
+        className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${
+          isMobile ? styles.mobile : ''
+        } ${isCollapsed ? styles.open : ''}`}
       >
         {isMobile && (
           <div className={styles.closeBtn} onClick={toggleSidebar}>
@@ -46,49 +51,92 @@ const Sidebar = () => {
         )}
 
         <ul className={styles.menu}>
-          <li onClick={closeMobileSidebar}>
-            <Link to="/dashboard">
+          <li
+            className={isActive('/dashboard') ? styles.activeLink : ''}
+            onClick={closeMobileSidebar}
+          >
+            <NavLink to="/dashboard" end>
               <FaHome /> <span>Inicio</span>
-            </Link>
+            </NavLink>
           </li>
-          <li onClick={closeMobileSidebar}>
-            <Link to="/dashboard/clientes">
+
+          <li
+            className={isActive('/dashboard/clientes') ? styles.activeLink : ''}
+            onClick={closeMobileSidebar}
+          >
+            <NavLink to="/dashboard/clientes">
               <FaUsers /> <span>Clientes</span>
-            </Link>
+            </NavLink>
           </li>
-          <li onClick={closeMobileSidebar}>
-            <Link to="/dashboard/equipos">
+
+          <li
+            className={
+              isActive('/dashboard/orden-servicio') ? styles.activeLink : ''
+            }
+            onClick={closeMobileSidebar}
+          >
+            <NavLink to="/dashboard/orden-servicio">
+              <FaClipboardList /> <span>Orden de Servicio</span>
+            </NavLink>
+          </li>
+
+          <li
+            className={isActive('/dashboard/equipos') ? styles.activeLink : ''}
+            onClick={closeMobileSidebar}
+          >
+            <NavLink to="/dashboard/equipos">
               <FaTools /> <span>Equipos</span>
-            </Link>
+            </NavLink>
           </li>
+
           {hasRole(['superadministrador', 'administrador']) && (
             <>
-              <li onClick={closeMobileSidebar}>
-                <Link to="/dashboard/codigoacceso">
+              <li
+                className={
+                  isActive('/dashboard/codigoacceso') ? styles.activeLink : ''
+                }
+                onClick={closeMobileSidebar}
+              >
+                <NavLink to="/dashboard/codigoacceso">
                   <FaTools /> <span>Crear código de Acceso</span>
-                </Link>
+                </NavLink>
               </li>
-              <li onClick={closeMobileSidebar}>
-                <Link to="/dashboard/usuarios">
+
+              <li
+                className={
+                  isActive('/dashboard/usuarios') ? styles.activeLink : ''
+                }
+                onClick={closeMobileSidebar}
+              >
+                <NavLink to="/dashboard/usuarios">
                   <FaUsers /> <span>Administrar Usuarios</span>
-                </Link>
+                </NavLink>
               </li>
             </>
           )}
-          <li onClick={closeMobileSidebar}>
-            <Link to="/dashboard/historial">
+
+          <li
+            className={
+              isActive('/dashboard/historial') ? styles.activeLink : ''
+            }
+            onClick={closeMobileSidebar}
+          >
+            <NavLink to="/dashboard/historial">
               <FaTools /> <span>Historial</span>
-            </Link>
+            </NavLink>
           </li>
+
           <li onClick={handleLogout}>
-            <Link to="/login">
+            <NavLink to="/login">
               <FaSignOutAlt /> <span>Cerrar sesión</span>
-            </Link>
+            </NavLink>
           </li>
         </ul>
       </div>
 
-      {isCollapsed && isMobile && <div className={styles.overlay} onClick={toggleSidebar}></div>}
+      {isCollapsed && isMobile && (
+        <div className={styles.overlay} onClick={toggleSidebar}></div>
+      )}
     </>
   );
 };

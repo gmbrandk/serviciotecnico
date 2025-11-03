@@ -1,5 +1,5 @@
-import { normalizedId } from '@utils/formatters';
 import { showToast } from '@services/toast/toastService';
+import { normalizedId } from '@utils/formatters';
 
 export const handleGenerarCodigo = async ({
   hayCodigoActivo,
@@ -13,7 +13,7 @@ export const handleGenerarCodigo = async ({
   stopLoading,
 }) => {
   if (hayCodigoActivo) {
-    showToast('Ya existe un código activo');
+    showToast('error', 'Error', 'Ya existe un código activo');
 
     // Activamos spotlight en el código activo actual
     const codigoActivo = codigos.find((c) => c.estado === 'activo');
@@ -41,7 +41,7 @@ export const handleGenerarCodigo = async ({
       throw new Error(data.mensaje || 'Error al generar el código');
     }
 
-    showToast('Código generado exitosamente', 'success');
+    showToast('success', 'Exitoso!', 'Código generado exitosamente');
 
     // Aseguramos que el nuevo código tenga `_id` unificado
     const nuevoCodigo = { ...data.codigo, _id: normalizedId(data.codigo) };
@@ -53,7 +53,7 @@ export const handleGenerarCodigo = async ({
     // ✅ Indicamos que el botón fue usado (si se provee)
     setBotonGenerado?.(true);
   } catch (error) {
-    toast.error(error.message);
+    showToast('error', error.message);
   } finally {
     stopLoading?.(); // ✅ Siempre cerramos loading
   }

@@ -1,73 +1,23 @@
 ├── .git
-│   ├── COMMIT_EDITMSG
-│   ├── HEAD
-│   ├── config
-│   ├── description
-│   ├── hooks
-│   │   └── ... (oculto)
-│   ├── index
-│   ├── info
-│   │   └── ... (oculto)
-│   ├── logs
-│   │   └── ... (oculto)
-│   ├── objects
-│   │   └── ... (oculto)
-│   ├── packed-refs
-│   └── refs
-│       └── ... (oculto)
+│   └── ... (contenido omitido)
 ├── .gitignore
+├── OSToDoList.html
 ├── README.md
+├── ToCheckEditarEquipoController.html
+├── ToDoList.html
+├── ToDoListEquiposFlujo.html
 ├── backend
-│   ├── .env
-│   ├── .env.test
-│   ├── __mocks__
-│   │   └── ... (oculto)
-│   ├── __tests__
-│   │   └── ... (oculto)
-│   ├── app.js
-│   ├── config
-│   │   └── ... (oculto)
-│   ├── controllers
-│   │   └── ... (oculto)
-│   ├── coverage
-│   │   └── ... (oculto)
-│   ├── docs
-│   │   └── ... (oculto)
-│   ├── helpers
-│   │   └── ... (oculto)
-│   ├── html-report
-│   │   └── ... (oculto)
-│   ├── jest.config.js
-│   ├── jest.config.report.js
-│   ├── jest.setup.js
-│   ├── middlewares
-│   │   └── ... (oculto)
-│   ├── models
-│   │   └── ... (oculto)
-│   ├── node_modules
-│   │   └── ... (oculto)
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── routes
-│   │   └── ... (oculto)
-│   ├── scripts
-│   │   └── ... (oculto)
-│   ├── server.js
-│   ├── services
-│   │   └── ... (oculto)
-│   ├── utils
-│   │   └── ... (oculto)
-│   └── verificarRutas.js
+│   └── ... (contenido omitido)
 ├── eslint.config.js
 ├── estructura.txt
 ├── estructura_general.txt
 ├── estructura_general_backend.txt
 ├── estructura_general_fronted.txt
+├── extraOSFlujo.html
 ├── file_tree.py
 ├── idea general.txt
 ├── index.html
 ├── jsconfig.json
-├── logs
 ├── package-lock.json
 ├── package.json
 ├── public
@@ -79,34 +29,157 @@
 │   ├── App.css
 │   ├── App.jsx
 │   ├── __mock__
-│   │   └── ... (oculto)
+│   │   ├── codigoExistenteMock.js
+│   │   ├── mockData.js
+│   │   ├── rolesJerarquia.js
+│   │   ├── usuarioMockManager.js
+│   │   ├── usuariosMock.js
+│   │   └── verificarPermisoMock.js
 │   ├── assets
-│   │   └── ... (oculto)
+│   │   └── react.svg
 │   ├── codigoGeneracionMock.js
 │   ├── components
-│   │   └── ... (oculto)
+│   │   ├── CodigoAccesoItems.jsx
+│   │   ├── CrearClientes.jsx
+│   │   ├── CrearCodigo.jsx
+│   │   ├── Historial.jsx
+│   │   ├── ListaCodigosAcceso.jsx
+│   │   ├── PanelUsuarios.jsx
+│   │   ├── pages
+│   │   │   ├── Dashboard
+│   │   │   │   ├── DashboardHome.jsx
+│   │   │   │   ├── DashboardLayout.jsx
+│   │   │   │   ├── Forms
+│   │   │   │   │   ├── FormularioCrearSuperAdmin.jsx
+│   │   │   │   │   └── FormularioEditarUsuario.jsx
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   └── UsuariosLayout.jsx
+│   │   │   └── HomePage
+│   │   │       ├── LoginForm.jsx
+│   │   │       └── UserRegistrationForm.jsx
+│   │   ├── routes
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── PublicRoute.jsx
+│   │   └── shared
+│   │       ├── AlertMessage.jsx
+│   │       ├── Botones
+│   │       │   ├── BotonAccion.jsx
+│   │       │   ├── BotonAccionEntidad.jsx
+│   │       │   ├── accionesUsuario.jsx
+│   │       │   └── config
+│   │       │       └── accionesEntidad.config.js
+│   │       ├── CopyInput.jsx
+│   │       ├── Paginacion.jsx
+│   │       ├── Paginador.jsx
+│   │       ├── PaginadorNumeradoInteligente.jsx
+│   │       ├── Spinner.jsx
+│   │       ├── Tabla
+│   │       │   ├── Tabla.jsx
+│   │       │   ├── TablaAcciones.jsx
+│   │       │   ├── TablaBody.jsx
+│   │       │   ├── TablaHeader.jsx
+│   │       │   ├── TablaVacia.jsx
+│   │       │   └── index.js
+│   │       └── Toast.jsx
 │   ├── config
-│   │   └── ... (oculto)
+│   │   ├── entorno.js
+│   │   ├── init
+│   │   │   └── usuarioServiceInit.js
+│   │   └── proveedores.js
 │   ├── context
-│   │   └── ... (oculto)
+│   │   ├── UsuariosContext.jsx
+│   │   ├── authContext.jsx
+│   │   └── codigoAccesoContext.jsx
 │   ├── data
-│   │   └── ... (oculto)
+│   │   └── tabla
+│   │       └── columnasCodigos.js
 │   ├── helpers
-│   │   └── ... (oculto)
+│   │   └── generateUniqueId.js
 │   ├── hooks
-│   │   └── ... (oculto)
+│   │   ├── useClipboard.js
+│   │   ├── useCodigosAcceso.js
+│   │   ├── useEsMovil.js
+│   │   ├── useGlobalLoading.js
+│   │   ├── useLoading.js
+│   │   ├── useMultiLoading.js
+│   │   └── useResetBotonGenerado.js
 │   ├── index.css
 │   ├── logic
-│   │   └── ... (oculto)
+│   │   ├── activarSpotlight.js
+│   │   └── handleGenerarCodigo.js
 │   ├── main.jsx
 │   ├── pages
-│   │   └── ... (oculto)
+│   │   ├── DashboardPage.jsx
+│   │   ├── LoginPage.jsx
+│   │   ├── NotFound.jsx
+│   │   ├── RegisterPage.jsx
+│   │   └── TestingPage.jsx
 │   ├── routes
-│   │   └── ... (oculto)
+│   │   └── dashboardRoutes.jsx
 │   ├── services
-│   │   └── ... (oculto)
+│   │   ├── alerta
+│   │   │   └── alertaService.js
+│   │   ├── authService.js
+│   │   ├── codigoAccesoService.js
+│   │   ├── editarUsuarioService.js
+│   │   ├── eliminarUsuarioService.js
+│   │   ├── getUsuarioService.js
+│   │   ├── toast
+│   │   │   ├── toastLimiter.js
+│   │   │   └── toastService.js
+│   │   ├── userService.js
+│   │   ├── usuarioService.js
+│   │   ├── usuarioServiceSingleton.js
+│   │   └── usuarios
+│   │       └── providers
+│   │           ├── apiProvider.js
+│   │           └── localStorageProvider.js
 │   ├── styles
-│   │   └── ... (oculto)
+│   │   ├── CodigoAccesoItem.module.css
+│   │   ├── CrearCodigo.module.css
+│   │   ├── ListaCodigosAcceso.module.css
+│   │   ├── LoadingPage.module.css
+│   │   ├── LoginPage.module.css
+│   │   ├── MainContent.module.css
+│   │   ├── NotFound.module.css
+│   │   ├── animations
+│   │   │   └── Spotlight.module.css
+│   │   ├── dashboard
+│   │   │   ├── DashboardLayout.module.css
+│   │   │   ├── Header.module.css
+│   │   │   ├── MainContent.module.css
+│   │   │   └── Sidebar.module.css
+│   │   ├── fonts
+│   │   │   └── Monserrat.css
+│   │   ├── forms.module.css
+│   │   ├── general
+│   │   │   ├── AlertMessage.css
+│   │   │   ├── BotonAccion.module.css
+│   │   │   ├── Buttons.module.css
+│   │   │   ├── CopyInput.module.css
+│   │   │   ├── Paginador.module.css
+│   │   │   ├── PaginadorDefault.module.css
+│   │   │   ├── RwdPaginador.module.css
+│   │   │   ├── Spinner.module.css
+│   │   │   ├── Toast.module.css
+│   │   │   └── tabla
+│   │   │       ├── EmptyTable.module.css
+│   │   │       ├── Tabla-rwdStyle.module.css
+│   │   │       └── defaultTable.module.css
+│   │   ├── index.js
+│   │   └── testing
+│   │       └── TestingPage.module.css
 │   └── utils
-│       └── ... (oculto)
+│       ├── formatters
+│       │   ├── estandarizarFecha.js
+│       │   ├── estandarizarNombre.js
+│       │   ├── estandarizarRol.js
+│       │   ├── index.js
+│       │   └── normalizedId.js
+│       ├── reducirValores.js
+│       └── tabla
+│           ├── crearRenderAcciones.js
+│           ├── crearRowEnhancer.js
+│           └── createRowClassNameCallback.js
 └── vite.config.js

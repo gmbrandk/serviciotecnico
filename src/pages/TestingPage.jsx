@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Tabla from '@components/shared/Tabla/Tabla';
-import { showToast } from '@services/toast/toastService';
-import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
-import styles from '../styles/testing/TestingPage.module.css';
-import useEsMovil from '@hooks/useEsMovil';
-import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
-import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
-import AccionesEntidad from '@components/shared/Botones/BotonAccionEntidad';
 import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
+import AccionesEntidad from '@components/shared/Botones/BotonAccionEntidad';
+import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
 import Spinner from '@components/shared/Spinner';
+import Tabla from '@components/shared/Tabla/Tabla';
+import { useAuth } from '@context/AuthContext';
+import { useUsuarios } from '@context/UsuariosContext';
+import useEsMovil from '@hooks/useEsMovil';
 import useGlobalLoading from '@hooks/useGlobalLoading';
 import useMultiLoading from '@hooks/useMultiLoading';
-import { getUsuarioService } from '@services/usuarioService';
-import { useUsuarios } from '@context/UsuariosContext';
-import { useAuth } from '@context/AuthContext';
 import { mostrarConfirmacion } from '@services/alerta/alertaService'; // al inicio del archivo
+import { showToast } from '@services/toast/toastService';
+import { getUsuarioService } from '@services/usuarioService';
+import { rwdtableStyles } from '@styles';
+import { crearRowClassNameCallback } from '@utils/tabla/createRowClassNameCallback';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from '../styles/testing/TestingPage.module.css';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },

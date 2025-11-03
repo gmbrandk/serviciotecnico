@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import Tabla from '@components/shared/Tabla/Tabla';
+import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
 import BotonAccionEntidad from '@components/shared/Botones/BotonAccionEntidad';
 import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
-
-import { rwdtableStyles, RwdPaginadorStyles } from '@styles';
+import Tabla from '@components/shared/Tabla/Tabla';
+import { useAuth } from '@context/AuthContext';
+import { useUsuarios } from '@context/UsuariosContext';
+import useEsMovil from '@hooks/useEsMovil';
+import { mostrarConfirmacion } from '@services/alerta/alertaService';
+import { RwdPaginadorStyles, rwdtableStyles } from '@styles';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/CrearCodigo.module.css';
 
-import toast from 'react-hot-toast';
-import useEsMovil from '@hooks/useEsMovil';
-import { useAuth } from '@context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { verificarPermisoMock } from '@__mock__/verificarPermisoMock';
-
-import { useUsuarios } from '@context/UsuariosContext'; // <-- Importamos el contexto
-import { mostrarConfirmacion } from '@services/alerta/alertaService'; // al inicio del archivo
+// 👇 usa tu servicio con limitador
+import { showToast } from '@services/toast/toastService';
 
 const columns = [
   { header: 'Nombre', accessor: 'nombre' },
@@ -28,18 +27,12 @@ const columns = [
 ];
 
 const PanelUsuarios = () => {
-  // Obtengo usuarios y estado de carga desde contexto
   const { usuarios, cargando, cambiarEstadoUsuario } = useUsuarios();
-
   const [paginaActual, setPaginaActual] = useState(1);
-
   const esMovil = useEsMovil();
   const itemsPorPagina = esMovil ? 1 : 8;
-
   const { usuario: usuarioActual, cargando: cargandoAuth } = useAuth();
   const navigate = useNavigate();
-
-  // Ya no necesitamos obtener el servicio ni cargar usuarios localmente
 
   const handleEditar = (usuarioObjetivo) => {
     navigate(`/dashboard/usuarios/editar/${usuarioObjetivo.id}`);
@@ -61,28 +54,24 @@ const PanelUsuarios = () => {
     if (!confirmar) return;
 
     try {
-      // Para toggle activo llamamos a editarUsuario con el nuevo estado
       const nuevoEstado = !usuarioObjetivo.activo;
       const resultado = await cambiarEstadoUsuario(
         usuarioObjetivo.id,
         nuevoEstado
       );
 
-      console.log('[FRONTEND] Resultado final:', resultado);
-      console.log('[FRONTEND] Usuario Objetivo:', usuarioObjetivo);
-      console.log('[FRONTEND] Datos Actualizados:', nuevoEstado);
-
       if (resultado.success) {
-        toast.success(
+        showToast(
+          'success',
+          'Actualización exitosa',
           usuarioObjetivo.activo
             ? `${usuarioObjetivo.nombre} fue desactivado`
             : `${usuarioObjetivo.nombre} fue reactivado`
         );
-      } else {
-        toast.error('Error al actualizar estado');
       }
     } catch (error) {
-      toast.error(error.message || 'Error al conectar con el servidor');
+      showToast('error', 'Error', error.message || 'Error de conexión');
+      console.error('[ERROR en handleToggleActivo]', error);
     }
   };
 
@@ -115,15 +104,12 @@ const PanelUsuarios = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Panel de Usuarios</h1>
-
       <Tabla
         columns={columns}
         data={datosPaginados}
         renderAcciones={renderAcciones}
         estilos={{ tabla: rwdtableStyles.rwdTable }}
         paginacionInterna={false}
-        rowClassNameCallback={null}
       />
 
       {totalPaginas > 1 && (

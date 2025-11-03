@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { showToast } from '@services/toast/toastService';
 import styles from '@styles/forms.module.css';
-import toast from 'react-hot-toast';
-import Toast from '../../shared/Toast';
+import { useState } from 'react';
 import Spinner from '../../shared/Spinner';
 
 const LoginForm = ({ onSubmit }) => {
@@ -23,41 +22,18 @@ const LoginForm = ({ onSubmit }) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      toast.custom((t) => (
-        <Toast
-          type="warning"
-          title="Advertencia"
-          message="Todos los campos son Obligatorios."
-          onClose={() => toast.dismiss(t.id)}
-        />
-      ), { duration: 1000 });
+      showToast('warning', 'Advertencia', 'Todos los campos son obligatorios.');
       return;
     }
 
     setIsLoading(true);
-
     const result = await onSubmit(formData);
-
     setIsLoading(false);
 
     if (result?.success) {
-      toast.custom((t) => (
-        <Toast
-          type="success"
-          title="¡Éxito!"
-          message="¡Bienvenido! Redirigiendo..."
-          onClose={() => toast.dismiss(t.id)}
-        />
-      ), { duration: 1000 });
+      showToast('success', '¡Éxito!', '¡Bienvenido! Redirigiendo...');
     } else if (result?.error) {
-      toast.custom((t) => (
-        <Toast
-          type="error"
-          title="Error"
-          message={result.error}
-          onClose={() => toast.dismiss(t.id)}
-        />
-      ), { duration: 1000 });
+      showToast('error', 'Error', result.error);
     }
   };
 
@@ -80,7 +56,11 @@ const LoginForm = ({ onSubmit }) => {
           value={formData.password}
           onChange={handleChange}
         />
-        <button type="submit" className={styles.actionButton} disabled={isLoading}>
+        <button
+          type="submit"
+          className={styles.actionButton}
+          disabled={isLoading}
+        >
           {isLoading ? <Spinner color="#fff" size={20} /> : 'Iniciar sesión'}
         </button>
       </fieldset>

@@ -16,8 +16,16 @@
 
 .content {
   padding: 20px;
+  transition: all 0.3s ease;
 }
 
+/* ✅ Cuando estás en la página de Orden de Servicio */
+.fullscreenContent {
+  padding: 0;
+  margin: 0;
+}
+
+/* ✅ Responsive */
 @media (max-width: 768px) {
   .mainContent {
     flex: 1;

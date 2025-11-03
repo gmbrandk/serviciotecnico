@@ -1,7 +1,6 @@
-import React from 'react';
+import { showToast } from '@services/toast/toastService';
 import BotonAccion from './BotonAccion';
 import { accionesEntidad } from './config/accionesEntidad.config';
-import { showToast } from '@services/toast/toastService';
 
 const BotonAccionEntidad = ({
   entidad,
@@ -9,7 +8,7 @@ const BotonAccionEntidad = ({
   onAccion,
   acciones = ['editar', 'softDelete'],
   verificarPermiso = () => ({ permitido: true, mensaje: '' }),
-  estadoCargandoPorId = {}, // ✅ nuevo prop
+  estadoCargandoPorId = {},
 }) => {
   return (
     <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -25,7 +24,7 @@ const BotonAccionEntidad = ({
 
         const handleClick = () => {
           if (config.requierePermiso && !permitido) {
-            showToast(mensaje, 'error'); // ✅ Usa el limiter
+            showToast('error', 'Acción no permitida', mensaje); // ✅ Fijo
             return;
           }
           onAccion(clave, entidad);
@@ -62,7 +61,7 @@ const BotonAccionEntidad = ({
             onClick={handleClick}
             title={!permitido ? mensaje : config.tooltip}
             deshabilitadoVisual={deshabilitadoVisual}
-            cargando={clave === 'eliminarUsuario' ? cargando : false} // ✅ Solo ese botón muestra spinner
+            cargando={clave === 'eliminarUsuario' ? cargando : false}
           />
         );
       })}

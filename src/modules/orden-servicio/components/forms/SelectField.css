@@ -1,0 +1,103 @@
+/* === SELECT CUSTOM (coherente con msform + autocomplete) === */
+
+.msform .select-wrapper {
+  position: relative;
+  width: 100%;
+  font-family: montserrat, arial, sans-serif;
+}
+
+/* BOTÓN PRINCIPAL */
+.msform .select-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  padding: 15px;
+  background: #fff;
+
+  border: 1px solid #ccc;
+  border-radius: 3px;
+
+  font-size: 13px;
+  color: #2c3e50;
+
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.msform .select-button:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Texto dentro del botón */
+.msform .select-label {
+  font-family: montserrat;
+  color: #2c3e50;
+  font-size: 13px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Flecha */
+.msform .select-caret img {
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  transition: transform 0.2s ease-in-out;
+}
+
+.msform .select-button.open .select-caret img {
+  transform: rotate(180deg);
+}
+
+/* DROPDOWN */
+.msform .select-list {
+  position: absolute;
+  top: calc(100%);
+  left: 0;
+  right: 0;
+
+  background: #fff;
+  border: 1px solid #4285f4; /* igual al autocomplete */
+  border-radius: 0 0 12px 12px; /* mismo estilo autocomplete */
+  border-top: none;
+
+  max-height: 220px;
+  overflow-y: auto;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1500;
+
+  padding: 4px 0;
+}
+
+/* ITEM */
+.msform .select-item {
+  padding: 10px 16px;
+  font-size: 13px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+}
+
+.msform .select-item:hover {
+  background-color: #f1f3f4; /* igual que autocomplete */
+}
+
+.msform .select-item.active {
+  background-color: #f1f3f4;
+}

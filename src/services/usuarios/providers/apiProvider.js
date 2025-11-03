@@ -1,7 +1,17 @@
-import axios from 'axios';
 import { normalizedId } from '@utils/formatters';
+import axios from 'axios';
 
 const baseURL = 'http://localhost:5000/api';
+
+const handleApiError = (error, mensajeDefault) => {
+  console.error('[❌ apiProvider] Error en petición:', error);
+  const mensaje =
+    error.response?.data?.mensaje ||
+    error.response?.data?.error ||
+    mensajeDefault ||
+    'Error desconocido';
+  throw new Error(mensaje);
+};
 
 export const apiProvider = {
   obtenerUsuarios: async () => {
@@ -16,8 +26,7 @@ export const apiProvider = {
         id: normalizedId(u),
       }));
     } catch (error) {
-      console.error('[❌ apiProvider] Error en obtenerUsuarios:', error);
-      throw error;
+      handleApiError(error, 'Error al obtener usuarios');
     }
   },
 
@@ -28,12 +37,7 @@ export const apiProvider = {
       });
       return res.data;
     } catch (error) {
-      console.error('[❌ apiProvider] Error en editarUsuario:', error);
-      throw (
-        error.response?.data || {
-          mensaje: 'Error desconocido al editar usuario',
-        }
-      );
+      handleApiError(error, 'Error al editar usuario');
     }
   },
 
@@ -46,12 +50,7 @@ export const apiProvider = {
       );
       return res.data;
     } catch (error) {
-      console.error('[❌ apiProvider] Error en cambiarEstado:', error);
-      throw (
-        error.response?.data || {
-          mensaje: 'Error desconocido al actualizar estado',
-        }
-      );
+      handleApiError(error, 'Error al actualizar estado');
     }
   },
 
@@ -61,7 +60,6 @@ export const apiProvider = {
       nuevoRol,
       contrasenaConfirmacion,
     });
-
     try {
       const res = await axios.patch(
         `${baseURL}/usuarios/editar/${id}/rol`,
@@ -70,14 +68,10 @@ export const apiProvider = {
       );
       return res.data;
     } catch (error) {
-      console.error('[❌ apiProvider] Error en cambiarRolUsuario:', error);
-      throw (
-        error.response?.data || {
-          mensaje: 'Error desconocido al cambiar el rol',
-        }
-      );
+      handleApiError(error, 'Error al cambiar el rol');
     }
   },
+
   cambiarPasswordUsuario: async (
     id,
     { passwordActual, nuevaPassword, confirmarPassword }
@@ -90,12 +84,7 @@ export const apiProvider = {
       );
       return res.data;
     } catch (error) {
-      console.error('[❌ apiProvider] Error en cambiarPassword:', error);
-      throw (
-        error.response?.data || {
-          mensaje: 'Error desconocido al cambiar la contraseña',
-        }
-      );
+      handleApiError(error, 'Error al cambiar la contraseña');
     }
   },
 };

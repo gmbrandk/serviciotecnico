@@ -1,7 +1,7 @@
 // @context/UsuariosContext.jsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { normalizedId } from '@utils/formatters'; // 👈 importa tu helper
 import { getUsuarioService } from '@services/usuarioService';
+import { normalizedId } from '@utils/formatters'; // 👈 importa tu helper
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const UsuariosContext = createContext();
 
@@ -118,21 +118,20 @@ export const UsuariosProvider = ({ children }) => {
       return { success: false, error };
     }
   };
-  const cambiarEstadoUsuario = async (id, nuevoEstado) => {
-    try {
-      const service = getUsuarioService();
-      await service.cambiarEstadoUsuario(id, nuevoEstado);
 
+  const cambiarEstadoUsuario = async (id, nuevoEstado) => {
+    const service = getUsuarioService();
+    try {
+      const respuesta = await service.cambiarEstadoUsuario(id, nuevoEstado);
       setUsuarios((usuariosActuales) =>
         usuariosActuales.map((usuario) =>
           usuario.id === id ? { ...usuario, activo: nuevoEstado } : usuario
         )
       );
-
-      return { success: true };
+      return { success: true, data: respuesta };
     } catch (error) {
       console.error('Error al cambiar estado del usuario:', error);
-      return { success: false, error };
+      throw new Error(error.message || 'Error al cambiar estado del usuario');
     }
   };
 

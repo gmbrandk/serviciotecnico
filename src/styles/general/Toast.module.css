@@ -1,6 +1,10 @@
 @keyframes toastDuration {
-  from { width: 0%; }
-  to { width: 100%; }
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .toast {
@@ -142,4 +146,71 @@
 
 .toast-duration::after {
   background-color: var(--color-status);
+}
+
+/* === ANIMACIONES DE ENTRADA / SALIDA === */
+.toast-enter {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.toast-exit {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* (opcional) si tus toasts van en la parte inferior usa translateY(20px) en lugar de -20px */
+
+/* === POSICIÓN Y APILADO SUAVE === */
+.toast {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+
+/* Para asegurar que los toasts no se encimen feo */
+[data-sonner-toast],
+[data-hot-toast] {
+  pointer-events: none;
+}
+
+.toast button,
+.toast a {
+  pointer-events: auto;
+}
+
+/* === PEQUEÑO REBOTE PARA ENTRADA (efecto más natural, opcional) === */
+@keyframes toastSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.98);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+}
+
+/* Si prefieres usar las animaciones keyframes en lugar de .toast-enter/.toast-exit */
+.toast.toast-enter {
+  animation: toastSlideIn 0.4s ease forwards;
+}
+
+.toast.toast-exit {
+  animation: toastSlideOut 0.3s ease forwards;
 }

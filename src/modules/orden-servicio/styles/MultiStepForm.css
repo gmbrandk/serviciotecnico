@@ -1,0 +1,482 @@
+/* Fuente base */
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
+}
+
+body {
+  font-family: montserrat, arial, verdana;
+}
+
+/* Accesibilidad */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Form wrapper */
+.form-wrapper {
+  width: 400px;
+  margin: 50px auto;
+  position: relative; /* contexto para posicionar */
+  padding-top: 60px; /* deja espacio para que el form no se tape */
+}
+
+.progressbar {
+  position: absolute;
+  top: 0px; /* siempre fija a 10px dentro de .form-wrapper */
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.msform {
+  width: 400px;
+  margin: 10px auto;
+  text-align: center;
+  position: relative;
+  min-height: 300px; /* ajusta al tamaño del step más alto */
+  transition: height 0.4s ease; /* 👈 suaviza cambios de altura */
+}
+
+.msform input[type='checkbox'],
+.msform input[type='radio'] {
+  width: auto; /* que ocupen solo lo que necesitan */
+  margin: 0; /* reset de márgenes para mejor alineación */
+}
+
+.msform fieldset {
+  background: white;
+  border: 0 none;
+  border-radius: 3px;
+  box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+  padding: 20px 30px;
+  box-sizing: border-box;
+  width: 80%;
+  margin: 0 10%;
+  position: absolute;
+}
+
+/* Inputs */
+.msform output,
+.msform input,
+.msform textarea,
+.msform select {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: montserrat;
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+/* Botones */
+.msform .action-button {
+  width: 100px;
+  height: 54px;
+  background: #27ae60;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 1px;
+  cursor: pointer;
+  padding: 10px;
+  margin: 10px 5px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.msform .action-button:hover,
+.msform .action-button:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #27ae60;
+}
+
+/* Títulos */
+.fs-title {
+  font-size: 15px;
+  text-transform: uppercase;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.fs-subtitle {
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.fs-subtitle.inline label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 6px;
+  margin: 0;
+}
+
+.fs-subtitle.inline label input {
+  flex: 0 0 auto; /* el checkbox no se estira */
+}
+
+.fs-subtitle.inline label span {
+  flex: 0 0 auto; /* el texto tampoco se estira */
+}
+
+/* === AUTOCOMPLETE (estilo buscador Google) === */
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.msform .checkbox-input {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+  column-gap: 6px;
+}
+
+.msform .autocomplete-input:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 5px rgba(66, 133, 244, 0.3);
+}
+
+/* Lista de sugerencias */
+.msform .autocomplete-list {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #4285f4; /* 👈 aquí la sintaxis correcta */
+  border-top: none; /* quita la línea de arriba */
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  font-family: montserrat, arial, sans-serif;
+}
+
+/* Items */
+.msform .autocomplete-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.msform .autocomplete-item:hover {
+  background-color: #f1f3f4;
+}
+
+.msform .autocomplete-item.active {
+  background-color: #e8f0fe;
+}
+
+.msform .autocomplete-item.recent {
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-style: italic;
+}
+
+.msform .autocomplete-item.recent::before {
+  font-family: 'Material Symbols Outlined';
+  content: 'history'; /* 👈 nombre del ícono */
+  font-size: 18px;
+  color: #5f6368; /* gris estilo Google */
+  margin-right: 8px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+.autocomplete-item.from-api {
+  color: #000;
+}
+
+/* Subestilos dentro del item */
+.msform .autocomplete-item .left-span {
+  font-weight: bold;
+  color: #202124;
+}
+
+.msform .autocomplete-item .email-span {
+  color: #5f6368;
+  font-size: 13px;
+}
+
+.msform .autocomplete-item .right-span {
+  color: #5f6368;
+  font-size: 13px;
+}
+
+/* Botón de flecha */
+.msform .autocomplete-input-wrapper {
+  position: relative;
+}
+
+.msform .autocomplete-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msform .autocomplete-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msform .autocomplete-toggle.disabled {
+  cursor: not-allowed;
+}
+
+.msform .autocomplete-toggle img {
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  transition: transform 0.2s ease-in-out;
+  transform-origin: center; /* 💡 se asegura que gire en su centro */
+}
+
+.msform .autocomplete-toggle.open img {
+  transform: rotate(180deg);
+}
+
+/* Input Telefono*/
+
+/* === Campo de teléfono === */
+.msform .telefono-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 0;
+}
+
+.msform .telefono-wrapper .disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+/* Contenedor del input y el selector de país */
+.msform .telefono-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  overflow: hidden;
+  background: white;
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #2c3e50;
+  font-size: 13px;
+  border-radius: 3px;
+  width: 100%;
+  font-family: montserrat;
+}
+
+/* Selector de país (bandera + código) */
+.msform .telefono-prefix {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  padding: 0 10px 0 0;
+  border-right: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.msform .telefono-prefix .disabled {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  padding: 0 10px 0 0;
+  border-right: 1px solid #ddd;
+  cursor: not-allowed;
+}
+
+.msform .telefono-prefix img {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.msform .telefono-prefix span {
+  font-size: 13px;
+  color: #333;
+}
+
+/* Input del número de teléfono */
+.msform .telefono-input {
+  flex: 1;
+  border: none;
+  padding: 0 10px;
+  margin: 0;
+  outline: none;
+  font-size: 13px;
+  background: transparent;
+  color: #2c3e50;
+}
+
+/* Lista desplegable de países */
+.msform .telefono-dropdown {
+  position: absolute;
+  top: 82%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 2000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Cada opción del dropdown */
+.msform .telefono-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.msform .telefono-item:hover {
+  background: #f1f3f4;
+}
+
+.msform .telefono-item img {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.msform .telefono-item .telefono-pais {
+  flex: 1;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.msform .telefono-item .telefono-codigo {
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+/*INPUT BASE*/
+.input-container {
+  margin-bottom: 10px;
+}
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input-label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+/* Asegura que el select limite el ancho del dropdown */
+.input-field {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Evita desbordes en Firefox y mantiene ancho en Chrome */
+.input-field option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 228px;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
+}
+
+.input-field:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.input-description {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+/* 💫 Contenedor del shimmer */
+.loading {
+  position: relative;
+  overflow: hidden;
+  background: #e0e0e0; /* base gris */
+  border-radius: 4px;
+  min-height: 1.2em; /* evita que los shimmer muy chicos desaparezcan */
+}
+
+/* 💡 Capa animada */
+.loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.4s infinite;
+  transform: translateX(-100%);
+}
+
+/* ✨ Animación */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

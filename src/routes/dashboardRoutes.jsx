@@ -1,22 +1,23 @@
 // @routes/dashboardRoutes.jsx
-import { CodigosAccesoProvider } from '@context/codigoAccesoContext';
-import UsuariosLayout from '../components/pages/Dashboard/UsuariosLayout';
+import CrearClientes from '@components/CrearClientes';
 import CrearCodigo from '@components/CrearCodigo';
+import Historial from '@components/Historial'; // Asegúrate de tener este componente
 import PanelUsuarios from '@components/PanelUsuarios';
 import DashboardHome from '@components/pages/Dashboard/DashboardHome';
-import CrearClientes from '@components/CrearClientes';
-import Historial from '@components/Historial'; // Asegúrate de tener este componente
-import NotFound from '@pages/NotFound';
 import FormularioEditarUsuario from '@components/pages/Dashboard/Forms/FormularioEditarUsuario';
+import { CodigosAccesoProvider } from '@context/codigoAccesoContext';
+import NotFound from '@pages/NotFound';
+import OrdenServicioPage from '@pages/OrdenServicioPage.jsx';
+import UsuariosLayout from '../components/pages/Dashboard/UsuariosLayout';
 
 const dashboardRoutes = [
   {
     path: '',
-    element: <DashboardHome />, // Ruta principal, se muestra al acceder a /dashboard
+    element: <DashboardHome />,
   },
   {
     path: 'clientes',
-    element: <CrearClientes />, // Ruta principal, se muestra al acceder a /dashboard
+    element: <CrearClientes />,
   },
   {
     path: 'codigoacceso',
@@ -30,23 +31,22 @@ const dashboardRoutes = [
     path: 'usuarios',
     element: <UsuariosLayout />,
     children: [
-      {
-        index: true,
-        element: <PanelUsuarios />,
-      },
-      {
-        path: 'editar/:id',
-        element: <FormularioEditarUsuario />,
-      },
+      { index: true, element: <PanelUsuarios /> },
+      { path: 'editar/:id', element: <FormularioEditarUsuario /> },
     ],
   },
   {
     path: 'historial',
-    element: <Historial />, // Ruta para Historial
+    element: <Historial />,
+  },
+  // ✅ NUEVA RUTA
+  {
+    path: 'orden-servicio',
+    element: <OrdenServicioPage />,
   },
   {
     path: '*',
-    element: <NotFound />, // Ruta para cualquier otra cosa que no exista
+    element: <NotFound />,
   },
 ];
 

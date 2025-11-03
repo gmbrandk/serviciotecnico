@@ -50,14 +50,12 @@
   }
 }
 
-@media (max-width: 480px){
-   .pagination button{
+@media (max-width: 480px) {
+  .pagination button {
     margin: 0 0px;
-    
-   }
-   
-   .pagination span {
-display: none;
-   }
-   
+  }
+
+  .pagination span {
+    display: none;
+  }
 }

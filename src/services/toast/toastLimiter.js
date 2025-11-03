@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 let toastIds = [];
 
 export const canAddToast = () => toastIds.length < 2;

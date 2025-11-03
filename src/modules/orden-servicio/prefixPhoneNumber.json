@@ -1,0 +1,1994 @@
+[
+  {
+    "pais": "Afghanistan",
+    "iso": "AF",
+    "codigo": "+93",
+    "bandera": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_the_Taliban.svg",
+    "longitudEsperada": null,
+    "region": "Asia"
+  },
+  {
+    "pais": "Åland Islands",
+    "iso": "AX",
+    "codigo": "+35818",
+    "bandera": "https://flagcdn.com/ax.svg",
+    "longitudEsperada": null,
+    "region": "Europe"
+  },
+  {
+    "pais": "Albania",
+    "iso": "AL",
+    "codigo": "+355",
+    "bandera": "https://flagcdn.com/al.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Algeria",
+    "iso": "DZ",
+    "codigo": "+213",
+    "bandera": "https://flagcdn.com/dz.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "American Samoa",
+    "iso": "AS",
+    "codigo": "+1684",
+    "bandera": "https://flagcdn.com/as.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Andorra",
+    "iso": "AD",
+    "codigo": "+376",
+    "bandera": "https://flagcdn.com/ad.svg",
+    "longitudEsperada": 6,
+    "region": "Europe"
+  },
+  {
+    "pais": "Angola",
+    "iso": "AO",
+    "codigo": "+244",
+    "bandera": "https://flagcdn.com/ao.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Anguilla",
+    "iso": "AI",
+    "codigo": "+1264",
+    "bandera": "https://flagcdn.com/ai.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Antigua and Barbuda",
+    "iso": "AG",
+    "codigo": "+1268",
+    "bandera": "https://flagcdn.com/ag.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Argentina",
+    "iso": "AR",
+    "codigo": "+54",
+    "bandera": "https://flagcdn.com/ar.svg",
+    "longitudEsperada": [10, 11],
+    "region": "South America"
+  },
+  {
+    "pais": "Armenia",
+    "iso": "AM",
+    "codigo": "+374",
+    "bandera": "https://flagcdn.com/am.svg",
+    "longitudEsperada": 6,
+    "region": "Asia"
+  },
+  {
+    "pais": "Aruba",
+    "iso": "AW",
+    "codigo": "+297",
+    "bandera": "https://flagcdn.com/aw.svg",
+    "longitudEsperada": 7,
+    "region": "North America"
+  },
+  {
+    "pais": "Australia",
+    "iso": "AU",
+    "codigo": "+61",
+    "bandera": "https://flagcdn.com/au.svg",
+    "longitudEsperada": 9,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Austria",
+    "iso": "AT",
+    "codigo": "+43",
+    "bandera": "https://flagcdn.com/at.svg",
+    "longitudEsperada": null,
+    "region": "Europe"
+  },
+  {
+    "pais": "Azerbaijan",
+    "iso": "AZ",
+    "codigo": "+994",
+    "bandera": "https://flagcdn.com/az.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Bahamas",
+    "iso": "BS",
+    "codigo": "+1242",
+    "bandera": "https://flagcdn.com/bs.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Bahrain",
+    "iso": "BH",
+    "codigo": "+973",
+    "bandera": "https://flagcdn.com/bh.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Bangladesh",
+    "iso": "BD",
+    "codigo": "+880",
+    "bandera": "https://flagcdn.com/bd.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Barbados",
+    "iso": "BB",
+    "codigo": "+1246",
+    "bandera": "https://flagcdn.com/bb.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Belarus",
+    "iso": "BY",
+    "codigo": "+375",
+    "bandera": "https://flagcdn.com/by.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Belgium",
+    "iso": "BE",
+    "codigo": "+32",
+    "bandera": "https://flagcdn.com/be.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Belize",
+    "iso": "BZ",
+    "codigo": "+501",
+    "bandera": "https://flagcdn.com/bz.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Benin",
+    "iso": "BJ",
+    "codigo": "+229",
+    "bandera": "https://flagcdn.com/bj.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Bermuda",
+    "iso": "BM",
+    "codigo": "+1441",
+    "bandera": "https://flagcdn.com/bm.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Bhutan",
+    "iso": "BT",
+    "codigo": "+975",
+    "bandera": "https://flagcdn.com/bt.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Bolivia",
+    "iso": "BO",
+    "codigo": "+591",
+    "bandera": "https://flagcdn.com/bo.svg",
+    "longitudEsperada": null,
+    "region": "South America"
+  },
+  {
+    "pais": "Bosnia and Herzegovina",
+    "iso": "BA",
+    "codigo": "+387",
+    "bandera": "https://flagcdn.com/ba.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Botswana",
+    "iso": "BW",
+    "codigo": "+267",
+    "bandera": "https://flagcdn.com/bw.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Bouvet Island",
+    "iso": "BV",
+    "codigo": "+47",
+    "bandera": "https://flagcdn.com/bv.svg",
+    "longitudEsperada": null,
+    "region": "Antarctica"
+  },
+  {
+    "pais": "Brazil",
+    "iso": "BR",
+    "codigo": "+55",
+    "bandera": "https://flagcdn.com/br.svg",
+    "longitudEsperada": 11,
+    "region": "South America"
+  },
+  {
+    "pais": "British Indian Ocean Territory",
+    "iso": "IO",
+    "codigo": "+246",
+    "bandera": "https://flagcdn.com/io.svg",
+    "longitudEsperada": 7,
+    "region": "Asia"
+  },
+  {
+    "pais": "British Virgin Islands",
+    "iso": "VG",
+    "codigo": "+1284",
+    "bandera": "https://flagcdn.com/vg.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Brunei",
+    "iso": "BN",
+    "codigo": "+673",
+    "bandera": "https://flagcdn.com/bn.svg",
+    "longitudEsperada": null,
+    "region": "Asia"
+  },
+  {
+    "pais": "Bulgaria",
+    "iso": "BG",
+    "codigo": "+359",
+    "bandera": "https://flagcdn.com/bg.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Burkina Faso",
+    "iso": "BF",
+    "codigo": "+226",
+    "bandera": "https://flagcdn.com/bf.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Burundi",
+    "iso": "BI",
+    "codigo": "+257",
+    "bandera": "https://flagcdn.com/bi.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Cambodia",
+    "iso": "KH",
+    "codigo": "+855",
+    "bandera": "https://flagcdn.com/kh.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Cameroon",
+    "iso": "CM",
+    "codigo": "+237",
+    "bandera": "https://flagcdn.com/cm.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Canada",
+    "iso": "CA",
+    "codigo": "+1",
+    "bandera": "https://flagcdn.com/ca.svg",
+    "longitudEsperada": 10,
+    "region": "North America"
+  },
+  {
+    "pais": "Cape Verde",
+    "iso": "CV",
+    "codigo": "+238",
+    "bandera": "https://flagcdn.com/cv.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Caribbean Netherlands",
+    "iso": "BQ",
+    "codigo": "+599",
+    "bandera": "https://flagcdn.com/bq.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Cayman Islands",
+    "iso": "KY",
+    "codigo": "+1345",
+    "bandera": "https://flagcdn.com/ky.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Central African Republic",
+    "iso": "CF",
+    "codigo": "+236",
+    "bandera": "https://flagcdn.com/cf.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Chad",
+    "iso": "TD",
+    "codigo": "+235",
+    "bandera": "https://flagcdn.com/td.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Chile",
+    "iso": "CL",
+    "codigo": "+56",
+    "bandera": "https://flagcdn.com/cl.svg",
+    "longitudEsperada": 9,
+    "region": "South America"
+  },
+  {
+    "pais": "China",
+    "iso": "CN",
+    "codigo": "+86",
+    "bandera": "https://flagcdn.com/cn.svg",
+    "longitudEsperada": 11,
+    "region": "Asia"
+  },
+  {
+    "pais": "Christmas Island",
+    "iso": "CX",
+    "codigo": "+61",
+    "bandera": "https://flagcdn.com/cx.svg",
+    "longitudEsperada": 9,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Cocos (Keeling) Islands",
+    "iso": "CC",
+    "codigo": "+61",
+    "bandera": "https://flagcdn.com/cc.svg",
+    "longitudEsperada": 9,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Colombia",
+    "iso": "CO",
+    "codigo": "+57",
+    "bandera": "https://flagcdn.com/co.svg",
+    "longitudEsperada": 10,
+    "region": "South America"
+  },
+  {
+    "pais": "Comoros",
+    "iso": "KM",
+    "codigo": "+269",
+    "bandera": "https://flagcdn.com/km.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Cook Islands",
+    "iso": "CK",
+    "codigo": "+682",
+    "bandera": "https://flagcdn.com/ck.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Costa Rica",
+    "iso": "CR",
+    "codigo": "+506",
+    "bandera": "https://flagcdn.com/cr.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Croatia",
+    "iso": "HR",
+    "codigo": "+385",
+    "bandera": "https://flagcdn.com/hr.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Cuba",
+    "iso": "CU",
+    "codigo": "+53",
+    "bandera": "https://flagcdn.com/cu.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Curaçao",
+    "iso": "CW",
+    "codigo": "+599",
+    "bandera": "https://flagcdn.com/cw.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Cyprus",
+    "iso": "CY",
+    "codigo": "+357",
+    "bandera": "https://flagcdn.com/cy.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Czechia",
+    "iso": "CZ",
+    "codigo": "+420",
+    "bandera": "https://flagcdn.com/cz.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Denmark",
+    "iso": "DK",
+    "codigo": "+45",
+    "bandera": "https://flagcdn.com/dk.svg",
+    "longitudEsperada": null,
+    "region": "Europe"
+  },
+  {
+    "pais": "Djibouti",
+    "iso": "DJ",
+    "codigo": "+253",
+    "bandera": "https://flagcdn.com/dj.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Dominica",
+    "iso": "DM",
+    "codigo": "+1767",
+    "bandera": "https://flagcdn.com/dm.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Dominican Republic",
+    "iso": "DO",
+    "codigo": "+1809",
+    "bandera": "https://flagcdn.com/do.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Dominican Republic",
+    "iso": "DO",
+    "codigo": "+1829",
+    "bandera": "https://flagcdn.com/do.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Dominican Republic",
+    "iso": "DO",
+    "codigo": "+1849",
+    "bandera": "https://flagcdn.com/do.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "DR Congo",
+    "iso": "CD",
+    "codigo": "+243",
+    "bandera": "https://flagcdn.com/cd.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Ecuador",
+    "iso": "EC",
+    "codigo": "+593",
+    "bandera": "https://flagcdn.com/ec.svg",
+    "longitudEsperada": null,
+    "region": "South America"
+  },
+  {
+    "pais": "Egypt",
+    "iso": "EG",
+    "codigo": "+20",
+    "bandera": "https://flagcdn.com/eg.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "El Salvador",
+    "iso": "SV",
+    "codigo": "+503",
+    "bandera": "https://flagcdn.com/sv.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Equatorial Guinea",
+    "iso": "GQ",
+    "codigo": "+240",
+    "bandera": "https://flagcdn.com/gq.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Eritrea",
+    "iso": "ER",
+    "codigo": "+291",
+    "bandera": "https://flagcdn.com/er.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Estonia",
+    "iso": "EE",
+    "codigo": "+372",
+    "bandera": "https://flagcdn.com/ee.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Eswatini",
+    "iso": "SZ",
+    "codigo": "+268",
+    "bandera": "https://flagcdn.com/sz.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Ethiopia",
+    "iso": "ET",
+    "codigo": "+251",
+    "bandera": "https://flagcdn.com/et.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Falkland Islands",
+    "iso": "FK",
+    "codigo": "+500",
+    "bandera": "https://flagcdn.com/fk.svg",
+    "longitudEsperada": null,
+    "region": "South America"
+  },
+  {
+    "pais": "Faroe Islands",
+    "iso": "FO",
+    "codigo": "+298",
+    "bandera": "https://flagcdn.com/fo.svg",
+    "longitudEsperada": 5,
+    "region": "Europe"
+  },
+  {
+    "pais": "Fiji",
+    "iso": "FJ",
+    "codigo": "+679",
+    "bandera": "https://flagcdn.com/fj.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Finland",
+    "iso": "FI",
+    "codigo": "+358",
+    "bandera": "https://flagcdn.com/fi.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "France",
+    "iso": "FR",
+    "codigo": "+33",
+    "bandera": "https://flagcdn.com/fr.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "French Guiana",
+    "iso": "GF",
+    "codigo": "+594",
+    "bandera": "https://flagcdn.com/gf.svg",
+    "longitudEsperada": null,
+    "region": "South America"
+  },
+  {
+    "pais": "French Polynesia",
+    "iso": "PF",
+    "codigo": "+689",
+    "bandera": "https://flagcdn.com/pf.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "French Southern and Antarctic Lands",
+    "iso": "TF",
+    "codigo": "+262",
+    "bandera": "https://flagcdn.com/tf.svg",
+    "longitudEsperada": 9,
+    "region": "Antarctica"
+  },
+  {
+    "pais": "Gabon",
+    "iso": "GA",
+    "codigo": "+241",
+    "bandera": "https://flagcdn.com/ga.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Gambia",
+    "iso": "GM",
+    "codigo": "+220",
+    "bandera": "https://flagcdn.com/gm.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Georgia",
+    "iso": "GE",
+    "codigo": "+995",
+    "bandera": "https://flagcdn.com/ge.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Germany",
+    "iso": "DE",
+    "codigo": "+49",
+    "bandera": "https://flagcdn.com/de.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "Ghana",
+    "iso": "GH",
+    "codigo": "+233",
+    "bandera": "https://flagcdn.com/gh.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Gibraltar",
+    "iso": "GI",
+    "codigo": "+350",
+    "bandera": "https://flagcdn.com/gi.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Greece",
+    "iso": "GR",
+    "codigo": "+30",
+    "bandera": "https://flagcdn.com/gr.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "Greenland",
+    "iso": "GL",
+    "codigo": "+299",
+    "bandera": "https://flagcdn.com/gl.svg",
+    "longitudEsperada": 6,
+    "region": "Europe"
+  },
+  {
+    "pais": "Grenada",
+    "iso": "GD",
+    "codigo": "+1473",
+    "bandera": "https://flagcdn.com/gd.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Guadeloupe",
+    "iso": "GP",
+    "codigo": "+590",
+    "bandera": "https://flagcdn.com/gp.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Guam",
+    "iso": "GU",
+    "codigo": "+1671",
+    "bandera": "https://flagcdn.com/gu.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Guatemala",
+    "iso": "GT",
+    "codigo": "+502",
+    "bandera": "https://flagcdn.com/gt.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Guernsey",
+    "iso": "GG",
+    "codigo": "+44",
+    "bandera": "https://flagcdn.com/gg.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Guinea",
+    "iso": "GN",
+    "codigo": "+224",
+    "bandera": "https://flagcdn.com/gn.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Guinea-Bissau",
+    "iso": "GW",
+    "codigo": "+245",
+    "bandera": "https://flagcdn.com/gw.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Guyana",
+    "iso": "GY",
+    "codigo": "+592",
+    "bandera": "https://flagcdn.com/gy.svg",
+    "longitudEsperada": null,
+    "region": "South America"
+  },
+  {
+    "pais": "Haiti",
+    "iso": "HT",
+    "codigo": "+509",
+    "bandera": "https://flagcdn.com/ht.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Honduras",
+    "iso": "HN",
+    "codigo": "+504",
+    "bandera": "https://flagcdn.com/hn.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Hong Kong",
+    "iso": "HK",
+    "codigo": "+852",
+    "bandera": "https://flagcdn.com/hk.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Hungary",
+    "iso": "HU",
+    "codigo": "+36",
+    "bandera": "https://flagcdn.com/hu.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "Iceland",
+    "iso": "IS",
+    "codigo": "+354",
+    "bandera": "https://flagcdn.com/is.svg",
+    "longitudEsperada": 7,
+    "region": "Europe"
+  },
+  {
+    "pais": "India",
+    "iso": "IN",
+    "codigo": "+91",
+    "bandera": "https://flagcdn.com/in.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Indonesia",
+    "iso": "ID",
+    "codigo": "+62",
+    "bandera": "https://flagcdn.com/id.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Iran",
+    "iso": "IR",
+    "codigo": "+98",
+    "bandera": "https://flagcdn.com/ir.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Iraq",
+    "iso": "IQ",
+    "codigo": "+964",
+    "bandera": "https://flagcdn.com/iq.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Ireland",
+    "iso": "IE",
+    "codigo": "+353",
+    "bandera": "https://flagcdn.com/ie.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Isle of Man",
+    "iso": "IM",
+    "codigo": "+44",
+    "bandera": "https://flagcdn.com/im.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Israel",
+    "iso": "IL",
+    "codigo": "+972",
+    "bandera": "https://flagcdn.com/il.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Italy",
+    "iso": "IT",
+    "codigo": "+39",
+    "bandera": "https://flagcdn.com/it.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "Jamaica",
+    "iso": "JM",
+    "codigo": "+1876",
+    "bandera": "https://flagcdn.com/jm.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Jamaica",
+    "iso": "JM",
+    "codigo": "+1658",
+    "bandera": "https://flagcdn.com/jm.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Japan",
+    "iso": "JP",
+    "codigo": "+81",
+    "bandera": "https://flagcdn.com/jp.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Jersey",
+    "iso": "JE",
+    "codigo": "+44",
+    "bandera": "https://flagcdn.com/je.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Jordan",
+    "iso": "JO",
+    "codigo": "+962",
+    "bandera": "https://flagcdn.com/jo.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Kazakhstan",
+    "iso": "KZ",
+    "codigo": "+76",
+    "bandera": "https://flagcdn.com/kz.svg",
+    "longitudEsperada": null,
+    "region": "Asia"
+  },
+  {
+    "pais": "Kazakhstan",
+    "iso": "KZ",
+    "codigo": "+77",
+    "bandera": "https://flagcdn.com/kz.svg",
+    "longitudEsperada": null,
+    "region": "Asia"
+  },
+  {
+    "pais": "Kenya",
+    "iso": "KE",
+    "codigo": "+254",
+    "bandera": "https://flagcdn.com/ke.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Kiribati",
+    "iso": "KI",
+    "codigo": "+686",
+    "bandera": "https://flagcdn.com/ki.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Kosovo",
+    "iso": "XK",
+    "codigo": "+383",
+    "bandera": "https://flagcdn.com/xk.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Kuwait",
+    "iso": "KW",
+    "codigo": "+965",
+    "bandera": "https://flagcdn.com/kw.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Kyrgyzstan",
+    "iso": "KG",
+    "codigo": "+996",
+    "bandera": "https://flagcdn.com/kg.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Laos",
+    "iso": "LA",
+    "codigo": "+856",
+    "bandera": "https://flagcdn.com/la.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Latvia",
+    "iso": "LV",
+    "codigo": "+371",
+    "bandera": "https://flagcdn.com/lv.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Lebanon",
+    "iso": "LB",
+    "codigo": "+961",
+    "bandera": "https://flagcdn.com/lb.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Lesotho",
+    "iso": "LS",
+    "codigo": "+266",
+    "bandera": "https://flagcdn.com/ls.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Liberia",
+    "iso": "LR",
+    "codigo": "+231",
+    "bandera": "https://flagcdn.com/lr.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Libya",
+    "iso": "LY",
+    "codigo": "+218",
+    "bandera": "https://flagcdn.com/ly.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Liechtenstein",
+    "iso": "LI",
+    "codigo": "+423",
+    "bandera": "https://flagcdn.com/li.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Lithuania",
+    "iso": "LT",
+    "codigo": "+370",
+    "bandera": "https://flagcdn.com/lt.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Luxembourg",
+    "iso": "LU",
+    "codigo": "+352",
+    "bandera": "https://flagcdn.com/lu.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Macau",
+    "iso": "MO",
+    "codigo": "+853",
+    "bandera": "https://flagcdn.com/mo.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Madagascar",
+    "iso": "MG",
+    "codigo": "+261",
+    "bandera": "https://flagcdn.com/mg.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Malawi",
+    "iso": "MW",
+    "codigo": "+265",
+    "bandera": "https://flagcdn.com/mw.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Malaysia",
+    "iso": "MY",
+    "codigo": "+60",
+    "bandera": "https://flagcdn.com/my.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Maldives",
+    "iso": "MV",
+    "codigo": "+960",
+    "bandera": "https://flagcdn.com/mv.svg",
+    "longitudEsperada": 7,
+    "region": "Asia"
+  },
+  {
+    "pais": "Mali",
+    "iso": "ML",
+    "codigo": "+223",
+    "bandera": "https://flagcdn.com/ml.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Malta",
+    "iso": "MT",
+    "codigo": "+356",
+    "bandera": "https://flagcdn.com/mt.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Marshall Islands",
+    "iso": "MH",
+    "codigo": "+692",
+    "bandera": "https://flagcdn.com/mh.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Martinique",
+    "iso": "MQ",
+    "codigo": "+596",
+    "bandera": "https://flagcdn.com/mq.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Mauritania",
+    "iso": "MR",
+    "codigo": "+222",
+    "bandera": "https://flagcdn.com/mr.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Mauritius",
+    "iso": "MU",
+    "codigo": "+230",
+    "bandera": "https://flagcdn.com/mu.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Mayotte",
+    "iso": "YT",
+    "codigo": "+262",
+    "bandera": "https://flagcdn.com/yt.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Mexico",
+    "iso": "MX",
+    "codigo": "+52",
+    "bandera": "https://flagcdn.com/mx.svg",
+    "longitudEsperada": 10,
+    "region": "North America"
+  },
+  {
+    "pais": "Micronesia",
+    "iso": "FM",
+    "codigo": "+691",
+    "bandera": "https://flagcdn.com/fm.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Moldova",
+    "iso": "MD",
+    "codigo": "+373",
+    "bandera": "https://flagcdn.com/md.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Monaco",
+    "iso": "MC",
+    "codigo": "+377",
+    "bandera": "https://flagcdn.com/mc.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Mongolia",
+    "iso": "MN",
+    "codigo": "+976",
+    "bandera": "https://flagcdn.com/mn.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Montenegro",
+    "iso": "ME",
+    "codigo": "+382",
+    "bandera": "https://flagcdn.com/me.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Montserrat",
+    "iso": "MS",
+    "codigo": "+1664",
+    "bandera": "https://flagcdn.com/ms.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Morocco",
+    "iso": "MA",
+    "codigo": "+212",
+    "bandera": "https://flagcdn.com/ma.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Mozambique",
+    "iso": "MZ",
+    "codigo": "+258",
+    "bandera": "https://flagcdn.com/mz.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Myanmar",
+    "iso": "MM",
+    "codigo": "+95",
+    "bandera": "https://flagcdn.com/mm.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Namibia",
+    "iso": "NA",
+    "codigo": "+264",
+    "bandera": "https://flagcdn.com/na.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Nauru",
+    "iso": "NR",
+    "codigo": "+674",
+    "bandera": "https://flagcdn.com/nr.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Nepal",
+    "iso": "NP",
+    "codigo": "+977",
+    "bandera": "https://flagcdn.com/np.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Netherlands",
+    "iso": "NL",
+    "codigo": "+31",
+    "bandera": "https://flagcdn.com/nl.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "New Caledonia",
+    "iso": "NC",
+    "codigo": "+687",
+    "bandera": "https://flagcdn.com/nc.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "New Zealand",
+    "iso": "NZ",
+    "codigo": "+64",
+    "bandera": "https://flagcdn.com/nz.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Nicaragua",
+    "iso": "NI",
+    "codigo": "+505",
+    "bandera": "https://flagcdn.com/ni.svg",
+    "longitudEsperada": 8,
+    "region": "North America"
+  },
+  {
+    "pais": "Niger",
+    "iso": "NE",
+    "codigo": "+227",
+    "bandera": "https://flagcdn.com/ne.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Nigeria",
+    "iso": "NG",
+    "codigo": "+234",
+    "bandera": "https://flagcdn.com/ng.svg",
+    "longitudEsperada": 10,
+    "region": "Africa"
+  },
+  {
+    "pais": "Niue",
+    "iso": "NU",
+    "codigo": "+683",
+    "bandera": "https://flagcdn.com/nu.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Norfolk Island",
+    "iso": "NF",
+    "codigo": "+672",
+    "bandera": "https://flagcdn.com/nf.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "North Korea",
+    "iso": "KP",
+    "codigo": "+850",
+    "bandera": "https://flagcdn.com/kp.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "North Macedonia",
+    "iso": "MK",
+    "codigo": "+389",
+    "bandera": "https://flagcdn.com/mk.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Northern Mariana Islands",
+    "iso": "MP",
+    "codigo": "+1670",
+    "bandera": "https://flagcdn.com/mp.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Norway",
+    "iso": "NO",
+    "codigo": "+47",
+    "bandera": "https://flagcdn.com/no.svg",
+    "longitudEsperada": null,
+    "region": "Europe"
+  },
+  {
+    "pais": "Oman",
+    "iso": "OM",
+    "codigo": "+968",
+    "bandera": "https://flagcdn.com/om.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Pakistan",
+    "iso": "PK",
+    "codigo": "+92",
+    "bandera": "https://flagcdn.com/pk.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Palau",
+    "iso": "PW",
+    "codigo": "+680",
+    "bandera": "https://flagcdn.com/pw.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Palestine",
+    "iso": "PS",
+    "codigo": "+970",
+    "bandera": "https://flagcdn.com/ps.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Panama",
+    "iso": "PA",
+    "codigo": "+507",
+    "bandera": "https://flagcdn.com/pa.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Papua New Guinea",
+    "iso": "PG",
+    "codigo": "+675",
+    "bandera": "https://flagcdn.com/pg.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Paraguay",
+    "iso": "PY",
+    "codigo": "+595",
+    "bandera": "https://flagcdn.com/py.svg",
+    "longitudEsperada": 9,
+    "region": "South America"
+  },
+  {
+    "pais": "Peru",
+    "iso": "PE",
+    "codigo": "+51",
+    "bandera": "https://flagcdn.com/pe.svg",
+    "longitudEsperada": 9,
+    "region": "South America"
+  },
+  {
+    "pais": "Philippines",
+    "iso": "PH",
+    "codigo": "+63",
+    "bandera": "https://flagcdn.com/ph.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Pitcairn Islands",
+    "iso": "PN",
+    "codigo": "+64",
+    "bandera": "https://flagcdn.com/pn.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Poland",
+    "iso": "PL",
+    "codigo": "+48",
+    "bandera": "https://flagcdn.com/pl.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Portugal",
+    "iso": "PT",
+    "codigo": "+351",
+    "bandera": "https://flagcdn.com/pt.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Puerto Rico",
+    "iso": "PR",
+    "codigo": "+1787",
+    "bandera": "https://flagcdn.com/pr.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Puerto Rico",
+    "iso": "PR",
+    "codigo": "+1939",
+    "bandera": "https://flagcdn.com/pr.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Qatar",
+    "iso": "QA",
+    "codigo": "+974",
+    "bandera": "https://flagcdn.com/qa.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Réunion",
+    "iso": "RE",
+    "codigo": "+262",
+    "bandera": "https://flagcdn.com/re.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Romania",
+    "iso": "RO",
+    "codigo": "+40",
+    "bandera": "https://flagcdn.com/ro.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Russia",
+    "iso": "RU",
+    "codigo": "+7",
+    "bandera": "https://flagcdn.com/ru.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "Rwanda",
+    "iso": "RW",
+    "codigo": "+250",
+    "bandera": "https://flagcdn.com/rw.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Saint Barthélemy",
+    "iso": "BL",
+    "codigo": "+590",
+    "bandera": "https://flagcdn.com/bl.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Saint Helena",
+    "iso": "SH",
+    "codigo": "+290",
+    "bandera": "https://flagcdn.com/sh.svg",
+    "longitudEsperada": null,
+    "region": "Africa"
+  },
+  {
+    "pais": "Saint Kitts and Nevis",
+    "iso": "KN",
+    "codigo": "+1869",
+    "bandera": "https://flagcdn.com/kn.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Saint Lucia",
+    "iso": "LC",
+    "codigo": "+1758",
+    "bandera": "https://flagcdn.com/lc.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Saint Martin",
+    "iso": "MF",
+    "codigo": "+590",
+    "bandera": "https://flagcdn.com/mf.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Saint Pierre and Miquelon",
+    "iso": "PM",
+    "codigo": "+508",
+    "bandera": "https://flagcdn.com/pm.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Saint Vincent and the Grenadines",
+    "iso": "VC",
+    "codigo": "+1784",
+    "bandera": "https://flagcdn.com/vc.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Samoa",
+    "iso": "WS",
+    "codigo": "+685",
+    "bandera": "https://flagcdn.com/ws.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "San Marino",
+    "iso": "SM",
+    "codigo": "+378",
+    "bandera": "https://flagcdn.com/sm.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "São Tomé and Príncipe",
+    "iso": "ST",
+    "codigo": "+239",
+    "bandera": "https://flagcdn.com/st.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Saudi Arabia",
+    "iso": "SA",
+    "codigo": "+966",
+    "bandera": "https://flagcdn.com/sa.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Senegal",
+    "iso": "SN",
+    "codigo": "+221",
+    "bandera": "https://flagcdn.com/sn.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Serbia",
+    "iso": "RS",
+    "codigo": "+381",
+    "bandera": "https://flagcdn.com/rs.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Seychelles",
+    "iso": "SC",
+    "codigo": "+248",
+    "bandera": "https://flagcdn.com/sc.svg",
+    "longitudEsperada": 7,
+    "region": "Africa"
+  },
+  {
+    "pais": "Sierra Leone",
+    "iso": "SL",
+    "codigo": "+232",
+    "bandera": "https://flagcdn.com/sl.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Singapore",
+    "iso": "SG",
+    "codigo": "+65",
+    "bandera": "https://flagcdn.com/sg.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Sint Maarten",
+    "iso": "SX",
+    "codigo": "+1721",
+    "bandera": "https://flagcdn.com/sx.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Slovakia",
+    "iso": "SK",
+    "codigo": "+421",
+    "bandera": "https://flagcdn.com/sk.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Slovenia",
+    "iso": "SI",
+    "codigo": "+386",
+    "bandera": "https://flagcdn.com/si.svg",
+    "longitudEsperada": 8,
+    "region": "Europe"
+  },
+  {
+    "pais": "Solomon Islands",
+    "iso": "SB",
+    "codigo": "+677",
+    "bandera": "https://flagcdn.com/sb.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Somalia",
+    "iso": "SO",
+    "codigo": "+252",
+    "bandera": "https://flagcdn.com/so.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "South Africa",
+    "iso": "ZA",
+    "codigo": "+27",
+    "bandera": "https://flagcdn.com/za.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "South Georgia",
+    "iso": "GS",
+    "codigo": "+500",
+    "bandera": "https://flagcdn.com/gs.svg",
+    "longitudEsperada": null,
+    "region": "Antarctica"
+  },
+  {
+    "pais": "South Korea",
+    "iso": "KR",
+    "codigo": "+82",
+    "bandera": "https://flagcdn.com/kr.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "South Sudan",
+    "iso": "SS",
+    "codigo": "+211",
+    "bandera": "https://flagcdn.com/ss.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Spain",
+    "iso": "ES",
+    "codigo": "+34",
+    "bandera": "https://flagcdn.com/es.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Sri Lanka",
+    "iso": "LK",
+    "codigo": "+94",
+    "bandera": "https://flagcdn.com/lk.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Sudan",
+    "iso": "SD",
+    "codigo": "+249",
+    "bandera": "https://flagcdn.com/sd.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Suriname",
+    "iso": "SR",
+    "codigo": "+597",
+    "bandera": "https://flagcdn.com/sr.svg",
+    "longitudEsperada": null,
+    "region": "South America"
+  },
+  {
+    "pais": "Svalbard and Jan Mayen",
+    "iso": "SJ",
+    "codigo": "+47",
+    "bandera": "https://flagcdn.com/sj.svg",
+    "longitudEsperada": null,
+    "region": "Europe"
+  },
+  {
+    "pais": "Sweden",
+    "iso": "SE",
+    "codigo": "+46",
+    "bandera": "https://flagcdn.com/se.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Switzerland",
+    "iso": "CH",
+    "codigo": "+41",
+    "bandera": "https://flagcdn.com/ch.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "Syria",
+    "iso": "SY",
+    "codigo": "+963",
+    "bandera": "https://flagcdn.com/sy.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Taiwan",
+    "iso": "TW",
+    "codigo": "+886",
+    "bandera": "https://flagcdn.com/tw.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Tajikistan",
+    "iso": "TJ",
+    "codigo": "+992",
+    "bandera": "https://flagcdn.com/tj.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Tanzania",
+    "iso": "TZ",
+    "codigo": "+255",
+    "bandera": "https://flagcdn.com/tz.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Thailand",
+    "iso": "TH",
+    "codigo": "+66",
+    "bandera": "https://flagcdn.com/th.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Timor-Leste",
+    "iso": "TL",
+    "codigo": "+670",
+    "bandera": "https://flagcdn.com/tl.svg",
+    "longitudEsperada": null,
+    "region": "Asia"
+  },
+  {
+    "pais": "Togo",
+    "iso": "TG",
+    "codigo": "+228",
+    "bandera": "https://flagcdn.com/tg.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Tokelau",
+    "iso": "TK",
+    "codigo": "+690",
+    "bandera": "https://flagcdn.com/tk.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Tonga",
+    "iso": "TO",
+    "codigo": "+676",
+    "bandera": "https://flagcdn.com/to.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Trinidad and Tobago",
+    "iso": "TT",
+    "codigo": "+1868",
+    "bandera": "https://flagcdn.com/tt.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Tunisia",
+    "iso": "TN",
+    "codigo": "+216",
+    "bandera": "https://flagcdn.com/tn.svg",
+    "longitudEsperada": 8,
+    "region": "Africa"
+  },
+  {
+    "pais": "Turkey",
+    "iso": "TR",
+    "codigo": "+90",
+    "bandera": "https://flagcdn.com/tr.svg",
+    "longitudEsperada": 10,
+    "region": "Asia"
+  },
+  {
+    "pais": "Turkmenistan",
+    "iso": "TM",
+    "codigo": "+993",
+    "bandera": "https://flagcdn.com/tm.svg",
+    "longitudEsperada": 8,
+    "region": "Asia"
+  },
+  {
+    "pais": "Turks and Caicos Islands",
+    "iso": "TC",
+    "codigo": "+1649",
+    "bandera": "https://flagcdn.com/tc.svg",
+    "longitudEsperada": null,
+    "region": "North America"
+  },
+  {
+    "pais": "Tuvalu",
+    "iso": "TV",
+    "codigo": "+688",
+    "bandera": "https://flagcdn.com/tv.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Uganda",
+    "iso": "UG",
+    "codigo": "+256",
+    "bandera": "https://flagcdn.com/ug.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Ukraine",
+    "iso": "UA",
+    "codigo": "+380",
+    "bandera": "https://flagcdn.com/ua.svg",
+    "longitudEsperada": 9,
+    "region": "Europe"
+  },
+  {
+    "pais": "United Arab Emirates",
+    "iso": "AE",
+    "codigo": "+971",
+    "bandera": "https://flagcdn.com/ae.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "United Kingdom",
+    "iso": "GB",
+    "codigo": "+44",
+    "bandera": "https://flagcdn.com/gb.svg",
+    "longitudEsperada": 10,
+    "region": "Europe"
+  },
+  {
+    "pais": "United States",
+    "iso": "US",
+    "codigo": "+1",
+    "bandera": "https://flagcdn.com/us.svg",
+    "longitudEsperada": 10,
+    "region": "North America"
+  },
+  {
+    "pais": "Uruguay",
+    "iso": "UY",
+    "codigo": "+598",
+    "bandera": "https://flagcdn.com/uy.svg",
+    "longitudEsperada": 8,
+    "region": "South America"
+  },
+  {
+    "pais": "Uzbekistan",
+    "iso": "UZ",
+    "codigo": "+998",
+    "bandera": "https://flagcdn.com/uz.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Vanuatu",
+    "iso": "VU",
+    "codigo": "+678",
+    "bandera": "https://flagcdn.com/vu.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Vatican City",
+    "iso": "VA",
+    "codigo": "+379",
+    "bandera": "https://flagcdn.com/va.svg",
+    "longitudEsperada": null,
+    "region": "Europe"
+  },
+  {
+    "pais": "Venezuela",
+    "iso": "VE",
+    "codigo": "+58",
+    "bandera": "https://flagcdn.com/ve.svg",
+    "longitudEsperada": 10,
+    "region": "South America"
+  },
+  {
+    "pais": "Vietnam",
+    "iso": "VN",
+    "codigo": "+84",
+    "bandera": "https://flagcdn.com/vn.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Wallis and Futuna",
+    "iso": "WF",
+    "codigo": "+681",
+    "bandera": "https://flagcdn.com/wf.svg",
+    "longitudEsperada": null,
+    "region": "Oceania"
+  },
+  {
+    "pais": "Western Sahara",
+    "iso": "EH",
+    "codigo": "+212",
+    "bandera": "https://flagcdn.com/eh.svg",
+    "longitudEsperada": null,
+    "region": "Africa"
+  },
+  {
+    "pais": "Yemen",
+    "iso": "YE",
+    "codigo": "+967",
+    "bandera": "https://flagcdn.com/ye.svg",
+    "longitudEsperada": 9,
+    "region": "Asia"
+  },
+  {
+    "pais": "Zambia",
+    "iso": "ZM",
+    "codigo": "+260",
+    "bandera": "https://flagcdn.com/zm.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  },
+  {
+    "pais": "Zimbabwe",
+    "iso": "ZW",
+    "codigo": "+263",
+    "bandera": "https://flagcdn.com/zw.svg",
+    "longitudEsperada": 9,
+    "region": "Africa"
+  }
+]
