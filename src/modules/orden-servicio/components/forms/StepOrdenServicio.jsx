@@ -177,7 +177,7 @@ export function StepOrdenServicio() {
         onRetry={refetch}
       />
 
-      {!isFallback && isNetworkError && (
+      {!isFallback && !isNetworkError && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <button
             type="button"
