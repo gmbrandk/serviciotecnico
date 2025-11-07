@@ -6,6 +6,7 @@ import PanelUsuarios from '@components/PanelUsuarios';
 import DashboardHome from '@components/pages/Dashboard/DashboardHome';
 import FormularioEditarUsuario from '@components/pages/Dashboard/Forms/FormularioEditarUsuario';
 import { CodigosAccesoProvider } from '@context/codigoAccesoContext';
+import { OrdenServicioProviders } from '@context/ordenServicio/ordenServicioProviders';
 import NotFound from '@pages/NotFound';
 import OrdenServicioPage from '@pages/OrdenServicioPage.jsx';
 import UsuariosLayout from '../components/pages/Dashboard/UsuariosLayout';
@@ -42,7 +43,11 @@ const dashboardRoutes = [
   // ✅ NUEVA RUTA
   {
     path: 'orden-servicio',
-    element: <OrdenServicioPage />,
+    element: (
+      <OrdenServicioProviders>
+        <OrdenServicioPage />
+      </OrdenServicioProviders>
+    ),
   },
   {
     path: '*',

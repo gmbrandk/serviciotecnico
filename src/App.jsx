@@ -1,18 +1,19 @@
 // @App.jsx
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import LoginPage from '@pages/LoginPage';
-import RegisterPage from '@pages/RegisterPage';
-import NotFound from '@pages/NotFound';
-import DashboardPage from '@pages/DashboardPage';
 import ProtectedRoute from '@components/routes/ProtectedRoute';
 import PublicRoute from '@components/routes/PublicRoute';
 import { UsuariosProvider } from '@context/UsuariosContext';
+import DashboardPage from '@pages/DashboardPage';
+import LoginPage from '@pages/LoginPage';
+import NotFound from '@pages/NotFound';
+import RegisterPage from '@pages/RegisterPage';
 import dashboardRoutes from '@routes/dashboardRoutes';
 
-import TestingPage from '@pages/TestingPage';
 import FormularioEditarUsuario from '@components/pages/Dashboard/Forms/FormularioEditarUsuario';
+import { OrdenServicioProviders } from '@context/ordenServicio/ordenServicioProviders';
+
+import TestingPage from '@pages/TestingPage';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -51,7 +52,15 @@ const App = () => {
         </Route>
 
         {/* Ruta independiente de testing */}
-        <Route path="/testing" element={<TestingPage />} />
+        <Route
+          path="/testing"
+          element={
+            <OrdenServicioProviders>
+              <TestingPage />
+            </OrdenServicioProviders>
+          }
+        />
+
         <Route
           path="/testing/editar/:id"
           element={<FormularioEditarUsuario />}

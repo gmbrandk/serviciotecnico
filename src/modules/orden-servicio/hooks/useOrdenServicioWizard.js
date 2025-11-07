@@ -1,8 +1,9 @@
-// src/hooks/useOrdenServicioWizard.js
+// ✅ src/hooks/useOrdenServicioWizard.js
+import { useCliente } from '@context/cliente/ClienteContext';
+import { useEquipo } from '@context/equipo/EquipoContext';
+import { useOSApi } from '@context/ordenServicio/OrdenServicioApiContext';
 import { useReducer } from 'react';
-import { getClienteService } from '../services/clienteService';
-import { getEquipoService } from '../services/equipoService';
-import { getOrdenServicioService } from '../services/ordenServicioService';
+import { useNavigate } from 'react-router-dom';
 
 const initialIds = { clienteId: null, equipoId: null, ordenId: null };
 
@@ -11,20 +12,14 @@ function idsReducer(state, action) {
     case 'SET_CLIENTE':
       return { clienteId: action.payload, equipoId: null, ordenId: null };
     case 'SET_EQUIPO':
-      if (!state.clienteId) {
-        logger.error('No se puede setear equipo sin cliente');
-        return state;
-      }
+      if (!state.clienteId) return state;
       return { ...state, equipoId: action.payload, ordenId: null };
     case 'SET_ORDEN':
-      if (!state.clienteId || !state.equipoId) {
-        logger.error('No se puede setear orden sin cliente y equipo');
-        return state;
-      }
+      if (!state.clienteId || !state.equipoId) return state;
       return { ...state, ordenId: action.payload };
     case 'RESET_CLIENTE':
     case 'RESET_ALL':
-      return { clienteId: null, equipoId: null, ordenId: null };
+      return initialIds;
     default:
       return state;
   }
@@ -38,6 +33,12 @@ const logger = {
 
 export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
   const [ids, dispatch] = useReducer(idsReducer, initialIds);
+  const navigate = useNavigate();
+
+  // ✅ Contextos
+  const { crearCliente } = useCliente();
+  const { crearEquipo } = useEquipo();
+  const { buildPayload } = useOSApi();
 
   const validateIds = (required = []) => {
     for (const key of required) {
@@ -50,89 +51,79 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
     return { success: true };
   };
 
-  const resetClienteId = () => {
-    logger.log('[Wizard] Reset cliente/equipo/orden');
-    dispatch({ type: 'RESET_CLIENTE' });
-  };
+  const resetClienteId = () => dispatch({ type: 'RESET_CLIENTE' });
 
-  // 🧩 Crear equipo
-  const crearEquipo = async (equipoData, extra = {}) => {
-    const res = await getEquipoService().crearEquipo({
+  // ✅ Crear equipo usando context
+  const crearEquipoWizard = async (equipoData, extra = {}) => {
+    const res = await crearEquipo({
       ...equipoData,
       clienteActual: ids.clienteId,
       ...extra,
     });
 
     if (res.success && res.details?.equipo?._id) {
-      const nuevo = res.details.equipo;
-      dispatch({ type: 'SET_EQUIPO', payload: nuevo._id });
+      const id = res.details.equipo._id;
+      dispatch({ type: 'SET_EQUIPO', payload: id });
       onSuccess?.('Equipo creado con éxito.');
       return { success: true };
     }
 
-    logger.error('❌ Error creando equipo:', res.message);
     onError?.(res.message);
     return res;
   };
 
-  // 🧩 Manejo de cada paso
   const handleStepSubmit = async (currentStep, orden) => {
-    logger.log(`[Wizard] Submitting step: ${currentStep.id}`);
     const data = orden[currentStep.id] || {};
 
     // === CLIENTE ===
     if (currentStep.id === 'cliente') {
-      const dataId = data?._id;
-      if (dataId) {
-        if (ids.clienteId && ids.clienteId === dataId) {
-          logger.log('👤 Cliente ya procesado y coincide:', dataId);
-          return { success: true };
-        }
+      const id = data?._id;
 
-        dispatch({ type: 'SET_CLIENTE', payload: dataId });
-        onSuccess?.('Cliente seleccionado correctamente.');
+      if (id) {
+        dispatch({ type: 'SET_CLIENTE', payload: id });
+        onSuccess?.('Cliente seleccionado.');
         return { success: true };
       }
 
-      logger.log('🆕 Creando nuevo cliente...', data);
-      const res = await getClienteService().crearCliente(data);
-
+      const res = await crearCliente(data);
       if (res.success && res.details?.cliente?._id) {
         dispatch({ type: 'SET_CLIENTE', payload: res.details.cliente._id });
-        onSuccess?.('Cliente creado con éxito.');
+        onSuccess?.('Cliente creado.');
         return { success: true };
       }
-
-      logger.error('❌ Error creando cliente:', res.message);
       onError?.(res.message);
       return res;
     }
 
     // === EQUIPO ===
     if (currentStep.id === 'equipo') {
-      const clienteCheck = validateIds(['clienteId']);
-      if (!clienteCheck.success) return clienteCheck;
+      const check = validateIds(['clienteId']);
+      if (!check.success) return check;
 
-      if (orden.equipo?._id) {
-        // ✅ Equipo existente → feedback
-        if (ids.equipoId !== orden.equipo._id) {
-          dispatch({ type: 'SET_EQUIPO', payload: orden.equipo._id });
-          onSuccess?.('Equipo seleccionado correctamente.');
-        } else {
-          logger.log('🧩 Equipo ya procesado, sin cambios.');
-        }
+      // ✅ FIX IMPORTANTE:
+      // Si se marcó "Agregar especificaciones", NO crear equipo aún.
+      if (orden.equipo?.especificaciones === true) {
+        logger.log('📌 Avanzando sin crear equipo (modo ficha técnica).');
         return { success: true };
       }
 
-      return crearEquipo(orden.equipo);
+      // ✅ Equipo existente
+      if (orden.equipo?._id) {
+        dispatch({ type: 'SET_EQUIPO', payload: orden.equipo._id });
+        return { success: true };
+      }
+
+      // ✅ Crear equipo normalmente (sin ficha técnica)
+      return crearEquipoWizard(orden.equipo);
     }
 
     // === FICHA TÉCNICA ===
     if (currentStep.id === 'ficha-tecnica') {
-      const clienteCheck = validateIds(['clienteId']);
-      if (!clienteCheck.success) return clienteCheck;
+      const check = validateIds(['clienteId']);
+      if (!check.success) return check;
 
-      return crearEquipo(orden.equipo, {
+      // ✅ Aquí se crea el equipo con toda la data final
+      return crearEquipoWizard(orden.equipo, {
         fichaTecnicaManual: orden.fichaTecnica,
       });
     }
@@ -140,54 +131,16 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
     return { success: true };
   };
 
-  // 🧩 Submit final
+  // ✅ Submit final
   const handleFinalSubmit = async (orden) => {
-    logger.log('🚀 Submitting Orden de Servicio final...');
-    const idCheck = validateIds(['clienteId', 'equipoId']);
-    if (!idCheck.success) {
-      onError?.(idCheck.message);
-      return idCheck;
-    }
+    const check = validateIds(['clienteId', 'equipoId']);
+    if (!check.success) return check;
 
-    const lineas = orden.lineas || [];
-    if (lineas.length === 0 && !orden.tipoTrabajo) {
-      const msg = 'Debe completar al menos una línea de servicio.';
-      onError?.(msg);
-      return { success: false, message: msg };
-    }
+    const payload = buildPayload({ ids, orden, tecnicoId });
 
-    const validTipoTrabajoIds = [
-      '68a74570f2ab41918da7f937',
-      '68afd6a2c19b8c72a13decb0',
-      '68dc9ac76162927555649baa',
-      '68e335329e1eff2fcb38b733',
-    ];
+    navigate('/testing', { state: { payload } });
 
-    for (const [i, linea] of lineas.entries()) {
-      if (
-        !linea.tipoTrabajo ||
-        !validTipoTrabajoIds.includes(linea.tipoTrabajo)
-      ) {
-        const msg = `El tipo de trabajo en la línea ${i + 1} no es válido.`;
-        onError?.(msg);
-        return { success: false, message: msg };
-      }
-    }
-
-    const osService = getOrdenServicioService();
-    const payload = osService.buildPayload({ ids, orden, tecnicoId });
-
-    const res = await osService.crearOrdenServicio(payload);
-
-    if (res.success && res.details?.orden?._id) {
-      dispatch({ type: 'SET_ORDEN', payload: res.details.orden._id });
-      onSuccess?.('Orden de servicio creada con éxito.');
-      return { success: true, details: res.details };
-    }
-
-    logger.error('❌ Error creando orden de servicio:', res.message);
-    onError?.(res.message);
-    return res;
+    return { success: true, payload };
   };
 
   return { ids, handleStepSubmit, handleFinalSubmit, resetClienteId };

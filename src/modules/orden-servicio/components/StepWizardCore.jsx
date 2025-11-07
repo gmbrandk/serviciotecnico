@@ -114,14 +114,15 @@ export function StepWizardCore({
 
   // Submit final
   const handleFinal = async () => {
-    const res = await onFinalSubmit?.();
-    if (res?.success) {
-      onSuccess?.('Orden de servicio creada correctamente.');
-    } else if (res?.message) {
-      onError?.(res.message);
-    } else if (res === false) {
-      onError?.('Error al finalizar la orden de servicio.');
-    }
+    onFinalSubmit?.(); // ✅ delega al componente padre
+    // const res = await onFinalSubmit?.();
+    // if (res?.success) {
+    //   onSuccess?.('Orden de servicio creada correctamente.');
+    // } else if (res?.message) {
+    //   onError?.(res.message);
+    // } else if (res === false) {
+    //   onError?.('Error al finalizar la orden de servicio.');
+    // } //Todo este bloque hace que el formulario envie el payload al backend
   };
 
   const variants = useFramerStepAnimation({
