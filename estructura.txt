@@ -1,6 +1,8 @@
+├── .env
 ├── .git
 │   └── ... (contenido omitido)
 ├── .gitignore
+├── MultiStepFormImplementacion.html
 ├── OSToDoList.html
 ├── README.md
 ├── ToCheckEditarEquipoController.html
@@ -18,9 +20,12 @@
 ├── idea general.txt
 ├── index.html
 ├── jsconfig.json
+├── node_modules
+│   └── ... (contenido omitido)
 ├── package-lock.json
 ├── package.json
 ├── public
+│   ├── dropdown-arrow.svg
 │   ├── empty-box.svg
 │   ├── empty.svg
 │   └── vite.svg
@@ -90,7 +95,14 @@
 │   ├── context
 │   │   ├── UsuariosContext.jsx
 │   │   ├── authContext.jsx
-│   │   └── codigoAccesoContext.jsx
+│   │   ├── cliente
+│   │   │   └── ClienteContext.jsx
+│   │   ├── codigoAccesoContext.jsx
+│   │   ├── equipo
+│   │   │   └── EquipoContext.jsx
+│   │   └── ordenServicio
+│   │       ├── ordenServicioApiContext.jsx
+│   │       └── ordenServicioProviders.jsx
 │   ├── data
 │   │   └── tabla
 │   │       └── columnasCodigos.js
@@ -109,10 +121,127 @@
 │   │   ├── activarSpotlight.js
 │   │   └── handleGenerarCodigo.js
 │   ├── main.jsx
+│   ├── modules
+│   │   └── orden-servicio
+│   │       ├── GlobalForm.html
+│   │       ├── ToDoListPrefixTelephone.html
+│   │       ├── __tests__
+│   │       │   ├── ProgressBar.test.jsx
+│   │       │   ├── setupTests.js
+│   │       │   └── useProgressbarState.test.jsx
+│   │       ├── assets
+│   │       │   └── react.svg
+│   │       ├── clienteServiceInit.js
+│   │       ├── components
+│   │       │   ├── InputBase.jsx
+│   │       │   ├── OrdenServicioWizard.jsx
+│   │       │   ├── Progressbar.jsx
+│   │       │   ├── StepWizardCore.jsx
+│   │       │   ├── fields
+│   │       │   │   ├── AutocompleteComponent.jsx
+│   │       │   │   ├── AutocompleteField.jsx
+│   │       │   │   ├── TelefonoFIeld.jsx
+│   │       │   │   ├── telefonoUtils.js
+│   │       │   │   ├── useAutoComplete.js
+│   │       │   │   ├── useDropdown.js
+│   │       │   │   ├── useTelefonoInput.js
+│   │       │   │   └── useTelefonoSync.js
+│   │       │   ├── forms
+│   │       │   │   ├── AutocompleteField.jsx
+│   │       │   │   ├── LoginForm.jsx
+│   │       │   │   ├── SchemaForm.jsx
+│   │       │   │   ├── SelectField.css
+│   │       │   │   ├── SelectField.jsx
+│   │       │   │   ├── StepCliente.jsx
+│   │       │   │   ├── StepEquipo.jsx
+│   │       │   │   ├── StepFichaTecnica.jsx
+│   │       │   │   ├── StepLineaServicio.jsx
+│   │       │   │   └── StepOrdenServicio.jsx
+│   │       │   └── ui
+│   │       │       ├── FallbackPanel.jsx
+│   │       │       └── ShimmerPlaceholder.jsx
+│   │       ├── config
+│   │       │   ├── entorno.js
+│   │       │   ├── proveedores.js
+│   │       │   └── stepsConfig.js
+│   │       ├── context
+│   │       │   ├── OrdenServicioContext.jsx
+│   │       │   └── StepWizardContext.js
+│   │       ├── domain
+│   │       │   ├── constants.js
+│   │       │   └── createLineaServicio.js
+│   │       ├── equipoServiceInit.js
+│   │       ├── forms
+│   │       │   ├── clienteFormSchema.jsx
+│   │       │   ├── equipoFormSchema.jsx
+│   │       │   ├── lineaServicioFormSchema.jsx
+│   │       │   └── ordenServicioFormSchema.jsx
+│   │       ├── hooks
+│   │       │   ├── shared
+│   │       │   │   └── useRecentStorage.js
+│   │       │   ├── subHooks
+│   │       │   │   ├── emailSuggestions.js
+│   │       │   │   ├── useDniAutocomplete.js
+│   │       │   │   ├── useFormNavigation.js
+│   │       │   │   └── useNroSerieAutocomplete.js
+│   │       │   ├── useBuscarClientes.js
+│   │       │   ├── useBuscarEquipos.js
+│   │       │   ├── useClienteForm.js
+│   │       │   ├── useEquipoForm.js
+│   │       │   ├── useOrdenServicioForm.js
+│   │       │   ├── useOrdenServicioWizard.js
+│   │       │   ├── useRecentClients.js
+│   │       │   ├── useTipoUnicos.js
+│   │       │   └── useTiposTrabajo.js
+│   │       ├── logic
+│   │       │   ├── useFramerStepAnimation.js
+│   │       │   └── useProgressBarState.js
+│   │       ├── ordenServicioServiceInit.js
+│   │       ├── prefijosTelefonicos.json
+│   │       ├── prefixPhoneNumber.json
+│   │       ├── services
+│   │       │   ├── api
+│   │       │   │   ├── apiProvider.js
+│   │       │   │   └── clienteService.js
+│   │       │   ├── clienteService.js
+│   │       │   ├── clientes
+│   │       │   │   └── providers
+│   │       │   │       ├── apiProvider.js
+│   │       │   │       └── localStorageProvider.js
+│   │       │   ├── equipoService.js
+│   │       │   ├── equipos
+│   │       │   │   └── providers
+│   │       │   │       ├── apiProvider.js
+│   │       │   │       └── localStorageProvider.js
+│   │       │   ├── ordenServicio
+│   │       │   │   └── providers
+│   │       │   │       ├── apiProvider.js
+│   │       │   │       └── localStorageProvider.js
+│   │       │   └── ordenServicioService.js
+│   │       ├── styles
+│   │       │   ├── App.css
+│   │       │   ├── MultiStepForm.css
+│   │       │   ├── ProgressBar.css
+│   │       │   ├── animations
+│   │       │   │   └── StepTransitions.css
+│   │       │   └── index.css
+│   │       ├── theme
+│   │       │   └── fallbackThemes.js
+│   │       └── utils
+│   │           ├── fakeObjectIds.js
+│   │           ├── formatters
+│   │           │   ├── index.js
+│   │           │   └── normalizedId.js
+│   │           ├── mockOrdenServicio.js
+│   │           ├── renderLogger.js
+│   │           ├── useRenderCount.js
+│   │           ├── useRenderLogger.js
+│   │           └── whiteListNombres.js
 │   ├── pages
 │   │   ├── DashboardPage.jsx
 │   │   ├── LoginPage.jsx
 │   │   ├── NotFound.jsx
+│   │   ├── OrdenServicioPage.jsx
 │   │   ├── RegisterPage.jsx
 │   │   └── TestingPage.jsx
 │   ├── routes
@@ -127,7 +256,7 @@
 │   │   ├── getUsuarioService.js
 │   │   ├── toast
 │   │   │   ├── toastLimiter.js
-│   │   │   └── toastService.js
+│   │   │   └── toastService.jsx
 │   │   ├── userService.js
 │   │   ├── usuarioService.js
 │   │   ├── usuarioServiceSingleton.js
@@ -178,6 +307,7 @@
 │       │   ├── index.js
 │       │   └── normalizedId.js
 │       ├── reducirValores.js
+│       ├── responseFormatter.js
 │       └── tabla
 │           ├── crearRenderAcciones.js
 │           ├── crearRowEnhancer.js
