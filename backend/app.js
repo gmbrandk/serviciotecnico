@@ -12,8 +12,22 @@ const envPath = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
 dotenv.config({ path: path.resolve(__dirname, envPath) });
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // frontend URL
-  credentials: true, // 🔑 permite cookies
+  origin: (origin, callback) => {
+    // Permitir peticiones sin origin (Postman, Swagger, etc.)
+    if (!origin) return callback(null, true);
+
+    // Aceptar cualquier origen localhost (5173, 5174, 5175...)
+    if (origin.startsWith('http://localhost:')) {
+      return callback(null, true);
+    }
+
+    // Rechazar otros orígenes
+    return callback(
+      new Error('CORS bloqueado para este origen: ' + origin),
+      false
+    );
+  },
+  credentials: true,
 };
 
 // Crear la app
