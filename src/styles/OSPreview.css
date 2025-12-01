@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600');
+
+.os-preview {
+  font-family: Montserrat, sans-serif;
+  background: #fff;
+  padding: 28px 38px;
+  border-radius: 6px;
+  border: 1px solid #e3e3e3;
+  max-width: 900px;
+  margin: auto;
+  color: #333;
+}
+
+/* HEADER */
+.os-header {
+  border-bottom: 2px solid #eb0901;
+  padding-bottom: 14px;
+  margin-bottom: 28px;
+}
+
+.os-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.os-title h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.os-code {
+  background: #eb090112;
+  padding: 6px 10px;
+  border-left: 3px solid #eb0901;
+  font-weight: 600;
+  font-size: 14px;
+  color: #eb0901;
+}
+
+.os-meta {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* SECCIONES */
+.os-section {
+  margin-bottom: 26px;
+}
+
+.os-section h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  border-left: 4px solid #eb0901;
+  padding-left: 8px;
+  margin-bottom: 14px;
+}
+
+.os-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 18px;
+}
+
+.os-section p {
+  background: #f7f7f7;
+  padding: 12px 15px;
+  border-radius: 4px;
+  border: 1px solid #ececec;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* TABLA */
+.os-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.os-table th {
+  text-align: left;
+  padding: 10px 8px;
+  background: #fafafa;
+  color: #666;
+  border-bottom: 2px solid #eb0901;
+  font-weight: 600;
+}
+
+.os-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.os-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* TOTAL */
+.os-total {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+  font-size: 17px;
+  gap: 10px;
+}
+
+.os-total strong {
+  color: #eb0901;
+  font-size: 18px;
+}
+
+/* HEADER EXTRA */
+.os-extra-header {
+  border-bottom: 1px solid #eb0901;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.os-extra-header h3 {
+  margin: 0 0 6px 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+}
+
+.os-extra-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* FOOTER EXTRA */
+.os-extra-footer {
+  border-top: 1px solid #eb0901;
+  margin-top: 28px;
+  padding-top: 14px;
+  font-size: 13px;
+  color: #666;
+}

@@ -1,0 +1,186 @@
+/* ============================================================
+   VARIABLES (fallbacks si no existen en tu proyecto)
+   ============================================================ */
+:root {
+  --primary: #3c3fe7;
+  --warning: #f7d067;
+  --new: #7ccf8a;
+  --muted: #e5e5e5;
+  --border: #e6e6e6;
+  --text-muted: #666;
+}
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================ */
+.linea-servicio {
+  display: grid;
+  grid-template-columns: 2fr 2fr 120px 45px;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 6px 0;
+  margin-bottom: 5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.linea-servicio .col {
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+
+/* ============================================================
+   LABELS E INPUTS
+   ============================================================ */
+
+/* ⛔ Aquí ocurría el salto. Ahora lo fijamos. */
+.label-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  position: relative;
+  min-height: 20px; /* ← garantiza que el alto nunca cambie */
+  padding-right: 75px; /* ← espacio reservado para 1–2 badges */
+  box-sizing: border-box;
+}
+
+.label-line label {
+  margin: 0;
+  font-size: 13px;
+  color: #000;
+}
+
+.linea-servicio .input-field {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: border-color 0.2s ease, box-shadow 0.12s ease;
+}
+
+/* Precio */
+.linea-servicio [data-precio] {
+  text-align: right;
+  min-width: 100px;
+  max-width: 120px;
+}
+
+/* Estado de precio modificado */
+.precio-modificado {
+  border-color: var(--warning);
+  background-color: rgba(246, 199, 67, 0.12);
+}
+
+/* ============================================================
+   BADGES: ahora no afectan el layout 🎉
+   ============================================================ */
+
+.badge-campo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(-1px);
+  background: var(--muted);
+  color: #222;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 4px;
+  border: 1px solid #d0d0d0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Badges especiales */
+.badge-new {
+  background: var(--new) !important;
+  color: #222;
+}
+
+.badge-modified {
+  background: var(--warning) !important;
+  color: #222;
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.linea-servicio .button-delete,
+.linea-servicio .button-reset {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.button-delete {
+  background: #e74c3c !important;
+}
+.button-delete:hover {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #e74c3c !important;
+}
+
+.button-reset {
+  background: var(--primary) !important;
+}
+
+/* ============================================================
+   Sección tipoTrabajo
+   ============================================================ */
+.tipoTrabajo-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   ESTADOS VISUALES
+   ============================================================ */
+.estado-error {
+  border-left: 4px solid #e63946;
+}
+.estado-deleted {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+.estado-conflict {
+  border-left: 4px solid #ff8c00;
+}
+.estado-modified {
+  border-left: 4px solid var(--warning);
+  background: rgba(246, 199, 67, 0.03);
+}
+.estado-new {
+  border-left: 4px solid var(--new);
+  background: rgba(124, 207, 138, 0.03);
+}
+.estado-clean {
+  border-left: 4px solid transparent;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 720px) {
+  .linea-servicio {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .linea-servicio .col {
+    width: 100%;
+  }
+
+  .label-line {
+    padding-right: 60px; /* badges siguen alineados sin romper layout */
+  }
+}

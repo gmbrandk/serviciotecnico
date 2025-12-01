@@ -1,0 +1,35 @@
+// clientes.js - mock de datos de formulario de ingreso
+export const clientesMock = [
+  {
+    _id: 'c1',
+    dni: '45724467',
+    nombres: 'JORGE ENRIQUE',
+    apellidos: 'UGARTE OLIVERA',
+    telefono: '+51907128234',
+    email: 'jorge.ugarte@gmail.com',
+    direccion: 'Av. Lima 123',
+  },
+  {
+    _id: 'c2',
+    dni: '88991234',
+    nombres: 'MARIA',
+    apellidos: 'QUISPE HUAMAN',
+    telefono: '+51988776655',
+    email: 'mariaqh@hotmail.com',
+    direccion: 'Jr. Amazonas 432',
+  },
+  {
+    _id: '68922d369cd06ad2b34a6863',
+    dni: '12345678',
+    telefono: '987654321',
+    email: 'carlos@example.com',
+    estado: 'activo',
+    calificacion: 'regular',
+    isActivo: true,
+    fechaRegistro: '2025-08-05T16:11:34.763Z',
+    __v: 0,
+    apellidos: 'Mendoza',
+    direccion: '',
+    nombres: 'Carlos',
+  },
+];

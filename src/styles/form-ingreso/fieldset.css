@@ -1,0 +1,117 @@
+/* ======================================================
+   FIELDSET BASE
+====================================================== */
+fieldset.collapsible {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0;
+  background: #fff;
+  overflow: visible; /* ⬅️ antes era hidden — ahora PUEDE mostrar dropdowns */
+}
+
+/* ======================================================
+   HEADER (reemplaza al legend)
+====================================================== */
+.fieldset-header {
+  background: #fafafa;
+  width: 100%;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.fieldset-header:hover {
+  background: #f0f0f0;
+}
+
+.fieldset-header h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.legend-summary {
+  font-size: 0.8rem;
+  color: #555;
+  margin-left: auto;
+}
+
+/* Flecha */
+.fieldset-header .arrow-icon {
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  transition: transform 0.25s ease;
+}
+
+.collapsible.collapsed .arrow-icon {
+  transform: rotate(-90deg);
+}
+
+/* ======================================================
+   CONTENIDO — CONTROLADO POR JS
+====================================================== */
+.fieldset-content {
+  overflow: visible;
+  padding: 15px 18px;
+
+  opacity: 1;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+}
+
+/* Estado colapsado (solo visual) */
+.collapsed .fieldset-content {
+  overflow: hidden !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* ======================================================
+   🔥 ESTADOS ESPECIALES PARA isAnimating
+====================================================== */
+
+/* El fieldset entero muestra estado bloqueado */
+.collapsible.is-animating {
+  pointer-events: none; /* Evita TODOS los clicks */
+  opacity: 0.85;
+}
+
+/* El header se ve disabled */
+.collapsible.is-animating .fieldset-header {
+  cursor: progress !important;
+  background: #eaeaea !important;
+}
+
+/* Deshabilitar hover mientras anima */
+.collapsible.is-animating .fieldset-header:hover {
+  background: #eaeaea !important;
+}
+
+/* Flecha con efecto "temblor" suave indicando movimiento */
+@keyframes arrow-busy {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(1px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.arrow-icon.animating {
+  animation: arrow-busy 0.25s linear infinite;
+  opacity: 0.6;
+}

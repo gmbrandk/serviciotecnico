@@ -1,0 +1,67 @@
+/* ----------------------- */
+/*   ESTILOS PARA PRINT    */
+/* ----------------------- */
+
+@media print {
+  body {
+    background: white !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .os-preview {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0;
+    max-width: 100% !important;
+  }
+
+  /* Encabezado más sobrio en PDF/impresión */
+  .os-header {
+    border-bottom: 1px solid #eb0901 !important;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+
+  /* Quitar colores de fondo que no imprimen bien */
+  .os-table th {
+    background: #ffffff !important;
+    color: #444 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .os-section p {
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+  }
+
+  /* Quitar sombras si las hubiese */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Eliminar botones, inputs, etc. */
+  .no-print,
+  .button,
+  button {
+    display: none !important;
+  }
+
+  /* Ajuste de tablas para impresión */
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  h1,
+  h2 {
+    color: #333 !important;
+  }
+}
