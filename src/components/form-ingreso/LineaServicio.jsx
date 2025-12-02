@@ -1,11 +1,12 @@
-// ============================================================
-// LineaServicio – versión con badges por campo y manejo isNew
-// ============================================================
+import {
+  inputsStyles as inputLineaStyles,
+  lineaServicioStyles,
+} from '@styles/form-ingreso';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { SelectAutocomplete } from '@components/form-ingreso/SelectAutocomplete.jsx';
 import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext';
 import { useAutocompleteTipoTrabajo } from '@hooks/form-ingreso/useAutocompleteTipoTrabajo';
-import { SelectAutocomplete } from '@components/form-ingreso/SelectAutocomplete.jsx';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export function LineaServicio({ index, data = {}, onDelete, onChange }) {
   const {
@@ -20,13 +21,16 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
   const originalLinea = originalRef.current?.orden?.lineas?.[data.uid] ?? null;
   const estado = resolveEstado(data, originalLinea);
   const diff = explainDiff(data, originalLinea);
-
   const isLineaNueva = data.isNew;
 
-  function isPrecioModificado(lineaActual, lineaOriginal) {
-    if (!lineaOriginal) return false;
-    const a = Number(lineaActual?.precioUnitario);
-    const b = Number(lineaOriginal?.precioUnitario);
+  const estadoClass =
+    lineaServicioStyles[`estado${estado[0].toUpperCase() + estado.slice(1)}`] ||
+    '';
+
+  function isPrecioModificado(actual, original) {
+    if (!original) return false;
+    const a = Number(actual?.precioUnitario);
+    const b = Number(original?.precioUnitario);
     return !Number.isNaN(a) && !Number.isNaN(b) && a !== b;
   }
 
@@ -54,41 +58,53 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
     data.descripcion ?? ''
   );
   const [userEditedDescripcion, setUserEditedDescripcion] = useState(false);
+
   const precioOriginalRef = useRef(null);
 
   const precioActual = data.precioUnitario ?? '';
   const precioOriginal = precioOriginalRef.current;
+
   const precioModificado = isPrecioModificado(data, originalLinea);
 
-  // ------------------------------------------
-  // Sincronización descripción
-  // ------------------------------------------
+  /* ============================================
+     SYNC DESCRIPCIÓN
+     ============================================ */
   useEffect(() => {
     if (!userEditedDescripcion && data.descripcion !== localDescripcion) {
       setLocalDescripcion(data.descripcion ?? '');
     }
   }, [data.descripcion]);
 
-  // ------------------------------------------
-  // Inicialización precio original
-  // ------------------------------------------
+  /* ============================================
+     REGISTRAR PRECIO ORIGINAL (solo 1 vez o reset)
+     ============================================ */
   useEffect(() => {
     const n = Number(data.precioUnitario);
-    if (data._fromReset || precioOriginalRef.current == null) {
+
+    // Primero mount → fijar original solo una vez
+    if (precioOriginalRef.current == null) {
+      precioOriginalRef.current = Number.isNaN(n) ? null : n;
+      return;
+    }
+
+    // Si hubo reset → actualizar referencia
+    if (data._fromReset) {
       precioOriginalRef.current = Number.isNaN(n) ? null : n;
     }
   }, [data.precioUnitario, data._fromReset]);
 
-  // ------------------------------------------
-  // Sincronización tipoTrabajo externo → local query
-  // ------------------------------------------
+  /* ============================================
+     SYNC tipoTrabajo con autocompletado
+     ============================================ */
   useEffect(() => {
     const tt = data.tipoTrabajo;
     if (!tt) return;
+
     if (typeof tt === 'string') {
       if (tt !== query) onQueryChange(tt);
       return;
     }
+
     if (typeof tt === 'object') {
       if (!selectedTrabajo || selectedTrabajo._id !== tt._id) {
         onQueryChange(tt.nombre ?? '');
@@ -96,9 +112,9 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
     }
   }, [data.tipoTrabajo]);
 
-  // ------------------------------------------
-  // Cuando seleccionamos tipoTrabajo
-  // ------------------------------------------
+  /* ============================================
+     CUANDO CAMBIA selectedTrabajo
+     ============================================ */
   useEffect(() => {
     if (!selectedTrabajo) return;
 
@@ -112,89 +128,97 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
       ? Number(data.precioUnitario)
       : Number(selectedTrabajo.precioBase);
 
-    if (precioOriginalRef.current == null) {
-      const ori = isInitialSelection
-        ? Number(data.precioUnitario)
-        : Number(selectedTrabajo.precioBase);
-      precioOriginalRef.current = Number.isNaN(ori) ? null : ori;
-    }
-
     const patch = {
       tipoTrabajo: selectedTrabajo,
       descripcion: descripcionFinal,
     };
-    if (!isInitialSelection && !precioModificado) {
+
+    // solo aplicar precio si NO fue modificado manual
+    if (!precioModificado && !isInitialSelection) {
       patch.precioUnitario = precioFinal;
     }
 
     onChange?.(index, patch) ?? updateLinea(index, patch);
   }, [selectedTrabajo]);
 
-  // ============================================================
-  // Render + Badges por campo
-  // ============================================================
   return (
-    <div className={`row linea-servicio estado-${estado}`}>
-      {/* Tipo trabajo */}
-      <div className="col tipoTrabajo-wrapper">
-        <div className="label-line">
-          <label>Tipo de trabajo</label>
-          {isLineaNueva && <span className="badge-campo badge-new">Nueva</span>}
-          {!isLineaNueva &&
-            diff.tipoTrabajo &&
-            diff.tipoTrabajo.from?.nombre !== diff.tipoTrabajo.to?.nombre && (
+    <div className={`${lineaServicioStyles.lineaServicio} ${estadoClass}`}>
+      {/* Tipo de trabajo */}
+      <div className={lineaServicioStyles.col}>
+        <div className={lineaServicioStyles.tipoTrabajoWrapper}>
+          <div className={lineaServicioStyles.labelLine}>
+            <label className={inputLineaStyles.inputLabel}>
+              Tipo de trabajo
+            </label>
+
+            {isLineaNueva && (
               <span
-                className="badge-campo badge-modified"
-                title={`from: ${diff.tipoTrabajo?.from?.nombre ?? ''} → to: ${
-                  diff.tipoTrabajo?.to?.nombre ?? ''
-                }`}
+                className={`${lineaServicioStyles.badgeCampo} ${lineaServicioStyles.badgeNew}`}
               >
-                Cambiado
+                Nueva
               </span>
             )}
+
+            {!isLineaNueva &&
+              diff.tipoTrabajo &&
+              diff.tipoTrabajo.from?.nombre !== diff.tipoTrabajo.to?.nombre && (
+                <span
+                  className={`${lineaServicioStyles.badgeCampo} ${lineaServicioStyles.badgeModified}`}
+                >
+                  Cambiado
+                </span>
+              )}
+          </div>
+
+          <SelectAutocomplete
+            placeholder="Buscar tipo de trabajo..."
+            query={query}
+            onChange={onQueryChange}
+            resultados={resultados}
+            isOpen={isOpen}
+            onSelect={seleccionarTrabajo}
+            cerrarResultados={cerrarResultados}
+            abrirResultados={abrirResultados}
+            inputName={`tipoTrabajo-${index}`}
+            renderItem={(t) => (
+              <>
+                <div className="autocomplete-title">{t.nombre}</div>
+                <div className="autocomplete-sub">
+                  S/{t.precioBase} — {t.descripcion ?? ''}
+                </div>
+              </>
+            )}
+          />
         </div>
-        <SelectAutocomplete
-          placeholder="Buscar tipo de trabajo..."
-          query={query}
-          onChange={onQueryChange}
-          resultados={resultados}
-          isOpen={isOpen}
-          onSelect={seleccionarTrabajo}
-          cerrarResultados={cerrarResultados}
-          abrirResultados={abrirResultados}
-          inputName={`tipoTrabajo-${index}`}
-          renderItem={(t) => (
-            <>
-              <div className="autocomplete-title">{t.nombre}</div>
-              <div className="autocomplete-sub">
-                S/{t.precioBase} — {t.descripcion ?? ''}
-              </div>
-            </>
-          )}
-        />
       </div>
 
       {/* Descripción */}
-      <div className="col">
-        <div className="label-line">
-          <label>Descripción</label>
-          {isLineaNueva && <span className="badge-campo badge-new">Nueva</span>}
+      <div className={lineaServicioStyles.col}>
+        <div className={lineaServicioStyles.labelLine}>
+          <label className={inputLineaStyles.inputLabel}>Descripción</label>
+
+          {isLineaNueva && (
+            <span
+              className={`${lineaServicioStyles.badgeCampo} ${lineaServicioStyles.badgeNew}`}
+            >
+              Nueva
+            </span>
+          )}
+
           {!isLineaNueva &&
             diff.descripcion &&
             diff.descripcion.from !== diff.descripcion.to && (
               <span
-                className="badge-campo badge-modified"
-                title={`from: ${diff.descripcion?.from ?? ''} → to: ${
-                  diff.descripcion?.to ?? ''
-                }`}
+                className={`${lineaServicioStyles.badgeCampo} ${lineaServicioStyles.badgeModified}`}
               >
                 Cambiada
               </span>
             )}
         </div>
+
         <input
           type="text"
-          className="input-field"
+          className={inputLineaStyles.inputField}
           value={localDescripcion}
           onChange={(e) => {
             const val = e.target.value;
@@ -207,40 +231,49 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
       </div>
 
       {/* Precio */}
-      <div className="col precio-col">
-        <div className="label-line">
-          <label>Precio</label>
-          {isLineaNueva && <span className="badge-campo badge-new">Nueva</span>}
-          {!isLineaNueva &&
-            precioModificado &&
-            precioOriginal !== precioActual && (
-              <span
-                className="badge-campo badge-modified"
-                title={`from: ${precioOriginal ?? ''} → to: ${
-                  precioActual ?? ''
-                }`}
-              >
-                Modificado
-              </span>
-            )}
+      <div
+        className={`${lineaServicioStyles.col} ${lineaServicioStyles.precioCol}`}
+      >
+        <div className={lineaServicioStyles.labelLine}>
+          <label className={inputLineaStyles.inputLabel}>Precio</label>
+
+          {isLineaNueva && (
+            <span
+              className={`${lineaServicioStyles.badgeCampo} ${lineaServicioStyles.badgeNew}`}
+            >
+              Nueva
+            </span>
+          )}
+
+          {!isLineaNueva && precioModificado && (
+            <span
+              className={`${lineaServicioStyles.badgeCampo} ${lineaServicioStyles.badgeModified}`}
+            >
+              Modificado
+            </span>
+          )}
         </div>
+
         <input
           type="number"
-          className={`input-field ${
-            precioModificado ? 'precio-modificado' : ''
+          className={`${inputLineaStyles.inputField} ${
+            precioModificado ? lineaServicioStyles.precioModificado : ''
           }`}
           value={precioActual ?? ''}
           min="0"
           step="0.1"
           onChange={(e) => {
             const val = e.target.value;
+
             if (val === '') {
               const patch = { precioUnitario: '' };
               onChange?.(index, patch) ?? updateLinea(index, patch);
               return;
             }
+
             const num = Number(val);
             if (isNaN(num) || num < 0) return;
+
             const patch = { precioUnitario: num };
             onChange?.(index, patch) ?? updateLinea(index, patch);
           }}
@@ -249,19 +282,20 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
 
       {/* Botones */}
       <div
-        className="col"
+        className={lineaServicioStyles.col}
         style={{ width: '70px', display: 'flex', gap: '4px' }}
       >
         <button
           type="button"
-          className="button-delete"
+          className={lineaServicioStyles.buttonDelete}
           onClick={() => (onDelete ? onDelete(index) : deleteLinea(index))}
         >
           🗑
         </button>
+
         <button
           type="button"
-          className="button-reset"
+          className={lineaServicioStyles.buttonReset}
           onClick={() => resetLinea(index)}
         >
           ↺

@@ -16,7 +16,7 @@ import Collapsible from '@components/form-ingreso/Collapsible.jsx';
 import { EquipoSection } from '@components/form-ingreso/EquipoSection.jsx';
 import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx';
 
-import '@styles/form-ingreso/index.css'; // ✅ ahora sí correcto
+import { formIngresoPageStyles } from '../../styles/form-ingreso';
 
 function IngresoFormContent({ onSubmit, role }) {
   const { cliente, equipo, tecnico, orden, originalRef, submitAndClear } =
@@ -42,8 +42,14 @@ function IngresoFormContent({ onSubmit, role }) {
   };
 
   return (
-    <form id="formIngreso" className="msform" onSubmit={handleSubmit}>
-      <h1>Formulario de Ingreso y Diagnóstico Técnico</h1>
+    <form
+      id="formIngreso"
+      className={formIngresoPageStyles.msform}
+      onSubmit={handleSubmit}
+    >
+      <h1 className={formIngresoPageStyles.title}>
+        Formulario de Ingreso y Diagnóstico Técnico
+      </h1>
       <PersistSwitch />
 
       <CollapsibleGroupProvider>

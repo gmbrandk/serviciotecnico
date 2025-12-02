@@ -1,0 +1,162 @@
+/* =====================================================
+   🧱 Layout Base
+===================================================== */
+.autocompleteWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.autocompleteInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Input: deja espacio para los iconos */
+.autocompleteInput {
+  width: 100%;
+  padding-right: 60px;
+}
+
+/* =====================================================
+   🎛 Zona de acciones (Clear + Toggle)
+===================================================== */
+.autocompleteActions {
+  background-color: #fff;
+  position: absolute;
+  right: 6px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.autocompleteClear,
+.autocompleteToggle {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0.8;
+}
+
+.autocompleteClear:hover,
+.autocompleteToggle:hover {
+  opacity: 1;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Clear icon */
+.autocompleteClearIcon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+/* Toggle icon */
+.autocompleteToggleIcon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.rotated {
+  transform: rotate(180deg);
+}
+
+.autocompleteDisabled {
+  background: #f0f0f0 !important;
+  border-color: #d0d0d0 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+}
+
+.autocompleteDisabled input {
+  cursor: not-allowed !important;
+}
+
+.autocompleteContainerDisabled .autocompleteActions button {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.autocompleteDisabled .autocompleteActions {
+  background: #f0f0f0 !important;
+}
+
+/* =====================================================
+   📜 Lista
+===================================================== */
+.autocompleteList {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #4285f4;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.autocompleteItem {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.autocompleteItem:hover {
+  background: #f1f3f4;
+}
+
+/* =====================================================
+   INPUT + ICONS
+===================================================== */
+.autocompleteInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: white;
+}
+
+.autocompleteInputWrapper:focus-within {
+  border-color: #4285f4;
+  box-shadow: 0 0 3px rgba(66, 133, 244, 0.4);
+}
+
+.autocompleteInput {
+  border: none !important;
+  outline: none !important;
+  padding: 15px;
+  flex: 1;
+  font-family: montserrat;
+  font-size: 13px;
+  color: #2c3e50;
+}
+
+.autocompleteActions {
+  display: flex;
+  align-items: center;
+  background: white;
+}
+
+.autocompleteClear,
+.autocompleteToggle {
+  background: transparent;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.autocompleteClear:hover,
+.autocompleteToggle:hover {
+  opacity: 1;
+}

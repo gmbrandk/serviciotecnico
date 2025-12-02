@@ -12,6 +12,9 @@ import { localStorageProvider as equiposLocalProvider } from '@services/form-ing
 import { apiProvider as tecnicosApiProvider } from '@services/form-ingreso/tecnicos/providers/apiProvider';
 import { localStorageProvider as tecnicosLocalProvider } from '@services/form-ingreso/tecnicos/providers/localStorageProvider';
 
+import { apiProvider as osApiProvider } from '@services/form-ingreso/os/providers/apiProvider';
+import { localStorageProvider as osLocalProvider } from '@services/form-ingreso/os/providers/localStorageProvider';
+
 export const mapaProveedoresTiposTrabajo = {
   local: {
     instancia: tiposTrabajoLocalProvider,
@@ -60,6 +63,19 @@ export const mapaProveedoresTecnicos = {
   api: {
     instancia: tecnicosApiProvider,
     nombre: 'API REST Técnicos',
+    tipo: 'api',
+  },
+};
+
+export const mapaProveedoresOs = {
+  local: {
+    instancia: osLocalProvider,
+    nombre: 'Mock Local Ordenes',
+    tipo: 'mock',
+  },
+  api: {
+    instancia: osApiProvider,
+    nombre: 'API REST Órdenes',
     tipo: 'api',
   },
 };

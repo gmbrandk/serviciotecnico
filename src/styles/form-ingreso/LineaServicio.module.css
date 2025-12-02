@@ -1,0 +1,189 @@
+/* ============================================================
+   VARIABLES (se asume que vienen de un global variables.css)
+   ============================================================ */
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================ */
+
+.lineaServicio {
+  display: grid;
+  grid-template-columns: 2fr 2fr 120px 45px;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 6px 0;
+  margin-bottom: 5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.row {
+  display: contents;
+}
+
+.col {
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+
+/* ============================================================
+   LABELS E INPUTS
+   ============================================================ */
+
+.labelLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  position: relative;
+  min-height: 20px;
+  padding-right: 75px;
+  box-sizing: border-box;
+}
+
+.labelLine label {
+  margin: 0;
+  font-size: 13px;
+  color: #000;
+}
+
+.inputField {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: border-color 0.2s ease, box-shadow 0.12s ease;
+}
+
+.precioCol input {
+  text-align: right;
+  min-width: 100px;
+  max-width: 120px;
+}
+
+.precioModificado {
+  border-color: var(--warning);
+  background-color: rgba(246, 199, 67, 0.12);
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badgeCampo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(-1px);
+  background: var(--muted);
+  color: #222;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 4px;
+  border: 1px solid #d0d0d0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgeNew {
+  background: var(--new) !important;
+  color: #222;
+}
+
+.badgeModified {
+  background: var(--warning) !important;
+  color: #222;
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+
+.buttonDelete,
+.buttonReset {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.buttonDelete {
+  background: #e74c3c !important;
+}
+
+.buttonDelete:hover {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #e74c3c !important;
+}
+
+.buttonReset {
+  background: var(--primary) !important;
+}
+
+/* ============================================================
+   Sección tipoTrabajo
+   ============================================================ */
+
+.tipoTrabajoWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   ESTADOS VISUALES
+   ============================================================ */
+
+.estadoError {
+  border-left: 4px solid #e63946;
+}
+
+.estadoDeleted {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.estadoConflict {
+  border-left: 4px solid #ff8c00;
+}
+
+.estadoModified {
+  border-left: 4px solid var(--warning);
+  background: rgba(246, 199, 67, 0.03);
+}
+
+.estadoNew {
+  border-left: 4px solid var(--new);
+  background: rgba(124, 207, 138, 0.03);
+}
+
+.estadoClean {
+  border-left: 4px solid transparent;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .lineaServicio {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .col {
+    width: 100%;
+  }
+
+  .labelLine {
+    padding-right: 60px;
+  }
+}

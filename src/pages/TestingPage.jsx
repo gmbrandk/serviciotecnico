@@ -1,121 +1,135 @@
 // src/pages/TestingPage.jsx
-
+import { useOSApi } from '@context/ordenServicio/OrdenServicioApiContext';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-// Mini-proyecto imports
 import FormIngreso from '@components/form-ingreso/FormIngreso';
-import OSPreview from '@components/OSPreview';
-import DevLogPanel from '@components/DevLogPanel';
-
-import { mockGetOrdenServicioById } from '@__mock__/ordenServicioMocks';
-import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload';
 import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
 import { ensureAuth } from '@utils/form-ingreso/ensureAuth';
+import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload';
 
-// Inicializadores del mini-proyecto
+// inicializadores de servicios
 import '@config/form-ingreso/init/clienteServiceInit';
 import '@config/form-ingreso/init/equipoServiceInit';
+import '@config/form-ingreso/init/osServiceInit';
 import '@config/form-ingreso/init/tecnicoServiceInit';
 import '@config/form-ingreso/init/tipoTrabajoServiceInit';
 
-// Contexto real de API para enviar al backend
-import { useOSApi } from '@context/ordenServicio/OrdenServicioApiContext';
-
 const TestingPage = () => {
-  const { crearOrdenServicio } = useOSApi();
+  const { state } = useLocation();
+  const payloadFromWizard = state?.payload || null;
+
   const navigate = useNavigate();
+  const { crearOrdenServicio } = useOSApi();
 
-  // Mini-proyecto state
   const [usuario, setUsuario] = useState(null);
-  const [initialData, setInitialData] = useState(null);
-  const [payload, setPayload] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [initialData, setInitialData] = useState(null); // para FormIngreso
+  const [payloadFinal, setPayloadFinal] = useState(null); // payload del form
+  const [sendingStatus, setSendingStatus] = useState(null);
 
-  // Simula autenticación (de tu mini proyecto)
+  // ----------------------------------------
+  // 1) Autenticación
+  // ----------------------------------------
   useEffect(() => {
-    ensureAuth().then(setUsuario);
-  }, []);
-
-  // Carga inicial desde mock
-  useEffect(() => {
-    async function fetchMock() {
-      const res = await mockGetOrdenServicioById('ORD12345');
-
-      if (res.success) {
-        setInitialData(normalizeOrdenPayload(res.data));
-      }
-
-      setLoading(false);
+    async function authFlow() {
+      const user = await ensureAuth();
+      setUsuario(user);
     }
-
-    fetchMock();
+    authFlow();
   }, []);
+
+  // ----------------------------------------
+  // 2) Si viene payload desde el wizard → lo normalizamos y usamos como initialData
+  // ----------------------------------------
+  useEffect(() => {
+    if (!payloadFromWizard) return;
+
+    const normalized = normalizeOrdenPayload(payloadFromWizard);
+    setInitialData(normalized);
+  }, [payloadFromWizard]);
 
   const enviarAlBackend = async () => {
-    if (!payload) return alert('No hay payload para enviar');
+    if (!payloadFinal) return;
 
-    const res = await crearOrdenServicio(payload);
+    setSendingStatus('loading');
+
+    const res = await crearOrdenServicio(payloadFinal);
 
     if (res.success) {
+      setSendingStatus('success');
       navigate('/dashboard/orden-servicio');
     } else {
-      alert(res.message || 'Error al enviar OS');
+      setSendingStatus(res.message || 'error');
     }
   };
 
-  // Loaders
-  if (loading)
-    return <div style={{ padding: '2rem' }}>Cargando orden simulada...</div>;
   if (!usuario)
-    return <div style={{ padding: '2rem' }}>Cargando autenticación…</div>;
+    return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h1>🧪 Laboratorio de Ingreso OS (TestingPage)</h1>
+      <h1>🧾 TestingPage — Formulario de Ingreso</h1>
 
-      <p style={{ color: '#666', marginBottom: '20px' }}>
-        Versión de desarrollo del formulario de ingreso. Aquí no comprometes la
-        app real.
-      </p>
-
+      {/* ---------------------------------------------------------
+         3) FORMULARIO DE INGRESO (mismo que en IngresoPage)
+      ---------------------------------------------------------- */}
       <FormIngreso
         initialPayload={initialData}
         role={usuario.role}
-        onSubmit={(data) => setPayload(buildOrdenPayload(data))}
+        onSubmit={(data) => {
+          const payload = buildOrdenPayload(data);
+          setPayloadFinal(payload);
+
+          // Guardamos para posible navegación
+          navigate('/payload', { state: { payload } });
+        }}
       />
 
-      {payload && (
-        <div style={{ marginTop: '2rem' }}>
-          <h3>📦 Payload generado:</h3>
+      {/* ---------------------------------------------------------
+         4) PANEL DE PAYLOAD (el que ya tenía TestingPage)
+      ---------------------------------------------------------- */}
+      {payloadFinal && (
+        <>
+          <h2>📦 Payload generado por FormIngreso:</h2>
           <pre
             style={{
+              marginTop: '1rem',
+              padding: '1rem',
               background: '#111',
               color: '#0f0',
-              padding: '1rem',
-              borderRadius: '6px',
-              overflowX: 'auto',
+              borderRadius: '8px',
             }}
           >
-            {JSON.stringify(payload, null, 2)}
+            {JSON.stringify(payloadFinal, null, 2)}
           </pre>
 
           <button
             onClick={enviarAlBackend}
             style={{
-              marginTop: '1.2rem',
+              marginTop: '1.5rem',
               padding: '0.7rem 1.2rem',
-              cursor: 'pointer',
               fontSize: '1rem',
+              cursor: 'pointer',
             }}
           >
-            🚀 Enviar al Backend (Real)
+            🚀 Enviar Orden de Servicio al Backend
           </button>
-        </div>
-      )}
 
-      <OSPreview orden={payload} />
-      {window.DEBUG && <DevLogPanel />}
+          {sendingStatus === 'loading' && <p>Enviando...</p>}
+          {sendingStatus === 'success' && (
+            <p style={{ color: 'green', marginTop: '1rem' }}>
+              ✅ Orden de Servicio creada correctamente.
+            </p>
+          )}
+          {sendingStatus &&
+            sendingStatus !== 'loading' &&
+            sendingStatus !== 'success' && (
+              <p style={{ color: 'red', marginTop: '1rem' }}>
+                ❌ Error: {sendingStatus}
+              </p>
+            )}
+        </>
+      )}
     </div>
   );
 };

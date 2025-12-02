@@ -1,5 +1,6 @@
-import searchIcon from '../../assets/form-ingreso/search.svg';
 import { AutocompleteBase } from '@components/form-ingreso/AutocompleteBase.jsx';
+import { autocompleteStyles } from '@styles/form-ingreso';
+import searchIcon from '../../assets/form-ingreso/search.svg';
 
 export function Autocomplete({
   label,
@@ -13,14 +14,13 @@ export function Autocomplete({
   abrirResultados = () => {},
   renderItem = (item) => item.label ?? item.nombre ?? '',
   inputName = 'autocomplete',
-  disabled = false, // 👈 NUEVO
+  disabled = false,
 }) {
   const handleFocus = () => !disabled && abrirResultados();
 
   const handleToggle = () => {
     if (disabled) return;
-    if (isOpen) cerrarResultados();
-    else abrirResultados();
+    isOpen ? cerrarResultados() : abrirResultados();
   };
 
   return (
@@ -37,8 +37,16 @@ export function Autocomplete({
       inputName={inputName}
       onFocus={handleFocus}
       onToggle={handleToggle}
-      renderIcon={() => <img src={searchIcon} alt="search" />}
-      disabled={disabled} // 👈 PASAMOS
+      renderIcon={({ isOpen }) => (
+        <img
+          src={searchIcon}
+          alt="search"
+          className={`${autocompleteStyles.autocompleteToggleIcon} ${
+            isOpen ? autocompleteStyles.rotated : ''
+          }`}
+        />
+      )}
+      disabled={disabled}
     />
   );
 }

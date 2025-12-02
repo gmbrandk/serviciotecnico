@@ -1,6 +1,9 @@
 // SelectAutocomplete.jsx
-import dropdownArrow from '../../assets/form-ingreso/dropdown-arrow.svg';
 import { AutocompleteBase } from '@components/form-ingreso/AutocompleteBase.jsx';
+import dropdownArrow from '../../assets/form-ingreso/dropdown-arrow.svg';
+
+// ⭐ Importar estilos del módulo Autocomplete
+import { autocompleteStyles } from '@styles/form-ingreso';
 
 export function SelectAutocomplete({
   label,
@@ -14,25 +17,19 @@ export function SelectAutocomplete({
   renderItem,
   inputName,
   abrirResultados,
-  isInitialSelection, // 👈 IMPORTANTE: lo pedimos
+  isInitialSelection,
 }) {
   const handleToggle = () => {
-    // Si la UI está en modo inicial,
-    // ignoramos clics en el toggle.
-    if (isInitialSelection) return;
-
-    if (isOpen) cerrarResultados();
-    else abrirResultados();
+    if (isInitialSelection) return; // No permitir toggle en selección inicial
+    isOpen ? cerrarResultados() : abrirResultados();
   };
 
   const handleFocus = () => {
-    // Si el foco viene de inicialización → NO ABRIR.
-    if (isInitialSelection) return;
-
+    if (isInitialSelection) return; // No abrir por focus si la selección es inicial
     abrirResultados();
   };
 
-  // En select queremos mostrar todas las opciones sólo cuando isOpen = true
+  // En select solo mostramos resultados cuando el popover está abierto
   const resultadosForSelect = isOpen ? resultados : [];
 
   return (
@@ -53,7 +50,10 @@ export function SelectAutocomplete({
         <img
           src={dropdownArrow}
           alt="toggle"
-          className={isOpen ? 'rotated' : ''}
+          className={`
+            ${autocompleteStyles.autocompleteToggleIcon}
+            ${isOpen ? autocompleteStyles.rotated : ''}
+          `}
         />
       )}
     />

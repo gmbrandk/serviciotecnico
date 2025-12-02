@@ -3,6 +3,17 @@ import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import closeIcon from '../../assets/form-ingreso/close.svg';
 
+// Import con airbag
+import { autocompleteStyles as rawAutocompleteStyles } from '@styles/form-ingreso';
+
+// Airbag: si viene undefined → objeto vacío
+const autocompleteStyles = rawAutocompleteStyles ?? {};
+
+// Helper para clases limpias
+function cx(...args) {
+  return args.filter(Boolean).join(' ');
+}
+
 export function AutocompleteBase({
   label,
   placeholder,
@@ -17,7 +28,7 @@ export function AutocompleteBase({
   inputName,
   onFocus,
   renderIcon,
-  disabled = false, // 👈 NUEVO
+  disabled = false,
 }) {
   const showClear = Boolean(query?.trim()) && !disabled;
   const blurTimeout = useRef(null);
@@ -28,20 +39,27 @@ export function AutocompleteBase({
   }, []);
 
   return (
-    <div className={`col autocomplete-container ${disabled ? 'disabled' : ''}`}>
+    <div
+      className={cx(
+        'col',
+        autocompleteStyles.autocompleteContainer,
+        disabled && autocompleteStyles.autocompleteContainerDisabled
+      )}
+    >
       {label && <label htmlFor={inputName}>{label}</label>}
 
-      <div className="autocomplete-wrapper">
+      <div className={autocompleteStyles.autocompleteWrapper}>
         <div
-          className={`autocomplete-input-wrapper ${
-            disabled ? 'autocomplete-disabled' : ''
-          }`}
+          className={cx(
+            autocompleteStyles.autocompleteInputWrapper,
+            disabled && autocompleteStyles.autocompleteDisabled
+          )}
         >
           <input
             id={inputName}
             name={inputName}
             type="text"
-            className="input-field autocomplete-input"
+            className={autocompleteStyles.autocompleteInput}
             value={query}
             onChange={(e) => !disabled && onChange(e.target.value)}
             onBlur={() => {
@@ -50,24 +68,21 @@ export function AutocompleteBase({
             }}
             onFocus={() => {
               if (disabled) return;
-              if (blurTimeout.current) {
-                clearTimeout(blurTimeout.current);
-                blurTimeout.current = null;
-              }
+              if (blurTimeout.current) clearTimeout(blurTimeout.current);
               onFocus?.();
             }}
             onClick={() => !disabled && !isOpen && onToggle()}
-            autoComplete="off"
             placeholder={placeholder}
-            disabled={disabled} // 👈 BLOQUEO DE INPUT
+            autoComplete="off"
+            disabled={disabled}
           />
 
-          {/* iconos */}
-          <div className="autocomplete-actions">
+          {/* ICONOS */}
+          <div className={autocompleteStyles.autocompleteActions}>
             {showClear && (
               <button
-                className="autocomplete-clear"
                 type="button"
+                className={autocompleteStyles.autocompleteClear}
                 onMouseDown={(e) => {
                   if (disabled) return;
                   e.preventDefault();
@@ -75,13 +90,17 @@ export function AutocompleteBase({
                   onFocus?.();
                 }}
               >
-                <img src={closeIcon} alt="close" />
+                <img
+                  src={closeIcon}
+                  alt="close"
+                  className={autocompleteStyles.autocompleteClearIcon}
+                />
               </button>
             )}
 
             <button
               type="button"
-              className="autocomplete-toggle"
+              className={autocompleteStyles.autocompleteToggle}
               disabled={disabled}
               onMouseDown={(e) => {
                 if (disabled) return;
@@ -89,22 +108,22 @@ export function AutocompleteBase({
                 onToggle();
               }}
             >
-              {renderIcon?.({ isOpen }) ?? null}
+              {renderIcon?.({ isOpen })}
             </button>
           </div>
         </div>
 
-        {/* lista bloqueada */}
+        {/* LISTA */}
         {isOpen && !disabled && items.length > 0 && (
-          <div className="autocomplete-list" role="listbox">
+          <div className={autocompleteStyles.autocompleteList} role="listbox">
             {items.map((item) => (
               <div
                 key={item._id || item.id || item.nombre}
-                className="autocomplete-item"
+                className={autocompleteStyles.autocompleteItem}
                 role="option"
-                onMouseDown={() => !disabled && onSelect(item)}
+                onMouseDown={() => onSelect(item)}
               >
-                {renderItem ? renderItem(item) : <>{item.nombre}</>}
+                {renderItem ? renderItem(item) : item.nombre}
               </div>
             ))}
           </div>
@@ -127,5 +146,5 @@ AutocompleteBase.propTypes = {
   renderItem: PropTypes.func,
   inputName: PropTypes.string,
   onFocus: PropTypes.func,
-  renderIcon: PropTypes.func, // 👈 nuevo
+  renderIcon: PropTypes.func,
 };

@@ -1,11 +1,15 @@
-import { useEffect } from 'react';
+// src/components/form-ingreso/OrdenServicio.jsx
+import { Autocomplete } from '@components/form-ingreso/Autocomplete';
+import Collapsible from '@components/form-ingreso/Collapsible';
+import { LineaServicio } from '@components/form-ingreso/LineaServicio';
 import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext';
 import { useAutocompleteTecnico } from '@hooks/form-ingreso/useAutocompleteTecnico';
 import { log } from '@utils/form-ingreso/log';
 import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles';
-import { Autocomplete } from '@components/form-ingreso/Autocomplete';
-import Collapsible from '@components/form-ingreso/Collapsible';
-import { LineaServicio } from '@components/form-ingreso/LineaServicio';
+import { useEffect } from 'react';
+
+// ⭐ ESTILOS (alias como pediste)
+import { inputsStyles as ordenServicioStyles } from '@styles/form-ingreso';
 
 export function OrdenServicio({ role }) {
   const {
@@ -18,10 +22,9 @@ export function OrdenServicio({ role }) {
     updateLinea,
   } = useIngresoForm();
 
-  const readOnlyTecnico = role !== 'superadministrador'; // 🔒 PERMISO
-  // ============================
-  // AUTOCOMPLETE TÉCNICO
-  // ============================
+  const readOnlyTecnico = role !== 'superadministrador';
+
+  // AUTOCOMPLETE
   const {
     query,
     resultados,
@@ -30,12 +33,10 @@ export function OrdenServicio({ role }) {
     abrirResultados,
     cerrarResultados,
     seleccionarTecnico,
-    selectedTecnico, // ← FALTABA
+    selectedTecnico,
   } = useAutocompleteTecnico(tecnico);
 
-  // ============================
-  // SYNC: Autocomplete → Context
-  // ============================
+  // SYNC hacia contexto
   useEffect(() => {
     if (selectedTecnico && selectedTecnico._id) {
       log('UI:TECNICO', 'Sync hacia IngresoFormContext', selectedTecnico);
@@ -43,40 +44,21 @@ export function OrdenServicio({ role }) {
     }
   }, [selectedTecnico]);
 
-  useEffect(() => {
-    if (readOnlyTecnico) return; // 🔒 blindaje lógico
-
-    if (selectedTecnico && selectedTecnico._id) {
-      log('UI:TECNICO', 'Sync hacia IngresoFormContext', selectedTecnico);
-      setTecnico(selectedTecnico);
-    }
-  }, [selectedTecnico]);
-
-  // ============================
   // LÍNEAS
-  // ============================
   const agregarLinea = () => addLinea();
-
   const eliminarLinea = (i) => deleteLinea(i);
-
-  const actualizarLinea = (i, patch) => {
+  const actualizarLinea = (i, patch) =>
     updateLinea(
       i,
-      typeof patch === 'function'
-        ? patch
-        : (prev) => ({
-            ...prev,
-            ...patch,
-          })
+      typeof patch === 'function' ? patch : (prev) => ({ ...prev, ...patch })
     );
-  };
 
   const handleOrdenChange = (field, value) =>
     setOrden((prev) => ({ ...prev, [field]: value }));
 
   return (
     <>
-      {/* TÉCNICO */}
+      {/* AVISO PERMISOS */}
       <div className="row">
         {!ROLES_PERMITIDOS_EDITAR_TECNICO.includes(role) && (
           <div className="alert-info" style={{ marginBottom: 10 }}>
@@ -85,9 +67,10 @@ export function OrdenServicio({ role }) {
         )}
       </div>
 
+      {/* AUTOCOMPLETE TÉCNICO */}
       <div className="row">
         <Autocomplete
-          disabled={readOnlyTecnico} // 🟡 UI bloqueada
+          disabled={readOnlyTecnico}
           label="Técnico"
           placeholder="Buscar técnico…"
           inputName="tecnico"
@@ -102,27 +85,27 @@ export function OrdenServicio({ role }) {
             <>
               <strong>{t.nombreCompleto}</strong>
               <br />
-              {t.email && <small>{t.email}</small>} —
+              {t.email && <small>{t.email}</small>} —{' '}
               {t.role && <small>{t.role}</small>}
             </>
           )}
         />
 
         <div className="col">
-          <label>Email</label>
+          <label className={ordenServicioStyles.inputLabel}>Email</label>
           <input
             value={selectedTecnico?.email || ''}
             readOnly
-            className="input-field"
+            className={ordenServicioStyles.inputField}
           />
         </div>
 
         <div className="col">
-          <label>Teléfono</label>
+          <label className={ordenServicioStyles.inputLabel}>Teléfono</label>
           <input
             value={selectedTecnico?.telefono || ''}
             readOnly
-            className="input-field"
+            className={ordenServicioStyles.inputField}
           />
         </div>
       </div>
@@ -136,7 +119,7 @@ export function OrdenServicio({ role }) {
       >
         {orden.lineasServicio.map((linea, i) => (
           <LineaServicio
-            key={linea.uid} // ← YA NO SE ROMPE EL ESTADO
+            key={linea.uid}
             index={i}
             data={linea}
             onDelete={eliminarLinea}
@@ -151,22 +134,24 @@ export function OrdenServicio({ role }) {
 
       {/* CAMPOS GENERALES */}
       <div className="col" style={{ marginTop: 15 }}>
-        <label>Diagnóstico del cliente</label>
+        <label className={ordenServicioStyles.inputLabel}>
+          Diagnóstico del cliente
+        </label>
         <textarea
           value={orden.diagnosticoCliente || ''}
           onChange={(e) =>
             handleOrdenChange('diagnosticoCliente', e.target.value)
           }
-          className="input-field"
+          className={ordenServicioStyles.textareaField}
         />
       </div>
 
       <div className="col" style={{ marginTop: 10 }}>
-        <label>Observaciones</label>
+        <label className={ordenServicioStyles.inputLabel}>Observaciones</label>
         <textarea
           value={orden.observaciones || ''}
           onChange={(e) => handleOrdenChange('observaciones', e.target.value)}
-          className="input-field"
+          className={ordenServicioStyles.textareaField}
         />
       </div>
     </>

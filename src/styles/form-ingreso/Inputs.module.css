@@ -1,0 +1,28 @@
+.inputLabel {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.inputField,
+.textareaField {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: montserrat;
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+.textareaField {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.inputField:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 3px rgba(66, 133, 244, 0.4);
+  outline: none;
+}
