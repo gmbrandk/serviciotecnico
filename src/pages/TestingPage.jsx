@@ -9,7 +9,7 @@ import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload
 
 import { useAuth } from '@context/AuthContext';
 
-// inicializadores de servicios
+// Inicializadores
 import '@config/form-ingreso/init/clienteServiceInit';
 import '@config/form-ingreso/init/equipoServiceInit';
 import '@config/form-ingreso/init/osServiceInit';
@@ -22,15 +22,11 @@ const TestingPage = () => {
 
   const navigate = useNavigate();
   const { crearOrdenServicio } = useOSApi();
-
-  // 🔥 Usamos el AuthContext (NO más ensureAuth)
   const { usuario, cargando } = useAuth();
 
   const [initialData, setInitialData] = useState(null);
-  const [payloadFinal, setPayloadFinal] = useState(null);
-  const [sendingStatus, setSendingStatus] = useState(null);
 
-  // 1. Normalizamos data del wizard
+  // Normalizar payload inicial que venga desde el Wizard
   useEffect(() => {
     if (payloadFromWizard) {
       const normalized = normalizeOrdenPayload(payloadFromWizard);
@@ -38,21 +34,7 @@ const TestingPage = () => {
     }
   }, [payloadFromWizard]);
 
-  const enviarAlBackend = async () => {
-    if (!payloadFinal) return;
-    setSendingStatus('loading');
-
-    const res = await crearOrdenServicio(payloadFinal);
-
-    if (res.success) {
-      setSendingStatus('success');
-      navigate('/dashboard/orden-servicio');
-    } else {
-      setSendingStatus(res.message || 'error');
-    }
-  };
-
-  // 🔐 Esperamos la verificación del usuario desde el AuthContext
+  // 🔐 Esperamos autenticación real
   if (cargando) {
     return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
   }
@@ -60,7 +42,7 @@ const TestingPage = () => {
   if (!usuario) {
     return (
       <p style={{ padding: '2rem', color: 'red' }}>
-        ❌ No hay usuario autenticado (AuthContext).
+        ❌ No hay usuario autenticado.
       </p>
     );
   }
@@ -72,57 +54,31 @@ const TestingPage = () => {
       <FormIngreso
         initialPayload={initialData}
         role={usuario.role}
-        onSubmit={(data) => {
-          const payload = buildOrdenPayload(data);
-          setPayloadFinal(payload);
+        onSubmit={async (data) => {
+          try {
+            // 1️⃣ Construimos payload
+            const payload = buildOrdenPayload(data);
 
-          navigate('/enviarOS', { state: { payload } });
+            // 2️⃣ Enviamos al backend
+            const res = await crearOrdenServicio(payload);
+
+            if (!res.success) {
+              console.error('❌ Error creando OS:', res.message);
+              return;
+            }
+
+            // 3️⃣ Obtenemos OS creada desde backend
+            const ordenCreada = res.details?.orden;
+
+            // 4️⃣ Navegamos a PreviewPage
+            navigate('/preview', {
+              state: { orden: ordenCreada },
+            });
+          } catch (err) {
+            console.error('❌ Error inesperado enviando OS:', err);
+          }
         }}
       />
-
-      {/* PANEL DE PAYLOAD */}
-      {payloadFinal && (
-        <>
-          <h2>📦 Payload generado por FormIngreso:</h2>
-          <pre
-            style={{
-              marginTop: '1rem',
-              padding: '1rem',
-              background: '#111',
-              color: '#0f0',
-              borderRadius: '8px',
-            }}
-          >
-            {JSON.stringify(payloadFinal, null, 2)}
-          </pre>
-
-          <button
-            onClick={enviarAlBackend}
-            style={{
-              marginTop: '1.5rem',
-              padding: '0.7rem 1.2rem',
-              fontSize: '1rem',
-              cursor: 'pointer',
-            }}
-          >
-            🚀 Enviar Orden de Servicio al Backend
-          </button>
-
-          {sendingStatus === 'loading' && <p>Enviando...</p>}
-          {sendingStatus === 'success' && (
-            <p style={{ color: 'green', marginTop: '1rem' }}>
-              ✅ Orden creada correctamente.
-            </p>
-          )}
-          {sendingStatus &&
-            sendingStatus !== 'loading' &&
-            sendingStatus !== 'success' && (
-              <p style={{ color: 'red', marginTop: '1rem' }}>
-                ❌ Error: {sendingStatus}
-              </p>
-            )}
-        </>
-      )}
     </div>
   );
 };

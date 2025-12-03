@@ -1,84 +1,69 @@
+import { useEffect } from 'react';
 import '../styles/OSPreview.css';
 import OSPreviewPDFWrapper from '@components/OSPreviewPDFWrapper';
 
-export default function OSPreview() {
-  const orden = {
-    codigo: 'OS-0095',
-    fechaIngreso: '2025-11-13',
-    cliente: {
-      nombres: 'Hank',
-      apellidos: 'Schrader',
-      telefono: '+549984512648',
-      email: 'hschrader@dea.com',
-      direccion: '4901 Cumbre Del Sur Court NE, Albuquerque, NM',
-    },
-    equipo: {
-      marca: 'ASUS',
-      modelo: 'FX517ZE-ES73',
-      nroSerie: 'N5NRCX071929213',
-      cpu: 'Intel® Core™ i7-12650H',
-      ram: '16GB DDR5',
-      almacenamiento: '512GB NVMe',
-      gpu: 'NVIDIA RTX 3050 Ti',
-    },
-    diagnosticoCliente:
-      'Cliente indica que la laptop dejó de encender después de una caída.',
-    observaciones: 'Equipo con carcasa rota en la esquina superior derecha.',
-    lineasServicio: [
-      {
-        descripcion: 'Instalación de sistema operativo y programas básicos',
-        cantidad: 1,
-        precioUnitario: 40,
-        subtotal: 40,
-      },
-      {
-        descripcion: 'Reemplazo completo de pantalla LCD',
-        cantidad: 1,
-        precioUnitario: 260,
-        subtotal: 260,
-      },
-    ],
-    total: 300,
-  };
+export default function OSPreview({ orden }) {
+  useEffect(() => {
+    console.log('📄 Datos recibidos por OSPreview:', orden);
+  }, [orden]);
+
+  if (!orden) return <p>No se pudo cargar la orden.</p>;
+
+  const {
+    codigo,
+    fechaIngreso,
+    cliente,
+    representante,
+    equipo,
+    diagnosticoCliente,
+    observaciones,
+    lineasServicio,
+    total,
+  } = orden;
 
   return (
     <div className="os-preview">
-      {/* ---------- HEADER NUEVO ---------- */}
-      <div className="os-extra-header">
-        <h3>Lorem ipsum dolor sit amet</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-          consequat ante vitae lorem pulvinar, vitae ullamcorper nunc pretium.
-        </p>
-      </div>
-
-      {/* ---------- EXISTENTE ---------- */}
       <header className="os-header">
-        <div className="os-title">
-          <h1>Orden de Servicio</h1>
-          <span className="os-code">{orden.codigo}</span>
-        </div>
-        <div className="os-meta">
-          <span>Fecha de ingreso: {orden.fechaIngreso}</span>
-        </div>
+        <h1>Orden de Servicio</h1>
+        <span className="os-code">{codigo}</span>
+        <span>Fecha de ingreso: {new Date(fechaIngreso).toLocaleString()}</span>
       </header>
 
-      {/* Datos del cliente */}
+      {/* Cliente */}
       <section className="os-section">
         <h2>Cliente</h2>
         <div className="os-grid">
           <div>
-            <strong>Nombre:</strong> {orden.cliente.nombres}{' '}
-            {orden.cliente.apellidos}
+            <strong>Nombre:</strong> {cliente.nombres} {cliente.apellidos}
           </div>
           <div>
-            <strong>Teléfono:</strong> {orden.cliente.telefono}
+            <strong>DNI:</strong> {cliente.dni}
           </div>
           <div>
-            <strong>Email:</strong> {orden.cliente.email}
+            <strong>Email:</strong> {cliente.email}
           </div>
           <div>
-            <strong>Dirección:</strong> {orden.cliente.direccion}
+            <strong>Teléfono:</strong> {cliente.telefono}
+          </div>
+        </div>
+      </section>
+
+      {/* Representante */}
+      <section className="os-section">
+        <h2>Representante</h2>
+        <div className="os-grid">
+          <div>
+            <strong>Nombre:</strong> {representante.nombres}{' '}
+            {representante.apellidos}
+          </div>
+          <div>
+            <strong>DNI:</strong> {representante.dni}
+          </div>
+          <div>
+            <strong>Email:</strong> {representante.email}
+          </div>
+          <div>
+            <strong>Teléfono:</strong> {representante.telefono}
           </div>
         </div>
       </section>
@@ -88,25 +73,25 @@ export default function OSPreview() {
         <h2>Equipo</h2>
         <div className="os-grid">
           <div>
-            <strong>Marca:</strong> {orden.equipo.marca}
+            <strong>Tipo:</strong> {equipo.tipo}
           </div>
           <div>
-            <strong>Modelo:</strong> {orden.equipo.modelo}
+            <strong>Marca:</strong> {equipo.marca}
           </div>
           <div>
-            <strong>N° Serie:</strong> {orden.equipo.nroSerie}
+            <strong>Modelo:</strong> {equipo.modelo}
           </div>
           <div>
-            <strong>CPU:</strong> {orden.equipo.cpu}
+            <strong>SKU:</strong> {equipo.sku}
           </div>
           <div>
-            <strong>RAM:</strong> {orden.equipo.ram}
+            <strong>Serie:</strong> {equipo.nroSerie}
           </div>
           <div>
-            <strong>Almacenamiento:</strong> {orden.equipo.almacenamiento}
+            <strong>MAC:</strong> {equipo.macAddress}
           </div>
           <div>
-            <strong>GPU:</strong> {orden.equipo.gpu}
+            <strong>Identificación:</strong> {equipo.estadoIdentificacion}
           </div>
         </div>
       </section>
@@ -114,16 +99,16 @@ export default function OSPreview() {
       {/* Diagnóstico */}
       <section className="os-section">
         <h2>Diagnóstico del Cliente</h2>
-        <p>{orden.diagnosticoCliente}</p>
+        <p>{diagnosticoCliente}</p>
       </section>
 
       {/* Observaciones */}
       <section className="os-section">
         <h2>Observaciones</h2>
-        <p>{orden.observaciones}</p>
+        <p>{observaciones}</p>
       </section>
 
-      {/* Tabla */}
+      {/* Línea de servicios */}
       <section className="os-section">
         <h2>Servicios</h2>
         <table className="os-table">
@@ -136,30 +121,21 @@ export default function OSPreview() {
             </tr>
           </thead>
           <tbody>
-            {orden.lineasServicio.map((linea, i) => (
+            {lineasServicio.map((l, i) => (
               <tr key={i}>
-                <td>{linea.descripcion}</td>
-                <td>{linea.cantidad}</td>
-                <td>${linea.precioUnitario}</td>
-                <td>${linea.subtotal}</td>
+                <td>{l.descripcion}</td>
+                <td>{l.cantidad}</td>
+                <td>${l.precioUnitario}</td>
+                <td>${l.subtotal}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="os-total">
-          <span>Total:</span>
-          <strong>${orden.total}</strong>
+          <strong>Total: ${total}</strong>
         </div>
       </section>
-
-      {/* ---------- FOOTER NUEVO ---------- */}
-      <footer className="os-extra-footer">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-          feugiat lorem sit amet quam imperdiet, vitae sagittis neque tincidunt.
-        </p>
-      </footer>
 
       {/* PDF */}
       <OSPreviewPDFWrapper orden={orden} />

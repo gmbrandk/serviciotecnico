@@ -15,6 +15,9 @@ import { ClienteSection } from '@components/form-ingreso/ClienteSection.jsx';
 import Collapsible from '@components/form-ingreso/Collapsible.jsx';
 import { EquipoSection } from '@components/form-ingreso/EquipoSection.jsx';
 import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx';
+import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
+
+import { getOsService } from '@services/form-ingreso/os/osService';
 
 import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 
@@ -26,19 +29,16 @@ function IngresoFormContent({ onSubmit, role }) {
     e.preventDefault();
 
     const canEditTecnico = ROLES_PERMITIDOS_EDITAR_TECNICO.includes(role);
-
     const originalTecnico = originalRef.current?.tecnico ?? null;
 
-    const payload = {
+    const formState = {
       cliente,
       equipo,
-      tecnico: canEditTecnico ? tecnico : originalTecnico, // 🔒 protección fuerte
+      tecnico: canEditTecnico ? tecnico : originalTecnico,
       orden,
     };
 
-    if (onSubmit) onSubmit(payload);
-
-    submitAndClear();
+    if (onSubmit) onSubmit(formState);
   };
 
   return (
