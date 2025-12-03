@@ -5,8 +5,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import FormIngreso from '@components/form-ingreso/FormIngreso';
 import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
-import { ensureAuth } from '@utils/form-ingreso/ensureAuth';
 import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload';
+
+import { useAuth } from '@context/AuthContext';
 
 // inicializadores de servicios
 import '@config/form-ingreso/init/clienteServiceInit';
@@ -22,35 +23,23 @@ const TestingPage = () => {
   const navigate = useNavigate();
   const { crearOrdenServicio } = useOSApi();
 
-  const [usuario, setUsuario] = useState(null);
-  const [initialData, setInitialData] = useState(null); // para FormIngreso
-  const [payloadFinal, setPayloadFinal] = useState(null); // payload del form
+  // 🔥 Usamos el AuthContext (NO más ensureAuth)
+  const { usuario, cargando } = useAuth();
+
+  const [initialData, setInitialData] = useState(null);
+  const [payloadFinal, setPayloadFinal] = useState(null);
   const [sendingStatus, setSendingStatus] = useState(null);
 
-  // ----------------------------------------
-  // 1) Autenticación
-  // ----------------------------------------
+  // 1. Normalizamos data del wizard
   useEffect(() => {
-    async function authFlow() {
-      const user = await ensureAuth();
-      setUsuario(user);
+    if (payloadFromWizard) {
+      const normalized = normalizeOrdenPayload(payloadFromWizard);
+      setInitialData(normalized);
     }
-    authFlow();
-  }, []);
-
-  // ----------------------------------------
-  // 2) Si viene payload desde el wizard → lo normalizamos y usamos como initialData
-  // ----------------------------------------
-  useEffect(() => {
-    if (!payloadFromWizard) return;
-
-    const normalized = normalizeOrdenPayload(payloadFromWizard);
-    setInitialData(normalized);
   }, [payloadFromWizard]);
 
   const enviarAlBackend = async () => {
     if (!payloadFinal) return;
-
     setSendingStatus('loading');
 
     const res = await crearOrdenServicio(payloadFinal);
@@ -63,16 +52,23 @@ const TestingPage = () => {
     }
   };
 
-  if (!usuario)
+  // 🔐 Esperamos la verificación del usuario desde el AuthContext
+  if (cargando) {
     return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
+  }
+
+  if (!usuario) {
+    return (
+      <p style={{ padding: '2rem', color: 'red' }}>
+        ❌ No hay usuario autenticado (AuthContext).
+      </p>
+    );
+  }
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>🧾 TestingPage — Formulario de Ingreso</h1>
 
-      {/* ---------------------------------------------------------
-         3) FORMULARIO DE INGRESO (mismo que en IngresoPage)
-      ---------------------------------------------------------- */}
       <FormIngreso
         initialPayload={initialData}
         role={usuario.role}
@@ -80,14 +76,11 @@ const TestingPage = () => {
           const payload = buildOrdenPayload(data);
           setPayloadFinal(payload);
 
-          // Guardamos para posible navegación
-          navigate('/payload', { state: { payload } });
+          navigate('/enviarOS', { state: { payload } });
         }}
       />
 
-      {/* ---------------------------------------------------------
-         4) PANEL DE PAYLOAD (el que ya tenía TestingPage)
-      ---------------------------------------------------------- */}
+      {/* PANEL DE PAYLOAD */}
       {payloadFinal && (
         <>
           <h2>📦 Payload generado por FormIngreso:</h2>
@@ -118,7 +111,7 @@ const TestingPage = () => {
           {sendingStatus === 'loading' && <p>Enviando...</p>}
           {sendingStatus === 'success' && (
             <p style={{ color: 'green', marginTop: '1rem' }}>
-              ✅ Orden de Servicio creada correctamente.
+              ✅ Orden creada correctamente.
             </p>
           )}
           {sendingStatus &&

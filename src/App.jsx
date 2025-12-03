@@ -11,7 +11,7 @@ import RegisterPage from '@pages/RegisterPage';
 import dashboardRoutes from '@routes/dashboardRoutes';
 
 import { OrdenServicioProviders } from '@context/ordenServicio/ordenServicioProviders';
-import PayloadPage from './pages/form-ingreso/PayloadPage';
+import PreviewPage from './pages/form-ingreso/PreviewPage';
 
 import TestingPage from '@pages/TestingPage';
 
@@ -61,7 +61,7 @@ const App = () => {
           }
         />
 
-        <Route path="/payload" element={<PayloadPage />} />
+        <Route path="/enviarOS" element={<PreviewPage />} />
 
         {/* Catch-all protegida */}
         <Route
