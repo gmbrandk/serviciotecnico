@@ -290,11 +290,44 @@ export function OrdenServicioProvider({
     [logEvent]
   );
 
-  // 🧾 Cambios generales en la orden
+  // ========= FIXED: Cambios generales en la orden =========
   const handleChangeOrden = useCallback(
     (field, value) => {
-      setOrden((prev) => ({ ...prev, [field]: { ...prev[field], ...value } }));
-      logEvent('ORDEN_CHANGE', { field, value });
+      // Soportamos dos usos:
+      // 1) handleChangeOrden('equipo', { ...equipo, campo: valor })  -> merge objeto
+      // 2) handleChangeOrden('diagnosticoCliente', 'texto')         -> asignación directa
+      setOrden((prev) => {
+        const prevField = prev[field];
+        let nuevoCampo;
+
+        const isPlainObject =
+          value && typeof value === 'object' && !Array.isArray(value);
+
+        if (isPlainObject) {
+          // merge (mantener compatibilidad con StepEquipo)
+          nuevoCampo = { ...prevField, ...value };
+        } else {
+          // valor primitivo o reemplazo completo
+          nuevoCampo = value;
+        }
+
+        // debug rápido para ver dónde se pierde la data
+        if (window.DEBUG_WIZARD) {
+          console.groupCollapsed(
+            '%c[ORDEN_CHANGE_DEBUG]',
+            'color:#9b59b6;font-weight:bold',
+            field
+          );
+          console.log('prev:', prevField);
+          console.log('value:', value);
+          console.log('next:', nuevoCampo);
+          console.groupEnd();
+        }
+
+        const nuevoOrden = { ...prev, [field]: nuevoCampo };
+        logEvent('ORDEN_CHANGE', { field, value: nuevoCampo });
+        return nuevoOrden;
+      });
     },
     [logEvent]
   );

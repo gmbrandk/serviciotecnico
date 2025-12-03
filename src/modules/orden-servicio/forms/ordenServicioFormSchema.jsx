@@ -64,6 +64,14 @@ export function buildOrdenServicioFields({
       localEditable: false,
     },
     {
+      name: 'diagnosticoCliente',
+      type: 'textarea',
+      label: { name: 'Diagnostico Cliente', className: 'sr-only' },
+      placeholder: 'Ej: Cliente indica que dejo equipo conectado....',
+      gridColumn: '1 / 4',
+      localEditable: false,
+    },
+    {
       name: 'cantidad',
       type: 'number',
       label: { name: 'Cantidad', className: 'sr-only' },

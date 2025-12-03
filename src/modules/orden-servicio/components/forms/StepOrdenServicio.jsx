@@ -14,6 +14,7 @@ export function StepOrdenServicio() {
     handleAgregarLinea,
     bloquearLinea,
     isLineaBloqueada,
+    handleChangeOrden,
   } = useOrdenServicioContext();
 
   const { goNext } = useStepWizard();
@@ -158,10 +159,17 @@ export function StepOrdenServicio() {
   return (
     <div>
       <SchemaForm
-        values={linea}
+        values={{
+          ...linea,
+          diagnosticoCliente: orden.diagnosticoCliente,
+          observaciones: orden.observaciones,
+        }}
         onChange={(field, value) => {
-          if (field === 'tipo') form.handleChangeLinea(0, 'tipoTrabajo', '');
-          form.handleChangeLinea(0, field, value);
+          if (field === 'diagnosticoCliente' || field === 'observaciones') {
+            handleChangeOrden(field, value);
+          } else {
+            form.handleChangeLinea(0, field, value);
+          }
         }}
         fields={fields}
         gridTemplateColumns={form.gridTemplate}

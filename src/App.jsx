@@ -10,8 +10,8 @@ import NotFound from '@pages/NotFound';
 import RegisterPage from '@pages/RegisterPage';
 import dashboardRoutes from '@routes/dashboardRoutes';
 
-import FormularioEditarUsuario from '@components/pages/Dashboard/Forms/FormularioEditarUsuario';
 import { OrdenServicioProviders } from '@context/ordenServicio/ordenServicioProviders';
+import PayloadPage from './pages/form-ingreso/PayloadPage';
 
 import TestingPage from '@pages/TestingPage';
 
@@ -61,10 +61,7 @@ const App = () => {
           }
         />
 
-        <Route
-          path="/testing/editar/:id"
-          element={<FormularioEditarUsuario />}
-        />
+        <Route path="/payload" element={<PayloadPage />} />
 
         {/* Catch-all protegida */}
         <Route

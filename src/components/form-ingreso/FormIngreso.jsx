@@ -16,7 +16,7 @@ import Collapsible from '@components/form-ingreso/Collapsible.jsx';
 import { EquipoSection } from '@components/form-ingreso/EquipoSection.jsx';
 import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx';
 
-import { formIngresoPageStyles } from '../../styles/form-ingreso';
+import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 
 function IngresoFormContent({ onSubmit, role }) {
   const { cliente, equipo, tecnico, orden, originalRef, submitAndClear } =
@@ -82,8 +82,8 @@ function IngresoFormContent({ onSubmit, role }) {
         </Collapsible>
       </CollapsibleGroupProvider>
 
-      <div className="actions">
-        <button type="submit" className="button-save">
+      <div className={buttonsStyles.actions}>
+        <button type="submit" className={buttonsStyles.button}>
           💾 Guardar formulario
         </button>
       </div>

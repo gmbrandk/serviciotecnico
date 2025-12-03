@@ -9,7 +9,10 @@ import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles';
 import { useEffect } from 'react';
 
 // ⭐ ESTILOS (alias como pediste)
-import { inputsStyles as ordenServicioStyles } from '@styles/form-ingreso';
+import {
+  buttonsStyles,
+  inputsStyles as ordenServicioStyles,
+} from '@styles/form-ingreso';
 
 export function OrdenServicio({ role }) {
   const {
@@ -127,7 +130,11 @@ export function OrdenServicio({ role }) {
           />
         ))}
 
-        <button type="button" className="button-add" onClick={agregarLinea}>
+        <button
+          type="button"
+          className={buttonsStyles.button}
+          onClick={agregarLinea}
+        >
           + Agregar línea
         </button>
       </Collapsible>

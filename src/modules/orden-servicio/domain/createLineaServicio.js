@@ -4,7 +4,6 @@ export function createLineaServicio() {
     tipo: 'servicio', // 👈 Valor por defecto
     tipoTrabajo: '',
     descripcion: '',
-    observaciones: '',
     cantidad: 1,
     precioUnitario: 0,
     subTotal: 0,

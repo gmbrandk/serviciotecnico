@@ -1,4 +1,5 @@
 import {
+  buttonsStyles,
   inputsStyles as inputLineaStyles,
   lineaServicioStyles,
 } from '@styles/form-ingreso';
@@ -282,7 +283,7 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
 
       {/* Botones */}
       <div
-        className={lineaServicioStyles.col}
+        className={[lineaServicioStyles.col, buttonsStyles.actions]}
         style={{ width: '70px', display: 'flex', gap: '4px' }}
       >
         <button

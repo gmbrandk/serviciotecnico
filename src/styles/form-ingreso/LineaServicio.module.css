@@ -2,6 +2,14 @@
    VARIABLES (se asume que vienen de un global variables.css)
    ============================================================ */
 
+:root {
+  --primary: #3c3fe7;
+  --warning: #f7d067;
+  --new: #7ccf8a;
+  --muted: #e5e5e5;
+  --border: #e6e6e6;
+  --text-muted: #666;
+}
 /* ============================================================
    CONTENEDOR PRINCIPAL
    ============================================================ */
