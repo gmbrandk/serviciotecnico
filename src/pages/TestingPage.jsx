@@ -8,7 +8,7 @@ import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
 import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload';
 
 import { useAuth } from '@context/AuthContext';
-
+import '../styles/form-ingreso/index';
 // Inicializadores
 import '@config/form-ingreso/init/clienteServiceInit';
 import '@config/form-ingreso/init/equipoServiceInit';
@@ -48,7 +48,7 @@ const TestingPage = () => {
   }
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="formIngresoRoot" style={{ padding: '2rem' }}>
       <h1>🧾 TestingPage — Formulario de Ingreso</h1>
 
       <FormIngreso

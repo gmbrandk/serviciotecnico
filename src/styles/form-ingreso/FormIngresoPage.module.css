@@ -1,14 +1,47 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 
-/* LIMITADO A LA PÁGINA usando el WRAPPER raíz */
-.pageRoot {
-  font-family: Montserrat, Arial, sans-serif;
-  background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6)),
-    linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
-  background-attachment: fixed;
-  padding: 30px;
-  padding-bottom: 60px;
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* El HTML debe ocupar toda la altura */
+html,
+body {
+  height: 100%;
+}
+
+.formIngresoRoot {
   min-height: 100vh;
+  background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
+  background-attachment: fixed;
+  padding: 2rem;
+  font-family: Montserrat, Arial, sans-serif;
+}
+
+.formIngresoRoot * {
+  box-sizing: border-box;
+}
+
+/* BODY con el gradiente general */
+body {
+  font-family: Montserrat, Arial, sans-serif;
+  background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
+  background-attachment: fixed;
+}
+
+/* WRAPPER que se estira automáticamente */
+.pageRoot {
+  min-height: 100vh; /* garantiza que cubre toda la pantalla */
+  padding: 30px 30px 60px;
+}
+
+.osPreviewRoot {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f4f4f4; /* O tu gradient si lo deseas */
 }
 
 /* form */

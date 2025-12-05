@@ -84,9 +84,11 @@ export const buildClienteFields = ({
       name: 'telefono',
       type: 'telefono',
       gridColumn: '1 / 4',
+      placeholder: 'Ej: 964196320',
       props: {
         // 👈 agrupas toda la configuración aquí
         locked,
+
         paisSeleccionado,
         prefijosTelefonicos,
         handleSelectPais,

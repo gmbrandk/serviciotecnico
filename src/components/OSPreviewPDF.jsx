@@ -1,194 +1,268 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+// OSPreviewPDF.jsx
+import {
+  Document,
+  Image,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from '@react-pdf/renderer';
+
+// Nuevo color corporativo
+const primary = '#1A4D8F'; // Azul petróleo profesional
+const primaryLight = '#E6EEF7'; // Azul muy suave para fondos/accentos
 
 const styles = StyleSheet.create({
   page: {
-    padding: 38,
-    fontSize: 12,
+    padding: 32,
+    fontSize: 10,
     fontFamily: 'Helvetica',
     color: '#333',
+    lineHeight: 1.15,
   },
 
-  /* ------------ EXTRA HEADER ------------ */
-  extraHeader: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#EB0901',
-    paddingBottom: 14,
+  /* -------- HEADER DEL NEGOCIO -------- */
+  businessHeader: {
+    borderBottomWidth: 1.5,
+    borderBottomColor: primary,
+    paddingBottom: 10,
     marginBottom: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  extraHeaderTitle: {
-    fontSize: 17,
+
+  businessLogoContainer: {
+    width: 220,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginRight: 12,
+  },
+
+  businessLogo: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+  },
+
+  businessInfo: {
+    flex: 1,
+    alignItems: 'flex-end',
+    textAlign: 'right',
+  },
+
+  businessName: {
+    fontSize: 14,
     fontWeight: 700,
-    marginBottom: 4,
-    color: '#333',
+    color: primary,
+    marginBottom: 2,
   },
-  extraHeaderText: {
-    fontSize: 12,
+
+  businessText: {
+    fontSize: 10,
     color: '#666',
   },
 
-  /* ------------ HEADER NORMAL ------------ */
+  /* -------- HEADER DEL COMPROBANTE -------- */
   header: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#EB0901',
-    paddingBottom: 14,
-    marginBottom: 26,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 700,
-    marginBottom: 6,
-  },
-  code: {
-    backgroundColor: '#EB090112',
-    padding: 6,
-    borderLeftWidth: 3,
-    borderLeftColor: '#EB0901',
-    fontSize: 14,
-    fontWeight: 700,
-    color: '#EB0901',
-  },
-  meta: {
-    marginTop: 8,
-    fontSize: 14,
-    color: '#666',
+    borderBottomWidth: 1,
+    borderBottomColor: primary,
+    paddingBottom: 10,
+    marginBottom: 20,
   },
 
-  /* ------------ SECCIONES ------------ */
-  section: {
-    marginBottom: 26,
-  },
-  sectionTitle: {
+  title: {
     fontSize: 16,
     fontWeight: 700,
-    color: '#666',
-    borderLeftWidth: 4,
-    borderLeftColor: '#EB0901',
-    paddingLeft: 8,
-    marginBottom: 14,
+    color: primary,
+    marginBottom: 4,
+  },
+
+  code: {
+    backgroundColor: primaryLight,
+    padding: 4,
+    borderLeftWidth: 3,
+    borderLeftColor: primary,
+    fontSize: 12,
+    fontWeight: 700,
+    color: primary,
+  },
+
+  meta: {
+    marginTop: 6,
+    fontSize: 11,
+    color: '#555',
+  },
+
+  /* -------- SECCIONES -------- */
+  section: {
+    marginBottom: 18,
+  },
+
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: primary,
+    borderLeftWidth: 3,
+    borderLeftColor: primary,
+    paddingLeft: 6,
+    marginBottom: 10,
   },
 
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+
   gridItem: {
     width: '50%',
-    marginBottom: 6,
-    fontSize: 13,
+    marginBottom: 4,
+    fontSize: 11,
+    lineHeight: 1.2,
   },
 
   textBox: {
     backgroundColor: '#f7f7f7',
-    padding: 12,
+    padding: 10,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: '#ececec',
-    fontSize: 13,
-    lineHeight: 1.4,
+    fontSize: 11,
+    lineHeight: 1.25,
   },
 
-  /* ------------ TABLA ------------ */
+  /* -------- TABLA -------- */
   table: {
     width: '100%',
   },
+
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#fafafa',
-    borderBottomWidth: 2,
-    borderBottomColor: '#EB0901',
-    paddingBottom: 8,
+    backgroundColor: primaryLight,
+    borderBottomWidth: 1.5,
+    borderBottomColor: primary,
+    paddingBottom: 6,
   },
+
   th: {
     width: '25%',
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: 700,
-    color: '#666',
+    color: primary,
   },
+
   tr: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
+
   td: {
     width: '25%',
-    fontSize: 13,
+    fontSize: 10.5,
   },
 
   total: {
-    marginTop: 18,
-    fontSize: 17,
+    marginTop: 12,
+    fontSize: 14,
     textAlign: 'right',
-    color: '#EB0901',
+    color: primary,
     fontWeight: 700,
   },
 
-  /* ------------ FOOTER EXTRA ------------ */
-  extraFooter: {
+  /* -------- FOOTER -------- */
+  footer: {
     borderTopWidth: 1,
-    borderTopColor: '#EB0901',
-    paddingTop: 14,
-    marginTop: 26,
-    fontSize: 13,
-    color: '#666',
+    borderTopColor: primary,
+    paddingTop: 10,
+    marginTop: 20,
+    fontSize: 10,
+    color: '#555',
+    lineHeight: 1.2,
   },
 });
 
-export default function OSPreviewPDF({ orden }) {
+export default function OSPreviewPDF({ orden, negocio = {} }) {
+  const {
+    nombre = 'Nombre del Negocio',
+    ruc = '',
+    direccion = '',
+    telefono = '',
+    email = '',
+    logo = null,
+  } = negocio;
+
   return (
     <Document>
       <Page style={styles.page}>
-        {/* -------- EXTRA HEADER -------- */}
-        <View style={styles.extraHeader}>
-          <Text style={styles.extraHeaderTitle}>
-            Lorem ipsum dolor sit amet
-          </Text>
-          <Text style={styles.extraHeaderText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-            consequat ante vitae lorem pulvinar, vitae ullamcorper nunc pretium.
-          </Text>
+        {/* HEADER NEGOCIO */}
+        <View style={styles.businessHeader}>
+          {logo && (
+            <View style={styles.businessLogoContainer}>
+              <Image src={logo} style={styles.businessLogo} />
+            </View>
+          )}
+
+          <View style={styles.businessInfo}>
+            <Text style={styles.businessName}>{nombre}</Text>
+            {ruc && <Text style={styles.businessText}>RUC: {ruc}</Text>}
+            {direccion && <Text style={styles.businessText}>{direccion}</Text>}
+            {telefono && (
+              <Text style={styles.businessText}>Tel: {telefono}</Text>
+            )}
+            {email && <Text style={styles.businessText}>{email}</Text>}
+          </View>
         </View>
 
-        {/* -------- HEADER PRINCIPAL -------- */}
+        {/* HEADER COMPROBANTE */}
         <View style={styles.header}>
-          <Text style={styles.title}>Orden de Servicio</Text>
+          <Text style={styles.title}>
+            Comprobante de Ingreso / Orden de Servicio
+          </Text>
           <Text style={styles.code}>{orden.codigo}</Text>
           <Text style={styles.meta}>
-            Fecha de ingreso: {orden.fechaIngreso}
+            Fecha de ingreso: {new Date(orden.fechaIngreso).toLocaleString()}
+          </Text>
+          <Text style={styles.meta}>
+            Atendido por: {orden.tecnico?.nombre || '—'}
           </Text>
         </View>
 
-        {/* -------- CLIENTE -------- */}
+        {/* CLIENTE */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Cliente</Text>
 
           <View style={styles.grid}>
             <Text style={styles.gridItem}>
               <Text style={{ fontWeight: 700 }}>Nombre: </Text>
-              {orden.cliente.nombres} {orden.cliente.apellidos}
+              {orden.representante.nombres} {orden.representante.apellidos}
             </Text>
-
             <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>Teléfono: </Text>
-              {orden.cliente.telefono}
+              <Text style={{ fontWeight: 700 }}>DNI: </Text>
+              {orden.representante.dni}
             </Text>
-
             <Text style={styles.gridItem}>
               <Text style={{ fontWeight: 700 }}>Email: </Text>
-              {orden.cliente.email}
+              {orden.representante.email}
             </Text>
-
             <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>Dirección: </Text>
-              {orden.cliente.direccion}
+              <Text style={{ fontWeight: 700 }}>Teléfono: </Text>
+              {orden.representante.telefono}
             </Text>
           </View>
         </View>
 
-        {/* -------- EQUIPO -------- */}
+        {/* EQUIPO */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Equipo</Text>
+
           <View style={styles.grid}>
+            <Text style={styles.gridItem}>
+              <Text style={{ fontWeight: 700 }}>Tipo: </Text>
+              {orden.equipo.tipo}
+            </Text>
             <Text style={styles.gridItem}>
               <Text style={{ fontWeight: 700 }}>Marca: </Text>
               {orden.equipo.marca}
@@ -198,41 +272,19 @@ export default function OSPreviewPDF({ orden }) {
               {orden.equipo.modelo}
             </Text>
             <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>N° Serie: </Text>
+              <Text style={{ fontWeight: 700 }}>Serie: </Text>
               {orden.equipo.nroSerie}
-            </Text>
-            <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>CPU: </Text>
-              {orden.equipo.cpu}
-            </Text>
-            <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>RAM: </Text>
-              {orden.equipo.ram}
-            </Text>
-            <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>Almacenamiento: </Text>
-              {orden.equipo.almacenamiento}
-            </Text>
-            <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>GPU: </Text>
-              {orden.equipo.gpu}
             </Text>
           </View>
         </View>
 
-        {/* -------- DIAGNÓSTICO -------- */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Diagnóstico del Cliente</Text>
-          <Text style={styles.textBox}>{orden.diagnosticoCliente}</Text>
-        </View>
-
-        {/* -------- OBSERVACIONES -------- */}
+        {/* OBSERVACIONES */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Observaciones</Text>
           <Text style={styles.textBox}>{orden.observaciones}</Text>
         </View>
 
-        {/* -------- TABLA -------- */}
+        {/* TABLA */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Servicios</Text>
 
@@ -248,21 +300,21 @@ export default function OSPreviewPDF({ orden }) {
               <View key={i} style={styles.tr}>
                 <Text style={styles.td}>{l.descripcion}</Text>
                 <Text style={styles.td}>{l.cantidad}</Text>
-                <Text style={styles.td}>${l.precioUnitario}</Text>
-                <Text style={styles.td}>${l.subtotal}</Text>
+                <Text style={styles.td}>S/.{l.precioUnitario}</Text>
+                <Text style={styles.td}>S/.{l.subtotal}</Text>
               </View>
             ))}
           </View>
 
-          <Text style={styles.total}>${orden.total}</Text>
+          <Text style={styles.total}>Total: S/.{orden.total}</Text>
         </View>
 
-        {/* -------- FOOTER EXTRA -------- */}
-        <View style={styles.extraFooter}>
+        {/* FOOTER */}
+        <View style={styles.footer}>
           <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            feugiat lorem sit amet quam imperdiet, vitae sagittis neque
-            tincidunt.
+            Este comprobante certifica la recepción del equipo para diagnóstico
+            y/o reparación. La empresa no se responsabiliza por accesorios no
+            declarados.
           </Text>
         </View>
       </Page>

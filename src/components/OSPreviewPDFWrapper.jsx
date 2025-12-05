@@ -1,35 +1,55 @@
 // components/OSPreviewPDFWrapper.jsx
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
-import { useState } from 'react';
 import OSPreviewPDF from '@components/OSPreviewPDF';
+import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
 
-export default function OSPreviewPDFWrapper({ orden }) {
-  const [open, setOpen] = useState(false);
-
+export default function OSPreviewPDFWrapper({ orden, negocio }) {
   if (!orden) return <p>No hay datos para generar PDF.</p>;
+
+  const handleOpenPDF = async () => {
+    const blob = await pdf(
+      <OSPreviewPDF orden={orden} negocio={negocio} />
+    ).toBlob();
+
+    const fileName = `Nº${orden.codigo}.pdf`;
+
+    // Crear URL del Blob
+    const url = URL.createObjectURL(blob);
+
+    // Crear link de descarga invisble con filename
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click(); // Fuerza que el navegador registre el filename
+
+    // Luego abrir en nueva pestaña
+    window.open(url, '_blank');
+
+    // Limpieza
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  };
 
   return (
     <div style={{ marginTop: '20px' }}>
-      {/* Botón ver PDF */}
+      {/* Botón abrir en nueva pestaña */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={handleOpenPDF}
         style={{
           padding: '10px 16px',
           borderRadius: '5px',
-          background: '#EB0901',
+          background: '#1A4D8F', // nuevo color corporativo
           color: 'white',
           border: 'none',
           cursor: 'pointer',
           marginRight: '10px',
         }}
       >
-        {open ? 'Cerrar visor' : 'Ver PDF'}
+        Ver PDF
       </button>
 
-      {/* Botón descarga */}
+      {/* Botón descarga directo */}
       <PDFDownloadLink
-        document={<OSPreviewPDF orden={orden} />}
-        fileName={`orden-${orden.codigo}.pdf`}
+        document={<OSPreviewPDF orden={orden} negocio={negocio} />}
+        fileName={`Nº${orden.codigo}.pdf`}
         style={{
           padding: '10px 16px',
           borderRadius: '5px',
@@ -42,21 +62,6 @@ export default function OSPreviewPDFWrapper({ orden }) {
       >
         Descargar PDF
       </PDFDownloadLink>
-
-      {/* Viewer PDF */}
-      {open && (
-        <div
-          style={{
-            marginTop: '20px',
-            border: '1px solid #ccc',
-            height: '80vh',
-          }}
-        >
-          <PDFViewer style={{ width: '100%', height: '100%' }}>
-            <OSPreviewPDF orden={orden} />
-          </PDFViewer>
-        </div>
-      )}
     </div>
   );
 }
