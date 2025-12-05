@@ -18,6 +18,15 @@
   margin-bottom: 28px;
 }
 
+.os-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  width: 100%;
+}
+
+
 .os-title {
   display: flex;
   flex-direction: column;

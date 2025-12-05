@@ -24,13 +24,29 @@ export default function OSPreview({ orden }) {
 
   return (
     <div className="osPreviewRoot">
+      {/* PDF */}
+      <OSPreviewPDFWrapper
+        orden={orden}
+        negocio={{
+          nombre: 'MacService E.I.R.L',
+          ruc: '10480562041',
+          direccion:
+            'Calle Octavio Muñoz Najar 223 Galeria COMPUAREQUIPA int.232 2do Piso',
+          telefono: '+51 949 105 405',
+          email: 'teamcross_soporte@hotmail.com',
+          logo: MacServiceLogo, // cuando tengas la imagen: "/assets/logo.png"
+        }}
+      />
       <div className="os-preview">
         <header className="os-header">
           <h1>Orden de Servicio</h1>
-          <span className="os-code">{codigo}</span>
-          <span>
-            Fecha de ingreso: {new Date(fechaIngreso).toLocaleString()}
-          </span>
+
+          <div className="os-header-row">
+            <span className="os-code">{codigo}</span>
+            <span className="os-date">
+              Fecha de ingreso: {new Date(fechaIngreso).toLocaleString()}
+            </span>
+          </div>
         </header>
 
         {/* Cliente */}
@@ -140,20 +156,6 @@ export default function OSPreview({ orden }) {
             <strong>Total: ${total}</strong>
           </div>
         </section>
-
-        {/* PDF */}
-        <OSPreviewPDFWrapper
-          orden={orden}
-          negocio={{
-            nombre: 'MacService E.I.R.L',
-            ruc: '10480562041',
-            direccion:
-              'Calle Octavio Muñoz Najar 223 Galeria COMPUAREQUIPA int.232 2do Piso',
-            telefono: '+51 949 105 405',
-            email: 'teamcross_soporte@hotmail.com',
-            logo: MacServiceLogo, // cuando tengas la imagen: "/assets/logo.png"
-          }}
-        />
       </div>
     </div>
   );
