@@ -1,5 +1,5 @@
 // ============================================================
-// IngresoFormProvider – versión con LOGS + DEBUG UI + explainDiff
+// IngresoFormProvider – versión con AUTOSAVE tipo PATCH + LOGS + DEBUG UI + explainDiff
 // ============================================================
 
 import {
@@ -88,60 +88,26 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
 
   const initialLoadDoneRef = useRef(false);
 
+  // track source of initial load: 'autosave' | 'initialPayload' | 'empty'
+  const [initialSource, setInitialSource] = useState('empty');
+
   // Persistencia
   const [persistEnabled, setPersistEnabled] = useState(() => {
-    const saved = localStorage.getItem(LS_PERSIST);
-    return saved ? saved === 'true' : true;
-  });
-
-  useEffect(() => {
-    localStorage.setItem(LS_PERSIST, persistEnabled);
-  }, [persistEnabled]);
-
-  const autosaveValue = useMemo(
-    () => ({
-      cliente,
-      equipo,
-      tecnico,
-      orden,
-    }),
-    [cliente, equipo, tecnico, orden]
-  );
-
-  const autosaveReady = initialLoadDoneRef.current;
-
-  const autosave = useAutosave({
-    key: LS_KEY,
-    value: autosaveValue,
-    enabled: persistEnabled && autosaveReady,
-    delay: 300,
-    skipInitialSave: true,
-  });
-
-  // ============================================================
-  // 🔄 CARGA INICIAL
-  // ============================================================
-  useEffect(() => {
-    if (loaded) return;
-
-    console.log('🟦 PROV:LOAD → Iniciando carga inicial');
-
-    const apply = (data) => loadPayload(data);
-
-    const saved = autosave.load();
-
-    if (saved && Date.now() - saved.timestamp < EXPIRATION_MS) {
-      console.log('🟦 PROV:LOAD → usando autosave');
-      apply(saved);
-    } else if (initialPayload) {
-      console.log('🟦 PROV:LOAD → usando initialPayload');
-      apply(initialPayload);
+    try {
+      const saved = localStorage.getItem(LS_PERSIST);
+      return saved ? saved === 'true' : true;
+    } catch (e) {
+      return true;
     }
+  });
 
-    setLoaded(true);
-    autosave.markReady();
-    initialLoadDoneRef.current = true;
-  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(LS_PERSIST, persistEnabled);
+    } catch (e) {
+      /* ignore */
+    }
+  }, [persistEnabled]);
 
   // Util: parse respuesta backend
   function extractRecord(res) {
@@ -162,7 +128,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     if (!obj || typeof obj !== 'object') return null;
     const out = {};
     for (const key of permitidos) {
-      if (obj.hasOwnProperty(key)) out[key] = obj[key];
+      if (Object.prototype.hasOwnProperty.call(obj, key)) out[key] = obj[key];
     }
     return out;
   }
@@ -198,6 +164,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   // loadPayload
   // ============================================================
   async function loadPayload(data) {
+    // data is expected to be a full payload (like initialPayload or saved full payload)
     console.log('🟦 PROV:loadPayload →', data);
 
     // Cliente
@@ -240,7 +207,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     // Líneas
     const lineasRaw = data.lineasServicio ?? data.orden?.lineasServicio ?? [];
     const lineasServicio = await Promise.all(
-      lineasRaw.map(async (l) => {
+      (lineasRaw || []).map(async (l) => {
         let tipoTrabajoObj = null;
 
         if (l.tipoTrabajo) {
@@ -248,7 +215,6 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
             typeof l.tipoTrabajo === 'string'
               ? l.tipoTrabajo
               : l.tipoTrabajo._id;
-
           tipoTrabajoObj = extractRecord(
             await buscarTipoTrabajoPorId(idTrabajo)
           );
@@ -256,7 +222,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
 
         return makeLinea({
           ...l,
-          tipoTrabajo: filtrarCampos(tipoTrabajoObj), // ← SOLO FIELDS PERMITIDOS
+          tipoTrabajo: filtrarCampos(tipoTrabajoObj),
           precioUnitario: Number(
             l.precioUnitario ?? tipoTrabajoObj?.precioBase ?? 0
           ),
@@ -293,11 +259,280 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
       cliente: JSON.parse(JSON.stringify(clienteObj)),
       equipo: JSON.parse(JSON.stringify(normalizedEquipo)),
       tecnico: JSON.parse(JSON.stringify(tecnicoObj)),
-      orden: { lineas: mapLineas },
+      orden: {
+        lineas: mapLineas,
+        diagnosticoCliente: normalizedOrden.diagnosticoCliente,
+        observaciones: normalizedOrden.observaciones,
+        total: normalizedOrden.total,
+        fechaIngreso: normalizedOrden.fechaIngreso,
+      },
     };
 
     console.log('🟦 PROV:originalRef SET →', originalRef.current);
   }
+
+  // ============================================================
+  // buildDiff → arma patch/minidiff del estado actual respecto al original
+  // estructura resultante:
+  // { cliente?, equipo?, tecnico?, orden?: { camposSimples?, lineasServicio?: { [uid]: lineaPatch } } }
+  // ============================================================
+  function buildDiff() {
+    const diff = {};
+
+    try {
+      // cliente
+      if (
+        JSON.stringify(cliente) !== JSON.stringify(originalRef.current.cliente)
+      ) {
+        diff.cliente = cliente;
+      }
+
+      // equipo
+      if (
+        JSON.stringify(equipo) !== JSON.stringify(originalRef.current.equipo)
+      ) {
+        diff.equipo = equipo;
+      }
+
+      // tecnico
+      if (
+        JSON.stringify(tecnico) !== JSON.stringify(originalRef.current.tecnico)
+      ) {
+        diff.tecnico = tecnico;
+      }
+
+      // orden simples
+      const ordenDiff = {};
+      const origOrdenRef = originalRef.current?.orden || {};
+
+      ['diagnosticoCliente', 'observaciones', 'total', 'fechaIngreso'].forEach(
+        (k) => {
+          if ((orden?.[k] ?? null) !== (origOrdenRef[k] ?? null)) {
+            ordenDiff[k] = orden[k];
+          }
+        }
+      );
+
+      // lineasServicio -> por uid
+      const lineasDiff = {};
+      for (const linea of orden.lineasServicio || []) {
+        const origLinea = origOrdenRef.lineas?.[linea.uid] ?? null;
+        const estado = resolveEstado(linea, origLinea);
+
+        if (estado !== 'clean') {
+          // Para simplicidad guardamos la linea completa como patch.
+          // Puedes refinar para guardar solo campos cambiados si quieres.
+          lineasDiff[linea.uid] = {
+            // evita funciones/prototipos peligrosos
+            uid: linea.uid,
+            descripcion: linea.descripcion,
+            precioUnitario: Number(linea.precioUnitario ?? 0),
+            cantidad: Number(linea.cantidad ?? 1),
+            tipoTrabajo: filtrarCampos(linea.tipoTrabajo),
+            isNew: linea.isNew,
+            deleted: linea.deleted,
+            errors: linea.errors,
+            backendConflict: linea.backendConflict,
+          };
+        }
+      }
+
+      if (Object.keys(lineasDiff).length > 0) {
+        ordenDiff.lineasServicio = lineasDiff;
+      }
+
+      if (Object.keys(ordenDiff).length > 0) {
+        diff.orden = ordenDiff;
+      }
+    } catch (e) {
+      console.error('Error building diff', e);
+    }
+
+    return diff;
+  }
+
+  // ============================================================
+  // applyDiff → aplica un diff (como el generado por buildDiff) sobre el estado actual
+  // ============================================================
+  function applyDiff(diff = {}) {
+    if (!diff) return;
+
+    if (diff.cliente) {
+      setCliente(diff.cliente);
+    }
+    if (diff.equipo) {
+      setEquipo(diff.equipo);
+    }
+    if (diff.tecnico) {
+      setTecnico(diff.tecnico);
+    }
+
+    if (diff.orden) {
+      setOrden((prev) => {
+        const updated = { ...prev };
+
+        // campos simples
+        [
+          'diagnosticoCliente',
+          'observaciones',
+          'total',
+          'fechaIngreso',
+        ].forEach((k) => {
+          if (Object.prototype.hasOwnProperty.call(diff.orden, k)) {
+            updated[k] = diff.orden[k];
+          }
+        });
+
+        // lineasServicio (patch por uid)
+        if (diff.orden.lineasServicio) {
+          const byUid = {};
+          for (const l of updated.lineasServicio || []) {
+            byUid[l.uid] = l;
+          }
+
+          // Merge patches
+          for (const uid of Object.keys(diff.orden.lineasServicio)) {
+            const patch = diff.orden.lineasServicio[uid];
+
+            // normalize tipoTrabajo
+            patch.tipoTrabajo = filtrarCampos(patch.tipoTrabajo);
+
+            if (byUid[uid]) {
+              // merge into existing linea
+              byUid[uid] = { ...byUid[uid], ...patch };
+              // normalize numbers
+              byUid[uid].precioUnitario = Number(
+                byUid[uid].precioUnitario ?? 0
+              );
+              byUid[uid].cantidad = Number(byUid[uid].cantidad ?? 1);
+            } else {
+              // new linea: ensure it goes through makeLinea normalization
+              const newL = makeLinea({ ...patch, isNew: !!patch.isNew });
+              // preserve uid
+              newL.uid = patch.uid;
+              byUid[uid] = newL;
+            }
+          }
+
+          // Recreate array preserving original order where possible, append new at end
+          const newArray = [];
+          const existingUids = new Set(
+            (updated.lineasServicio || []).map((l) => l.uid)
+          );
+
+          // keep existing order
+          for (const l of updated.lineasServicio || []) {
+            if (byUid[l.uid]) newArray.push(byUid[l.uid]);
+          }
+
+          // append any new uids that weren't in the previous list
+          for (const uid of Object.keys(byUid)) {
+            if (!existingUids.has(uid)) newArray.push(byUid[uid]);
+          }
+
+          updated.lineasServicio = newArray;
+        }
+
+        return updated;
+      });
+    }
+  }
+
+  // ============================================================
+  // Autosave hook: ahora guarda buildDiff() en vez del estado completo
+  // Nota: colocamos el hook después de buildDiff/applyDiff.
+  // ============================================================
+  const autosaveValue = useMemo(
+    () => buildDiff(),
+    [cliente, equipo, tecnico, orden]
+  );
+
+  const autosaveReady = initialLoadDoneRef.current; // sólo después de la carga inicial
+
+  const autosave = useAutosave({
+    key: LS_KEY,
+    value: autosaveValue,
+    enabled: persistEnabled && autosaveReady,
+    delay: 300,
+    skipInitialSave: true,
+  });
+
+  // utilidad: si hay cambios pendientes
+  function hasChanges() {
+    try {
+      return Object.keys(buildDiff()).length > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // utilidad: eliminar autosave del localStorage
+  function discardAutosave() {
+    try {
+      localStorage.removeItem(LS_KEY);
+      // opcional: reset initialSource to prefer backend next time
+      setInitialSource('empty');
+      console.log('🗑️ AUTOSAVE descartado');
+    } catch (e) {
+      console.warn('No se pudo descartar autosave', e);
+    }
+  }
+
+  // ============================================================
+  // 🔄 CARGA INICIAL
+  // ============================================================
+  useEffect(() => {
+    if (loaded) return;
+
+    console.log('🟦 PROV:LOAD → Inicializando carga inicial');
+
+    const saved = autosave.load(); // puede ser { timestamp, diff } o un payload completo
+
+    // ----> 1) Preferimos AUTOSAVE si es reciente
+    if (saved && Date.now() - saved.timestamp < EXPIRATION_MS) {
+      console.log('🟦 PROV:LOAD → usando autosave');
+
+      // Si el saved contiene diff (nuestro esquema)
+      if (saved.diff && Object.keys(saved.diff).length > 0) {
+        setInitialSource('autosave');
+        // Load backend / initialPayload first (if exists) to have base to patch
+        (async () => {
+          await loadPayload(initialPayload ?? {});
+          applyDiff(saved.diff);
+        })();
+      } else {
+        // si guarda payload completo (legacy) lo aceptamos directamente
+        setInitialSource('autosave');
+        (async () => {
+          await loadPayload(saved);
+        })();
+      }
+    }
+
+    // ----> 2) Si no hay autosave válido, usamos initialPayload
+    else if (initialPayload) {
+      console.log('🟦 PROV:LOAD → usando initialPayload');
+      setInitialSource('initialPayload');
+      (async () => {
+        await loadPayload(initialPayload);
+      })();
+    }
+
+    // ----> 3) Nada disponible → formulario vacío
+    else {
+      console.log('🟦 PROV:LOAD → sin autosave ni initialPayload');
+      setInitialSource('empty');
+      // load empty/defaults via loadPayload({})
+      (async () => {
+        await loadPayload({});
+      })();
+    }
+
+    setLoaded(true);
+    autosave.markReady();
+    initialLoadDoneRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ============================================================
   // Recalcular total
@@ -462,6 +697,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         }}
       >
         <div>🔍 DEBUG UI</div>
+        <div>Source: {initialSource}</div>
         <div>New: {counters.new}</div>
         <div>Modified: {counters.modified}</div>
         <div>Clean: {counters.clean}</div>
@@ -475,10 +711,26 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
             console.log('🟪 DIFF:GLOBAL →', {
               actual: orden.lineasServicio,
               original: originalRef.current,
+              autosaveDiff: buildDiff(),
             });
           }}
         >
           Print DIFF
+        </button>
+
+        <button
+          style={{ marginTop: '8px', padding: '4px 6px' }}
+          onClick={() => {
+            console.log('🗑️ Discarding autosave and reloading original');
+            discardAutosave();
+            // re-load originalRef into state
+            (async () => {
+              await loadPayload({});
+              // reset originalRef into state (if originalRef had been set earlier you'd call loadPayload with original source)
+            })();
+          }}
+        >
+          Discard Autosave
         </button>
       </div>
     );
@@ -490,6 +742,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   return (
     <IngresoFormContext.Provider
       value={{
+        // state
         cliente,
         setCliente,
         equipo,
@@ -499,16 +752,26 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         orden,
         setOrden,
 
+        // line helpers
         addLinea,
         deleteLinea,
         updateLinea,
         resetLinea,
         makeLinea,
 
+        // diff / autosave
+        buildDiff,
+        hasChanges,
+        applyDiff,
+        discardAutosave,
+        initialSource,
+
+        // other helpers
         resolveEstado,
         originalRef,
         explainDiff,
 
+        // persistence
         persistEnabled,
         setPersistEnabled,
         autosave,

@@ -15,9 +15,6 @@ import { ClienteSection } from '@components/form-ingreso/ClienteSection.jsx';
 import Collapsible from '@components/form-ingreso/Collapsible.jsx';
 import { EquipoSection } from '@components/form-ingreso/EquipoSection.jsx';
 import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx';
-import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
-
-import { getOsService } from '@services/form-ingreso/os/osService';
 
 import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 
