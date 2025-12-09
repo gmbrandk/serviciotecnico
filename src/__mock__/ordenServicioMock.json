@@ -1,0 +1,2480 @@
+{
+  "success": true,
+  "ok": true,
+  "message": "Orden(es) obtenida(s) correctamente",
+  "mensaje": "Orden(es) obtenida(s) correctamente",
+  "details": {
+    "ordenes": [
+      {
+        "_id": "69364698b1d931c3979bf438",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T03:28:50.126Z",
+        "observaciones": "SOPORTE DE KEYCAPS ROTOS",
+        "diagnosticoCliente": "Caida brusca",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "CAMBIO DE TECLADO",
+            "cantidad": 1,
+            "precioUnitario": 180,
+            "subtotal": 180
+          }
+        ],
+        "total": 180,
+        "createdAt": "2025-12-08T03:31:36.008Z",
+        "updatedAt": "2025-12-08T03:31:36.008Z",
+        "codigo": "OS-0121",
+        "__v": 0
+      },
+      {
+        "_id": "69363f65b1d931c3979bf383",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T03:00:53.259Z",
+        "updatedAt": "2025-12-08T03:00:53.259Z",
+        "codigo": "OS-0116",
+        "__v": 0
+      },
+      {
+        "_id": "69363f62b1d931c3979bf369",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T03:00:50.488Z",
+        "updatedAt": "2025-12-08T03:00:50.488Z",
+        "codigo": "OS-0115",
+        "__v": 0
+      },
+      {
+        "_id": "69363eeab1d931c3979bf34d",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T02:58:50.594Z",
+        "updatedAt": "2025-12-08T02:58:50.594Z",
+        "codigo": "OS-0114",
+        "__v": 0
+      },
+      {
+        "_id": "6936415db1d931c3979bf3df",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T03:09:17.568Z",
+        "updatedAt": "2025-12-08T03:09:17.568Z",
+        "codigo": "OS-0120",
+        "__v": 0
+      },
+      {
+        "_id": "69364036b1d931c3979bf3b6",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T03:04:22.188Z",
+        "updatedAt": "2025-12-08T03:04:22.188Z",
+        "codigo": "OS-0118",
+        "__v": 0
+      },
+      {
+        "_id": "69363f74b1d931c3979bf39d",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T03:01:08.983Z",
+        "updatedAt": "2025-12-08T03:01:08.983Z",
+        "codigo": "OS-0117",
+        "__v": 0
+      },
+      {
+        "_id": "69363f63b1d931c3979bf376",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T02:57:12.169Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "VENTE DE MEMORIA RAM",
+            "cantidad": 2,
+            "precioUnitario": 256,
+            "subtotal": 512
+          }
+        ],
+        "total": 512,
+        "createdAt": "2025-12-08T03:00:51.315Z",
+        "updatedAt": "2025-12-08T03:00:51.315Z",
+        "codigo": "OS-0115",
+        "__v": 0
+      },
+      {
+        "_id": "69362d177e4d0a1b8d4ee2b8",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-08T01:39:27.714Z",
+        "observaciones": "Deja cargador y funda",
+        "diagnosticoCliente": "Se le apago el equipo y al encenderlo se quedo en bucle",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "691d23aaf22d89e5c318fe81",
+              "nombre": "Mantenimiento Correctivo",
+              "descripcion": "Limpieza de equipos electronicos con daño o malfuncionamiento por accion humana",
+              "tipo": "servicio",
+              "categoria": "mantenimiento",
+              "precioBase": 70,
+              "unidadMedida": "servicio",
+              "activo": true,
+              "nivelServicio": "basico",
+              "ultimaActualizacion": "2025-11-19T01:55:54.517Z",
+              "createdAt": "2025-11-19T01:55:54.519Z",
+              "updatedAt": "2025-11-19T01:55:54.519Z",
+              "__v": 0,
+              "id": "691d23aaf22d89e5c318fe81"
+            },
+            "descripcion": "Instalacion de sistema operativo windows",
+            "cantidad": 1,
+            "precioUnitario": 70,
+            "subtotal": 70
+          }
+        ],
+        "total": 70,
+        "createdAt": "2025-12-08T01:42:47.896Z",
+        "updatedAt": "2025-12-08T01:42:47.896Z",
+        "codigo": "OS-0113",
+        "__v": 0
+      },
+      {
+        "_id": "6933848850c6e564d73c4ef0",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-06T01:19:04.153Z",
+        "observaciones": "",
+        "diagnosticoCliente": "",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68e335329e1eff2fcb38b733",
+              "nombre": "Venta de Repuesto",
+              "descripcion": "Venta e instalación de repuestos o componentes electrónicos previa cotización al proveedor.",
+              "precioBase": 20,
+              "activo": true,
+              "createdAt": "2025-10-06T03:19:14.429Z",
+              "updatedAt": "2025-10-21T02:52:23.157Z",
+              "__v": 0,
+              "categoria": "comercial",
+              "nivelServicio": "variable",
+              "tipo": "producto",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "transacción",
+              "id": "68e335329e1eff2fcb38b733"
+            },
+            "descripcion": "Cambio de pantalla",
+            "cantidad": 1,
+            "precioUnitario": 350,
+            "subtotal": 350
+          }
+        ],
+        "total": 350,
+        "createdAt": "2025-12-06T01:19:04.873Z",
+        "updatedAt": "2025-12-06T01:19:04.873Z",
+        "codigo": "OS-0112",
+        "__v": 0
+      },
+      {
+        "_id": "6932fc54406ded25106856bb",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "fuente": "template"
+            },
+            "almacenamiento": {
+              "fuente": "template"
+            },
+            "cpu": {
+              "fuente": "template"
+            },
+            "gpu": {
+              "fuente": "template"
+            }
+          },
+          "_id": "6932fba5406ded25106856a1",
+          "tipo": "laptop",
+          "marca": "LENOVO",
+          "modelo": "IDEAPAD 5 15ARE05",
+          "sku": "TMP-SKU-1764948900756",
+          "skuNormalizado": "TMPSKU1764948900756",
+          "estadoIdentificacion": "temporal",
+          "clienteActual": "6932fb2c406ded2510685694",
+          "fichaTecnica": null,
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6932fb2c406ded2510685694",
+              "fechaAsignacion": "2025-12-05T15:35:01.452Z",
+              "fechaFin": null,
+              "_id": "6932fba5406ded25106856a2"
+            }
+          ],
+          "nroSerie": "PFP5D3V",
+          "nroSerieNormalizado": "PFP5D3V",
+          "macAddress": "FA:KE:25:12:05:37",
+          "macAddressNormalizado": "FAKE25120537",
+          "createdAt": "2025-12-05T15:35:01.482Z",
+          "updatedAt": "2025-12-05T15:35:01.482Z",
+          "__v": 0
+        },
+        "cliente": {
+          "_id": "6932fb2c406ded2510685694",
+          "nombres": "OLIVER OMAR",
+          "apellidos": "QUISPE PACHARO",
+          "dni": "76453612",
+          "email": "oliver_quispe59@gmail.com",
+          "telefono": "+51932473519",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-12-05T15:33:00.052Z",
+          "__v": 0
+        },
+        "representante": {
+          "_id": "6932fb2c406ded2510685694",
+          "nombres": "OLIVER OMAR",
+          "apellidos": "QUISPE PACHARO",
+          "dni": "76453612",
+          "email": "oliver_quispe59@gmail.com",
+          "telefono": "+51932473519",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-12-05T15:33:00.052Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T15:36:45.807Z",
+        "observaciones": "SOPORTE DE VISAGRAS ROTOS LADO IZQUIERDO PANTALLA PERSPECTIVA FRONTAL - DEJA CARGADOR",
+        "diagnosticoCliente": "CLIENTE INDICA QUE ABRIO EL EQUIPO Y VIO EL DAÑO",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "691d23aaf22d89e5c318fe81",
+              "nombre": "Mantenimiento Correctivo",
+              "descripcion": "Limpieza de equipos electronicos con daño o malfuncionamiento por accion humana",
+              "tipo": "servicio",
+              "categoria": "mantenimiento",
+              "precioBase": 70,
+              "unidadMedida": "servicio",
+              "activo": true,
+              "nivelServicio": "basico",
+              "ultimaActualizacion": "2025-11-19T01:55:54.517Z",
+              "createdAt": "2025-11-19T01:55:54.519Z",
+              "updatedAt": "2025-11-19T01:55:54.519Z",
+              "__v": 0,
+              "id": "691d23aaf22d89e5c318fe81"
+            },
+            "descripcion": "REPARACION DE SOPORTE DE VISAGRA",
+            "cantidad": 1,
+            "precioUnitario": 70,
+            "subtotal": 70
+          }
+        ],
+        "total": 70,
+        "createdAt": "2025-12-05T15:37:56.957Z",
+        "updatedAt": "2025-12-05T15:37:56.957Z",
+        "codigo": "OS-0111",
+        "__v": 0
+      },
+      {
+        "_id": "69324149d5592384b463740b",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:53.872Z",
+        "updatedAt": "2025-12-05T02:19:53.872Z",
+        "codigo": "OS-0109",
+        "__v": 0
+      },
+      {
+        "_id": "6932414bd5592384b4637416",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:55.955Z",
+        "updatedAt": "2025-12-05T02:19:55.955Z",
+        "codigo": "OS-0109",
+        "__v": 0
+      },
+      {
+        "_id": "69324146d5592384b46373f2",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:50.344Z",
+        "updatedAt": "2025-12-05T02:19:50.344Z",
+        "codigo": "OS-0108",
+        "__v": 0
+      },
+      {
+        "_id": "6932414fd5592384b4637419",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:59.100Z",
+        "updatedAt": "2025-12-05T02:19:59.100Z",
+        "codigo": "OS-0109",
+        "__v": 0
+      },
+      {
+        "_id": "69324147d5592384b46373fd",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:51.035Z",
+        "updatedAt": "2025-12-05T02:19:51.035Z",
+        "codigo": "OS-0108",
+        "__v": 0
+      },
+      {
+        "_id": "69324153d5592384b463742a",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:20:03.752Z",
+        "updatedAt": "2025-12-05T02:20:03.752Z",
+        "codigo": "OS-0110",
+        "__v": 0
+      },
+      {
+        "_id": "69324145d5592384b46373e9",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:49.745Z",
+        "updatedAt": "2025-12-05T02:19:49.745Z",
+        "codigo": "OS-0108",
+        "__v": 0
+      },
+      {
+        "_id": "6932413bd5592384b46373bb",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:39.306Z",
+        "updatedAt": "2025-12-05T02:19:39.306Z",
+        "codigo": "OS-0107",
+        "__v": 0
+      },
+      {
+        "_id": "69324141d5592384b46373d1",
+        "equipo": {
+          "especificacionesActuales": {
+            "ram": {
+              "valor": "16GB DDR5",
+              "fuente": "manual"
+            },
+            "almacenamiento": {
+              "valor": "512 GB M.2 NVMe SSD",
+              "fuente": "manual"
+            },
+            "cpu": {
+              "valor": "Intel® Core™ i7‑12650H",
+              "fuente": "manual"
+            },
+            "gpu": {
+              "valor": "NVIDIA GeForce RTX 3050 Ti 4 GB GDDR6",
+              "fuente": "manual"
+            }
+          },
+          "_id": "686beee0f64be7dc40967003",
+          "tipo": "laptop",
+          "marca": "ASUS",
+          "modelo": "FX517ZE-ES73",
+          "nroSerie": "n5nrcx071929213",
+          "clienteActual": "6864165b60dbe2198d1dac39",
+          "fichaTecnica": "68701f870b769d302c6679a8",
+          "repotenciado": false,
+          "historialPropietarios": [
+            {
+              "clienteId": "6864165b60dbe2198d1dac39",
+              "fechaAsignacion": "2025-07-11T19:31:16.951Z",
+              "fechaFin": null,
+              "_id": "68716684dfb3215fd2350eff"
+            }
+          ],
+          "__v": 0,
+          "sku": "90NR0953-M00390",
+          "estadoIdentificacion": "definitiva",
+          "nroSerieNormalizado": "N5NRCX071929213",
+          "skuNormalizado": "90NR0953M00390",
+          "updatedAt": "2025-08-31T03:11:34.358Z",
+          "macAddressNormalizado": "FAKE25083054",
+          "macAddress": "FA:KE:25:08:30:54"
+        },
+        "cliente": {
+          "_id": "6864165b60dbe2198d1dac39",
+          "dni": "29548456",
+          "telefono": "+549984512648",
+          "email": "hschrader@dea.com",
+          "direccion": "4901 Cumbre Del Sur Court NE, Albuquerque, New Mexico 87106",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-07-01T17:09:47.698Z",
+          "__v": 0,
+          "apellidos": "Schrader",
+          "nombres": "Hank"
+        },
+        "representante": {
+          "_id": "68e32a55c2c6ab39c96a7872",
+          "nombres": "JORGE ENRIQUE",
+          "apellidos": "UGARTE OLIVERA",
+          "dni": "45724467",
+          "email": "jorge.ugarte.163@hotmail.com",
+          "telefono": "+51907128234",
+          "estado": "activo",
+          "calificacion": "regular",
+          "isActivo": true,
+          "fechaRegistro": "2025-10-06T02:32:53.395Z",
+          "__v": 0
+        },
+        "tecnico": "6811a47aebf66546dbed5910",
+        "fechaIngreso": "2025-12-05T02:17:38.141Z",
+        "observaciones": "Desgaste de carcaza, deja cargador y funda.",
+        "diagnosticoCliente": "Equipo se apaga por exceso de temperatura",
+        "estadoOS": "pendiente",
+        "lineasServicio": [
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68a74570f2ab41918da7f937",
+              "nombre": "Mantenimiento preventivo completo",
+              "descripcion": "Limpieza interna, cambio de pasta térmica, revisión de ventiladores, y pruebas de estabilidad del sistema.",
+              "precioBase": 50,
+              "activo": true,
+              "createdAt": "2025-08-21T16:12:32.368Z",
+              "updatedAt": "2025-10-21T02:52:25.663Z",
+              "__v": 0,
+              "categoria": "mantenimiento",
+              "nivelServicio": "estándar",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68a74570f2ab41918da7f937"
+            },
+            "descripcion": "Limpieza general y cambio de pasta termica",
+            "cantidad": 1,
+            "precioUnitario": 80,
+            "subtotal": 80
+          },
+          {
+            "tipoTrabajo": {
+              "flexRange": {
+                "min": -0.1,
+                "max": 0.25
+              },
+              "_id": "68dc9ac76162927555649baa",
+              "nombre": "Formateo y reinstalación del sistema operativo",
+              "descripcion": "Instalación de sistema operativo Windows o Linux, drivers y software de ofimática, optimización básica.",
+              "precioBase": 40,
+              "activo": true,
+              "createdAt": "2025-10-01T03:06:47.200Z",
+              "updatedAt": "2025-10-21T02:52:24.679Z",
+              "__v": 0,
+              "categoria": "software",
+              "nivelServicio": "básico",
+              "tipo": "servicio",
+              "ultimaActualizacion": "2025-10-21T02:52:23.155Z",
+              "unidadMedida": "equipo",
+              "id": "68dc9ac76162927555649baa"
+            },
+            "descripcion": "Instalacion de windows + programas de ingenieria: AUTOCAD + Photoshop",
+            "cantidad": 1,
+            "precioUnitario": 60,
+            "subtotal": 60
+          }
+        ],
+        "total": 140,
+        "createdAt": "2025-12-05T02:19:45.461Z",
+        "updatedAt": "2025-12-05T02:19:45.461Z",
+        "codigo": "OS-0107",
+        "__v": 0
+      }
+    ]
+  }
+}

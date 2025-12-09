@@ -43,6 +43,7 @@
 │   │   │   ├── tecnicos.js
 │   │   │   └── tipos-trabajo.js
 │   │   ├── mockData.js
+│   │   ├── ordenServicioMock.json
 │   │   ├── ordenServicioMocks.js
 │   │   ├── rolesJerarquia.js
 │   │   ├── usuarioMockManager.js
@@ -317,7 +318,7 @@
 │   │       ├── DevPage.jsx
 │   │       ├── IngresoPage.jsx
 │   │       ├── PayloadPage.jsx
-│   │       └── PreviewPage.jsx
+│   │       └── PreviewOSPage.jsx
 │   ├── routes
 │   │   └── dashboardRoutes.jsx
 │   ├── services

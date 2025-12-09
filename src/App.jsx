@@ -16,6 +16,7 @@ import PayloadPage from './pages/form-ingreso/PayloadPage';
 import TestingPage from '@pages/TestingPage';
 
 import { Toaster } from 'react-hot-toast';
+import PreviewOSPage from './pages/form-ingreso/PreviewOSPage';
 
 // Función recursiva para renderizar rutas anidadas
 const renderRoutes = (routes) =>
@@ -57,6 +58,16 @@ const App = () => {
           element={
             <OrdenServicioProviders>
               <TestingPage />
+            </OrdenServicioProviders>
+          }
+        />
+
+        {/* Ruta independiente para vista previa */}
+        <Route
+          path="/ospreview/:id"
+          element={
+            <OrdenServicioProviders>
+              <PreviewOSPage />
             </OrdenServicioProviders>
           }
         />
