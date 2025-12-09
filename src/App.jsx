@@ -12,7 +12,6 @@ import dashboardRoutes from '@routes/dashboardRoutes';
 
 import { OrdenServicioProviders } from '@context/ordenServicio/ordenServicioProviders';
 import PayloadPage from './pages/form-ingreso/PayloadPage';
-import PreviewPage from './pages/form-ingreso/PreviewPage';
 
 import TestingPage from '@pages/TestingPage';
 
@@ -68,17 +67,6 @@ const App = () => {
             <OrdenServicioProviders>
               <PayloadPage />
             </OrdenServicioProviders>
-          }
-        />
-
-        <Route
-          path="/preview"
-          element={
-            <ProtectedRoute>
-              <OrdenServicioProviders>
-                <PreviewPage />
-              </OrdenServicioProviders>
-            </ProtectedRoute>
           }
         />
 

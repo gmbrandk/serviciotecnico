@@ -1,131 +1,165 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+// src/hooks/form-ingreso/useAutocompleteTipoTrabajo.js
 import { useTiposTrabajo } from '@context/form-ingreso/tiposTrabajoContext';
 import { log } from '@utils/form-ingreso/log';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export function useAutocompleteTipoTrabajo(initialValue = null) {
   const { tiposTrabajo } = useTiposTrabajo();
 
   const [query, setQuery] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedTrabajo, setSelectedTrabajo] = useState(null);
-  const [isInitialSelection, setIsInitialSelection] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const initializedRef = useRef(false);
+  // Flags internos
+  const isSelecting = useRef(false); // usuario seleccionó en dropdown
+  const isInitialLoad = useRef(true); // previene apertura inicial automática
+  const isExternalUpdate = useRef(false); // provider o initialValue
 
-  // ----------------------------------------------
-  // Helper para resolver el initialValue
-  // ----------------------------------------------
+  // ============================================================
+  // Resolver initialValue (fusionado + robusto + claro)
+  // ============================================================
   const resolveInitial = (val) => {
+    log('TYPE-ACTT:resolveInitial', { val });
+
     if (!val) return null;
 
-    // objeto recibido del backend
+    // Si ya viene como objeto
     if (typeof val === 'object') {
       if (val._id) {
         const found = tiposTrabajo?.find((t) => t._id === val._id);
-        return { found: found ?? val, initial: true };
+        return found ?? val;
       }
 
       if (val.nombre) {
+        const normalized = val.nombre.trim().toLowerCase();
         const found = tiposTrabajo?.find(
-          (t) =>
-            t.nombre.trim().toLowerCase() === val.nombre.trim().toLowerCase()
+          (t) => t.nombre.trim().toLowerCase() === normalized
         );
-        return { found: found ?? val, initial: true };
+        return found ?? val;
       }
 
       return null;
     }
 
-    // string → intentar ID o nombre
+    // Si viene como string
     if (typeof val === 'string') {
       const trimmed = val.trim();
       if (!trimmed) return null;
 
       const byId = tiposTrabajo?.find((t) => t._id === trimmed);
-      if (byId) return { found: byId, initial: true };
+      if (byId) return byId;
 
       const byName = tiposTrabajo?.find(
         (t) => t.nombre.trim().toLowerCase() === trimmed.toLowerCase()
       );
-      if (byName) return { found: byName, initial: true };
+      if (byName) return byName;
 
-      // texto libre
-      return { found: { nombre: trimmed }, initial: false };
+      return { nombre: trimmed };
     }
 
     return null;
   };
 
-  // ----------------------------------------------
-  // Inicialización (una sola vez al montar)
-  // ----------------------------------------------
+  // ============================================================
+  // INITIAL VALUE + cambios externos del provider
+  // ============================================================
+  const prevInitialRef = useRef(null);
+
   useEffect(() => {
-    setIsOpen(false);
-    if (initializedRef.current) return;
-    if (!initialValue) return;
     if (!tiposTrabajo?.length) return;
+
+    // Evitar loops: si initialValue es igual al anterior, NO hacer nada
+    const same =
+      JSON.stringify(initialValue) === JSON.stringify(prevInitialRef.current);
+
+    if (same) {
+      return; // no recalcular, no triggers, no loops
+    }
+
+    prevInitialRef.current = initialValue;
 
     const resolved = resolveInitial(initialValue);
-    if (!resolved) return;
 
-    initializedRef.current = true;
+    isExternalUpdate.current = true;
 
-    log('AUTO-TIPO', 'Inicializando desde initialValue', {
-      initialValue,
-      resolved,
-    });
-
-    if (resolved.found?._id) {
-      setSelectedTrabajo(resolved.found);
-      setQuery(resolved.found.nombre ?? '');
-    } else {
-      setSelectedTrabajo(null);
-      setQuery(resolved.found.nombre);
+    if (!resolved) {
+      if (selectedTrabajo !== null || query !== '') {
+        setSelectedTrabajo(null);
+        setQuery('');
+      }
+      return;
     }
 
-    setIsInitialSelection(Boolean(resolved.initial));
+    setSelectedTrabajo(resolved);
+    setQuery(resolved.nombre || '');
+    setIsOpen(false);
   }, [initialValue, tiposTrabajo]);
 
-  // ----------------------------------------------
-  // Sincronizar cuando tiposTrabajo llega tarde
-  // ----------------------------------------------
-  useEffect(() => {
-    if (!tiposTrabajo?.length) return;
-    if (selectedTrabajo?._id) return;
-    if (!query) return;
+  // ============================================================
+  // INPUT CHANGE
+  // ============================================================
+  const onChange = (value) => {
+    log('TYPE-ACTT:onChange', {
+      value,
+      isExternalUpdate: isExternalUpdate.current,
+      isSelecting: isSelecting.current,
+      isInitialLoad: isInitialLoad.current,
+    });
 
-    const lower = query.trim().toLowerCase();
-
-    const found = tiposTrabajo.find(
-      (t) => t._id === query || t.nombre.trim().toLowerCase() === lower
-    );
-
-    if (found) {
-      setSelectedTrabajo(found);
-      setIsInitialSelection(true);
+    // si viene de initialValue o provider: NO abrir dropdown
+    if (isExternalUpdate.current) {
+      log('TYPE-ACTT:onChange → external update, no dropdown');
+      isExternalUpdate.current = false;
+      setQuery(value);
+      setSelectedTrabajo(null);
+      return;
     }
-  }, [tiposTrabajo, query, selectedTrabajo]);
 
-  // ----------------------------------------------
-  // Cuando seleccionamos un trabajo → actualizar query
-  // ----------------------------------------------
-  useEffect(() => {
-    if (selectedTrabajo) {
-      setQuery(selectedTrabajo.nombre);
+    // input por usuario
+    isInitialLoad.current = false;
+    setQuery(value);
+    setSelectedTrabajo(null);
+
+    if (!isSelecting.current) {
+      log('TYPE-ACTT:onChange → open dropdown');
+      setIsOpen(true);
     }
-  }, [selectedTrabajo]);
+  };
 
-  // ----------------------------------------------
-  // Filtrado optimizado
-  // ----------------------------------------------
+  // ============================================================
+  // SELECCIÓN MANUAL
+  // ============================================================
+  const seleccionarTrabajo = (t) => {
+    log('TYPE-ACTT:seleccionarTrabajo', { id: t._id, nombre: t.nombre });
+
+    isSelecting.current = true;
+    isInitialLoad.current = false;
+
+    setSelectedTrabajo(t);
+    setQuery(t.nombre);
+    setIsOpen(false);
+
+    setTimeout(() => {
+      isSelecting.current = false;
+      log('TYPE-ACTT:seleccionarTrabajo → release lock');
+    }, 50);
+  };
+
+  // ============================================================
+  // FILTRADO FUZZY (fusionado)
+  // ============================================================
   const resultados = useMemo(() => {
+    log('TYPE-ACTT:resultados.compute', {
+      query,
+      tiposTrabajoCount: tiposTrabajo?.length,
+    });
+
     if (!tiposTrabajo) return [];
 
     const q = (query ?? '').trim().toLowerCase();
-
     if (!q) return tiposTrabajo;
 
-    return tiposTrabajo
+    const ranked = tiposTrabajo
       .map((item) => {
         const name = item.nombre.toLowerCase();
         let score = 0;
@@ -138,40 +172,36 @@ export function useAutocompleteTipoTrabajo(initialValue = null) {
       })
       .sort((a, b) => b.score - a.score)
       .map((x) => x.item);
+
+    return ranked;
   }, [query, tiposTrabajo]);
 
-  // ----------------------------------------------
-  // API
-  // ----------------------------------------------
-  const abrirResultados = () => setIsOpen(true);
-  const cerrarResultados = () => setIsOpen(false);
-
-  const onChange = (value) => {
-    setQuery(value);
-    setSelectedTrabajo(null);
-
-    // NO abrir si venimos de selección inicial
-    if (!isInitialSelection) abrirResultados();
-
-    setIsInitialSelection(false);
-  };
-
-  const seleccionarTrabajo = (trabajo) => {
-    setSelectedTrabajo(trabajo);
-    setQuery(trabajo.nombre);
-    setIsInitialSelection(false);
-    cerrarResultados();
-  };
-
+  // ============================================================
+  // API pública
+  // ============================================================
   return {
     query,
     resultados,
-    isOpen,
     selectedTrabajo,
+    isOpen,
+
     onChange,
-    abrirResultados,
-    cerrarResultados,
     seleccionarTrabajo,
-    isInitialSelection,
+
+    abrirResultados: () => {
+      log('TYPE-ACTT:abrirResultados', {
+        isInitialLoad: isInitialLoad.current,
+      });
+      isInitialLoad.current = false;
+      setIsOpen(true);
+    },
+
+    cerrarResultados: () => {
+      log('TYPE-ACTT:cerrarResultados (150ms)');
+      setTimeout(() => {
+        setIsOpen(false);
+        log('TYPE-ACTT:cerrarResultados → closed');
+      }, 150);
+    },
   };
 }

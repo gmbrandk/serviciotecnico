@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import LoginForm from '@components/pages/HomePage/LoginForm';
+import { useAuth } from '@context/AuthContext';
 import styles from '@styles/LoginPage.module.css';
 import { Toaster } from 'react-hot-toast';
-import { useAuth } from '@context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const { login, usuario, verificarSesion } = useAuth();
   const navigate = useNavigate();
-  
+
   const handleLogin = async ({ email, password }) => {
     const result = await login(email, password);
     if (result?.success) {

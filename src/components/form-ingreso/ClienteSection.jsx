@@ -22,6 +22,13 @@ export function ClienteSection() {
     setSelectedCliente,
   } = useAutocompleteCliente(cliente);
 
+  // 🔄 Sync desde provider → hook
+  useEffect(() => {
+    if (cliente && cliente._id && selectedCliente?._id !== cliente._id) {
+      setSelectedCliente(cliente);
+    }
+  }, [cliente]);
+
   useEffect(() => {
     setCliente(selectedCliente);
   }, [selectedCliente, setCliente]);

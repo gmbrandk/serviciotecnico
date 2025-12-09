@@ -1,7 +1,3 @@
-// ============================================================
-// IngresoFormProvider – versión con AUTOSAVE tipo PATCH + LOGS + DEBUG UI + explainDiff
-// ============================================================
-
 import {
   createContext,
   useContext,
@@ -29,9 +25,7 @@ const DEBUG_UI = true;
 
 const IngresoFormContext = createContext(null);
 
-// ============================================================
-// 🟪 explainDiff → para debug
-// ============================================================
+// explainDiff (igual) — con log cada vez que se calcula para trazabilidad
 function explainDiff(actual, original) {
   const diff = {};
 
@@ -48,6 +42,17 @@ function explainDiff(actual, original) {
       diff[k] = { from: b, to: a };
     }
   }
+
+  // Log ligero para ver qué keys cambiaron en este diff
+  console.debug('🟩 explainDiff → cambios detectados:', {
+    changedKeys: Object.keys(diff),
+    diffPreview: Object.keys(diff)
+      .slice(0, 10)
+      .reduce((acc, key) => {
+        acc[key] = diff[key];
+        return acc;
+      }, {}),
+  });
 
   return diff;
 }
@@ -73,12 +78,8 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     fechaIngreso: new Date().toISOString(),
   });
 
-  // ============================================================
-  // WHITELIST para TipoTrabajo (solo lo que importa al formulario)
-  // ============================================================
   const CAMPOS_TRABAJO = ['_id', 'nombre', 'precioBase', 'categoria', 'activo'];
 
-  // ⭐ ORIGINAL REF
   const originalRef = useRef({
     cliente: null,
     equipo: null,
@@ -87,16 +88,24 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   });
 
   const initialLoadDoneRef = useRef(false);
-
-  // track source of initial load: 'autosave' | 'initialPayload' | 'empty'
   const [initialSource, setInitialSource] = useState('empty');
 
-  // Persistencia
+  console.log('PARENT → initialPayload enviado al provider:', initialPayload);
+
   const [persistEnabled, setPersistEnabled] = useState(() => {
     try {
       const saved = localStorage.getItem(LS_PERSIST);
-      return saved ? saved === 'true' : true;
+      const val = saved ? saved === 'true' : true;
+      console.debug('🟦 PersistEnabled inicial leído de localStorage:', {
+        raw: saved,
+        interpreted: val,
+      });
+      return val;
     } catch (e) {
+      console.warn(
+        '🟦 persistEnabled: error leyendo localStorage, usando true por defecto',
+        e
+      );
       return true;
     }
   });
@@ -104,12 +113,16 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   useEffect(() => {
     try {
       localStorage.setItem(LS_PERSIST, persistEnabled);
+      console.debug(
+        '🟦 persistEnabled guardado en localStorage:',
+        persistEnabled
+      );
     } catch (e) {
-      /* ignore */
+      console.warn('🟦 persistEnabled: no se pudo guardar en localStorage', e);
     }
   }, [persistEnabled]);
 
-  // Util: parse respuesta backend
+  // Utilidad: extraer un "record" de distintas formas de respuesta
   function extractRecord(res) {
     if (!res) return null;
     if (res.data && typeof res.data === 'object') return res.data;
@@ -121,9 +134,6 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     return null;
   }
 
-  // ============================================================
-  // 🔧 Filtrar objeto según whitelist (limpia ruido del backend)
-  // ============================================================
   function filtrarCampos(obj, permitidos = CAMPOS_TRABAJO) {
     if (!obj || typeof obj !== 'object') return null;
     const out = {};
@@ -133,9 +143,6 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     return out;
   }
 
-  // ============================================================
-  // makeLinea
-  // ============================================================
   function makeLinea(l = {}) {
     const base = {
       uid: crypto.randomUUID(),
@@ -150,39 +157,68 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
 
     const linea = { ...base, ...l };
 
-    // Normalizar números silenciosamente
     linea.precioUnitario = Number(linea.precioUnitario ?? 0);
     linea.cantidad = Number(linea.cantidad ?? 1);
 
-    // Filtrar tipoTrabajo
     linea.tipoTrabajo = filtrarCampos(linea.tipoTrabajo);
 
     return linea;
   }
 
-  // ============================================================
-  // loadPayload
-  // ============================================================
   async function loadPayload(data) {
-    // data is expected to be a full payload (like initialPayload or saved full payload)
-    console.log('🟦 PROV:loadPayload →', data);
+    console.info('🟦 PROV:loadPayload → inicio', {
+      reason:
+        'cargar payload (puede venir de initialPayload o autosave completo)',
+      payloadSummary:
+        data && typeof data === 'object'
+          ? {
+              hasLineas: Boolean(
+                data.lineasServicio || data.orden?.lineasServicio
+              ),
+              keys: Object.keys(data),
+            }
+          : data,
+    });
 
-    // Cliente
     let clienteObj = null;
     if (data.representanteId) {
+      console.debug(
+        '🟦 loadPayload → representanteId presente:',
+        data.representanteId
+      );
       clienteObj = extractRecord(
         await buscarClientePorId(data.representanteId)
       );
+      console.debug(
+        '🟦 loadPayload → cliente recuperado por representanteId:',
+        clienteObj?._id ?? null
+      );
     } else if (data.cliente?._id) {
+      console.debug(
+        '🟦 loadPayload → cliente embebido en payload:',
+        data.cliente._id
+      );
       clienteObj = extractRecord(data.cliente);
+    } else {
+      console.debug('🟦 loadPayload → no hay cliente en payload');
     }
 
-    // Equipo
     let equipoObj = null;
     if (data.equipoId) {
+      console.debug('🟦 loadPayload → equipoId presente:', data.equipoId);
       equipoObj = extractRecord(await buscarEquipoPorId(data.equipoId));
+      console.debug(
+        '🟦 loadPayload → equipo recuperado por id:',
+        equipoObj?._id ?? null
+      );
     } else if (data.equipo?._id) {
+      console.debug(
+        '🟦 loadPayload → equipo embebido en payload:',
+        data.equipo._id
+      );
       equipoObj = extractRecord(data.equipo);
+    } else {
+      console.debug('🟦 loadPayload → no hay equipo en payload');
     }
 
     const ficha = equipoObj?.fichaTecnicaManual;
@@ -196,16 +232,33 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         }
       : equipoObj;
 
-    // Técnico
+    if (ficha) {
+      console.debug('🟦 loadPayload → equipo normalizado desde ficha técnica', {
+        originalEquipoId: equipoObj?._id,
+        normalizedKeys: Object.keys(normalizedEquipo || {}),
+      });
+    }
+
     let tecnicoObj = null;
     if (data.tecnico) {
       const id =
         typeof data.tecnico === 'string' ? data.tecnico : data.tecnico._id;
+      console.debug('🟦 loadPayload → técnico referenciado en payload:', id);
       tecnicoObj = extractRecord(await buscarTecnicoPorId(id));
+      console.debug(
+        '🟦 loadPayload → técnico recuperado:',
+        tecnicoObj?._id ?? null
+      );
+    } else {
+      console.debug('🟦 loadPayload → no hay técnico en payload');
     }
 
-    // Líneas
     const lineasRaw = data.lineasServicio ?? data.orden?.lineasServicio ?? [];
+    console.debug(
+      '🟦 loadPayload → número de líneas recibidas (raw):',
+      (lineasRaw || []).length
+    );
+
     const lineasServicio = await Promise.all(
       (lineasRaw || []).map(async (l) => {
         let tipoTrabajoObj = null;
@@ -220,7 +273,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
           );
         }
 
-        return makeLinea({
+        const result = makeLinea({
           ...l,
           tipoTrabajo: filtrarCampos(tipoTrabajoObj),
           precioUnitario: Number(
@@ -229,6 +282,17 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
           cantidad: Number(l.cantidad ?? 1),
           isNew: false,
         });
+
+        // Log por línea para trazabilidad de origen/precios
+        console.debug('🟦 loadPayload → processed linea', {
+          uid: result.uid,
+          precioUnitario: result.precioUnitario,
+          cantidad: result.cantidad,
+          tipoTrabajoId: tipoTrabajoObj?._id ?? null,
+          isNew: result.isNew,
+        });
+
+        return result;
       })
     );
 
@@ -244,12 +308,17 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         new Date().toISOString(),
     };
 
+    console.info('🟦 loadPayload → orden normalizada calculada', {
+      lineasCount: normalizedOrden.lineasServicio.length,
+      total: normalizedOrden.total,
+      fechaIngreso: normalizedOrden.fechaIngreso,
+    });
+
     setCliente(clienteObj);
     setEquipo(normalizedEquipo);
     setTecnico(tecnicoObj);
     setOrden(normalizedOrden);
 
-    // ORIGINAL REF
     const mapLineas = {};
     for (const linea of normalizedOrden.lineasServicio) {
       mapLineas[linea.uid] = JSON.parse(JSON.stringify(linea));
@@ -268,40 +337,48 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
       },
     };
 
-    console.log('🟦 PROV:originalRef SET →', originalRef.current);
+    console.info('🟦 PROV:originalRef SET → referencia original guardada', {
+      clienteId: originalRef.current.cliente?._id ?? null,
+      equipoId: originalRef.current.equipo?._id ?? null,
+      tecnicoId: originalRef.current.tecnico?._id ?? null,
+      lineasOriginalCount: Object.keys(originalRef.current.orden.lineas).length,
+    });
   }
 
-  // ============================================================
-  // buildDiff → arma patch/minidiff del estado actual respecto al original
-  // estructura resultante:
-  // { cliente?, equipo?, tecnico?, orden?: { camposSimples?, lineasServicio?: { [uid]: lineaPatch } } }
-  // ============================================================
   function buildDiff() {
     const diff = {};
 
     try {
-      // cliente
       if (
         JSON.stringify(cliente) !== JSON.stringify(originalRef.current.cliente)
       ) {
         diff.cliente = cliente;
+        console.debug('🟦 buildDiff → cliente modificado', {
+          current: cliente,
+          original: originalRef.current.cliente,
+        });
       }
 
-      // equipo
       if (
         JSON.stringify(equipo) !== JSON.stringify(originalRef.current.equipo)
       ) {
         diff.equipo = equipo;
+        console.debug('🟦 buildDiff → equipo modificado', {
+          current: equipo,
+          original: originalRef.current.equipo,
+        });
       }
 
-      // tecnico
       if (
         JSON.stringify(tecnico) !== JSON.stringify(originalRef.current.tecnico)
       ) {
         diff.tecnico = tecnico;
+        console.debug('🟦 buildDiff → tecnico modificado', {
+          current: tecnico,
+          original: originalRef.current.tecnico,
+        });
       }
 
-      // orden simples
       const ordenDiff = {};
       const origOrdenRef = originalRef.current?.orden || {};
 
@@ -309,21 +386,22 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         (k) => {
           if ((orden?.[k] ?? null) !== (origOrdenRef[k] ?? null)) {
             ordenDiff[k] = orden[k];
+            console.debug('🟦 buildDiff → orden campo modificado', {
+              campo: k,
+              valor: orden[k],
+              original: origOrdenRef[k],
+            });
           }
         }
       );
 
-      // lineasServicio -> por uid
       const lineasDiff = {};
       for (const linea of orden.lineasServicio || []) {
         const origLinea = origOrdenRef.lineas?.[linea.uid] ?? null;
         const estado = resolveEstado(linea, origLinea);
 
         if (estado !== 'clean') {
-          // Para simplicidad guardamos la linea completa como patch.
-          // Puedes refinar para guardar solo campos cambiados si quieres.
           lineasDiff[linea.uid] = {
-            // evita funciones/prototipos peligrosos
             uid: linea.uid,
             descripcion: linea.descripcion,
             precioUnitario: Number(linea.precioUnitario ?? 0),
@@ -334,6 +412,13 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
             errors: linea.errors,
             backendConflict: linea.backendConflict,
           };
+          console.debug(
+            '🟦 buildDiff → linea con estado != clean añadida al diff',
+            {
+              uid: linea.uid,
+              estado,
+            }
+          );
         }
       }
 
@@ -348,22 +433,52 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
       console.error('Error building diff', e);
     }
 
+    // Log final del diff (resumen)
+    console.debug('🟦 buildDiff → diff final construido', {
+      diffKeys: Object.keys(diff),
+      totalLineaChanges: diff.orden?.lineasServicio
+        ? Object.keys(diff.orden.lineasServicio).length
+        : 0,
+    });
+
     return diff;
   }
 
-  // ============================================================
-  // applyDiff → aplica un diff (como el generado por buildDiff) sobre el estado actual
-  // ============================================================
   function applyDiff(diff = {}) {
-    if (!diff) return;
+    if (!diff) {
+      console.debug('🟦 applyDiff → diff vacío o nulo, nada que aplicar');
+      return;
+    }
+
+    console.info('🟦 applyDiff → inicio aplicación de diff', {
+      diffKeys: Object.keys(diff),
+      diffPreview: Object.keys(diff)
+        .slice(0, 10)
+        .reduce((acc, key) => {
+          acc[key] = diff[key];
+          return acc;
+        }, {}),
+    });
 
     if (diff.cliente) {
+      console.debug(
+        '🟦 applyDiff → aplicando cliente',
+        diff.cliente?._id ?? null
+      );
       setCliente(diff.cliente);
     }
     if (diff.equipo) {
+      console.debug(
+        '🟦 applyDiff → aplicando equipo',
+        diff.equipo?._id ?? null
+      );
       setEquipo(diff.equipo);
     }
     if (diff.tecnico) {
+      console.debug(
+        '🟦 applyDiff → aplicando tecnico',
+        diff.tecnico?._id ?? null
+      );
       setTecnico(diff.tecnico);
     }
 
@@ -371,7 +486,6 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
       setOrden((prev) => {
         const updated = { ...prev };
 
-        // campos simples
         [
           'diagnosticoCliente',
           'observaciones',
@@ -379,57 +493,62 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
           'fechaIngreso',
         ].forEach((k) => {
           if (Object.prototype.hasOwnProperty.call(diff.orden, k)) {
+            console.debug(
+              '🟦 applyDiff → aplicando campo orden:',
+              k,
+              'valor:',
+              diff.orden[k]
+            );
             updated[k] = diff.orden[k];
           }
         });
 
-        // lineasServicio (patch por uid)
         if (diff.orden.lineasServicio) {
           const byUid = {};
           for (const l of updated.lineasServicio || []) {
             byUid[l.uid] = l;
           }
 
-          // Merge patches
           for (const uid of Object.keys(diff.orden.lineasServicio)) {
             const patch = diff.orden.lineasServicio[uid];
-
-            // normalize tipoTrabajo
             patch.tipoTrabajo = filtrarCampos(patch.tipoTrabajo);
 
             if (byUid[uid]) {
-              // merge into existing linea
+              console.debug(
+                '🟦 applyDiff → parchando linea existente uid=',
+                uid
+              );
               byUid[uid] = { ...byUid[uid], ...patch };
-              // normalize numbers
               byUid[uid].precioUnitario = Number(
                 byUid[uid].precioUnitario ?? 0
               );
               byUid[uid].cantidad = Number(byUid[uid].cantidad ?? 1);
             } else {
-              // new linea: ensure it goes through makeLinea normalization
+              console.debug(
+                '🟦 applyDiff → creando nueva linea desde diff uid=',
+                uid
+              );
               const newL = makeLinea({ ...patch, isNew: !!patch.isNew });
-              // preserve uid
               newL.uid = patch.uid;
               byUid[uid] = newL;
             }
           }
 
-          // Recreate array preserving original order where possible, append new at end
           const newArray = [];
           const existingUids = new Set(
             (updated.lineasServicio || []).map((l) => l.uid)
           );
-
-          // keep existing order
           for (const l of updated.lineasServicio || []) {
             if (byUid[l.uid]) newArray.push(byUid[l.uid]);
           }
-
-          // append any new uids that weren't in the previous list
           for (const uid of Object.keys(byUid)) {
             if (!existingUids.has(uid)) newArray.push(byUid[uid]);
           }
 
+          console.debug(
+            '🟦 applyDiff → reconstruyendo array de lineas, total:',
+            newArray.length
+          );
           updated.lineasServicio = newArray;
         }
 
@@ -438,16 +557,12 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     }
   }
 
-  // ============================================================
-  // Autosave hook: ahora guarda buildDiff() en vez del estado completo
-  // Nota: colocamos el hook después de buildDiff/applyDiff.
-  // ============================================================
   const autosaveValue = useMemo(
     () => buildDiff(),
     [cliente, equipo, tecnico, orden]
   );
 
-  const autosaveReady = initialLoadDoneRef.current; // sólo después de la carga inicial
+  const autosaveReady = initialLoadDoneRef.current;
 
   const autosave = useAutosave({
     key: LS_KEY,
@@ -457,80 +572,124 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     skipInitialSave: true,
   });
 
-  // utilidad: si hay cambios pendientes
   function hasChanges() {
     try {
-      return Object.keys(buildDiff()).length > 0;
+      const changed = Object.keys(buildDiff()).length > 0;
+      console.debug('🟦 hasChanges →', changed);
+      return changed;
     } catch (e) {
+      console.warn('🟦 hasChanges → error determinando cambios', e);
       return false;
     }
   }
 
-  // utilidad: eliminar autosave del localStorage
   function discardAutosave() {
     try {
       localStorage.removeItem(LS_KEY);
-      // opcional: reset initialSource to prefer backend next time
       setInitialSource('empty');
-      console.log('🗑️ AUTOSAVE descartado');
+      console.info(
+        '🗑️ AUTOSAVE descartado — clave removida de localStorage:',
+        LS_KEY
+      );
     } catch (e) {
       console.warn('No se pudo descartar autosave', e);
     }
   }
 
   // ============================================================
-  // 🔄 CARGA INICIAL
+  // CARGA INICIAL (FIXED: marcar loaded/autosave sólo después de cada ruta async)
   // ============================================================
   useEffect(() => {
-    if (loaded) return;
+    if (loaded) {
+      console.debug('🟦 PROV:LOAD → ya cargado, saliendo del efecto inicial');
+      return;
+    }
 
-    console.log('🟦 PROV:LOAD → Inicializando carga inicial');
+    console.info('🟦 PROV:LOAD → Inicializando carga inicial del form');
 
     const saved = autosave.load(); // puede ser { timestamp, diff } o un payload completo
+    console.debug(
+      '🟦 PROV:LOAD → autosave.load() result:',
+      saved
+        ? {
+            hasTimestamp: !!saved.timestamp,
+            keys: Object.keys(saved).slice(0, 10),
+          }
+        : null
+    );
+
+    // Helper para finalizar proceso de carga
+    const finalizeLoad = () => {
+      setLoaded(true);
+      try {
+        autosave.markReady();
+        console.debug('🟦 PROV:LOAD → autosave.markReady() llamado');
+      } catch (e) {
+        // markReady puede no existir en implementaciones alternativas; atrapamos
+        console.warn('autosave.markReady falló', e);
+      }
+      initialLoadDoneRef.current = true;
+      console.info(
+        '🟦 PROV:LOAD → carga inicial finalizada, initialLoadDoneRef=true, loaded=true'
+      );
+    };
 
     // ----> 1) Preferimos AUTOSAVE si es reciente
     if (saved && Date.now() - saved.timestamp < EXPIRATION_MS) {
-      console.log('🟦 PROV:LOAD → usando autosave');
+      console.info(
+        '🟦 PROV:LOAD → autosave reciente encontrada, se usará si es aplicable'
+      );
+      console.debug(
+        '🟦 PROV:LOAD → autosave.timestamp',
+        new Date(saved.timestamp).toISOString()
+      );
 
-      // Si el saved contiene diff (nuestro esquema)
       if (saved.diff && Object.keys(saved.diff).length > 0) {
         setInitialSource('autosave');
-        // Load backend / initialPayload first (if exists) to have base to patch
         (async () => {
+          console.debug(
+            '🟦 PROV:LOAD → autosave contiene diff (parcial). Cargando payload base y aplicando diff.'
+          );
           await loadPayload(initialPayload ?? {});
           applyDiff(saved.diff);
+          finalizeLoad();
         })();
       } else {
-        // si guarda payload completo (legacy) lo aceptamos directamente
         setInitialSource('autosave');
         (async () => {
+          console.debug(
+            '🟦 PROV:LOAD → autosave contiene payload completo. Cargando directamente desde autosave.'
+          );
           await loadPayload(saved);
+          finalizeLoad();
         })();
       }
+
+      return;
     }
 
     // ----> 2) Si no hay autosave válido, usamos initialPayload
-    else if (initialPayload) {
-      console.log('🟦 PROV:LOAD → usando initialPayload');
+    if (initialPayload) {
+      console.info(
+        '🟦 PROV:LOAD → no hay autosave válido, usando initialPayload provisto por la ruta'
+      );
       setInitialSource('initialPayload');
       (async () => {
         await loadPayload(initialPayload);
+        finalizeLoad();
       })();
+      return;
     }
 
     // ----> 3) Nada disponible → formulario vacío
-    else {
-      console.log('🟦 PROV:LOAD → sin autosave ni initialPayload');
-      setInitialSource('empty');
-      // load empty/defaults via loadPayload({})
-      (async () => {
-        await loadPayload({});
-      })();
-    }
-
-    setLoaded(true);
-    autosave.markReady();
-    initialLoadDoneRef.current = true;
+    console.info(
+      '🟦 PROV:LOAD → sin autosave ni initialPayload, inicializando formulario vacío'
+    );
+    setInitialSource('empty');
+    (async () => {
+      await loadPayload({});
+      finalizeLoad();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -547,15 +706,19 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     );
 
     if (total !== orden.total) {
+      console.debug(
+        '🟦 Recalculando total — antes:',
+        orden.total,
+        'ahora:',
+        total
+      );
       setOrden((prev) => ({ ...prev, total }));
     }
   }, [orden.lineasServicio]);
 
-  // ============================================================
-  // Helpers de líneas
-  // ============================================================
+  // Helpers de líneas (igual) — con logs detallados
   const addLinea = () => {
-    console.log('🟧 LINEA:add');
+    console.info('🟧 LINEA:add → añadiendo línea nueva (isNew=true)');
     setOrden((prev) => ({
       ...prev,
       lineasServicio: [...prev.lineasServicio, makeLinea()],
@@ -563,7 +726,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   };
 
   const deleteLinea = (index) => {
-    console.log('🟧 LINEA:delete', index);
+    console.info('🟧 LINEA:delete → eliminando línea (por índice)', index);
     setOrden((prev) => ({
       ...prev,
       lineasServicio: prev.lineasServicio.filter((_, i) => i !== index),
@@ -579,22 +742,34 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
           ? patchOrFn(current)
           : { ...current, ...patchOrFn };
 
-      console.log('🟧 LINEA:update', { index, patch: patchOrFn, result: next });
-
+      console.info(
+        '🟧 LINEA:update → índice:',
+        index,
+        'parche:',
+        patchOrFn,
+        'resultado.uid:',
+        next?.uid
+      );
       lineas[index] = next;
       return { ...prev, lineasServicio: lineas };
     });
 
   const resetLinea = (index) => {
     const lineaActual = orden.lineasServicio[index];
-    if (!lineaActual) return;
+    if (!lineaActual) {
+      console.debug('🟧 LINEA:reset → no existe línea en índice', index);
+      return;
+    }
 
     const uid = lineaActual.uid;
     const orig = originalRef.current?.orden?.lineas?.[uid];
 
-    if (!orig) return;
+    if (!orig) {
+      console.debug('🟧 LINEA:reset → no existe línea original para uid', uid);
+      return;
+    }
 
-    console.log('🟧 LINEA:reset', index);
+    console.info('🟧 LINEA:reset → reseteando línea index/uid:', index, uid);
 
     updateLinea(index, {
       ...JSON.parse(JSON.stringify(orig)),
@@ -606,10 +781,11 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     });
   };
 
-  // ============================================================
-  // Detectar modificado
   function isModified(actual, original) {
-    if (!original) return actual.isNew;
+    if (!original) {
+      // Si no hay original, consideramos modificado si actual.isNew === true
+      return actual.isNew;
+    }
 
     const aTT = filtrarCampos(actual.tipoTrabajo);
     const oTT = filtrarCampos(original.tipoTrabajo);
@@ -622,9 +798,6 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     );
   }
 
-  // ============================================================
-  // resolveEstado
-  // ============================================================
   function resolveEstado(lineaActual, lineaOriginal) {
     const aTT = filtrarCampos(lineaActual.tipoTrabajo);
     const oTT = filtrarCampos(lineaOriginal?.tipoTrabajo);
@@ -649,20 +822,26 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         ? 'modified'
         : 'clean';
 
+    // Log muy descriptivo por cada evaluación de estado
     log('🟨 ESTADO', {
       uid: lineaActual.uid,
       estado,
-      diff,
-      isNew: lineaActual.isNew,
-      deleted: lineaActual.deleted,
+      reason: {
+        hasErrors: Boolean(
+          lineaActual.errors && Object.keys(lineaActual.errors).length
+        ),
+        deleted: lineaActual.deleted,
+        backendConflict: lineaActual.backendConflict,
+        isNew: lineaActual.isNew,
+        modified,
+      },
+      diffPreview: Object.keys(diff).length ? diff : null,
     });
 
     return estado;
   }
 
-  // ============================================================
-  // Panel Debug UI
-  // ============================================================
+  // Debug panel (igual) — con botón que imprime diff global
   const debugPanel = (() => {
     if (!DEBUG_UI) return null;
     if (!orden.lineasServicio) return null;
@@ -723,10 +902,8 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
           onClick={() => {
             console.log('🗑️ Discarding autosave and reloading original');
             discardAutosave();
-            // re-load originalRef into state
             (async () => {
               await loadPayload({});
-              // reset originalRef into state (if originalRef had been set earlier you'd call loadPayload with original source)
             })();
           }}
         >
@@ -736,13 +913,9 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     );
   })();
 
-  // ============================================================
-  // Provider
-  // ============================================================
   return (
     <IngresoFormContext.Provider
       value={{
-        // state
         cliente,
         setCliente,
         equipo,
@@ -752,26 +925,22 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         orden,
         setOrden,
 
-        // line helpers
         addLinea,
         deleteLinea,
         updateLinea,
         resetLinea,
         makeLinea,
 
-        // diff / autosave
         buildDiff,
         hasChanges,
         applyDiff,
         discardAutosave,
         initialSource,
 
-        // other helpers
         resolveEstado,
         originalRef,
         explainDiff,
 
-        // persistence
         persistEnabled,
         setPersistEnabled,
         autosave,

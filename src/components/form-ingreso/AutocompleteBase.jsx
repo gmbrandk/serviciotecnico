@@ -14,6 +14,11 @@ function cx(...args) {
   return args.filter(Boolean).join(' ');
 }
 
+// ====== LOG HELPER (centralizado para consistencia) ======
+function log(name, event, data = {}) {
+  console.debug(`🟣 [ACB:${name}] ${event}`, data);
+}
+
 export function AutocompleteBase({
   label,
   placeholder,
@@ -30,12 +35,28 @@ export function AutocompleteBase({
   renderIcon,
   disabled = false,
 }) {
-  const showClear = Boolean(query?.trim()) && !disabled;
   const blurTimeout = useRef(null);
   const items = resultados ?? [];
+  const showClear = Boolean(query?.trim()) && !disabled;
+
+  // ====== LOG: RENDER ======
+  log(inputName, 'RENDER', {
+    query,
+    isOpen,
+    disabled,
+    itemsCount: items.length,
+    showClear,
+  });
 
   useEffect(() => {
-    return () => blurTimeout.current && clearTimeout(blurTimeout.current);
+    log(inputName, 'MOUNT');
+    return () => {
+      log(inputName, 'UNMOUNT');
+      if (blurTimeout.current) {
+        log(inputName, 'cleanup → clearing blurTimeout');
+        clearTimeout(blurTimeout.current);
+      }
+    };
   }, []);
 
   return (
@@ -55,56 +76,107 @@ export function AutocompleteBase({
             disabled && autocompleteStyles.autocompleteDisabled
           )}
         >
+          {/* INPUT */}
           <input
             id={inputName}
             name={inputName}
             type="text"
             className={autocompleteStyles.autocompleteInput}
             value={query}
-            onChange={(e) => !disabled && onChange(e.target.value)}
-            onBlur={() => {
-              if (disabled) return;
-              blurTimeout.current = setTimeout(() => cerrarResultados?.(), 150);
-            }}
-            onFocus={() => {
-              if (disabled) return;
-              if (blurTimeout.current) clearTimeout(blurTimeout.current);
-              onFocus?.();
-            }}
-            onClick={() => !disabled && !isOpen && onToggle()}
             placeholder={placeholder}
             autoComplete="off"
             disabled={disabled}
+            onChange={(e) => {
+              if (disabled) {
+                log(inputName, 'onChange → IGNORADO porque está disabled');
+                return;
+              }
+              log(inputName, 'onChange', { value: e.target.value });
+              onChange(e.target.value);
+            }}
+            onFocus={(e) => {
+              if (disabled) {
+                log(inputName, 'onFocus → IGNORADO porque está disabled');
+                return;
+              }
+              if (blurTimeout.current) {
+                log(inputName, 'onFocus → clearing blurTimeout');
+                clearTimeout(blurTimeout.current);
+              }
+              log(inputName, 'onFocus');
+              onFocus?.(e);
+            }}
+            onBlur={() => {
+              if (disabled) {
+                log(inputName, 'onBlur → IGNORADO porque está disabled');
+                return;
+              }
+
+              log(inputName, 'onBlur → programando cerrarResultados (150ms)');
+
+              blurTimeout.current = setTimeout(() => {
+                log(inputName, 'blurTimeout → ejecutar cerrarResultados');
+                cerrarResultados?.();
+              }, 150);
+            }}
+            onClick={(e) => {
+              if (disabled) {
+                log(inputName, 'onClick → IGNORADO porque disabled');
+                return;
+              }
+              if (!isOpen) {
+                log(inputName, 'onClick → toggle porque isOpen=false');
+                onToggle();
+              } else {
+                log(inputName, 'onClick → IGNORADO porque isOpen=true');
+              }
+            }}
           />
 
           {/* ICONOS */}
           <div className={autocompleteStyles.autocompleteActions}>
+            {/* CLEAR BUTTON */}
             {showClear && (
               <button
                 type="button"
                 className={autocompleteStyles.autocompleteClear}
                 onMouseDown={(e) => {
-                  if (disabled) return;
+                  if (disabled) {
+                    log(
+                      inputName,
+                      'clear.onMouseDown → IGNORADO porque disabled'
+                    );
+                    return;
+                  }
                   e.preventDefault();
+                  log(inputName, 'clear.onMouseDown → clearing query');
                   onChange('');
                   onFocus?.();
                 }}
               >
                 <img
                   src={closeIcon}
-                  alt="close"
+                  alt="clear"
                   className={autocompleteStyles.autocompleteClearIcon}
                 />
               </button>
             )}
 
+            {/* TOGGLE BUTTON */}
             <button
               type="button"
               className={autocompleteStyles.autocompleteToggle}
               disabled={disabled}
               onMouseDown={(e) => {
-                if (disabled) return;
+                if (disabled) {
+                  log(
+                    inputName,
+                    'toggle.onMouseDown → IGNORADO porque disabled'
+                  );
+                  return;
+                }
                 e.preventDefault();
+                log(inputName, 'toggle.onMouseDown → toggle');
                 onToggle();
               }}
             >
@@ -121,7 +193,13 @@ export function AutocompleteBase({
                 key={item._id || item.id || item.nombre}
                 className={autocompleteStyles.autocompleteItem}
                 role="option"
-                onMouseDown={() => onSelect(item)}
+                onMouseDown={() => {
+                  log(inputName, 'onSelect(item)', {
+                    id: item._id ?? null,
+                    nombre: item.nombre,
+                  });
+                  onSelect(item);
+                }}
               >
                 {renderItem ? renderItem(item) : item.nombre}
               </div>

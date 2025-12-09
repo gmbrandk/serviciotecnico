@@ -1,9 +1,8 @@
-// hooks/form-ingreso/useAutocompleteTecnico.js
-import { useEffect, useRef, useState } from 'react';
 import { useTecnicos } from '@context/form-ingreso/tecnicosContext';
 import { normalizarTecnico } from '@utils/form-ingreso/normalizarTecnico';
+import { useEffect, useRef, useState } from 'react';
 
-const EMPTY_TECNICO = normalizarTecnico({
+const EMPTY = normalizarTecnico({
   _id: null,
   nombres: '',
   apellidos: '',
@@ -11,80 +10,128 @@ const EMPTY_TECNICO = normalizarTecnico({
   especialidad: '',
 });
 
-export function useAutocompleteTecnico(initialValue = null, minLength = 2) {
+export function useAutocompleteTecnico(initial = null, minLength = 2) {
   const { tecnicos, buscarTecnicos, buscarTecnicoPorId } = useTecnicos();
 
   const [query, setQuery] = useState('');
-  const [selectedTecnico, setSelectedTecnico] = useState(EMPTY_TECNICO);
+  const [selectedTecnico, setSelectedTecnico] = useState(EMPTY);
   const [isOpen, setIsOpen] = useState(false);
 
   const isSelecting = useRef(false);
-  const loadedInitially = useRef(true);
+  const isInitialLoad = useRef(true);
 
   // ============================================================
-  // Inicializar desde external initialValue (NO abrir dropdown)
+  // SYNC provider → hook (solo si difiere)
   // ============================================================
   useEffect(() => {
-    if (!initialValue) {
-      setSelectedTecnico(EMPTY_TECNICO);
-      setQuery('');
-      setIsOpen(false);
-      loadedInitially.current = false;
+    const normalized = initial ? normalizarTecnico(initial) : null;
+    const currentId = selectedTecnico?._id ?? null;
+    const incomingId = normalized?._id ?? null;
+
+    console.debug('🟦 useAutocompleteTecnico SYNC', { incomingId, currentId });
+
+    if (!normalized) {
+      if (currentId !== null) {
+        console.info(
+          '🟦 useAutocompleteTecnico: initial null → limpiando selección'
+        );
+        setSelectedTecnico(EMPTY);
+        setQuery('');
+      }
+      isInitialLoad.current = false;
       return;
     }
 
-    const normalized = normalizarTecnico(initialValue);
+    if (incomingId !== currentId) {
+      console.info(
+        '🟦 useAutocompleteTecnico: new incoming tecnico, updating selected',
+        incomingId
+      );
+      setSelectedTecnico(normalized);
+      setQuery(normalized.nombreCompleto || '');
+    } else {
+      console.debug(
+        '🟦 useAutocompleteTecnico: incoming equals current, no update'
+      );
+    }
 
-    setSelectedTecnico((prev) =>
-      JSON.stringify(prev) === JSON.stringify(normalized) ? prev : normalized
-    );
-
-    setQuery(normalized.nombreCompleto || '');
-    setIsOpen(false);
-    loadedInitially.current = true;
-  }, [initialValue]);
+    if (isOpen) setIsOpen(false);
+    isInitialLoad.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initial, selectedTecnico]);
 
   // ============================================================
-  // Debounced búsqueda
+  // Debounce
   // ============================================================
   useEffect(() => {
+    console.debug('🟦 useAutocompleteTecnico debounce', {
+      query,
+      isSelecting: isSelecting.current,
+      isInitialLoad: isInitialLoad.current,
+    });
+
     if (isSelecting.current) return;
-    if (!query || query.trim().length < minLength) return;
+    if (isInitialLoad.current) return;
+    if (!query || query.trim().length < minLength) {
+      console.debug(
+        '🟦 useAutocompleteTecnico: query ignorada por longitud insuficiente',
+        { length: (query || '').length, minLength }
+      );
+      return;
+    }
 
     const timeout = setTimeout(() => {
+      console.info(
+        '🟦 useAutocompleteTecnico: buscarTecnicos con query',
+        query.trim()
+      );
       buscarTecnicos(query.trim());
-
-      if (!loadedInitially.current) {
-        setIsOpen(true);
-      }
-    }, 350);
+      setIsOpen(true);
+    }, 300);
 
     return () => clearTimeout(timeout);
   }, [query, minLength, buscarTecnicos]);
 
   // ============================================================
-  // Seleccionar técnico y hacer lookup completo
+  // Seleccionar técnico
   // ============================================================
-  const seleccionarTecnico = async (tParcial) => {
+  const seleccionarTecnico = async (t) => {
+    console.info(
+      '🟦 useAutocompleteTecnico: seleccionarTecnico llamado para',
+      t?._id
+    );
     isSelecting.current = true;
-    loadedInitially.current = false;
+    isInitialLoad.current = false;
 
-    setQuery(tParcial.nombreCompleto || '');
+    setQuery(t.nombreCompleto || '');
     setIsOpen(false);
 
-    const full = await buscarTecnicoPorId(tParcial._id);
-    const normalized = normalizarTecnico(full || tParcial);
+    try {
+      const full = await buscarTecnicoPorId(t._id);
+      const normalized = normalizarTecnico(full || t);
+      console.debug(
+        '🟦 useAutocompleteTecnico: técnico completo recuperado/normalizado',
+        normalized?._id
+      );
+      setSelectedTecnico(normalized);
+    } catch (err) {
+      console.error(
+        '🟦 useAutocompleteTecnico: error recuperando técnico por id',
+        err
+      );
+      setSelectedTecnico(normalizarTecnico(t));
+    }
 
-    setSelectedTecnico(normalized);
-
-    setTimeout(() => {
-      isSelecting.current = false;
-    }, 100);
+    setTimeout(() => (isSelecting.current = false), 80);
   };
 
-  const onQueryChange = (value) => {
-    loadedInitially.current = false;
-    setQuery(value);
+  // ============================================================
+  // Handlers UI
+  // ============================================================
+  const onQueryChange = (v) => {
+    isInitialLoad.current = false;
+    console.debug('🟦 useAutocompleteTecnico: onQueryChange', v);
+    setQuery(v);
     setIsOpen(true);
   };
 
@@ -92,13 +139,14 @@ export function useAutocompleteTecnico(initialValue = null, minLength = 2) {
     query,
     resultados: tecnicos,
     selectedTecnico,
+    seleccionarTecnico,
     isOpen,
     onQueryChange,
-    seleccionarTecnico,
     abrirResultados: () => {
-      loadedInitially.current = false;
+      isInitialLoad.current = false;
       setIsOpen(true);
     },
     cerrarResultados: () => setTimeout(() => setIsOpen(false), 150),
+    setSelectedTecnico,
   };
 }

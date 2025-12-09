@@ -4,17 +4,32 @@ import Collapsible from '@components/form-ingreso/Collapsible';
 import { LineaServicio } from '@components/form-ingreso/LineaServicio';
 import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext';
 import { useAutocompleteTecnico } from '@hooks/form-ingreso/useAutocompleteTecnico';
-import { log } from '@utils/form-ingreso/log';
-import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles';
-import { useEffect } from 'react';
 
-// ⭐ ESTILOS (alias como pediste)
+// LOG mejorado: incluye timestamp + sección + payload
+import { log } from '@utils/form-ingreso/log';
+
+import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles';
+import { useEffect, useRef } from 'react';
+
+// ⭐ ESTILOS
 import {
   buttonsStyles,
   inputsStyles as ordenServicioStyles,
 } from '@styles/form-ingreso';
 
 export function OrdenServicio({ role }) {
+  // Render counter para detectar renders innecesarios
+  const renderCount = useRef(0);
+  renderCount.current++;
+
+  // =======================================
+  // LOG: Render + Props
+  // =======================================
+  log('UI:ORDEN', 'Render', {
+    renderCount: renderCount.current,
+    role,
+  });
+
   const {
     tecnico,
     setTecnico,
@@ -25,9 +40,18 @@ export function OrdenServicio({ role }) {
     updateLinea,
   } = useIngresoForm();
 
+  // LOG: Estado actual del formulario
+  log('UI:ORDEN', 'Context snapshot', {
+    tecnico,
+    orden,
+    lineasServicioCount: orden.lineasServicio?.length,
+  });
+
   const readOnlyTecnico = role !== 'superadministrador';
 
-  // AUTOCOMPLETE
+  // =======================================
+  // AUTOCOMPLETE HOOK
+  // =======================================
   const {
     query,
     resultados,
@@ -39,29 +63,99 @@ export function OrdenServicio({ role }) {
     selectedTecnico,
   } = useAutocompleteTecnico(tecnico);
 
-  // SYNC hacia contexto
+  // LOG del estado del autocompletado
+  log('UI:ORDEN', 'Autocomplete state', {
+    query,
+    resultadosCount: resultados?.length,
+    isOpen,
+    selectedTecnico,
+    isReadOnly: readOnlyTecnico,
+  });
+
+  // =======================================
+  // SYNC inicial → si el provider da un técnico distinto
+  // =======================================
+  useEffect(() => {
+    if (tecnico && tecnico._id && selectedTecnico?._id !== tecnico._id) {
+      log('UI:ORDEN', 'Sync técnico desde context → seleccionarTecnico()', {
+        tecnicoContext: tecnico,
+        selectedTecnico,
+      });
+      seleccionarTecnico(tecnico);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tecnico]);
+
+  // =======================================
+  // SYNC hacia provider
+  // =======================================
   useEffect(() => {
     if (selectedTecnico && selectedTecnico._id) {
-      log('UI:TECNICO', 'Sync hacia IngresoFormContext', selectedTecnico);
+      log('UI:TECNICO', 'Sync hacia IngresoFormContext', {
+        selectedTecnico,
+      });
       setTecnico(selectedTecnico);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTecnico]);
 
-  // LÍNEAS
-  const agregarLinea = () => addLinea();
-  const eliminarLinea = (i) => deleteLinea(i);
-  const actualizarLinea = (i, patch) =>
+  // =======================================
+  // LÍNEAS DE SERVICIO
+  // =======================================
+  const agregarLinea = () => {
+    log('UI:ORDEN', 'addLinea() llamado');
+    addLinea();
+  };
+
+  const eliminarLinea = (i) => {
+    log('UI:ORDEN', 'deleteLinea() llamado', { index: i });
+    deleteLinea(i);
+  };
+
+  const actualizarLinea = (i, patch) => {
+    log('UI:ORDEN', 'updateLinea() llamado', {
+      index: i,
+      patchType: typeof patch,
+    });
+
     updateLinea(
       i,
-      typeof patch === 'function' ? patch : (prev) => ({ ...prev, ...patch })
+      typeof patch === 'function'
+        ? (prev) => {
+            const out = patch(prev);
+            log('UI:ORDEN', 'updateLinea() → función produce', {
+              prev,
+              out,
+            });
+            return out;
+          }
+        : (prev) => {
+            const out = { ...prev, ...patch };
+            log('UI:ORDEN', 'updateLinea() → objeto produce', {
+              prev,
+              patch,
+              out,
+            });
+            return out;
+          }
     );
+  };
 
-  const handleOrdenChange = (field, value) =>
-    setOrden((prev) => ({ ...prev, [field]: value }));
+  const handleOrdenChange = (field, value) => {
+    log('UI:ORDEN', 'Campo general modificado', { field, value });
+    setOrden((prev) => {
+      const out = { ...prev, [field]: value };
+      log('UI:ORDEN', 'setOrden() → nuevo estado', { prev, out });
+      return out;
+    });
+  };
 
+  // =======================================
+  // RENDER
+  // =======================================
   return (
     <>
-      {/* AVISO PERMISOS */}
+      {/* PERMISOS */}
       <div className="row">
         {!ROLES_PERMITIDOS_EDITAR_TECNICO.includes(role) && (
           <div className="alert-info" style={{ marginBottom: 10 }}>
@@ -78,12 +172,36 @@ export function OrdenServicio({ role }) {
           placeholder="Buscar técnico…"
           inputName="tecnico"
           query={query}
-          onChange={readOnlyTecnico ? undefined : onQueryChange}
+          onChange={
+            readOnlyTecnico
+              ? undefined
+              : (v) => {
+                  log('UI:ORDEN', 'Autocomplete onChange()', { value: v });
+                  onQueryChange(v);
+                }
+          }
           resultados={resultados}
           isOpen={isOpen}
-          onSelect={readOnlyTecnico ? undefined : seleccionarTecnico}
-          abrirResultados={readOnlyTecnico ? undefined : abrirResultados}
-          cerrarResultados={cerrarResultados}
+          onSelect={
+            readOnlyTecnico
+              ? undefined
+              : (t) => {
+                  log('UI:ORDEN', 'Autocomplete onSelect()', { item: t });
+                  seleccionarTecnico(t);
+                }
+          }
+          abrirResultados={
+            readOnlyTecnico
+              ? undefined
+              : () => {
+                  log('UI:ORDEN', 'Autocomplete abrirResultados()');
+                  abrirResultados();
+                }
+          }
+          cerrarResultados={() => {
+            log('UI:ORDEN', 'Autocomplete cerrarResultados()');
+            cerrarResultados();
+          }}
           renderItem={(t) => (
             <>
               <strong>{t.nombreCompleto}</strong>
@@ -125,8 +243,17 @@ export function OrdenServicio({ role }) {
             key={linea.uid}
             index={i}
             data={linea}
-            onDelete={eliminarLinea}
-            onChange={actualizarLinea}
+            onDelete={(idx) => {
+              log('UI:ORDEN', 'LineaServicio → onDelete()', { idx });
+              eliminarLinea(idx);
+            }}
+            onChange={(idx, patch) => {
+              log('UI:ORDEN', 'LineaServicio → onChange()', {
+                idx,
+                patch,
+              });
+              actualizarLinea(idx, patch);
+            }}
           />
         ))}
 

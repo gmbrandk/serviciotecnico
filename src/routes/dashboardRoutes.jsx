@@ -10,6 +10,8 @@ import { OrdenServicioProviders } from '@context/ordenServicio/ordenServicioProv
 import NotFound from '@pages/NotFound';
 import OrdenServicioPage from '@pages/OrdenServicioPage.jsx';
 import UsuariosLayout from '../components/pages/Dashboard/UsuariosLayout';
+import IngresoPage from '../pages/form-ingreso/IngresoPage';
+import PreviewOSPage from '../pages/form-ingreso/PreviewOSPage';
 
 const dashboardRoutes = [
   {
@@ -46,6 +48,22 @@ const dashboardRoutes = [
     element: (
       <OrdenServicioProviders>
         <OrdenServicioPage />
+      </OrdenServicioProviders>
+    ),
+  },
+  {
+    path: 'orden-servicio/crear/resumen',
+    element: (
+      <OrdenServicioProviders>
+        <IngresoPage />
+      </OrdenServicioProviders>
+    ),
+  },
+  {
+    path: 'orden-servicio/:id',
+    element: (
+      <OrdenServicioProviders>
+        <PreviewOSPage />
       </OrdenServicioProviders>
     ),
   },

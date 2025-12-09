@@ -19,10 +19,27 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
     explainDiff,
   } = useIngresoForm();
 
+  // === referencias originales y cálculo de estado/diff ===
   const originalLinea = originalRef.current?.orden?.lineas?.[data.uid] ?? null;
+
+  // Log inicial de montaje: contexto de la línea
+  console.debug(
+    `[Linea ${index}] MOUNT → uid=${data.uid} isNew=${!!data.isNew}`,
+    {
+      dataSnapshot: {
+        descripcion: data.descripcion,
+        precioUnitario: data.precioUnitario,
+        tipoTrabajo: data.tipoTrabajo
+          ? data.tipoTrabajo._id ?? data.tipoTrabajo
+          : null,
+      },
+      originalExists: !!originalLinea,
+    }
+  );
+
   const estado = resolveEstado(data, originalLinea);
   const diff = explainDiff(data, originalLinea);
-  const isLineaNueva = data.isNew;
+  const isLineaNueva = !!data.isNew;
 
   const estadoClass =
     lineaServicioStyles[`estado${estado[0].toUpperCase() + estado.slice(1)}`] ||
@@ -55,6 +72,7 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
     seleccionarTrabajo,
   } = useAutocompleteTipoTrabajo(initialTrabajo);
 
+  // Local description state to allow edit without immediately mutating provider state
   const [localDescripcion, setLocalDescripcion] = useState(
     data.descripcion ?? ''
   );
@@ -69,55 +87,92 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
 
   /* ============================================
      SYNC DESCRIPCIÓN
+     - Si el provider actualiza description y el usuario no editó localmente,
+       actualizamos el input local.
      ============================================ */
   useEffect(() => {
     if (!userEditedDescripcion && data.descripcion !== localDescripcion) {
+      console.debug(
+        `[Linea ${index}] SYNC DESCRIPCION → provider cambió descripcion`,
+        { from: localDescripcion, to: data.descripcion }
+      );
       setLocalDescripcion(data.descripcion ?? '');
     }
   }, [data.descripcion]);
 
   /* ============================================
      REGISTRAR PRECIO ORIGINAL (solo 1 vez o reset)
+     - precioOriginalRef guarda la referencia original que se usa para badges
      ============================================ */
   useEffect(() => {
     const n = Number(data.precioUnitario);
 
-    // Primero mount → fijar original solo una vez
+    // Primer mount → fijar original solo una vez
     if (precioOriginalRef.current == null) {
       precioOriginalRef.current = Number.isNaN(n) ? null : n;
+      console.debug(`[Linea ${index}] PRECIO ORIGINAL registrado`, {
+        precioOriginal: precioOriginalRef.current,
+      });
       return;
     }
 
     // Si hubo reset → actualizar referencia
     if (data._fromReset) {
       precioOriginalRef.current = Number.isNaN(n) ? null : n;
+      console.info(`[Linea ${index}] PRECIO ORIGINAL actualizado por reset`, {
+        precioOriginal: precioOriginalRef.current,
+      });
     }
   }, [data.precioUnitario, data._fromReset]);
 
   /* ============================================
      SYNC tipoTrabajo con autocompletado
+     - Cuando provider cambia data.tipoTrabajo directamente, intentamos
+       reflejarlo en el query del autocomplete.
      ============================================ */
   useEffect(() => {
     const tt = data.tipoTrabajo;
     if (!tt) return;
 
     if (typeof tt === 'string') {
-      if (tt !== query) onQueryChange(tt);
+      if (tt !== query) {
+        console.debug(
+          `[Linea ${index}] SYNC tipoTrabajo (string) -> actualizando query`,
+          { tt, oldQuery: query }
+        );
+        onQueryChange(tt);
+      }
       return;
     }
 
     if (typeof tt === 'object') {
       if (!selectedTrabajo || selectedTrabajo._id !== tt._id) {
+        console.debug(
+          `[Linea ${index}] SYNC tipoTrabajo (object) -> actualizando query a nombre del tipoTrabajo`,
+          {
+            tipoTrabajoId: tt._id,
+            tipoTrabajoNombre: tt.nombre,
+          }
+        );
         onQueryChange(tt.nombre ?? '');
       }
     }
   }, [data.tipoTrabajo]);
 
   /* ============================================
-     CUANDO CAMBIA selectedTrabajo
+     CUANDO CAMBIA selectedTrabajo (resultado del autocomplete)
+     - Decisiones: descripción final, precio final y cuándo aplicar patch
      ============================================ */
   useEffect(() => {
     if (!selectedTrabajo) return;
+
+    // Log de entrada
+    console.info(`[Linea ${index}] selectedTrabajo cambió`, {
+      selectedTrabajoId: selectedTrabajo._id ?? null,
+      isInitialSelection,
+      precioModificado,
+      userEditedDescripcion,
+    });
 
     const descripcionFinal = isInitialSelection
       ? data.descripcion ?? selectedTrabajo.descripcion ?? ''
@@ -134,16 +189,101 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
       descripcion: descripcionFinal,
     };
 
-    // solo aplicar precio si NO fue modificado manual
+    // Solo aplicar precio si NO fue modificado manual ni es selección inicial
     if (!precioModificado && !isInitialSelection) {
       patch.precioUnitario = precioFinal;
     }
 
-    onChange?.(index, patch) ?? updateLinea(index, patch);
+    console.debug(`[Linea ${index}] Aplicando patch por selectedTrabajo`, {
+      patch,
+      estadoPrevio: { precioActual, precioOriginal },
+    });
+
+    // Propagar update: preferimos onChange del padre si existe
+    onChange ? onChange(index, patch) : updateLinea(index, patch);
+
+    // small log de confirmación
+    console.debug(`[Linea ${index}] patch aplicado (selectedTrabajo)`, {
+      index,
+      uid: data.uid,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTrabajo]);
 
+  /* ============================================
+     HANDLERS UI: descripción y precio
+     - Logs en cada acción del usuario
+     ============================================ */
+
+  const handleDescripcionChange = (e) => {
+    const val = e.target.value;
+    setUserEditedDescripcion(true);
+    setLocalDescripcion(val);
+    const patch = { descripcion: val };
+    console.debug(`[Linea ${index}] INPUT descripcion -> usuario escribió`, {
+      val,
+    });
+    onChange ? onChange(index, patch) : updateLinea(index, patch);
+  };
+
+  const handlePrecioChange = (e) => {
+    const val = e.target.value;
+
+    // caso borrar contenido -> valor vacío
+    if (val === '') {
+      console.debug(`[Linea ${index}] INPUT precio -> usuario borró el valor`);
+      const patch = { precioUnitario: '' };
+      onChange ? onChange(index, patch) : updateLinea(index, patch);
+      return;
+    }
+
+    const num = Number(val);
+    if (isNaN(num) || num < 0) {
+      console.warn(`[Linea ${index}] INPUT precio -> valor inválido ignorado`, {
+        raw: val,
+      });
+      return;
+    }
+
+    const patch = { precioUnitario: num };
+    console.debug(`[Linea ${index}] INPUT precio -> nuevo número válido`, {
+      num,
+      precioOriginal,
+      precioPrevio: precioActual,
+    });
+    onChange ? onChange(index, patch) : updateLinea(index, patch);
+  };
+
+  const handleDelete = () => {
+    console.info(`[Linea ${index}] BOTON eliminar pulsado`, { uid: data.uid });
+    onDelete ? onDelete(index) : deleteLinea(index);
+  };
+
+  const handleReset = () => {
+    console.info(
+      `[Linea ${index}] BOTON reset pulsado — solicitando reset al provider`,
+      { uid: data.uid }
+    );
+    resetLinea(index);
+  };
+
+  // Log cada render relevante (puede filtrar por debug en consola)
+  console.debug(
+    `[Linea ${index}] RENDER → estado=${estado} isNew=${isLineaNueva}`,
+    {
+      diff,
+      precioModificado,
+      isInitialSelection,
+      query,
+      resultadosCount: resultados?.length ?? 0,
+    }
+  );
+
   return (
-    <div className={`${lineaServicioStyles.lineaServicio} ${estadoClass}`}>
+    <div
+      className={`${lineaServicioStyles.lineaServicio} ${estadoClass}`}
+      data-uid={data.uid}
+    >
       {/* Tipo de trabajo */}
       <div className={lineaServicioStyles.col}>
         <div className={lineaServicioStyles.tipoTrabajoWrapper}>
@@ -174,12 +314,34 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
           <SelectAutocomplete
             placeholder="Buscar tipo de trabajo..."
             query={query}
-            onChange={onQueryChange}
+            onChange={(v) => {
+              console.debug(
+                `[Linea ${index}] SelectAutocomplete onChange(query)`,
+                { query: v }
+              );
+              onQueryChange(v);
+            }}
             resultados={resultados}
             isOpen={isOpen}
-            onSelect={seleccionarTrabajo}
-            cerrarResultados={cerrarResultados}
-            abrirResultados={abrirResultados}
+            onSelect={(t) => {
+              console.info(
+                `[Linea ${index}] SelectAutocomplete onSelect -> seleccionando tipoTrabajo`,
+                { id: t?._id ?? null, nombre: t?.nombre }
+              );
+              seleccionarTrabajo(t);
+            }}
+            cerrarResultados={() => {
+              console.debug(
+                `[Linea ${index}] SelectAutocomplete cerrarResultados invoked`
+              );
+              cerrarResultados();
+            }}
+            abrirResultados={() => {
+              console.debug(
+                `[Linea ${index}] SelectAutocomplete abrirResultados invoked`
+              );
+              abrirResultados();
+            }}
             inputName={`tipoTrabajo-${index}`}
             renderItem={(t) => (
               <>
@@ -189,6 +351,7 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
                 </div>
               </>
             )}
+            isInitialSelection={isInitialSelection}
           />
         </div>
       </div>
@@ -221,13 +384,7 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
           type="text"
           className={inputLineaStyles.inputField}
           value={localDescripcion}
-          onChange={(e) => {
-            const val = e.target.value;
-            setUserEditedDescripcion(true);
-            setLocalDescripcion(val);
-            const patch = { descripcion: val };
-            onChange?.(index, patch) ?? updateLinea(index, patch);
-          }}
+          onChange={handleDescripcionChange}
         />
       </div>
 
@@ -263,21 +420,7 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
           value={precioActual ?? ''}
           min="0"
           step="0.1"
-          onChange={(e) => {
-            const val = e.target.value;
-
-            if (val === '') {
-              const patch = { precioUnitario: '' };
-              onChange?.(index, patch) ?? updateLinea(index, patch);
-              return;
-            }
-
-            const num = Number(val);
-            if (isNaN(num) || num < 0) return;
-
-            const patch = { precioUnitario: num };
-            onChange?.(index, patch) ?? updateLinea(index, patch);
-          }}
+          onChange={handlePrecioChange}
         />
       </div>
 
@@ -289,7 +432,8 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
         <button
           type="button"
           className={lineaServicioStyles.buttonDelete}
-          onClick={() => (onDelete ? onDelete(index) : deleteLinea(index))}
+          onClick={handleDelete}
+          title="Eliminar línea"
         >
           🗑
         </button>
@@ -297,7 +441,8 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
         <button
           type="button"
           className={lineaServicioStyles.buttonReset}
-          onClick={() => resetLinea(index)}
+          onClick={handleReset}
+          title="Resetear línea"
         >
           ↺
         </button>

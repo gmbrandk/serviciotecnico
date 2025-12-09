@@ -5,10 +5,9 @@ import {
 } from '@context/form-ingreso/IngresoFormContext';
 
 import { ClientesProvider } from '@context/form-ingreso/clientesContext.jsx';
-import { EquiposProvider } from '@context/form-ingreso/equiposContext.jsx'; // 👈 AÑADIDO
+import { EquiposProvider } from '@context/form-ingreso/equiposContext.jsx';
 import { TecnicosProvider } from '@context/form-ingreso/tecnicosContext.jsx';
 import { TiposTrabajoProvider } from '@context/form-ingreso/tiposTrabajoContext.jsx';
-import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles.js';
 
 import { PersistSwitch } from '@components/PersistenSwitch.jsx';
 import { ClienteSection } from '@components/form-ingreso/ClienteSection.jsx';
@@ -17,10 +16,10 @@ import { EquipoSection } from '@components/form-ingreso/EquipoSection.jsx';
 import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx';
 
 import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
+import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles.js';
 
 function IngresoFormContent({ onSubmit, role }) {
-  const { cliente, equipo, tecnico, orden, originalRef, submitAndClear } =
-    useIngresoForm();
+  const { cliente, equipo, tecnico, orden, originalRef } = useIngresoForm();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,18 +34,15 @@ function IngresoFormContent({ onSubmit, role }) {
       orden,
     };
 
-    if (onSubmit) onSubmit(formState);
+    onSubmit?.(formState);
   };
 
   return (
-    <form
-      id="formIngreso"
-      className={formIngresoPageStyles.msform}
-      onSubmit={handleSubmit}
-    >
+    <form className={formIngresoPageStyles.msform} onSubmit={handleSubmit}>
       <h1 className={formIngresoPageStyles.title}>
         Formulario de Ingreso y Diagnóstico Técnico
       </h1>
+
       <PersistSwitch />
 
       <CollapsibleGroupProvider>
@@ -65,8 +61,7 @@ function IngresoFormContent({ onSubmit, role }) {
           index={1}
           initMode="expanded"
         >
-          <EquipoSection />{' '}
-          {/* ⬅️ ESTE YA TIENE ACCESO AL CONTEXTO DE EQUIPOS */}
+          <EquipoSection />
         </Collapsible>
 
         <Collapsible
@@ -88,10 +83,10 @@ function IngresoFormContent({ onSubmit, role }) {
   );
 }
 
-// =================================================================
-// 🧠 Componente principal — inicializa TODOS los providers
-// =================================================================
-export default function FormIngreso({ initialPayload = null, onSubmit, role }) {
+export default function FormIngreso({ initialPayload, onSubmit, role }) {
+  // 🚫 Si initialPayload es null → NO renderices el provider
+  if (!initialPayload) return null;
+
   return (
     <ClientesProvider>
       <EquiposProvider>

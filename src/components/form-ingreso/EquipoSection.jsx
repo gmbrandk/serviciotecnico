@@ -27,6 +27,12 @@ export function EquipoSection() {
      🔄 Sincroniza con el contexto
   ====================================================== */
   useEffect(() => {
+    if (equipo && equipo._id && selectedEquipo?._id !== equipo._id) {
+      setSelectedEquipo(equipo);
+    }
+  }, [equipo]);
+
+  useEffect(() => {
     setEquipo(selectedEquipo);
   }, [selectedEquipo, setEquipo]);
 

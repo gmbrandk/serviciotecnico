@@ -1,8 +1,7 @@
-// hooks/form-ingreso/useAutocompleteCliente.js
-import { useEffect, useRef, useState } from 'react';
 import { useClientes } from '@context/form-ingreso/clientesContext';
+import { useEffect, useRef, useState } from 'react';
 
-const EMPTY_CLIENT = {
+const EMPTY = {
   _id: null,
   dni: '',
   nombres: '',
@@ -16,95 +15,147 @@ export function useAutocompleteCliente(initialData = null, minLength = 3) {
   const { clientes, buscarClientes, buscarClientePorId } = useClientes();
 
   // Estado principal
-  const [query, setQuery] = useState(initialData?.dni || '');
+  const [query, setQuery] = useState('');
+  const [selectedCliente, setSelectedCliente] = useState(EMPTY);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCliente, setSelectedCliente] = useState(
-    initialData || EMPTY_CLIENT
-  );
 
   // Flags internos
   const isSelecting = useRef(false);
-  const loadedInitially = useRef(true); // 👈 controla si el query vino de carga inicial
+  const isInitialLoad = useRef(true); // protege el debounce en la carga inicial
 
-  // ===========================
-  // Sync initialData (cierre y marca de carga inicial)
-  // ===========================
+  // ============================================================
+  // SYNC provider → hook
+  // ============================================================
   useEffect(() => {
-    if (initialData) {
+    const initialId = initialData?._id ?? null;
+    const currentId = selectedCliente?._id ?? null;
+
+    console.debug('🟦 useAutocompleteCliente: SYNC effect triggered', {
+      initialId,
+      currentId,
+      isOpen,
+    });
+
+    if (!initialData) {
+      // Solo limpiar si actualmente había un cliente seleccionado
+      if (currentId !== null) {
+        console.info(
+          '🟦 useAutocompleteCliente: initialData es null, limpiando selección actual'
+        );
+        setSelectedCliente(EMPTY);
+        setQuery('');
+      }
+      isInitialLoad.current = false;
+      return;
+    }
+
+    if (initialId !== currentId) {
+      console.info(
+        '🟦 useAutocompleteCliente: incoming initialData difiere, actualizando seleccionado',
+        { incomingId: initialId }
+      );
       setSelectedCliente(initialData);
       setQuery(initialData.dni || '');
-      setIsOpen(false);
-      loadedInitially.current = true; // carga inicial → NO abrir autocomplete
     } else {
-      setSelectedCliente(EMPTY_CLIENT);
-      setQuery('');
-      setIsOpen(false);
-      loadedInitially.current = false; // sin carga inicial → comportamiento normal
+      console.debug(
+        '🟦 useAutocompleteCliente: incoming initialData igual al current, no se actualiza'
+      );
     }
-  }, [initialData]);
 
-  // ===========================
-  // Debounce autocomplete
-  // ===========================
+    // cerrar dropdown por si estaba abierto
+    if (isOpen) {
+      console.debug(
+        '🟦 useAutocompleteCliente: cerrando dropdown por sincronización inicial'
+      );
+      setIsOpen(false);
+    }
+    // marcamos esta llegada como carga inicial para evitar abrir dropdown por debounce
+    isInitialLoad.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData, selectedCliente]);
+
+  // ============================================================
+  // Debounced búsqueda (NO ejecuta durante carga inicial ni selección)
+  // ============================================================
   useEffect(() => {
-    // No buscar mientras se selecciona un cliente
-    if (isSelecting.current) return;
+    console.debug('🟦 useAutocompleteCliente: debounce effect fired', {
+      query,
+      isSelecting: isSelecting.current,
+      isInitialLoad: isInitialLoad.current,
+    });
 
-    // Si no hay query suficiente, limpiar y no abrir lista
+    if (isSelecting.current) {
+      console.debug(
+        '🟦 useAutocompleteCliente: se ignora debounce por isSelecting=true'
+      );
+      return;
+    }
+    if (isInitialLoad.current) {
+      console.debug(
+        '🟦 useAutocompleteCliente: se ignora debounce por carga inicial'
+      );
+      return;
+    }
     if (!query || query.trim().length < minLength) {
-      setSelectedCliente(EMPTY_CLIENT);
+      console.debug(
+        '🟦 useAutocompleteCliente: query demasiado corto o vacío, no buscar',
+        { queryLength: (query || '').length, minLength }
+      );
       return;
     }
 
     const timeout = setTimeout(() => {
-      buscarClientes(query);
-
-      // 👇 FIX: solo abrir si el usuario escribió manualmente
-      if (!loadedInitially.current) {
-        setIsOpen(true);
-      }
-    }, 350);
+      console.info(
+        '🟦 useAutocompleteCliente: realizando buscarClientes para query',
+        query.trim()
+      );
+      buscarClientes(query.trim());
+      setIsOpen(true);
+    }, 300);
 
     return () => clearTimeout(timeout);
-  }, [query, buscarClientes, minLength]);
+  }, [query, minLength, buscarClientes]);
 
-  // ===========================
-  // Select client (full lookup)
-  // ===========================
-  const seleccionarCliente = async (clienteParcial) => {
+  // ============================================================
+  // Seleccionar cliente (lookup completo)
+  // ============================================================
+  const seleccionarCliente = async (c) => {
+    console.info(
+      '🟦 useAutocompleteCliente: seleccionarCliente llamado para',
+      c?._id
+    );
     isSelecting.current = true;
-    loadedInitially.current = false; // desde aquí, el usuario tomó control
+    isInitialLoad.current = false;
 
-    setQuery(clienteParcial.dni || '');
+    setQuery(c.dni || '');
     setIsOpen(false);
 
-    const fullData = await buscarClientePorId(clienteParcial._id);
+    try {
+      const full = await buscarClientePorId(c._id);
+      console.debug(
+        '🟦 useAutocompleteCliente: buscarClientePorId result',
+        full ? full._id ?? full?.data?._id : null
+      );
+      setSelectedCliente(full || c);
+    } catch (e) {
+      console.error(
+        '🟦 useAutocompleteCliente: error al buscar cliente por id',
+        e
+      );
+      setSelectedCliente(c);
+    }
 
-    if (fullData) setSelectedCliente(fullData);
-    else setSelectedCliente(clienteParcial);
-
-    // Liberar bloqueo de selección
-    setTimeout(() => {
-      isSelecting.current = false;
-    }, 100);
+    setTimeout(() => (isSelecting.current = false), 80);
   };
 
-  // ===========================
-  // UI handlers
-  // ===========================
-  const onQueryChange = (value) => {
-    loadedInitially.current = false; // 👉 usuario está escribiendo
-    setQuery(value);
+  // ============================================================
+  // Handlers UI
+  // ============================================================
+  const onQueryChange = (v) => {
+    isInitialLoad.current = false;
+    console.debug('🟦 useAutocompleteCliente: onQueryChange', v);
+    setQuery(v);
     setIsOpen(true);
-  };
-
-  const abrirResultados = () => {
-    loadedInitially.current = false;
-    setIsOpen(true);
-  };
-
-  const cerrarResultados = () => {
-    setTimeout(() => setIsOpen(false), 150);
   };
 
   return {
@@ -114,8 +165,11 @@ export function useAutocompleteCliente(initialData = null, minLength = 3) {
     seleccionarCliente,
     isOpen,
     onQueryChange,
-    abrirResultados,
-    cerrarResultados,
+    abrirResultados: () => {
+      isInitialLoad.current = false;
+      setIsOpen(true);
+    },
+    cerrarResultados: () => setTimeout(() => setIsOpen(false), 150),
     setSelectedCliente,
   };
 }

@@ -138,7 +138,9 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
 
     const payload = buildPayload({ ids, orden, tecnicoId });
 
-    navigate('/testing', { state: { payload } });
+    navigate('/dashboard/orden-servicio/crear/resumen', {
+      state: { payload },
+    });
 
     return { success: true, payload };
   };

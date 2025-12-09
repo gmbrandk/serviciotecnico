@@ -5,6 +5,7 @@
 ├── MultiStepFormImplementacion.html
 ├── OSToDoList.html
 ├── README.md
+├── TODO LIST – Fix manejo de valores y carga inicial.html
 ├── ToCheckEditarEquipoController.html
 ├── ToDoList.html
 ├── ToDoListEquiposFlujo.html
@@ -35,21 +36,57 @@
 │   ├── App.jsx
 │   ├── __mock__
 │   │   ├── codigoExistenteMock.js
+│   │   ├── form-ingreso
+│   │   │   ├── clientes.js
+│   │   │   ├── equipos.js
+│   │   │   ├── index.js
+│   │   │   ├── tecnicos.js
+│   │   │   └── tipos-trabajo.js
 │   │   ├── mockData.js
+│   │   ├── ordenServicioMocks.js
 │   │   ├── rolesJerarquia.js
 │   │   ├── usuarioMockManager.js
 │   │   ├── usuariosMock.js
 │   │   └── verificarPermisoMock.js
 │   ├── assets
+│   │   ├── form-ingreso
+│   │   │   ├── MacServiceLogo.jpeg
+│   │   │   ├── close-circle.svg
+│   │   │   ├── close-x.svg
+│   │   │   ├── close.png
+│   │   │   ├── close.svg
+│   │   │   ├── dropdown-arrow.svg
+│   │   │   ├── search.svg
+│   │   │   └── search.webp
 │   │   └── react.svg
 │   ├── codigoGeneracionMock.js
 │   ├── components
 │   │   ├── CodigoAccesoItems.jsx
 │   │   ├── CrearClientes.jsx
 │   │   ├── CrearCodigo.jsx
+│   │   ├── DevLogPanel.jsx
 │   │   ├── Historial.jsx
 │   │   ├── ListaCodigosAcceso.jsx
+│   │   ├── OSPreview.jsx
+│   │   ├── OSPreviewPDF.jsx
+│   │   ├── OSPreviewPDFWrapper.jsx
+│   │   ├── OSPrintButton.jsx
 │   │   ├── PanelUsuarios.jsx
+│   │   ├── PersistenSwitch.jsx
+│   │   ├── form-ingreso
+│   │   │   ├── Autocomplete.jsx
+│   │   │   ├── AutocompleteBase.jsx
+│   │   │   ├── ClienteSection.jsx
+│   │   │   ├── Collapsible.jsx
+│   │   │   ├── EquipoSection.jsx
+│   │   │   ├── FichaTecnica.jsx
+│   │   │   ├── FormIngreso.jsx
+│   │   │   ├── IngresoFormContent.jsx
+│   │   │   ├── LineaServicio.jsx
+│   │   │   ├── OrdenServicioSection.jsx
+│   │   │   ├── SelectAutocomplete.jsx
+│   │   │   ├── TecnicoSection.jsx
+│   │   │   └── index.js
 │   │   ├── pages
 │   │   │   ├── Dashboard
 │   │   │   │   ├── DashboardHome.jsx
@@ -89,6 +126,15 @@
 │   │       └── Toast.jsx
 │   ├── config
 │   │   ├── entorno.js
+│   │   ├── form-ingreso
+│   │   │   ├── entorno.js
+│   │   │   ├── init
+│   │   │   │   ├── clienteServiceInit.js
+│   │   │   │   ├── equipoServiceInit.js
+│   │   │   │   ├── osServiceInit.js
+│   │   │   │   ├── tecnicoServiceInit.js
+│   │   │   │   └── tipoTrabajoServiceInit.js
+│   │   │   └── proveedores.js
 │   │   ├── init
 │   │   │   └── usuarioServiceInit.js
 │   │   └── proveedores.js
@@ -100,22 +146,44 @@
 │   │   ├── codigoAccesoContext.jsx
 │   │   ├── equipo
 │   │   │   └── EquipoContext.jsx
+│   │   ├── form-ingreso
+│   │   │   ├── CollapsibleGroupContext.jsx
+│   │   │   ├── IngresoFormContext.jsx
+│   │   │   ├── clientesContext.jsx
+│   │   │   ├── equiposContext.jsx
+│   │   │   ├── tecnicosContext.jsx
+│   │   │   └── tiposTrabajoContext.jsx
 │   │   └── ordenServicio
 │   │       ├── ordenServicioApiContext.jsx
 │   │       └── ordenServicioProviders.jsx
 │   ├── data
+│   │   ├── exampleInitialData.js
 │   │   └── tabla
 │   │       └── columnasCodigos.js
+│   ├── docs
+│   │   └── form-ingreso.md
 │   ├── helpers
 │   │   └── generateUniqueId.js
 │   ├── hooks
+│   │   ├── form-ingreso
+│   │   │   ├── useAutocompleteCliente.js
+│   │   │   ├── useAutocompleteEquipo.js
+│   │   │   ├── useAutocompleteTecnico.js
+│   │   │   ├── useAutocompleteTipoTrabajo.js
+│   │   │   ├── useCollapsible.js
+│   │   │   ├── useLineasServicio.js
+│   │   │   ├── useLookupUniversal.js
+│   │   │   └── useSummary.js
+│   │   ├── useAutosave.js
 │   │   ├── useClipboard.js
 │   │   ├── useCodigosAcceso.js
 │   │   ├── useEsMovil.js
 │   │   ├── useGlobalLoading.js
+│   │   ├── useIsFirstRender.js
 │   │   ├── useLoading.js
 │   │   ├── useMultiLoading.js
-│   │   └── useResetBotonGenerado.js
+│   │   ├── useResetBotonGenerado.js
+│   │   └── useResolverObjectId.js
 │   ├── index.css
 │   ├── logic
 │   │   ├── activarSpotlight.js
@@ -239,11 +307,17 @@
 │   │           └── whiteListNombres.js
 │   ├── pages
 │   │   ├── DashboardPage.jsx
+│   │   ├── IngresoPage.jsx
 │   │   ├── LoginPage.jsx
 │   │   ├── NotFound.jsx
 │   │   ├── OrdenServicioPage.jsx
 │   │   ├── RegisterPage.jsx
-│   │   └── TestingPage.jsx
+│   │   ├── TestingPage.jsx
+│   │   └── form-ingreso
+│   │       ├── DevPage.jsx
+│   │       ├── IngresoPage.jsx
+│   │       ├── PayloadPage.jsx
+│   │       └── PreviewPage.jsx
 │   ├── routes
 │   │   └── dashboardRoutes.jsx
 │   ├── services
@@ -253,6 +327,32 @@
 │   │   ├── codigoAccesoService.js
 │   │   ├── editarUsuarioService.js
 │   │   ├── eliminarUsuarioService.js
+│   │   ├── form-ingreso
+│   │   │   ├── clientes
+│   │   │   │   ├── clienteService.js
+│   │   │   │   └── providers
+│   │   │   │       ├── apiProvider.js
+│   │   │   │       └── localStorageProvider.js
+│   │   │   ├── equipos
+│   │   │   │   ├── equipoService.js
+│   │   │   │   └── providers
+│   │   │   │       ├── apiProvider.js
+│   │   │   │       └── localStorageProvider.js
+│   │   │   ├── os
+│   │   │   │   ├── osService.js
+│   │   │   │   └── providers
+│   │   │   │       ├── apiProvider.js
+│   │   │   │       └── localStorageProvider.js
+│   │   │   ├── tecnicos
+│   │   │   │   ├── providers
+│   │   │   │   │   ├── apiProvider.js
+│   │   │   │   │   └── localStorageProvider.js
+│   │   │   │   └── tecnicoService.js
+│   │   │   └── tiposTrabajo
+│   │   │       ├── providers
+│   │   │       │   ├── apiProvider.js
+│   │   │       │   └── localStorageProvider.js
+│   │   │       └── tiposTrabajoService.js
 │   │   ├── getUsuarioService.js
 │   │   ├── toast
 │   │   │   ├── toastLimiter.js
@@ -272,6 +372,8 @@
 │   │   ├── LoginPage.module.css
 │   │   ├── MainContent.module.css
 │   │   ├── NotFound.module.css
+│   │   ├── OSPreview.css
+│   │   ├── OSPreview.print.css
 │   │   ├── animations
 │   │   │   └── Spotlight.module.css
 │   │   ├── dashboard
@@ -281,6 +383,23 @@
 │   │   │   └── Sidebar.module.css
 │   │   ├── fonts
 │   │   │   └── Monserrat.css
+│   │   ├── form-ingreso
+│   │   │   ├── Autocomplete.module.css
+│   │   │   ├── Buttons.module.css
+│   │   │   ├── Fieldset.module.css
+│   │   │   ├── FormIngresoPage.module.css
+│   │   │   ├── Inputs.module.css
+│   │   │   ├── LineaServicio.module.css
+│   │   │   ├── autocomplete.css
+│   │   │   ├── base.css
+│   │   │   ├── buttons.css
+│   │   │   ├── fieldset.css
+│   │   │   ├── index.css
+│   │   │   ├── index.js
+│   │   │   ├── inputs.css
+│   │   │   ├── layout.css
+│   │   │   ├── linea-servicio.css
+│   │   │   └── telefono.css
 │   │   ├── forms.module.css
 │   │   ├── general
 │   │   │   ├── AlertMessage.css
@@ -300,6 +419,18 @@
 │   │   └── testing
 │   │       └── TestingPage.module.css
 │   └── utils
+│       ├── form-ingreso
+│       │   ├── LogBuffer.js
+│       │   ├── autoSave.js
+│       │   ├── buildOrdenPayload.js
+│       │   ├── deepEqual.js
+│       │   ├── diffLineaServicio.js
+│       │   ├── ensureAuth.js
+│       │   ├── log.js
+│       │   ├── normalizarEquipo.js
+│       │   ├── normalizarTecnico.js
+│       │   ├── normalizeOrdenPayload.js
+│       │   └── roles.js
 │       ├── formatters
 │       │   ├── estandarizarFecha.js
 │       │   ├── estandarizarNombre.js
