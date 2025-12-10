@@ -1,13 +1,16 @@
 {
-    "compilerOptions": {
-      "baseUrl": "backend",
-      "paths": {
-        "@controllers/*": ["controllers/*"],
-        "@middlewares/*": ["middlewares/*"],
-        "@routes/*": ["routes/*"],
-        "@models/*": ["models/*"]
-      }
-    },
-    "include": ["backend", "src/context"]
-  }
-  
+  "compilerOptions": {
+    "baseUrl": "backend",
+    "paths": {
+      "@controllers/*": ["controllers/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@routes/*": ["routes/*"],
+      "@models/*": ["models/*"]
+    }
+  },
+  "include": [
+    "backend",
+    "src/context",
+    "src/hooks/form-ingreso/useIngresoInitialLoad.js"
+  ]
+}

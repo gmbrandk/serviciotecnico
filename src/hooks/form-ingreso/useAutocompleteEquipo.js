@@ -1,17 +1,13 @@
 import { useEquipos } from '@context/form-ingreso/equiposContext';
-import { normalizarEquipo } from '@utils/form-ingreso/normalizarEquipo';
 import { useEffect, useRef, useState } from 'react';
 
-const EMPTY = normalizarEquipo({
+const EMPTY = {
   _id: null,
   nroSerie: '',
   marca: '',
   modelo: '',
-  tipo: '',
-  procesador: '',
-  ram: '',
-  almacenamiento: '',
-});
+  descripcion: '',
+};
 
 export function useAutocompleteEquipo(initialData = null, minLength = 3) {
   const { equipos, buscarEquipos, buscarEquipoPorId } = useEquipos();
@@ -21,137 +17,120 @@ export function useAutocompleteEquipo(initialData = null, minLength = 3) {
   const [isOpen, setIsOpen] = useState(false);
 
   const isSelecting = useRef(false);
-  const isInitialLoad = useRef(true);
+  const isExternalUpdate = useRef(false);
+  const prevInitialRef = useRef(null);
+  const ignoreDebounce = useRef(true);
 
   // ============================================================
-  // SYNC provider → hook (solo si difiere)
+  // SYNC provider → componente
   // ============================================================
   useEffect(() => {
-    const normalized = initialData ? normalizarEquipo(initialData) : null;
-    const currentId = selectedEquipo?._id ?? null;
-    const incomingId = normalized?._id ?? null;
-
-    console.debug('🟦 useAutocompleteEquipo SYNC', { incomingId, currentId });
-
-    if (!normalized) {
-      if (currentId !== null) {
-        console.info(
-          '🟦 useAutocompleteEquipo: initialData null → limpiando selección actual'
-        );
+    if (!initialData) {
+      if (selectedEquipo._id !== null || query !== '') {
         setSelectedEquipo(EMPTY);
         setQuery('');
       }
-      isInitialLoad.current = false;
+      prevInitialRef.current = null;
       return;
     }
 
-    if (incomingId !== currentId) {
-      console.info(
-        '🟦 useAutocompleteEquipo: nuevo equipo entrante distinto, actualizando selectedEquipo',
-        incomingId
-      );
-      setSelectedEquipo(normalized);
-      setQuery(normalized.nroSerie || '');
-    } else {
-      console.debug(
-        '🟦 useAutocompleteEquipo: incoming equipo coincide con el actual, nada que hacer'
-      );
-    }
+    const same =
+      JSON.stringify(initialData) === JSON.stringify(prevInitialRef.current);
 
-    if (isOpen) {
-      console.debug(
-        '🟦 useAutocompleteEquipo: cerrando dropdown por sincronización'
-      );
-      setIsOpen(false);
-    }
-    isInitialLoad.current = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialData, selectedEquipo]);
+    if (same) return;
+
+    prevInitialRef.current = initialData;
+    isExternalUpdate.current = true;
+
+    setSelectedEquipo(initialData);
+    setQuery(initialData.nroSerie || '');
+    setIsOpen(false);
+
+    ignoreDebounce.current = true;
+  }, [initialData]);
 
   // ============================================================
-  // Debounced búsqueda
+  // Debounce de búsqueda
   // ============================================================
   useEffect(() => {
-    console.debug('🟦 useAutocompleteEquipo debounce', {
-      query,
-      isSelecting: isSelecting.current,
-      isInitialLoad: isInitialLoad.current,
-    });
-
     if (isSelecting.current) return;
-    if (isInitialLoad.current) return;
-    if (!query || query.trim().length < minLength) {
-      console.debug(
-        '🟦 useAutocompleteEquipo: query ignorada por longitud insuficiente',
-        { length: (query || '').length, minLength }
-      );
+    if (isExternalUpdate.current) return;
+    if (ignoreDebounce.current) {
+      ignoreDebounce.current = false;
       return;
     }
 
+    const nroSerie = (query || '').trim();
+    if (!nroSerie || nroSerie.length < minLength) return;
+
     const timeout = setTimeout(() => {
-      console.info(
-        '🟦 useAutocompleteEquipo: buscarEquipos con query',
-        query.trim()
-      );
-      buscarEquipos(query.trim());
+      buscarEquipos(nroSerie);
       setIsOpen(true);
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [query, buscarEquipos, minLength]);
+  }, [query, minLength, buscarEquipos]);
 
   // ============================================================
-  // Seleccionar equipo (lookup completo)
+  // Selección manual
   // ============================================================
   const seleccionarEquipo = async (e) => {
-    console.info('🟦 useAutocompleteEquipo: seleccionarEquipo', e?._id);
     isSelecting.current = true;
-    isInitialLoad.current = false;
+    isExternalUpdate.current = false;
+    ignoreDebounce.current = true;
 
     setQuery(e.nroSerie || '');
     setIsOpen(false);
 
     try {
       const full = await buscarEquipoPorId(e._id);
-      const normalized = normalizarEquipo(full || e);
-      console.debug(
-        '🟦 useAutocompleteEquipo: equipo completo recuperado/normalizado',
-        normalized?._id
-      );
-      setSelectedEquipo(normalized);
+      setSelectedEquipo(full || e);
     } catch (err) {
-      console.error(
-        '🟦 useAutocompleteEquipo: error al recuperar equipo por id',
-        err
-      );
-      setSelectedEquipo(normalizarEquipo(e));
+      console.error('useAutocompleteEquipo → buscarEquipoPorId error', err);
+      setSelectedEquipo(e);
     }
 
-    setTimeout(() => (isSelecting.current = false), 80);
+    setTimeout(() => {
+      isSelecting.current = false;
+    }, 50);
   };
 
   // ============================================================
-  // Handlers UI
+  // Input del usuario
   // ============================================================
-  const onQueryChange = (v) => {
-    isInitialLoad.current = false;
-    console.debug('🟦 useAutocompleteEquipo: onQueryChange', v);
-    setQuery(v);
-    setIsOpen(true);
+  const onQueryChange = (value) => {
+    if (isExternalUpdate.current) {
+      isExternalUpdate.current = false;
+      setQuery(value);
+      return;
+    }
+
+    ignoreDebounce.current = false;
+    setQuery(value);
+    setSelectedEquipo(EMPTY);
+
+    if (!isSelecting.current) {
+      setIsOpen(true);
+    }
   };
 
   return {
     query,
     resultados: equipos,
     selectedEquipo,
-    seleccionarEquipo,
-    isOpen,
+
     onQueryChange,
+    seleccionarEquipo,
+
+    isOpen,
     abrirResultados: () => {
-      isInitialLoad.current = false;
+      ignoreDebounce.current = false;
       setIsOpen(true);
     },
-    cerrarResultados: () => setTimeout(() => setIsOpen(false), 150),
+    cerrarResultados: () => {
+      setTimeout(() => setIsOpen(false), 150);
+    },
+
     setSelectedEquipo,
   };
 }

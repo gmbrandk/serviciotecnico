@@ -128,7 +128,7 @@ export function useSummary({ containerRef = null, mode = 'auto' } = {}) {
       const modelo = q('[name="modelo"]');
       const nro = q('[name="nroSerie"]');
       if (marca || modelo || nro)
-        return `${marca} ${modelo}`.trim() + (nro ? ` — ${nro}` : '');
+        return `${marca} ${modelo}`.trim() + (nro ? ` — S/N ${nro}` : '');
     }
 
     // orden (DOM, con truncate)

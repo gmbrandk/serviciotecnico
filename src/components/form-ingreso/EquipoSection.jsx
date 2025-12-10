@@ -27,12 +27,6 @@ export function EquipoSection() {
      🔄 Sincroniza con el contexto
   ====================================================== */
   useEffect(() => {
-    if (equipo && equipo._id && selectedEquipo?._id !== equipo._id) {
-      setSelectedEquipo(equipo);
-    }
-  }, [equipo]);
-
-  useEffect(() => {
     setEquipo(selectedEquipo);
   }, [selectedEquipo, setEquipo]);
 
@@ -140,7 +134,12 @@ export function EquipoSection() {
       </div>
 
       {/* FICHA TÉCNICA */}
-      <Collapsible title="Ficha técnica" main={false} initMode="collapsed">
+      <Collapsible
+        title="Ficha técnica"
+        main={false}
+        initMode="collapsed"
+        mode="ficha"
+      >
         <div className="row">
           <div className="col">
             <label className={equipoSectionStyles.inputLabel}>CPU</label>

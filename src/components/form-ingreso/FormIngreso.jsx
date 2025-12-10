@@ -19,7 +19,10 @@ import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles.js';
 
 function IngresoFormContent({ onSubmit, role }) {
-  const { cliente, equipo, tecnico, orden, originalRef } = useIngresoForm();
+  const { cliente, equipo, tecnico, orden, originalRef, autosave } =
+    useIngresoForm();
+
+  // console.log('🔥 AUTOSAVE disponible:', autosave);
 
   const handleSubmit = (e) => {
     e.preventDefault();

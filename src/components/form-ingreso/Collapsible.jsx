@@ -12,10 +12,14 @@ export default function Collapsible({
   initMode = 'auto',
   index = 0,
   visualMode = null,
+  mode: explicitMode = null, //  ✔ MODO EXPLÍCITO
 }) {
   const group = useCollapsibleGroup();
   const isControlledByGroup = main;
 
+  /** -----------------------------------------------------------
+   *  UNIQUE ID
+   ------------------------------------------------------------ */
   const idRef = useRef(
     () =>
       `${title.replace(/\s+/g, '-').toLowerCase()}-${index}-${Math.random()
@@ -24,47 +28,28 @@ export default function Collapsible({
   );
   if (typeof idRef.current === 'function') idRef.current = idRef.current();
 
-  // --- LOG INIT ---
-  console.groupCollapsed(
-    `%c📂 Collapsible MOUNT → "${title}" (#${index})`,
-    'background:#444;color:#fff;padding:2px 6px;border-radius:4px'
-  );
-  console.log('id:', idRef.current);
-  console.log('main:', main);
-  console.log('initMode:', initMode);
-  console.log('visualMode:', visualMode);
-  console.groupEnd();
-
-  // --- SHOULD START OPEN ---
+  /** -----------------------------------------------------------
+   *  SHOULD START OPEN
+   ------------------------------------------------------------ */
   const shouldStartOpen = (() => {
-    const val =
-      initMode === 'expanded'
-        ? true
-        : initMode === 'collapsed' || initMode === 'none'
-        ? false
-        : initMode === 'auto'
-        ? main
-        : main;
-
-    console.groupCollapsed(
-      `%c📌 shouldStartOpen → "${title}"`,
-      'color:#0af;font-weight:bold'
-    );
-    console.log('initMode:', initMode);
-    console.log('main:', main);
-    console.log('shouldStartOpen:', val);
-    console.groupEnd();
-
-    return val;
+    return initMode === 'expanded'
+      ? true
+      : initMode === 'collapsed' || initMode === 'none'
+      ? false
+      : initMode === 'auto'
+      ? main
+      : main;
   })();
 
-  // ⭐⭐ CAMBIO 1: agregar setOpenInstant aquí
+  /** -----------------------------------------------------------
+   *  useCollapsible
+   ------------------------------------------------------------ */
   const {
     isOpen,
     toggle,
     contentRef,
     setOpen,
-    setOpenInstant, // <-- ADDED
+    setOpenInstant,
     openedByUser,
     isAnimating,
   } = useCollapsible({
@@ -72,10 +57,14 @@ export default function Collapsible({
     title,
   });
 
-  // visualMode NO fuerza nada
+  /** -----------------------------------------------------------
+   *  MODE RESOLUTION (la prioridad correcta)
+   ------------------------------------------------------------ */
   const mode =
-    visualMode ||
+    explicitMode || // 1️⃣ si viene desde props → PRIORIDAD MÁXIMA
+    visualMode || // 2️⃣ modo visual opcional
     (() => {
+      // 3️⃣ inferencia automática según título
       const t = (title || '').toLowerCase();
       if (t.includes('cliente')) return 'cliente';
       if (t.includes('equipo')) return 'equipo';
@@ -84,42 +73,19 @@ export default function Collapsible({
       return 'auto';
     })();
 
-  console.groupCollapsed(
-    `%c🔧 Mode detection for "${title}"`,
-    'color:#fa0;font-weight:bold'
-  );
-  console.log('visualMode:', visualMode);
-  console.log('computedMode:', mode);
-  console.groupEnd();
-
+  /** -----------------------------------------------------------
+   *  SUMMARY
+   ------------------------------------------------------------ */
   const summary = useSummary({
     containerRef: contentRef,
     mode,
   });
 
-  console.groupCollapsed(
-    `%c📝 Summary generated → "${title}"`,
-    'color:#6c6;font-weight:bold'
-  );
-  console.log('summary:', summary);
-  console.groupEnd();
-
-  const didMount = useRef(false);
-
-  // ------------------------------------------------------------
-  // REGISTER IN GROUP
-  // ------------------------------------------------------------
+  /** -----------------------------------------------------------
+   *  REGISTER IN GROUP
+   ------------------------------------------------------------ */
   useLayoutEffect(() => {
     if (!isControlledByGroup) return;
-
-    console.groupCollapsed(
-      `%c📚 Group.registerCollapsible → "${title}"`,
-      'color:#0af'
-    );
-    console.log('id:', idRef.current);
-    console.log('index:', index);
-    console.log('main:', main);
-    console.groupEnd();
 
     group.registerCollapsible(idRef.current, index, {
       setOpen,
@@ -129,33 +95,20 @@ export default function Collapsible({
     });
   }, [title, index, main, isControlledByGroup, group, setOpen, openedByUser]);
 
-  // ------------------------------------------------------------
-  // INIT MODE ENFORCER  (FIX: evitar animación en init/reset)
-  // ------------------------------------------------------------
+  /** -----------------------------------------------------------
+   *  SYNC INIT MODE (NO animación)
+   ------------------------------------------------------------ */
   useEffect(() => {
-    const expected = shouldStartOpen;
-
-    console.groupCollapsed(
-      `%c♻ initMode Sync → "${title}"`,
-      'color:#9cf;font-weight:bold'
-    );
-    console.log('initMode:', initMode);
-    console.log('shouldStartOpen:', expected);
-    console.log('current isOpen:', isOpen);
-    console.groupEnd();
-
-    if (expected !== isOpen) {
-      console.log(
-        `%c➡ setOpenInstant(${expected})`,
-        'color:#0f0;font-weight:bold'
-      );
-      setOpenInstant(expected); // ⭐⭐ CAMBIO 2
+    if (shouldStartOpen !== isOpen) {
+      setOpenInstant(shouldStartOpen);
     }
   }, [initMode]);
 
-  // ------------------------------------------------------------
-  // USER OPEN REGISTER
-  // ------------------------------------------------------------
+  /** -----------------------------------------------------------
+   *  REGISTER OPEN EVENTS
+   ------------------------------------------------------------ */
+  const didMount = useRef(false);
+
   useEffect(() => {
     if (!didMount.current) {
       didMount.current = true;
@@ -163,62 +116,36 @@ export default function Collapsible({
     }
 
     if (isControlledByGroup && isOpen && openedByUser.current) {
-      console.groupCollapsed(
-        `%c📖 Group.registerOpen → "${title}"`,
-        'color:#0af;font-weight:bold'
-      );
-      console.log('id:', idRef.current);
-      console.log('index:', index);
-      console.log('openedByUser:', openedByUser.current);
-      console.groupEnd();
-
       group.registerOpen(idRef.current, index);
     }
   }, [isOpen, isControlledByGroup, group, index]);
 
-  // ------------------------------------------------------------
-  // AUTO-OPEN ON FOCUS   (FIX: sin animación)
-  // ------------------------------------------------------------
+  /** -----------------------------------------------------------
+   *  AUTO-OPEN ON FOCUS (sin animación)
+   ------------------------------------------------------------ */
   const handleFocusIn = () => {
-    console.groupCollapsed(
-      `%c🚨 handleFocusIn → "${title}"`,
-      'color:#f80;font-weight:bold'
-    );
-    console.log('main:', main);
-    console.log('isOpen:', isOpen);
-    console.groupEnd();
-
     if (!main) return;
 
-    // ⭐⭐ CAMBIO 3: abrir sin animación
     if (!isOpen) setOpenInstant(true);
-
     if (isControlledByGroup) group.registerOpen(idRef.current, index);
   };
 
-  // ------------------------------------------------------------
-  // CLICK HANDLER (ANTI-SPAM)
-  // ------------------------------------------------------------
+  /** -----------------------------------------------------------
+   *  CLICK HANDLER ANTI-SPAM
+   ------------------------------------------------------------ */
   let lastToggle = useRef(0);
 
   const handleClick = () => {
     const now = Date.now();
-
-    console.groupCollapsed(
-      `%c🖱 CLICK → "${title}"`,
-      'color:#ff0;font-weight:bold'
-    );
-    console.log('isOpen:', isOpen);
-    console.log('isAnimating():', isAnimating());
-    console.groupEnd();
-
     if (now - lastToggle.current < 350) return;
     lastToggle.current = now;
 
-    if (isAnimating()) return;
-    toggle();
+    if (!isAnimating()) toggle();
   };
 
+  /** -----------------------------------------------------------
+   *  CLASSES
+   ------------------------------------------------------------ */
   const fieldsetClass = [
     fieldsetStyle.collapsible,
     isOpen ? fieldsetStyle.expanded : fieldsetStyle.collapsed,
@@ -234,43 +161,9 @@ export default function Collapsible({
     .filter(Boolean)
     .join(' ');
 
-  // ------------------------------------------------------------
-  // LOG CLASES
-  // ------------------------------------------------------------
-  useEffect(() => {
-    console.groupCollapsed(
-      `%c🎨 Collapsible Classes → "${title}" (#${index})`,
-      'background:#333;color:#7cf;padding:2px 6px;border-radius:4px'
-    );
-
-    console.log('isOpen:', isOpen);
-    console.log('isAnimating():', isAnimating());
-    console.log('main:', main);
-
-    console.log('\n📌 fieldsetClass:', fieldsetClass);
-
-    console.groupCollapsed('%c📘 Explicación de clases', 'color:#0f0');
-    fieldsetClass.split(' ').forEach((cl) => {
-      if (cl === fieldsetStyle.collapsible) console.log(cl, '→ Base');
-      if (cl === fieldsetStyle.expanded) console.log(cl, '→ isOpen === true');
-      if (cl === fieldsetStyle.collapsed) console.log(cl, '→ isOpen === false');
-      if (cl === fieldsetStyle.isAnimating)
-        console.log(cl, '→ Animando transición');
-    });
-    console.groupEnd();
-
-    console.groupCollapsed('%c🎯 Clases del arrow', 'color:#ff8');
-    console.log(arrowClass);
-    arrowClass.split(' ').forEach((cl) => {
-      if (cl === fieldsetStyle.arrowIcon) console.log(cl, '→ Base flecha');
-      if (cl === fieldsetStyle.arrowIconAnimating)
-        console.log(cl, '→ Animación flecha');
-    });
-    console.groupEnd();
-
-    console.groupEnd();
-  }, [fieldsetClass, arrowClass, isOpen, isAnimating]);
-
+  /** -----------------------------------------------------------
+   *  RENDER
+   ------------------------------------------------------------ */
   return (
     <fieldset
       className={fieldsetClass}

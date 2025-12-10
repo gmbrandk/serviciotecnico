@@ -17,75 +17,61 @@ export function useAutocompleteTecnico(initial = null, minLength = 2) {
   const [selectedTecnico, setSelectedTecnico] = useState(EMPTY);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Flags robustos → prevención total de loops
   const isSelecting = useRef(false);
-  const isInitialLoad = useRef(true);
+  const isExternalUpdate = useRef(false);
+  const prevInitialRef = useRef(null);
+  const ignoreDebounce = useRef(true);
 
   // ============================================================
-  // SYNC provider → hook (solo si difiere)
+  // 1. SYNC provider → componente (sin loops)
   // ============================================================
   useEffect(() => {
     const normalized = initial ? normalizarTecnico(initial) : null;
-    const currentId = selectedTecnico?._id ?? null;
-    const incomingId = normalized?._id ?? null;
 
-    console.debug('🟦 useAutocompleteTecnico SYNC', { incomingId, currentId });
-
+    // Si viene null → limpiar
     if (!normalized) {
-      if (currentId !== null) {
-        console.info(
-          '🟦 useAutocompleteTecnico: initial null → limpiando selección'
-        );
+      if (selectedTecnico._id !== null || query !== '') {
         setSelectedTecnico(EMPTY);
         setQuery('');
       }
-      isInitialLoad.current = false;
+      prevInitialRef.current = null;
       return;
     }
 
-    if (incomingId !== currentId) {
-      console.info(
-        '🟦 useAutocompleteTecnico: new incoming tecnico, updating selected',
-        incomingId
-      );
-      setSelectedTecnico(normalized);
-      setQuery(normalized.nombreCompleto || '');
-    } else {
-      console.debug(
-        '🟦 useAutocompleteTecnico: incoming equals current, no update'
-      );
-    }
+    // Evitar loops: si no cambió realmente, no actualizar
+    const same =
+      JSON.stringify(normalized) === JSON.stringify(prevInitialRef.current);
 
-    if (isOpen) setIsOpen(false);
-    isInitialLoad.current = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initial, selectedTecnico]);
+    if (same) return;
+
+    prevInitialRef.current = normalized;
+    isExternalUpdate.current = true;
+
+    setSelectedTecnico(normalized);
+    setQuery(normalized.nombreCompleto || '');
+    setIsOpen(false);
+
+    ignoreDebounce.current = true;
+  }, [initial]); // ✔ NO depende de selectedTecnico, ni query
 
   // ============================================================
-  // Debounce
+  // 2. Debounced búsqueda (solo usuario)
   // ============================================================
   useEffect(() => {
-    console.debug('🟦 useAutocompleteTecnico debounce', {
-      query,
-      isSelecting: isSelecting.current,
-      isInitialLoad: isInitialLoad.current,
-    });
-
     if (isSelecting.current) return;
-    if (isInitialLoad.current) return;
-    if (!query || query.trim().length < minLength) {
-      console.debug(
-        '🟦 useAutocompleteTecnico: query ignorada por longitud insuficiente',
-        { length: (query || '').length, minLength }
-      );
+    if (isExternalUpdate.current) return;
+
+    if (ignoreDebounce.current) {
+      ignoreDebounce.current = false;
       return;
     }
 
+    const q = (query || '').trim();
+    if (!q || q.length < minLength) return;
+
     const timeout = setTimeout(() => {
-      console.info(
-        '🟦 useAutocompleteTecnico: buscarTecnicos con query',
-        query.trim()
-      );
-      buscarTecnicos(query.trim());
+      buscarTecnicos(q);
       setIsOpen(true);
     }, 300);
 
@@ -93,15 +79,12 @@ export function useAutocompleteTecnico(initial = null, minLength = 2) {
   }, [query, minLength, buscarTecnicos]);
 
   // ============================================================
-  // Seleccionar técnico
+  // 3. Seleccionar técnico (lookup + normalizado)
   // ============================================================
   const seleccionarTecnico = async (t) => {
-    console.info(
-      '🟦 useAutocompleteTecnico: seleccionarTecnico llamado para',
-      t?._id
-    );
     isSelecting.current = true;
-    isInitialLoad.current = false;
+    isExternalUpdate.current = false;
+    ignoreDebounce.current = true;
 
     setQuery(t.nombreCompleto || '');
     setIsOpen(false);
@@ -109,44 +92,54 @@ export function useAutocompleteTecnico(initial = null, minLength = 2) {
     try {
       const full = await buscarTecnicoPorId(t._id);
       const normalized = normalizarTecnico(full || t);
-      console.debug(
-        '🟦 useAutocompleteTecnico: técnico completo recuperado/normalizado',
-        normalized?._id
-      );
       setSelectedTecnico(normalized);
     } catch (err) {
-      console.error(
-        '🟦 useAutocompleteTecnico: error recuperando técnico por id',
-        err
-      );
+      console.error('useAutocompleteTecnico: error buscarTecnicoPorId', err);
       setSelectedTecnico(normalizarTecnico(t));
     }
 
-    setTimeout(() => (isSelecting.current = false), 80);
+    setTimeout(() => {
+      isSelecting.current = false;
+    }, 80);
   };
 
   // ============================================================
-  // Handlers UI
+  // 4. Cambios por usuario
   // ============================================================
   const onQueryChange = (v) => {
-    isInitialLoad.current = false;
-    console.debug('🟦 useAutocompleteTecnico: onQueryChange', v);
+    if (isExternalUpdate.current) {
+      isExternalUpdate.current = false;
+      setQuery(v);
+      return;
+    }
+
+    ignoreDebounce.current = false;
     setQuery(v);
-    setIsOpen(true);
+    setSelectedTecnico(EMPTY);
+
+    if (!isSelecting.current) setIsOpen(true);
   };
 
+  // ============================================================
+  // API pública
+  // ============================================================
   return {
     query,
     resultados: tecnicos,
     selectedTecnico,
-    seleccionarTecnico,
-    isOpen,
+
     onQueryChange,
+    seleccionarTecnico,
+
+    isOpen,
     abrirResultados: () => {
-      isInitialLoad.current = false;
+      ignoreDebounce.current = false;
       setIsOpen(true);
     },
-    cerrarResultados: () => setTimeout(() => setIsOpen(false), 150),
+    cerrarResultados: () => {
+      setTimeout(() => setIsOpen(false), 150);
+    },
+
     setSelectedTecnico,
   };
 }
