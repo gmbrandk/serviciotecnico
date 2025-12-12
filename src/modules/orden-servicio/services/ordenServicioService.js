@@ -3,6 +3,8 @@ let _proveedorNombre = 'no definido';
 let _proveedorTipo = 'desconocido';
 let _inicializado = false;
 
+import { generarUidLinea } from '@utils/uidLinea';
+
 export const inicializarOrdenServicioService = (
   provider,
   nombre = 'anónimo',
@@ -32,10 +34,11 @@ export const getOrdenServicioService = () => {
 
     buildPayload: ({ ids, orden, tecnicoId }) => {
       const baseLine = {
+        uid: orden.uid || orden._id || generarUidLinea(),
         tipoTrabajo: orden.tipoTrabajo,
         descripcion: orden.descripcion,
-        precioUnitario: orden.precioUnitario || 0,
-        cantidad: orden.cantidad || 1,
+        precioUnitario: Number(orden.precioUnitario || 0),
+        cantidad: Number(orden.cantidad || 1),
       };
 
       const extraLines = (orden.lineas || [])
@@ -44,10 +47,11 @@ export const getOrdenServicioService = () => {
             l && l.tipoTrabajo && l.descripcion?.trim() && l.precioUnitario > 0
         )
         .map((l) => ({
+          uid: l.uid || l._id || generarUidLinea(), // ← 🔥 FIX FINAL
           tipoTrabajo: l.tipoTrabajo,
           descripcion: l.descripcion,
-          precioUnitario: l.precioUnitario,
-          cantidad: l.cantidad || 1,
+          precioUnitario: Number(l.precioUnitario),
+          cantidad: Number(l.cantidad || 1),
         }));
 
       const lineasServicio =

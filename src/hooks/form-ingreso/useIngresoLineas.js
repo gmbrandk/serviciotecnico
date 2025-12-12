@@ -1,4 +1,5 @@
 // src\hooks\form-ingreso\useIngresoLineas.js
+import { generarUidLinea } from '@utils/uidLinea';
 import { useCallback, useEffect } from 'react';
 
 export default function useIngresoLineas({ orden, setOrden, originalRef }) {
@@ -16,22 +17,22 @@ export default function useIngresoLineas({ orden, setOrden, originalRef }) {
   }
 
   function makeLinea(l = {}) {
-    const base = {
-      uid: crypto.randomUUID(),
-      descripcion: '',
-      precioUnitario: 0,
-      cantidad: 1,
-      isNew: true,
-      deleted: false,
-      errors: {},
-      backendConflict: false,
-    };
+    // uid estable: preferimos l.uid, luego l._id (backend), si no existe generamos uno
 
-    const linea = { ...base, ...l };
-    linea.precioUnitario = Number(linea.precioUnitario ?? 0);
-    linea.cantidad = Number(linea.cantidad ?? 1);
-    linea.tipoTrabajo = filtrarCampos(linea.tipoTrabajo);
-    return linea;
+    const uid = l.uid || l._id || generarUidLinea();
+
+    return {
+      uid,
+      descripcion: l.descripcion ?? '',
+      precioUnitario: Number(l.precioUnitario ?? 0),
+      cantidad: Number(l.cantidad ?? 1),
+      tipoTrabajo: filtrarCampos(l.tipoTrabajo),
+      isNew: typeof l.isNew === 'boolean' ? l.isNew : l._id ? false : true,
+      deleted: typeof l.deleted === 'boolean' ? l.deleted : false,
+      errors: l.errors ?? {},
+      backendConflict:
+        typeof l.backendConflict === 'boolean' ? l.backendConflict : false,
+    };
   }
 
   const addLinea = useCallback(() => {

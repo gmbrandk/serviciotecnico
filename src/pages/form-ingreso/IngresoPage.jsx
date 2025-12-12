@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FormIngreso from '@components/form-ingreso/FormIngreso';
 import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
 import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload';
+import { snapshotWizardPayload } from '@utils/form-ingreso/snapshotWizard';
 
 import { useAuth } from '@context/AuthContext';
 
@@ -34,6 +35,25 @@ const IngresoPage = () => {
     if (payloadFromWizard) {
       const normalized = normalizeOrdenPayload(payloadFromWizard);
       setInitialData(normalized);
+
+      console.log(
+        'Payload from wizard received:\n',
+        JSON.stringify(payloadFromWizard, null, 2) // ← embellecido
+      );
+    }
+  }, [payloadFromWizard]);
+
+  useEffect(() => {
+    if (payloadFromWizard) {
+      const snap = snapshotWizardPayload(payloadFromWizard);
+
+      console.log(
+        '%c[SNAPSHOT WIZARD] Snapshot generado:',
+        'background: #003366; color: #fff; padding: 4px;',
+        snap
+      );
+
+      setInitialData(snap);
     }
   }, [payloadFromWizard]);
 

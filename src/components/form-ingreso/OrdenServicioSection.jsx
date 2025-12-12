@@ -17,6 +17,8 @@ import {
   inputsStyles as ordenServicioStyles,
 } from '@styles/form-ingreso';
 
+import SelfCheckLineaServicio from '../../debug/SelfCheckLineaServicio';
+
 export function OrdenServicio({ role }) {
   // Render counter para detectar renders innecesarios
   const renderCount = useRef(0);
@@ -239,22 +241,25 @@ export function OrdenServicio({ role }) {
         initMode={orden.lineasServicio.length > 0 ? 'expanded' : 'collapsed'}
       >
         {orden.lineasServicio.map((linea, i) => (
-          <LineaServicio
-            key={linea.uid}
-            index={i}
-            data={linea}
-            onDelete={(idx) => {
-              log('UI:ORDEN', 'LineaServicio → onDelete()', { idx });
-              eliminarLinea(idx);
-            }}
-            onChange={(idx, patch) => {
-              log('UI:ORDEN', 'LineaServicio → onChange()', {
-                idx,
-                patch,
-              });
-              actualizarLinea(idx, patch);
-            }}
-          />
+          <>
+            <LineaServicio
+              key={linea.uid}
+              index={i}
+              data={linea}
+              onDelete={(idx) => {
+                log('UI:ORDEN', 'LineaServicio → onDelete()', { idx });
+                eliminarLinea(idx);
+              }}
+              onChange={(idx, patch) => {
+                log('UI:ORDEN', 'LineaServicio → onChange()', {
+                  idx,
+                  patch,
+                });
+                actualizarLinea(idx, patch);
+              }}
+            />
+            <SelfCheckLineaServicio index={i} linea={linea} />
+          </>
         ))}
 
         <button

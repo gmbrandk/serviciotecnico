@@ -52,12 +52,9 @@ export function LineaServicio({ index, data = {}, onDelete, onChange }) {
     return !Number.isNaN(a) && !Number.isNaN(b) && a !== b;
   }
 
+  // No fabricar objetos nuevos. Pasar el valor exacto que viene del provider.
   const initialTrabajo = useMemo(() => {
-    const tt = data.tipoTrabajo;
-    if (!tt) return '';
-    if (typeof tt === 'object') return tt;
-    if (typeof tt === 'string') return { _id: tt };
-    return '';
+    return data.tipoTrabajo ?? null;
   }, [data.tipoTrabajo]);
 
   const {

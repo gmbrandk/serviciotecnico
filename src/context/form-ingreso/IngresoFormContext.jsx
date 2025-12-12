@@ -8,97 +8,121 @@ import useIngresoLineas from '../../hooks/form-ingreso/useIngresoLineas';
 const IngresoFormContext = createContext(null);
 
 /*───────────────────────────────────────────────
+  ✔ Conversión segura de valores a texto
+───────────────────────────────────────────────*/
+function formatValue(v) {
+  if (v === null || v === undefined) return '—';
+
+  if (typeof v === 'object') {
+    if (v.nombre) return v.nombre; // tipoTrabajo, técnico, etc.
+    return JSON.stringify(v); // fallback legible
+  }
+
+  return String(v);
+}
+
+/*───────────────────────────────────────────────
   ⭐ Renderizado del diff (cliente/equipo/técnico/líneas)
+───────────────────────────────────────────────*/
+/*───────────────────────────────────────────────
+  ✔ Renderizado unificado del diff
 ───────────────────────────────────────────────*/
 function renderDiff(d) {
   if (!d) return <li>No se detectaron cambios</li>;
 
   const items = [];
 
-  // Cliente
+  const renderFieldList = (title, fields) => (
+    <li key={title}>
+      <strong>{title}</strong>
+      <ul style={{ marginTop: 6 }}>
+        {fields.map((f) => (
+          <li key={f.field}>
+            {f.field}: <em>{formatValue(f.old)}</em> →{' '}
+            <strong>{formatValue(f.new)}</strong>
+          </li>
+        ))}
+      </ul>
+    </li>
+  );
+
+  /*───────────────────────────────
+    CLIENTE
+  ───────────────────────────────*/
   if (d.cliente?.fields?.length > 0) {
-    items.push(
-      <li key="cliente">
-        <strong>Cliente</strong>
-        <ul>
-          {d.cliente.fields.map((f) => (
-            <li key={f.field}>
-              {f.field}: <em>{String(f.old)}</em> →{' '}
-              <strong>{String(f.new)}</strong>
-            </li>
-          ))}
-        </ul>
-      </li>
-    );
+    items.push(renderFieldList('Cliente', d.cliente.fields));
   }
 
-  // Equipo
+  /*───────────────────────────────
+    EQUIPO
+  ───────────────────────────────*/
   if (d.equipo?.fields?.length > 0) {
-    items.push(
-      <li key="equipo">
-        <strong>Equipo</strong>
-        <ul>
-          {d.equipo.fields.map((f) => (
-            <li key={f.field}>
-              {f.field}: <em>{String(f.old)}</em> →{' '}
-              <strong>{String(f.new)}</strong>
-            </li>
-          ))}
-        </ul>
-      </li>
-    );
+    items.push(renderFieldList('Equipo', d.equipo.fields));
   }
 
-  // Técnico
+  /*───────────────────────────────
+    TÉCNICO
+  ───────────────────────────────*/
   if (d.tecnico?.fields?.length > 0) {
-    items.push(
-      <li key="tecnico">
-        <strong>Técnico</strong>
-        <ul>
-          {d.tecnico.fields.map((f) => (
-            <li key={f.field}>
-              {f.field}: <em>{String(f.old)}</em> →{' '}
-              <strong>{String(f.new)}</strong>
-            </li>
-          ))}
-        </ul>
-      </li>
-    );
+    items.push(renderFieldList('Técnico', d.tecnico.fields));
   }
 
-  // Líneas
+  /*───────────────────────────────
+    LÍNEAS
+  ───────────────────────────────*/
   if (d.lineas) {
-    const { added, removed, modified } = d.lineas;
+    const { added = [], removed = [], modified = [] } = d.lineas;
 
-    if (added?.length > 0) {
+    // -------- AGREGADAS ----------
+    if (added.length > 0) {
       items.push(
         <li key="lineas-added">
           <strong>Líneas agregadas:</strong> {added.length}
+          <ul style={{ marginTop: 6 }}>
+            {added.map((l) => (
+              <li key={l.uid}>
+                <strong>Línea nueva</strong> ({l.uid.slice(0, 6)})
+                <ul>
+                  <li>Descripción: {formatValue(l.descripcion)}</li>
+                  <li>Cantidad: {formatValue(l.cantidad)}</li>
+                  <li>Precio unitario: {formatValue(l.precioUnitario)}</li>
+                  <li>Tipo de trabajo: {formatValue(l.tipoTrabajo?.nombre)}</li>
+                </ul>
+              </li>
+            ))}
+          </ul>
         </li>
       );
     }
 
-    if (removed?.length > 0) {
+    // -------- ELIMINADAS ----------
+    if (removed.length > 0) {
       items.push(
         <li key="lineas-removed">
           <strong>Líneas eliminadas:</strong> {removed.length}
+          <ul style={{ marginTop: 6 }}>
+            {removed.map((uid) => (
+              <li key={uid}>Línea {uid.slice(0, 6)}</li>
+            ))}
+          </ul>
         </li>
       );
     }
 
-    if (modified?.length > 0) {
+    // -------- MODIFICADAS ----------
+    if (modified.length > 0) {
       items.push(
         <li key="lineas-modified">
           <strong>Líneas modificadas:</strong>
-          <ul>
+          <ul style={{ marginTop: 6 }}>
             {modified.map((l) => (
               <li key={l.uid}>
                 Línea {l.uid.slice(0, 6)}
                 <ul>
                   {l.changes.map((c) => (
                     <li key={c.field}>
-                      {c.field}: <em>{String(c.old)}</em> →{' '}
-                      <strong>{String(c.new)}</strong>
+                      {c.field}: <em>{formatValue(c.old)}</em> →{' '}
+                      <strong>{formatValue(c.new)}</strong>
                     </li>
                   ))}
                 </ul>
@@ -111,6 +135,7 @@ function renderDiff(d) {
   }
 
   if (items.length === 0) return <li>No se detectaron cambios</li>;
+
   return items;
 }
 
@@ -227,96 +252,100 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: 'rgba(0,0,0,0.5)',
-        backdropFilter: 'blur(2px)',
+        background: 'rgba(0,0,0,0.45)',
+        backdropFilter: 'blur(3px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 5000,
+        padding: '24px',
       }}
     >
       <div
         style={{
           background: '#fff',
-          padding: 24,
           borderRadius: 12,
-          minWidth: 400,
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          boxShadow: '0 8px 20px rgba(0,0,0,0.25)',
-          animation: 'popIn 0.2s',
+          width: '500px',
+          maxHeight: '85vh',
           display: 'flex',
           flexDirection: 'column',
-          gap: 16,
+          overflow: 'hidden',
+          boxShadow: '0 10px 26px rgba(0,0,0,0.25)',
+          animation: 'popIn 0.2s ease-out',
         }}
       >
-        <h3 style={{ margin: 0 }}>🔄 Recuperar formulario guardado</h3>
-        <p style={{ marginTop: 0 }}>
-          Se encontró un progreso guardado automáticamente.
-        </p>
-
+        {/* HEADER */}
         <div
           style={{
-            background: '#f7f7f7',
-            padding: 12,
-            borderRadius: 8,
-            fontSize: 14,
-            lineHeight: 1.4,
+            padding: '20px 24px 10px',
+            borderBottom: '1px solid #e5e5e5',
+          }}
+        >
+          <h3 style={{ margin: 0 }}>🔄 Recuperar formulario guardado</h3>
+          <p style={{ marginTop: 6, fontSize: 14, color: '#444' }}>
+            Se encontró un progreso guardado automáticamente.
+          </p>
+        </div>
+
+        {/* CONTENT SCROLLABLE */}
+        <div
+          style={{
+            padding: '16px 24px',
+            overflowY: 'auto',
+            flex: 1,
           }}
         >
           <strong>Fecha de guardado:</strong>
           <br />
           {new Date(savedDraft.timestamp).toLocaleString()}
 
-          <hr />
+          <hr style={{ margin: '16px 0' }} />
 
-          <strong>Detalles del cambio:</strong>
-          <ul style={{ margin: '8px 0 0 20px' }}>
-            {Object.entries(savedDraft.data).length === 0 && <li>Ninguno</li>}
+          <strong style={{ fontSize: 15 }}>Detalles del cambio:</strong>
 
-            {Object.entries(savedDraft.data).map(([section, value]) => (
-              <li key={section}>
-                <strong>{section}</strong>
-                {typeof value === 'object' && value !== null ? (
-                  <ul style={{ margin: '4px 0 0 16px' }}>
-                    {Object.entries(value).map(([k, v]) => {
-                      // v puede ser objeto anidado (lineasServicio)
-                      if (typeof v === 'object' && v !== null) {
-                        return (
-                          <li key={k}>
-                            {k}:
-                            <ul style={{ margin: '2px 0 0 12px' }}>
-                              {Object.entries(v).map(([subKey, subVal]) => (
-                                <li key={subKey}>
-                                  {subKey}: {JSON.stringify(subVal)}
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        );
-                      }
-                      return (
-                        <li key={k}>
-                          {k}: {v?.toString() ?? 'null'}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ) : (
-                  ` → ${value?.toString() ?? 'null'}`
-                )}
-              </li>
-            ))}
+          <ul
+            style={{
+              margin: '10px 0 0 18px',
+              paddingRight: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+            }}
+          >
+            {(!savedDraft?.data ||
+              Object.keys(savedDraft.data).length === 0) && <li>Ninguno</li>}
+
+            {savedDraft?.data && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                {renderDiff(savedDraft.data)}
+              </div>
+            )}
           </ul>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+        {/* FOOTER FIXED */}
+        <div
+          style={{
+            borderTop: '1px solid #e5e5e5',
+            padding: '14px 20px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 10,
+            background: '#fafafa',
+          }}
+        >
           <button
             onClick={discardSavedDraft}
             style={{
               padding: '8px 14px',
               borderRadius: 6,
-              background: '#ccc',
+              background: '#d0d0d0',
               border: 'none',
               cursor: 'pointer',
             }}
