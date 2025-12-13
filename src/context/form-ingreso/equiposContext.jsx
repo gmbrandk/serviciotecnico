@@ -1,6 +1,12 @@
-import { createContext, useCallback, useContext, useState } from 'react';
 import { getEquiposService } from '@services/form-ingreso/equipos/equipoService';
 import { log } from '@utils/form-ingreso/log';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 const EquiposContext = createContext(null);
 
@@ -8,9 +14,10 @@ export function EquiposProvider({ children }) {
   const [equipos, setEquipos] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // AUTOCOMPLETE
   const buscarEquipos = useCallback(async (query) => {
-    if (!query || query.trim().length === 0) {
+    log('CTX', 'EQUIPOS', 'buscar:start', { query });
+
+    if (!query?.trim()) {
       setEquipos([]);
       return;
     }
@@ -18,54 +25,45 @@ export function EquiposProvider({ children }) {
     setLoading(true);
 
     try {
-      const service = getEquiposService();
-      const res = await service.buscarEquipo(query);
-
-      log('CTX:EQUIPOS', 'Respuesta service.buscarEquipo', res);
+      const res = await getEquiposService().buscarEquipo(query);
+      log('CTX', 'EQUIPOS', 'buscar:raw-response', res);
 
       const lista = res?.details?.results ?? [];
+      log('CTX', 'EQUIPOS', 'buscar:normalized-list', lista);
 
-      if (Array.isArray(lista)) {
-        setEquipos(lista);
-      } else {
-        console.warn('[CTX:EQUIPOS] Respuesta inválida:', res);
-        setEquipos([]);
-      }
+      setEquipos(Array.isArray(lista) ? lista : []);
     } catch (err) {
-      console.error('[CTX:EQUIPOS] Error buscando equipos', err);
+      console.error('[CTX:EQUIPOS] error', err);
       setEquipos([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // LOOKUP PARA FORMULARIO
   const buscarEquipoPorId = useCallback(async (id) => {
+    log('CTX', 'EQUIPOS', 'lookup:start', { id });
+
     try {
-      const service = getEquiposService();
-      const res = await service.buscarEquipoPorId(id);
+      const res = await getEquiposService().buscarEquipoPorId(id);
+      log('CTX', 'EQUIPOS', 'lookup:raw-response', res);
 
-      log('CTX:EQUIPOS', 'Respuesta service.buscarEquipoPorId', res);
+      const equipo = res?.details?.results?.[0] ?? null;
+      log('CTX', 'EQUIPOS', 'lookup:normalized', equipo);
 
-      if (res?.success && Array.isArray(res?.details?.results)) {
-        return res.details.results[0] || null;
-      }
-
-      return null;
+      return equipo;
     } catch (err) {
-      console.error('[CTX:EQUIPOS] Error en lookup por ID', err);
+      console.error('[CTX:EQUIPOS] lookup error', err);
       return null;
     }
   }, []);
 
+  useEffect(() => {
+    log('CTX', 'EQUIPOS', 'state:equipos-changed', equipos);
+  }, [equipos]);
+
   return (
     <EquiposContext.Provider
-      value={{
-        equipos,
-        loading,
-        buscarEquipos,
-        buscarEquipoPorId,
-      }}
+      value={{ equipos, loading, buscarEquipos, buscarEquipoPorId }}
     >
       {children}
     </EquiposContext.Provider>

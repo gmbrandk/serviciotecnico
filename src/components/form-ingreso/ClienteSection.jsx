@@ -1,11 +1,18 @@
-// src/components/form-ingreso/ClienteSection.jsx
-import { Autocomplete } from '@components/form-ingreso/Autocomplete.jsx';
-import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext.jsx';
-import { useAutocompleteCliente } from '@hooks/form-ingreso/useAutocompleteCliente.js';
+import { Autocomplete } from '@components/form-ingreso/Autocomplete';
+import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext';
+import { useAutocompleteCliente } from '@hooks/form-ingreso/useAutocompleteCliente';
+import { inputsStyles as clienteSectionStyles } from '@styles/form-ingreso';
 import { useEffect } from 'react';
 
-// ⭐ CSS Modules
-import { inputsStyles as clienteSectionStyles } from '@styles/form-ingreso';
+let __LOG_SEQ__ = 0;
+const log = (tag, who, why, payload = {}) => {
+  __LOG_SEQ__ += 1;
+  console.log(
+    `%c[${__LOG_SEQ__}] ${tag} | ${who} | ${why}`,
+    'color:#f90;font-weight:bold',
+    payload
+  );
+};
 
 export function ClienteSection() {
   const { cliente, setCliente } = useIngresoForm();
@@ -19,24 +26,28 @@ export function ClienteSection() {
     onQueryChange,
     abrirResultados,
     cerrarResultados,
-    setSelectedCliente,
   } = useAutocompleteCliente(cliente);
 
-  // 🔄 Sync desde provider → hook
+  // ============================================================
+  // Sync hook → provider
+  // ============================================================
   useEffect(() => {
-    if (cliente && cliente._id && selectedCliente?._id !== cliente._id) {
-      setSelectedCliente(cliente);
-    }
-  }, [cliente]);
+    // 🚫 no propagar estados "no seleccionados"
+    if (!selectedCliente || !selectedCliente._id) return;
 
-  useEffect(() => {
     setCliente(selectedCliente);
   }, [selectedCliente, setCliente]);
 
   const handleFieldChange = (field, value) => {
-    const updated = { ...selectedCliente, [field]: value };
-    setSelectedCliente(updated);
-    setCliente(updated);
+    log('SELECTED', 'UI', 'manual-field-change', {
+      field,
+      value,
+    });
+
+    setCliente((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   return (
@@ -67,9 +78,7 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Nombres</label>
           <input
-            name="nombres"
-            type="text"
-            value={selectedCliente?.nombres || ''}
+            value={selectedCliente.nombres}
             onChange={(e) => handleFieldChange('nombres', e.target.value)}
             className={clienteSectionStyles.inputField}
           />
@@ -78,21 +87,18 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Apellidos</label>
           <input
-            name="apellidos"
-            type="text"
-            value={selectedCliente?.apellidos || ''}
+            value={selectedCliente.apellidos}
             onChange={(e) => handleFieldChange('apellidos', e.target.value)}
             className={clienteSectionStyles.inputField}
           />
         </div>
       </div>
 
-      <div className="row" style={{ marginTop: '10px' }}>
+      <div className="row" style={{ marginTop: 10 }}>
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Teléfono</label>
           <input
-            type="text"
-            value={selectedCliente?.telefono || ''}
+            value={selectedCliente.telefono}
             onChange={(e) => handleFieldChange('telefono', e.target.value)}
             className={clienteSectionStyles.inputField}
           />
@@ -101,8 +107,7 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Email</label>
           <input
-            type="email"
-            value={selectedCliente?.email || ''}
+            value={selectedCliente.email}
             onChange={(e) => handleFieldChange('email', e.target.value)}
             className={clienteSectionStyles.inputField}
           />
@@ -111,8 +116,7 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Dirección</label>
           <input
-            type="text"
-            value={selectedCliente?.direccion || ''}
+            value={selectedCliente.direccion}
             onChange={(e) => handleFieldChange('direccion', e.target.value)}
             className={clienteSectionStyles.inputField}
           />

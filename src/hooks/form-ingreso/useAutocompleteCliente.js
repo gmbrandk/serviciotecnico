@@ -1,37 +1,78 @@
 import { useClientes } from '@context/form-ingreso/clientesContext';
 import { useEffect, useRef, useState } from 'react';
 
-const EMPTY = {
-  _id: null,
-  dni: '',
-  nombres: '',
-  apellidos: '',
-  telefono: '',
-  email: '',
-  direccion: '',
+// ============================================================
+// LOG infra
+// ============================================================
+let __LOG_SEQ__ = 0;
+const log = (tag, who, why, payload = {}) => {
+  __LOG_SEQ__ += 1;
+  console.log(
+    `%c[${__LOG_SEQ__}] ${tag} | ${who} | ${why}`,
+    'color:#9f0;font-weight:bold',
+    payload
+  );
 };
 
-export function useAutocompleteCliente(initialData = null, minLength = 3) {
+// ============================================================
+// Normalización canónica
+// ============================================================
+function normalizarCliente(raw = {}) {
+  if (!raw) {
+    return {
+      _id: null,
+      dni: '',
+      nombres: '',
+      apellidos: '',
+      telefono: '',
+      email: '',
+      direccion: '',
+    };
+  }
+
+  return {
+    _id: raw._id ?? null,
+    dni: raw.dni ?? '',
+    nombres: raw.nombres ?? '',
+    apellidos: raw.apellidos ?? '',
+    telefono: raw.telefono ?? '',
+    email: raw.email ?? '',
+    direccion: raw.direccion ?? '',
+  };
+}
+
+const EMPTY = normalizarCliente(null);
+
+export function useAutocompleteCliente(initial = null, minLength = 3) {
   const { clientes, buscarClientes, buscarClientePorId } = useClientes();
 
-  // Estado
   const [query, setQuery] = useState('');
   const [selectedCliente, setSelectedCliente] = useState(EMPTY);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Flags
-  const isSelecting = useRef(false); // selección manual
-  const isExternalUpdate = useRef(false); // update desde provider
-  const prevInitialRef = useRef(null); // evita loops de sincronización
-  const ignoreDebounce = useRef(true); // evita buscar al cargar
+  const isSelecting = useRef(false);
+  const isExternalUpdate = useRef(false);
+  const prevInitialRef = useRef(null);
+  const ignoreDebounce = useRef(true);
 
   // ============================================================
-  // 1. SYNC PROVIDER → componente (sin loops)
+  // 1. SYNC provider → hook
   // ============================================================
   useEffect(() => {
-    // Si el provider no envía nada → limpiar una sola vez
-    if (!initialData) {
+    const normalized = initial ? normalizarCliente(initial) : null;
+
+    log('INITIAL', 'EFFECT', 'sync-from-provider:start', {
+      initial,
+      prevInitial: prevInitialRef.current,
+      query,
+      selectedCliente,
+    });
+
+    if (!normalized) {
       if (selectedCliente._id !== null || query !== '') {
+        log('QUERY', 'EFFECT', 'reset-empty-initial', { to: '' });
+        log('SELECTED', 'EFFECT', 'reset-empty-initial', { to: EMPTY });
+
         setSelectedCliente(EMPTY);
         setQuery('');
       }
@@ -39,41 +80,49 @@ export function useAutocompleteCliente(initialData = null, minLength = 3) {
       return;
     }
 
-    // Evitar loops: si no cambió realmente, NO hacer nada
     const same =
-      JSON.stringify(initialData) === JSON.stringify(prevInitialRef.current);
+      JSON.stringify(normalized) === JSON.stringify(prevInitialRef.current);
 
-    if (same) return;
+    if (same) {
+      log('INITIAL', 'EFFECT', 'same-initial-skip');
+      return;
+    }
 
-    prevInitialRef.current = initialData;
+    prevInitialRef.current = normalized;
     isExternalUpdate.current = true;
 
-    setSelectedCliente(initialData);
-    setQuery(initialData.dni || '');
+    log('SELECTED', 'EFFECT', 'set-from-initial', { to: normalized });
+    log('QUERY', 'EFFECT', 'set-from-initial', {
+      to: normalized.dni || '',
+    });
+
+    setSelectedCliente(normalized);
+    setQuery(normalized.dni || '');
     setIsOpen(false);
 
-    // detener la búsqueda automática después de sync
     ignoreDebounce.current = true;
-  }, [initialData]); // 👈 NO depende de selectedCliente ni de query
+  }, [initial]);
 
   // ============================================================
-  // 2. Debounced buscarClientes (sin loops)
+  // 2. Debounced search (solo usuario)
   // ============================================================
   useEffect(() => {
     if (isSelecting.current) return;
     if (isExternalUpdate.current) return;
+
     if (ignoreDebounce.current) {
       ignoreDebounce.current = false;
       return;
     }
 
-    const dni = (query || '').trim();
-    if (!dni || dni.length < minLength) {
-      return;
-    }
+    const q = (query || '').trim();
+    if (!q || q.length < minLength) return;
+
+    log('QUERY', 'EFFECT', 'debounce:scheduled', { q });
 
     const timeout = setTimeout(() => {
-      buscarClientes(dni);
+      log('QUERY', 'EFFECT', 'debounce:fire', { q });
+      buscarClientes(q);
       setIsOpen(true);
     }, 300);
 
@@ -81,52 +130,66 @@ export function useAutocompleteCliente(initialData = null, minLength = 3) {
   }, [query, minLength, buscarClientes]);
 
   // ============================================================
-  // 3. Seleccionar cliente (lookup completo)
+  // 3. Selección semántica
   // ============================================================
   const seleccionarCliente = async (c) => {
+    log('FLOW', 'UI', 'select:start', { c });
+
     isSelecting.current = true;
     isExternalUpdate.current = false;
     ignoreDebounce.current = true;
 
+    log('QUERY', 'HOOK', 'select:set-dni', { to: c.dni });
     setQuery(c.dni || '');
     setIsOpen(false);
 
     try {
       const full = await buscarClientePorId(c._id);
-      setSelectedCliente(full || c);
+
+      log('SELECTED', 'HOOK', 'select:full-client', {
+        to: full || c,
+      });
+
+      setSelectedCliente(normalizarCliente(full || c));
     } catch (err) {
-      console.error('useAutocompleteCliente → buscarClientePorId error', err);
-      setSelectedCliente(c);
+      log('SELECTED', 'HOOK', 'select:fallback-client', { to: c });
+      setSelectedCliente(normalizarCliente(c));
     }
 
     setTimeout(() => {
       isSelecting.current = false;
-    }, 50);
+      log('FLOW', 'HOOK', 'select:end');
+    }, 80);
   };
 
   // ============================================================
-  // 4. INPUT CHANGE (del usuario)
+  // 4. Input del usuario
   // ============================================================
   const onQueryChange = (value) => {
+    log('QUERY', 'UI', 'onQueryChange:called', {
+      value,
+      isExternalUpdate: isExternalUpdate.current,
+      isSelecting: isSelecting.current,
+    });
+
     if (isExternalUpdate.current) {
-      // viene del provider → no abrir dropdown
+      log('QUERY', 'HOOK', 'external-update-branch', { to: value });
       isExternalUpdate.current = false;
       setQuery(value);
       return;
     }
 
+    log('QUERY', 'HOOK', 'user-input-branch', { to: value });
+
     ignoreDebounce.current = false;
     setQuery(value);
+
+    log('SELECTED', 'HOOK', 'user-input-clears-selected', { to: EMPTY });
     setSelectedCliente(EMPTY);
 
-    if (!isSelecting.current) {
-      setIsOpen(true);
-    }
+    if (!isSelecting.current) setIsOpen(true);
   };
 
-  // ============================================================
-  // API pública
-  // ============================================================
   return {
     query,
     resultados: clientes,
@@ -137,13 +200,13 @@ export function useAutocompleteCliente(initialData = null, minLength = 3) {
 
     isOpen,
     abrirResultados: () => {
+      log('FLOW', 'UI', 'open-results');
       ignoreDebounce.current = false;
       setIsOpen(true);
     },
     cerrarResultados: () => {
+      log('FLOW', 'UI', 'close-results');
       setTimeout(() => setIsOpen(false), 150);
     },
-
-    setSelectedCliente,
   };
 }

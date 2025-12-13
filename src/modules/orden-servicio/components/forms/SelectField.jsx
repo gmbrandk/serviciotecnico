@@ -105,7 +105,10 @@ export function SelectField({
         onFocus={() => setFocusInside(true)}
         onBlur={() => {
           setTimeout(() => {
-            if (!wrapperRef.current.contains(document.activeElement)) {
+            const wrapper = wrapperRef.current;
+            if (!wrapper) return;
+
+            if (!wrapper.contains(document.activeElement)) {
               setOpen(false);
               setFocusInside(false);
             }

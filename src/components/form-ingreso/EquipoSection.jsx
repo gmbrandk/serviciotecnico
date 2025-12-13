@@ -1,12 +1,23 @@
-// src/components/form-ingreso/EquipoSection.jsx
+// src\components\form-ingreso\EquipoSection.jsx
 import { Autocomplete } from '@components/form-ingreso/Autocomplete.jsx';
 import Collapsible from '@components/form-ingreso/Collapsible.jsx';
 import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext.jsx';
 import { useAutocompleteEquipo } from '@hooks/form-ingreso/useAutocompleteEquipo';
+import { inputsStyles as equipoSectionStyles } from '@styles/form-ingreso';
 import { useEffect } from 'react';
 
-// ⭐ Importamos los estilos unificados
-import { inputsStyles as equipoSectionStyles } from '@styles/form-ingreso';
+/* ============================================================
+   LOG infra
+============================================================ */
+let __LOG_SEQ__ = 0;
+const log = (tag, who, why, payload = {}) => {
+  __LOG_SEQ__ += 1;
+  console.log(
+    `%c[${__LOG_SEQ__}] ${tag} | ${who} | ${why}`,
+    'color:#fc6;font-weight:bold',
+    payload
+  );
+};
 
 export function EquipoSection() {
   const { equipo, setEquipo } = useIngresoForm();
@@ -20,23 +31,46 @@ export function EquipoSection() {
     abrirResultados,
     cerrarResultados,
     isOpen,
-    setSelectedEquipo,
   } = useAutocompleteEquipo(equipo);
 
   /* ======================================================
-     🔄 Sincroniza con el contexto
+     Sync hook → provider (BLINDADO)
   ====================================================== */
   useEffect(() => {
+    log(
+      'SYNC',
+      'UI',
+      'propagate:json',
+      JSON.stringify(selectedEquipo, null, 2)
+    );
+
+    // 🚫 no propagar estados no seleccionados
+    if (!selectedEquipo?._id) {
+      log('SYNC', 'UI', 'skip-propagation');
+      return;
+    }
+
+    log(
+      'SYNC',
+      'UI',
+      'propagate:json',
+      JSON.stringify(selectedEquipo, null, 2)
+    );
+
     setEquipo(selectedEquipo);
   }, [selectedEquipo, setEquipo]);
 
   /* ======================================================
-     📝 Edición manual de campos
+     Edición manual (solo local)
   ====================================================== */
   const handleChange = (field, value) => {
-    const updated = { ...selectedEquipo, [field]: value };
-    setSelectedEquipo(updated);
-    setEquipo(updated);
+    log('EDIT', 'UI', 'manual-field-change', { field, value });
+
+    // edición SOLO local → provider se entera vía effect
+    seleccionarEquipo({
+      ...selectedEquipo,
+      [field]: value,
+    });
   };
 
   return (
