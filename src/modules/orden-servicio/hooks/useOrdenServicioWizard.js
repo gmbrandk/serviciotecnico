@@ -1,9 +1,10 @@
-// ✅ src/hooks/useOrdenServicioWizard.js
 import { useCliente } from '@context/cliente/ClienteContext';
 import { useEquipo } from '@context/equipo/EquipoContext';
 import { useOSApi } from '@context/ordenServicio/OrdenServicioApiContext';
-import { useReducer } from 'react';
+import { useReducer, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { getOrCreateOrdenServicioUuid } from '@utils/orden-servicio/ordenServicioUuid';
 
 const initialIds = { clienteId: null, equipoId: null, ordenId: null };
 
@@ -11,15 +12,19 @@ function idsReducer(state, action) {
   switch (action.type) {
     case 'SET_CLIENTE':
       return { clienteId: action.payload, equipoId: null, ordenId: null };
+
     case 'SET_EQUIPO':
       if (!state.clienteId) return state;
       return { ...state, equipoId: action.payload, ordenId: null };
+
     case 'SET_ORDEN':
       if (!state.clienteId || !state.equipoId) return state;
       return { ...state, ordenId: action.payload };
+
     case 'RESET_CLIENTE':
     case 'RESET_ALL':
       return initialIds;
+
     default:
       return state;
   }
@@ -35,7 +40,10 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
   const [ids, dispatch] = useReducer(idsReducer, initialIds);
   const navigate = useNavigate();
 
-  // ✅ Contextos
+  // 🔐 Identidad estable de la Orden de Servicio (frontend-only)
+  const ordenServicioUuidRef = useRef(null);
+
+  // Contextos
   const { crearCliente } = useCliente();
   const { crearEquipo } = useEquipo();
   const { buildPayload } = useOSApi();
@@ -53,7 +61,7 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
 
   const resetClienteId = () => dispatch({ type: 'RESET_CLIENTE' });
 
-  // ✅ Crear equipo usando context
+  // Crear equipo usando context
   const crearEquipoWizard = async (equipoData, extra = {}) => {
     const res = await crearEquipo({
       ...equipoData,
@@ -62,8 +70,7 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
     });
 
     if (res.success && res.details?.equipo?._id) {
-      const id = res.details.equipo._id;
-      dispatch({ type: 'SET_EQUIPO', payload: id });
+      dispatch({ type: 'SET_EQUIPO', payload: res.details.equipo._id });
       onSuccess?.('Equipo creado con éxito.');
       return { success: true };
     }
@@ -74,6 +81,13 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
 
   const handleStepSubmit = async (currentStep, orden) => {
     const data = orden[currentStep.id] || {};
+
+    // Asegurar UUID desde el primer paso real
+    if (!ordenServicioUuidRef.current) {
+      ordenServicioUuidRef.current = getOrCreateOrdenServicioUuid(
+        orden?.ordenServicioUuid
+      );
+    }
 
     // === CLIENTE ===
     if (currentStep.id === 'cliente') {
@@ -91,6 +105,7 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
         onSuccess?.('Cliente creado.');
         return { success: true };
       }
+
       onError?.(res.message);
       return res;
     }
@@ -100,20 +115,18 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
       const check = validateIds(['clienteId']);
       if (!check.success) return check;
 
-      // ✅ FIX IMPORTANTE:
-      // Si se marcó "Agregar especificaciones", NO crear equipo aún.
+      // Modo ficha técnica: no crear equipo aún
       if (orden.equipo?.especificaciones === true) {
         logger.log('📌 Avanzando sin crear equipo (modo ficha técnica).');
         return { success: true };
       }
 
-      // ✅ Equipo existente
+      // Equipo existente
       if (orden.equipo?._id) {
         dispatch({ type: 'SET_EQUIPO', payload: orden.equipo._id });
         return { success: true };
       }
 
-      // ✅ Crear equipo normalmente (sin ficha técnica)
       return crearEquipoWizard(orden.equipo);
     }
 
@@ -122,7 +135,6 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
       const check = validateIds(['clienteId']);
       if (!check.success) return check;
 
-      // ✅ Aquí se crea el equipo con toda la data final
       return crearEquipoWizard(orden.equipo, {
         fichaTecnicaManual: orden.fichaTecnica,
       });
@@ -131,12 +143,27 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
     return { success: true };
   };
 
-  // ✅ Submit final
+  // Submit final
   const handleFinalSubmit = async (orden) => {
     const check = validateIds(['clienteId', 'equipoId']);
     if (!check.success) return check;
 
-    const payload = buildPayload({ ids, orden, tecnicoId });
+    // Blindaje final del UUID
+    if (!ordenServicioUuidRef.current) {
+      ordenServicioUuidRef.current = getOrCreateOrdenServicioUuid(
+        orden?.ordenServicioUuid
+      );
+    }
+    logger.log('[OS UUID][WIZARD]', ordenServicioUuidRef.current);
+
+    const payload = buildPayload({
+      ids,
+      orden: {
+        ...orden,
+        ordenServicioUuid: ordenServicioUuidRef.current,
+      },
+      tecnicoId,
+    });
 
     navigate('/dashboard/orden-servicio/crear/resumen', {
       state: { payload },
@@ -145,5 +172,10 @@ export function useOrdenServicioWizard({ tecnicoId, onError, onSuccess } = {}) {
     return { success: true, payload };
   };
 
-  return { ids, handleStepSubmit, handleFinalSubmit, resetClienteId };
+  return {
+    ids,
+    handleStepSubmit,
+    handleFinalSubmit,
+    resetClienteId,
+  };
 }

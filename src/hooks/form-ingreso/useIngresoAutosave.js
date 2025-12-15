@@ -26,26 +26,19 @@ export default function useIngresoAutosave({
 
   // autosave principal, protegido
   const autosave = useCallback(() => {
-    if (!persistEnabled) return;
+    if (!persistEnabled || !key) return;
 
     const diff = buildDiff();
     if (!diff || Object.keys(diff).length === 0) return;
 
     const payload = {
+      schemaVersion: 'v1',
       timestamp: Date.now(),
-      summary: {
-        cliente: !!diff.cliente,
-        equipo: !!diff.equipo,
-        tecnico: !!diff.tecnico,
-        lineas: diff.orden?.lineasServicio
-          ? Object.keys(diff.orden.lineasServicio).length
-          : 0,
-      },
+      ordenServicioUuid: diff?.orden?.ordenServicioUuid,
       data: diff,
     };
 
     localStorage.setItem(key, JSON.stringify(payload));
-    console.log(`💽 [Autosave] Saved key=${key}`, payload);
   }, [persistEnabled, buildDiff, key]);
 
   // debounce wrapper
@@ -58,11 +51,14 @@ export default function useIngresoAutosave({
 
   // cargar autosave existente
   const loadAutosave = useCallback(() => {
+    if (!key) return null;
+
     const raw = localStorage.getItem(key);
     if (!raw) return null;
+
     try {
       const parsed = JSON.parse(raw);
-      if (!parsed?.data) return null;
+      if (parsed.schemaVersion !== 'v1') return null; // futuro-proof
       return parsed;
     } catch {
       return null;

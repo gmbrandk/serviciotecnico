@@ -1,17 +1,17 @@
-// src/pages/form-ingreso/IngresoPage.jsx
-
+// IngresoPage.jsx
 import { useOSApi } from '@context/ordenServicio/OrdenServicioApiContext';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import FormIngreso from '@components/form-ingreso/FormIngreso';
 import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
-import { normalizeOrdenPayload } from '@utils/form-ingreso/normalizeOrdenPayload';
 import { snapshotWizardPayload } from '@utils/form-ingreso/snapshotWizard';
 
 import { useAuth } from '@context/AuthContext';
+import { killOrdenServicioLocal } from '@utils/orden-servicio/ordenServicioLifecycle';
+import { getOrCreateOrdenServicioUuid } from '@utils/orden-servicio/ordenServicioUuid';
 
-// Inicializadores (se mantienen)
+// Inicializadores
 import '@config/form-ingreso/init/clienteServiceInit';
 import '@config/form-ingreso/init/equipoServiceInit';
 import '@config/form-ingreso/init/osServiceInit';
@@ -30,78 +30,86 @@ const IngresoPage = () => {
 
   const [initialData, setInitialData] = useState(null);
 
-  // Normalizar payload inicial que venga desde el Wizard
-  useEffect(() => {
-    if (payloadFromWizard) {
-      const normalized = normalizeOrdenPayload(payloadFromWizard);
-      setInitialData(normalized);
+  // 🔐 UUID raíz estable
+  const ordenServicioUuidRef = useRef(null);
 
-      console.log(
-        'Payload from wizard received:\n',
-        JSON.stringify(payloadFromWizard, null, 2) // ← embellecido
-      );
-    }
+  if (!ordenServicioUuidRef.current) {
+    ordenServicioUuidRef.current = getOrCreateOrdenServicioUuid(
+      payloadFromWizard?.ordenServicioUuid
+    );
+
+    console.log(
+      '%c[OS UUID][ROOT]',
+      'background:#003366;color:#fff;padding:4px;',
+      ordenServicioUuidRef.current
+    );
+  }
+
+  // Wizard → snapshot
+  useEffect(() => {
+    if (!payloadFromWizard) return;
+
+    const snap = snapshotWizardPayload({
+      ...payloadFromWizard,
+      ordenServicioUuid: ordenServicioUuidRef.current,
+    });
+
+    setInitialData(snap);
   }, [payloadFromWizard]);
 
-  useEffect(() => {
-    if (payloadFromWizard) {
-      const snap = snapshotWizardPayload(payloadFromWizard);
-
-      console.log(
-        '%c[SNAPSHOT WIZARD] Snapshot generado:',
-        'background: #003366; color: #fff; padding: 4px;',
-        snap
-      );
-
-      setInitialData(snap);
-    }
-  }, [payloadFromWizard]);
-
-  // 🔐 Espera autenticación real
+  // ⏳ Auth
   if (cargando) {
     return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
   }
 
   if (!usuario) {
-    return (
-      <p style={{ padding: '2rem', color: 'red' }}>
-        ❌ No hay usuario autenticado.
-      </p>
-    );
+    return <p style={{ padding: '2rem', color: 'red' }}>❌ No hay usuario</p>;
   }
+
+  // ☠️ CANCELAR — muerte del UUID
+  const handleCancel = useCallback(() => {
+    const ok = window.confirm(
+      '¿Cancelar la creación de la Orden de Servicio?\nSe perderán los cambios.'
+    );
+
+    if (!ok) return;
+
+    killOrdenServicioLocal({
+      userId: usuario._id,
+      ordenServicioUuid: ordenServicioUuidRef.current,
+    });
+
+    navigate('/dashboard');
+  }, [usuario._id, navigate]);
 
   return (
     <div className="formIngresoRoot" style={{ padding: '2rem' }}>
-      <p style={{ marginBottom: '1rem' }}>
-        Revisa la información antes de crear la Orden de Servicio.
-      </p>
-
       <FormIngreso
         initialPayload={initialData}
+        ordenServicioUuid={ordenServicioUuidRef.current}
         role={usuario.role}
+        onCancel={handleCancel}
         onSubmit={async (data) => {
-          try {
-            // 1️⃣ Construimos payload final
-            const payload = buildOrdenPayload(data);
+          const payload = buildOrdenPayload({
+            ...data,
+            ordenServicioUuid: ordenServicioUuidRef.current,
+          });
 
-            // 2️⃣ Enviar al backend
-            const res = await crearOrdenServicio(payload);
+          const res = await crearOrdenServicio(payload);
+          if (!res.success) return;
 
-            if (!res.success) {
-              console.error('❌ Error creando OS:', res.message);
-              return;
-            }
+          // ☠️ MUERTE AL GUARDAR OK
+          killOrdenServicioLocal({
+            userId: usuario._id,
+            ordenServicioUuid: ordenServicioUuidRef.current,
+          });
 
-            // 3️⃣ Orden creada desde backend
-            const ordenCreada = res.details?.orden;
+          const ordenCreada = res.details?.orden;
 
-            // 4️⃣ Navegar al detalle de OS creada
-            navigate(`/dashboard/orden-servicio/${ordenCreada._id}`, {
-              state: { orden: ordenCreada },
-            });
-          } catch (err) {
-            console.error('❌ Error inesperado enviando OS:', err);
-          }
+          // 🚀 Navegar a la OS creada (el Context limpia autosave)
+          navigate(`/dashboard/orden-servicio/${ordenCreada._id}`, {
+            state: { orden: ordenCreada },
+          });
         }}
       />
     </div>

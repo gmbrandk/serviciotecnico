@@ -18,11 +18,9 @@ import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx
 import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles.js';
 
-function IngresoFormContent({ onSubmit, role }) {
+function IngresoFormContent({ onSubmit, onCancel, role }) {
   const { cliente, equipo, tecnico, orden, originalRef, discardAutosave } =
     useIngresoForm();
-
-  // console.log('🔥 AUTOSAVE disponible:', autosave);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,14 +35,8 @@ function IngresoFormContent({ onSubmit, role }) {
       orden,
     };
 
-    try {
-      await onSubmit?.(formState);
-
-      // 🔥 LIMPIA CUALQUIER AUTOSAVE
-      discardAutosave();
-    } catch (err) {
-      console.error('Error en submit, autosave conservado', err);
-    }
+    await onSubmit?.(formState);
+    discardAutosave();
   };
 
   return (
@@ -85,6 +77,14 @@ function IngresoFormContent({ onSubmit, role }) {
       </CollapsibleGroupProvider>
 
       <div className={buttonsStyles.actions}>
+        <button
+          type="button"
+          className={buttonsStyles.cancelButton}
+          onClick={onCancel}
+        >
+          Cancelar
+        </button>
+
         <button type="submit" className={buttonsStyles.button}>
           💾 Guardar formulario
         </button>
@@ -93,8 +93,12 @@ function IngresoFormContent({ onSubmit, role }) {
   );
 }
 
-export default function FormIngreso({ initialPayload, onSubmit, role }) {
-  // 🚫 Si initialPayload es null → NO renderices el provider
+export default function FormIngreso({
+  initialPayload,
+  onSubmit,
+  onCancel,
+  role,
+}) {
   if (!initialPayload) return null;
 
   return (
@@ -103,7 +107,11 @@ export default function FormIngreso({ initialPayload, onSubmit, role }) {
         <TecnicosProvider>
           <TiposTrabajoProvider>
             <IngresoFormProvider initialPayload={initialPayload}>
-              <IngresoFormContent onSubmit={onSubmit} role={role} />
+              <IngresoFormContent
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                role={role}
+              />
             </IngresoFormProvider>
           </TiposTrabajoProvider>
         </TecnicosProvider>

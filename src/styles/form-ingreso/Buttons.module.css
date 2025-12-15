@@ -1,5 +1,6 @@
 .button,
-.actionButton {
+.actionButton,
+.cancelButton {
   background: #27ae60 !important;
   color: #fff;
   border: none;
@@ -8,8 +9,12 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
+  margin: 4px;
 }
 
+.cancelButton {
+  background-color: #e74c3c !important;
+}
 .actions {
   display: flex;
   flex-direction: row;
@@ -22,4 +27,9 @@
 .actionButton:hover,
 .actionButton:focus {
   box-shadow: 0 0 0 2px white, 0 0 0 3px #27ae60 !important;
+}
+
+.cancelButton:hover,
+.cancelButton:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #e74c3c !important;
 }

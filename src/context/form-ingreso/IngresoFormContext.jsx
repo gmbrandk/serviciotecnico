@@ -5,6 +5,10 @@ import useIngresoDiff from '../../hooks/form-ingreso/useIngresoDiff';
 import useIngresoInitialLoad from '../../hooks/form-ingreso/useIngresoInitialLoad.js';
 import useIngresoLineas from '../../hooks/form-ingreso/useIngresoLineas';
 
+import { useAuth } from '@context/AuthContext';
+
+import { buildIngresoAutosaveKeyScoped } from '@utils/form-ingreso/autoSaveKey';
+
 const IngresoFormContext = createContext(null);
 
 /*───────────────────────────────────────────────
@@ -180,6 +184,22 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     makeLinea,
   });
 
+  const { usuario } = useAuth();
+
+  // 👇 UUID real de la OS (backend o payload)
+  const ordenServicioUuid =
+    initialPayload?.ordenServicioUuid ??
+    initialPayload?.orden?.ordenServicioUuid ??
+    null;
+
+  console.log('ordenServicioUuid', ordenServicioUuid);
+
+  const autosaveKey = buildIngresoAutosaveKeyScoped({
+    userId: usuario?._id,
+    ordenServicioUuid,
+  });
+
+  console.log('Key para Local Storage construido: ', autosaveKey);
   const {
     autosave,
     autosaveReady,
@@ -188,7 +208,7 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     loadAutosave,
     discardAutosave,
   } = useIngresoAutosave({
-    key: 'formIngresoAutosave_v3',
+    key: autosaveKey,
     buildDiff,
     enabledInitial: true,
   });
@@ -213,6 +233,20 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
       setShowRestoreDialog(true);
     }
   }, [loaded, loadAutosave]);
+
+  useEffect(() => {
+    if (!autosaveKey) {
+      console.warn('🟡 [Autosave] Sin UUID de OS → autosave deshabilitado');
+      return;
+    }
+
+    console.log('🧩 [Autosave] Key activa:', autosaveKey);
+  }, [autosaveKey]);
+
+  useEffect(() => {
+    if (!loaded || !autosaveReady || !autosaveKey) return;
+    autosave();
+  }, [loaded, autosaveReady, autosaveKey, cliente, equipo, tecnico, orden]);
 
   // ---------------------------------------------------------
   // 🔥 Restaurar DIFF correctamente
