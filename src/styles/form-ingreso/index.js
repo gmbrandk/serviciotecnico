@@ -1,4 +1,4 @@
-// styles/index.js
+// src\styles\form-ingreso\index.js
 
 // 🌍 globales (normal CSS, no modules)
 // import './base.css';

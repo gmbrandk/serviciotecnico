@@ -5,6 +5,9 @@ import useIngresoDiff from '../../hooks/form-ingreso/useIngresoDiff';
 import useIngresoInitialLoad from '../../hooks/form-ingreso/useIngresoInitialLoad.js';
 import useIngresoLineas from '../../hooks/form-ingreso/useIngresoLineas';
 
+import ExitConfirmDialog from '@components/navigation/ExitConfirmDialog';
+import useDirtyNavigationGuard from '@hooks/navigation/useDirtyNavigationGuard';
+
 import { useAuth } from '@context/AuthContext';
 
 import { buildIngresoAutosaveKeyScoped } from '@utils/form-ingreso/autoSaveKey';
@@ -218,6 +221,16 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   // ---------------------------------------------------------
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
   const [savedDraft, setSavedDraft] = useState(null);
+
+  const isDirty = hasChanges() || !!loadAutosave();
+  const [navigationAllowed, setNavigationAllowed] = useState(false);
+
+  const { showExitDialog, stay, leaveKeepDraft, leaveDiscard } =
+    useDirtyNavigationGuard({
+      isDirty,
+      onDiscard: discardAutosave,
+      enabled: !navigationAllowed,
+    });
 
   // ---------------------------------------------------------
   // 🔥 Detecta AUTOSAVE al montar
@@ -439,12 +452,21 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     autosave,
     autosaveReady,
     loaded,
+
+    navigationAllowed,
+    setNavigationAllowed,
   };
 
   return (
     <IngresoFormContext.Provider value={contextValue}>
       {children}
       {restoreDialogUI}
+      <ExitConfirmDialog
+        open={showExitDialog}
+        onStay={stay}
+        onLeaveKeep={leaveKeepDraft}
+        onLeaveDiscard={leaveDiscard}
+      />
     </IngresoFormContext.Provider>
   );
 }

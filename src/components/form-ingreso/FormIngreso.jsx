@@ -19,8 +19,15 @@ import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles.js';
 
 function IngresoFormContent({ onSubmit, onCancel, role }) {
-  const { cliente, equipo, tecnico, orden, originalRef, discardAutosave } =
-    useIngresoForm();
+  const {
+    cliente,
+    equipo,
+    tecnico,
+    orden,
+    originalRef,
+    discardAutosave,
+    setNavigationAllowed,
+  } = useIngresoForm();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,8 +42,17 @@ function IngresoFormContent({ onSubmit, onCancel, role }) {
       orden,
     };
 
-    await onSubmit?.(formState);
-    discardAutosave();
+    // 🔓 permitir navegación legítima
+    setNavigationAllowed(true);
+
+    try {
+      await onSubmit?.(formState);
+      discardAutosave();
+    } catch (err) {
+      // ❌ si falla, volvemos a proteger
+      setNavigationAllowed(false);
+      throw err;
+    }
   };
 
   return (
