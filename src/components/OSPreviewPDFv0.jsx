@@ -8,8 +8,9 @@ import {
   View,
 } from '@react-pdf/renderer';
 
-const primary = '#1A4D8F';
-const primaryLight = '#E6EEF7';
+// Nuevo color corporativo
+const primary = '#1A4D8F'; // Azul petróleo profesional
+const primaryLight = '#E6EEF7'; // Azul muy suave para fondos/accentos
 
 const styles = StyleSheet.create({
   page: {
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.15,
   },
 
-  /* -------- HEADER NEGOCIO -------- */
+  /* -------- HEADER DEL NEGOCIO -------- */
   businessHeader: {
     borderBottomWidth: 1.5,
     borderBottomColor: primary,
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 
-  /* -------- HEADER DOCUMENTO -------- */
+  /* -------- HEADER DEL COMPROBANTE -------- */
   header: {
     borderBottomWidth: 1,
     borderBottomColor: primary,
@@ -193,11 +194,6 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
     logo = null,
   } = negocio;
 
-  const mismoCliente =
-    orden.cliente?.dni &&
-    orden.representante?.dni &&
-    orden.cliente.dni === orden.representante.dni;
-
   return (
     <Document>
       <Page style={styles.page}>
@@ -220,7 +216,7 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
           </View>
         </View>
 
-        {/* HEADER DOCUMENTO */}
+        {/* HEADER COMPROBANTE */}
         <View style={styles.header}>
           <Text style={styles.title}>
             Comprobante de Ingreso / Orden de Servicio
@@ -229,11 +225,14 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
           <Text style={styles.meta}>
             Fecha de ingreso: {new Date(orden.fechaIngreso).toLocaleString()}
           </Text>
+          <Text style={styles.meta}>
+            Atendido por: {orden.tecnico?.nombre || '—'}
+          </Text>
         </View>
 
         {/* CLIENTE */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Informacion de Contacto</Text>
+          <Text style={styles.sectionTitle}>Cliente</Text>
 
           <View style={styles.grid}>
             <Text style={styles.gridItem}>
@@ -254,6 +253,7 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
             </Text>
           </View>
         </View>
+
         {/* EQUIPO */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Equipo</Text>
@@ -284,7 +284,7 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
           <Text style={styles.textBox}>{orden.observaciones}</Text>
         </View>
 
-        {/* SERVICIOS */}
+        {/* TABLA */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Servicios</Text>
 
@@ -300,13 +300,13 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
               <View key={i} style={styles.tr}>
                 <Text style={styles.td}>{l.descripcion}</Text>
                 <Text style={styles.td}>{l.cantidad}</Text>
-                <Text style={styles.td}>S/. {l.precioUnitario}</Text>
-                <Text style={styles.td}>S/. {l.subtotal}</Text>
+                <Text style={styles.td}>S/.{l.precioUnitario}</Text>
+                <Text style={styles.td}>S/.{l.subtotal}</Text>
               </View>
             ))}
           </View>
 
-          <Text style={styles.total}>Total: S/. {orden.total}</Text>
+          <Text style={styles.total}>Total: S/.{orden.total}</Text>
         </View>
 
         {/* FOOTER */}
@@ -314,12 +314,7 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
           <Text>
             Este comprobante certifica la recepción del equipo para diagnóstico
             y/o reparación. La empresa no se responsabiliza por accesorios no
-            declarados ni por información almacenada en el dispositivo.
-          </Text>
-          <Text>
-            El responsable del servicio autoriza las intervenciones y asume los
-            costos. El ingreso del equipo puede ser realizado por un tercero
-            autorizado.
+            declarados.
           </Text>
         </View>
       </Page>

@@ -1,115 +1,238 @@
-// src/pages/TestingPage.jsx
+import Accordion from '@components/Accordion';
+import InfoTooltip from '@components/InfoTooltip';
+import OSPreviewPDFWrapper from '@components/OSPreviewPDFWrapper';
+import PersonaCard from '@components/PersonaCard';
+import MacServiceLogo from '../assets/form-ingreso/MacServiceLogo.jpeg';
+import '../styles/OSPreview.css';
 
-import ordenesMock from '@__mock__/ordenServicioMock.json';
-import PaginadorNumeradoInteligente from '@components/shared/PaginadorNumeradoInteligente';
-import { Tabla } from '@components/shared/Tabla';
-import useEsMovil from '@hooks/useEsMovil';
-import { RwdPaginadorStyles, rwdtableStyles } from '@styles';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// 📌 Formato de fecha preciso
-const formatearFechaCompleta = (fechaISO) => {
-  const fecha = new Date(fechaISO);
-
-  return fecha.toLocaleString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  });
-};
-
-// 📌 columnas (💡 ahora muestra REPRESENTANTE)
-const columnsOS = [
-  { header: 'Código', accessor: 'codigo' },
-  { header: 'Representante', accessor: 'representanteNombre' }, // ← cambiado
-  { header: 'Equipo', accessor: 'equipoResumen' },
-  { header: 'Estado', accessor: 'estadoOS' },
+const ordenesMockEjemplo = [
   {
-    header: 'Fecha Ingreso',
-    accessor: 'fechaIngreso',
-    render: (v) => formatearFechaCompleta(v),
+    _id: 'OS-001',
+    codigo: 'OS-001',
+    fechaIngreso: '2025-12-01T15:30:00Z',
+    cliente: {
+      nombres: 'Juan',
+      apellidos: 'Pérez',
+      dni: '12345678',
+      email: 'juan@correo.com',
+      telefono: '+51999999999',
+    },
+    representante: {
+      nombres: 'Juan',
+      apellidos: 'Pérez',
+      dni: '12345678',
+      email: 'juan@correo.com',
+      telefono: '+51999999999',
+    },
+    equipo: {
+      tipo: 'Laptop',
+      marca: 'Apple',
+      modelo: 'MacBook Pro',
+      nroSerie: 'ABC123',
+    },
+    diagnosticoCliente: 'No enciende',
+    observaciones: 'Equipo mojado',
+    lineasServicio: [
+      {
+        descripcion: 'Diagnóstico',
+        cantidad: 1,
+        precioUnitario: 50,
+        subtotal: 50,
+      },
+    ],
+    total: 50,
   },
   {
-    header: 'Total USD',
-    accessor: 'total',
-    render: (v) => `USD ${v}`,
+    _id: 'OS-002',
+    codigo: 'OS-002',
+    fechaIngreso: '2025-12-02T10:15:00Z',
+    cliente: {
+      nombres: 'Hank',
+      apellidos: 'Schrader',
+      dni: '29548456',
+      email: 'hschrader@dea.com',
+      telefono: '+549984512648',
+    },
+    representante: {
+      nombres: 'Jorge Enrique',
+      apellidos: 'Ugarte Olivera',
+      dni: '45724467',
+      email: 'jorge.ugarte@hotmail.com',
+      telefono: '+51907128234',
+    },
+    equipo: {
+      tipo: 'Laptop',
+      marca: 'ASUS',
+      modelo: 'FX517ZE',
+      nroSerie: 'N5NRCX071929213',
+    },
+    diagnosticoCliente: 'Caída brusca',
+    observaciones: 'Teclas rotas',
+    lineasServicio: [
+      {
+        descripcion: 'Cambio de teclado',
+        cantidad: 1,
+        precioUnitario: 180,
+        subtotal: 180,
+      },
+    ],
+    total: 180,
   },
-  { header: 'Acciones', esAcciones: true },
 ];
 
-// 📌 normalizador de datos (💡 ahora toma representante REAL del JSON)
-const rowEnhancerOS = (orden) => ({
-  ...orden,
-  representanteNombre: `${orden.representante.nombres} ${orden.representante.apellidos}`,
-  equipoResumen: `${orden.equipo.marca} ${orden.equipo.modelo} (${orden.equipo.nroSerie})`,
-});
+export default function TestingPage() {
+  const orden = ordenesMockEjemplo[1];
 
-const TestingPage = () => {
-  const navigate = useNavigate();
-  const esMovil = useEsMovil();
-  const [paginaActual, setPaginaActual] = useState(1);
-  const itemsPorPagina = esMovil ? 3 : 8;
+  const {
+    codigo,
+    fechaIngreso,
+    cliente,
+    representante,
+    equipo,
+    diagnosticoCliente,
+    observaciones,
+    lineasServicio,
+    total,
+  } = orden;
 
-  const ordenes = ordenesMock.details.ordenes;
-  const totalPaginas = Math.ceil(ordenes.length / itemsPorPagina);
-  const inicio = (paginaActual - 1) * itemsPorPagina;
-  const datosPaginados = ordenes.slice(inicio, inicio + itemsPorPagina);
-
-  // 📌 Acción → Ver vista previa
-  const renderAccionesOS = (orden) => (
-    <button
-      style={{
-        padding: '6px 10px',
-        background: '#1976d2',
-        color: 'white',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        border: 'none',
-      }}
-      onClick={() =>
-        navigate(`/ospreview/${orden._id}`, {
-          state: { orden },
-        })
-      }
-    >
-      👁 Ver
-    </button>
-  );
+  const mismoCliente =
+    cliente?.dni && representante?.dni && cliente.dni === representante.dni;
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>🧪 Testing Page</h1>
+    <div className="osPreviewRoot">
+      <OSPreviewPDFWrapper
+        orden={orden}
+        negocio={{
+          nombre: 'MacService E.I.R.L',
+          ruc: '10480562041',
+          direccion: 'Calle Octavio Muñoz Najar 223',
+          telefono: '+51 949 105 405',
+          email: 'teamcross_soporte@hotmail.com',
+          logo: MacServiceLogo,
+        }}
+      />
 
-      <div style={{ marginTop: '2rem' }}>
-        <h2>📋 Prueba de Tabla: Órdenes de Servicio</h2>
+      <div className="os-preview">
+        <header className="os-header">
+          <h1>Orden de Servicio</h1>
+          <div className="os-header-row">
+            <span className="os-code">{codigo}</span>
+            <span className="os-date">
+              Fecha de ingreso: {new Date(fechaIngreso).toLocaleString('es-PE')}
+            </span>
+          </div>
+        </header>
 
-        <Tabla
-          columns={columnsOS}
-          data={datosPaginados}
-          rowEnhancer={rowEnhancerOS}
-          renderAcciones={renderAccionesOS}
-          estilos={{ tabla: rwdtableStyles.rwdTable }}
-          paginacionInterna={false}
-        />
+        {/* PERSONAS */}
+        <section className="os-section">
+          {mismoCliente ? (
+            <PersonaCard
+              titulo="Responsable del servicio/ propietario"
+              persona={cliente}
+              subtitulo="La misma persona realizó el ingreso del equipo"
+              mostrarBadge
+            />
+          ) : (
+            <>
+              <PersonaCard
+                titulo="Responsable del servicio/ propietario"
+                persona={cliente}
+                subtitulo="Entidad que podria autorizar las intervenciones y asumir los costos"
+              />
+              <PersonaCard
+                titulo="Contacto"
+                persona={representante}
+                subtitulo="Entidad con prioridad de coordinacion"
+                variante="admin"
+              />
+            </>
+          )}
 
-        {totalPaginas > 1 && (
-          <PaginadorNumeradoInteligente
-            paginaActual={paginaActual}
-            totalPaginas={totalPaginas}
-            setPaginaActual={setPaginaActual}
-            esMovil={esMovil}
-            estilos={RwdPaginadorStyles}
-            maxVisible={4}
-          />
-        )}
+          {/* Microcopy + Tooltip */}
+          <p className="os-microcopy">
+            El responsable del servicio autoriza las intervenciones y asume los
+            costos
+            <InfoTooltip text="El equipo puede ser ingresado por un tercero autorizado. La persona que realiza el ingreso no asume responsabilidad legal ni económica sobre el servicio." />
+          </p>
+        </section>
+
+        {/* EQUIPO */}
+        <section className="os-section">
+          <h2>Equipo</h2>
+          <div className="os-grid">
+            <div>
+              <strong>Tipo:</strong> {equipo.tipo}
+            </div>
+            <div>
+              <strong>Marca:</strong> {equipo.marca}
+            </div>
+            <div>
+              <strong>Modelo:</strong> {equipo.modelo}
+            </div>
+            <div>
+              <strong>Serie:</strong> {equipo.nroSerie}
+            </div>
+          </div>
+        </section>
+
+        {/* DIAGNÓSTICO */}
+        <section className="os-section">
+          <h2>Diagnóstico declarado</h2>
+          <p>{diagnosticoCliente}</p>
+        </section>
+
+        {/* OBSERVACIONES */}
+        <section className="os-section">
+          <h2>Observaciones</h2>
+          <p>{observaciones}</p>
+        </section>
+
+        {/* SERVICIOS (tabla intacta) */}
+        <section className="os-section">
+          <h2>Servicios autorizados</h2>
+          <table className="os-table">
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th>Cant.</th>
+                <th>Precio U.</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lineasServicio.map((l, i) => (
+                <tr key={i}>
+                  <td>{l.descripcion}</td>
+                  <td>{l.cantidad}</td>
+                  <td>S/. {l.precioUnitario}</td>
+                  <td>S/. {l.subtotal}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="os-total">
+            <strong>Total: S/. {total}</strong>
+          </div>
+        </section>
+
+        {/* CONDICIONES */}
+        <section className="os-section">
+          <Accordion title="Condiciones del servicio">
+            <ul>
+              <li>La empresa realizará únicamente los servicios detallados.</li>
+              <li>
+                Reparaciones adicionales o de mayor costo requerirán
+                autorización del responsable del servicio.
+              </li>
+              <li>
+                Durante el diagnóstico o reparación pueden producirse pérdidas
+                de información.
+              </li>
+            </ul>
+          </Accordion>
+        </section>
       </div>
     </div>
   );
-};
-
-export default TestingPage;
+}
