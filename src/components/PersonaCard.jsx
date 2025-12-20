@@ -33,6 +33,11 @@ export default function PersonaCard({
             <strong>Teléfono:</strong> {persona.telefono}
           </div>
         )}
+        {persona.direccion && (
+          <div>
+            <strong>Dirección:</strong> {persona.direccion}
+          </div>
+        )}
       </div>
     </div>
   );

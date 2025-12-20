@@ -38,7 +38,6 @@ export default function PreviewOSPage() {
 
   return (
     <div style={{ padding: 30 }}>
-      <h1>🔍 Vista previa de #{orden.codigo}</h1>
       <OSPreview orden={orden} />
     </div>
   );

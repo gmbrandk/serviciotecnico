@@ -144,13 +144,6 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
   },
 
-  th: {
-    width: '25%',
-    fontSize: 11,
-    fontWeight: 700,
-    color: primary,
-  },
-
   tr: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -158,9 +151,31 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
 
-  td: {
-    width: '25%',
+  thDesc: {
+    width: '55%',
+    fontSize: 11,
+    fontWeight: 700,
+    color: primary,
+  },
+
+  thSmall: {
+    width: '15%',
+    fontSize: 11,
+    fontWeight: 700,
+    color: primary,
+    textAlign: 'right',
+  },
+
+  tdDesc: {
+    width: '55%',
     fontSize: 10.5,
+    lineHeight: 1.2,
+  },
+
+  tdSmall: {
+    width: '15%',
+    fontSize: 10.5,
+    textAlign: 'right',
   },
 
   total: {
@@ -233,7 +248,7 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
 
         {/* CLIENTE */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Informacion de Contacto</Text>
+          <Text style={styles.sectionTitle}>Información de Contacto</Text>
 
           <View style={styles.grid}>
             <Text style={styles.gridItem}>
@@ -241,8 +256,8 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
               {orden.representante.nombres} {orden.representante.apellidos}
             </Text>
             <Text style={styles.gridItem}>
-              <Text style={{ fontWeight: 700 }}>DNI: </Text>
-              {orden.representante.dni}
+              <Text style={{ fontWeight: 700 }}>Direccion: </Text>
+              {orden.representante.direccion}
             </Text>
             <Text style={styles.gridItem}>
               <Text style={{ fontWeight: 700 }}>Email: </Text>
@@ -290,18 +305,18 @@ export default function OSPreviewPDF({ orden, negocio = {} }) {
 
           <View style={styles.table}>
             <View style={styles.tableHeader}>
-              <Text style={styles.th}>Descripción</Text>
-              <Text style={styles.th}>Cant.</Text>
-              <Text style={styles.th}>Precio U.</Text>
-              <Text style={styles.th}>Subtotal</Text>
+              <Text style={styles.thDesc}>Descripción</Text>
+              <Text style={styles.thSmall}>Cant.</Text>
+              <Text style={styles.thSmall}>Precio U.</Text>
+              <Text style={styles.thSmall}>Subtotal</Text>
             </View>
 
             {orden.lineasServicio.map((l, i) => (
               <View key={i} style={styles.tr}>
-                <Text style={styles.td}>{l.descripcion}</Text>
-                <Text style={styles.td}>{l.cantidad}</Text>
-                <Text style={styles.td}>S/. {l.precioUnitario}</Text>
-                <Text style={styles.td}>S/. {l.subtotal}</Text>
+                <Text style={styles.tdDesc}>{l.descripcion}</Text>
+                <Text style={styles.tdSmall}>{l.cantidad}</Text>
+                <Text style={styles.tdSmall}>S/. {l.precioUnitario}</Text>
+                <Text style={styles.tdSmall}>S/. {l.subtotal}</Text>
               </View>
             ))}
           </View>

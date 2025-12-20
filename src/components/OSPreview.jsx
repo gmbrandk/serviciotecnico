@@ -1,4 +1,7 @@
+import Accordion from '@components/Accordion';
+import InfoTooltip from '@components/InfoTooltip';
 import OSPreviewPDFWrapper from '@components/OSPreviewPDFWrapper';
+import PersonaCard from '@components/PersonaCard';
 import { useEffect } from 'react';
 import MacServiceLogo from '../assets/form-ingreso/MacServiceLogo.jpeg';
 import '../styles/OSPreview.css';
@@ -22,6 +25,9 @@ export default function OSPreview({ orden }) {
     total,
   } = orden;
 
+  const mismoCliente =
+    cliente?.dni && representante?.dni && cliente.dni === representante.dni;
+
   return (
     <div className="osPreviewRoot">
       {/* PDF */}
@@ -34,61 +40,54 @@ export default function OSPreview({ orden }) {
             'Calle Octavio Muñoz Najar 223 Galeria COMPUAREQUIPA int.232 2do Piso',
           telefono: '+51 949 105 405',
           email: 'teamcross_soporte@hotmail.com',
-          logo: MacServiceLogo, // cuando tengas la imagen: "/assets/logo.png"
+          logo: MacServiceLogo,
         }}
       />
+
       <div className="os-preview">
         <header className="os-header">
           <h1>Orden de Servicio</h1>
-
           <div className="os-header-row">
             <span className="os-code">{codigo}</span>
             <span className="os-date">
-              Fecha de ingreso: {new Date(fechaIngreso).toLocaleString()}
+              Fecha de ingreso: {new Date(fechaIngreso).toLocaleString('es-PE')}
             </span>
           </div>
         </header>
 
-        {/* Cliente */}
+        {/* PERSONAS */}
         <section className="os-section">
-          <h2>Cliente</h2>
-          <div className="os-grid">
-            <div>
-              <strong>Nombre:</strong> {cliente.nombres} {cliente.apellidos}
-            </div>
-            <div>
-              <strong>DNI:</strong> {cliente.dni}
-            </div>
-            <div>
-              <strong>Email:</strong> {cliente.email}
-            </div>
-            <div>
-              <strong>Teléfono:</strong> {cliente.telefono}
-            </div>
-          </div>
+          {mismoCliente ? (
+            <PersonaCard
+              titulo="Responsable del servicio / propietario"
+              persona={cliente}
+              subtitulo="La misma persona realizó el ingreso del equipo"
+              mostrarBadge
+            />
+          ) : (
+            <>
+              <PersonaCard
+                titulo="Responsable del servicio / propietario"
+                persona={cliente}
+                subtitulo="Entidad que autoriza intervenciones y asume costos"
+              />
+              <PersonaCard
+                titulo="Contacto"
+                persona={representante}
+                subtitulo="Entidad con prioridad de coordinación"
+                variante="admin"
+              />
+            </>
+          )}
+
+          <p className="os-microcopy">
+            El responsable del servicio autoriza las intervenciones y asume los
+            costos
+            <InfoTooltip text="El equipo puede ser ingresado por un tercero autorizado. La persona que realiza el ingreso no asume responsabilidad legal ni económica sobre el servicio." />
+          </p>
         </section>
 
-        {/* Representante */}
-        <section className="os-section">
-          <h2>Representante</h2>
-          <div className="os-grid">
-            <div>
-              <strong>Nombre:</strong> {representante.nombres}{' '}
-              {representante.apellidos}
-            </div>
-            <div>
-              <strong>DNI:</strong> {representante.dni}
-            </div>
-            <div>
-              <strong>Email:</strong> {representante.email}
-            </div>
-            <div>
-              <strong>Teléfono:</strong> {representante.telefono}
-            </div>
-          </div>
-        </section>
-
-        {/* Equipo */}
+        {/* EQUIPO */}
         <section className="os-section">
           <h2>Equipo</h2>
           <div className="os-grid">
@@ -102,35 +101,26 @@ export default function OSPreview({ orden }) {
               <strong>Modelo:</strong> {equipo.modelo}
             </div>
             <div>
-              <strong>SKU:</strong> {equipo.sku}
-            </div>
-            <div>
               <strong>Serie:</strong> {equipo.nroSerie}
-            </div>
-            <div>
-              <strong>MAC:</strong> {equipo.macAddress}
-            </div>
-            <div>
-              <strong>Identificación:</strong> {equipo.estadoIdentificacion}
             </div>
           </div>
         </section>
 
-        {/* Diagnóstico */}
+        {/* DIAGNÓSTICO */}
         <section className="os-section">
-          <h2>Diagnóstico del Cliente</h2>
+          <h2>Diagnóstico declarado</h2>
           <p>{diagnosticoCliente}</p>
         </section>
 
-        {/* Observaciones */}
+        {/* OBSERVACIONES */}
         <section className="os-section">
           <h2>Observaciones</h2>
           <p>{observaciones}</p>
         </section>
 
-        {/* Línea de servicios */}
+        {/* SERVICIOS */}
         <section className="os-section">
-          <h2>Servicios</h2>
+          <h2>Servicios autorizados</h2>
           <table className="os-table">
             <thead>
               <tr>
@@ -145,16 +135,33 @@ export default function OSPreview({ orden }) {
                 <tr key={i}>
                   <td>{l.descripcion}</td>
                   <td>{l.cantidad}</td>
-                  <td>${l.precioUnitario}</td>
-                  <td>${l.subtotal}</td>
+                  <td>S/. {l.precioUnitario}</td>
+                  <td>S/. {l.subtotal}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           <div className="os-total">
-            <strong>Total: ${total}</strong>
+            <strong>Total: S/. {total}</strong>
           </div>
+        </section>
+
+        {/* CONDICIONES */}
+        <section className="os-section">
+          <Accordion title="Condiciones del servicio">
+            <ul>
+              <li>La empresa realizará únicamente los servicios detallados.</li>
+              <li>
+                Reparaciones adicionales requerirán autorización del responsable
+                del servicio.
+              </li>
+              <li>
+                Durante el diagnóstico o reparación pueden producirse pérdidas
+                de información.
+              </li>
+            </ul>
+          </Accordion>
         </section>
       </div>
     </div>
