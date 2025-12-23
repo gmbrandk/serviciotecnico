@@ -24,15 +24,21 @@ export const fetchUsuarioAutenticado = async () => {
   try {
     console.log('[authService] Llamando a /api/auth/me...');
     const response = await axios.get('http://localhost:5000/api/auth/me', {
-      withCredentials: true, // importante para cookies
+      withCredentials: true,
     });
-    console.log('[authService] Respuesta exitosa:', response.data);
-    return response.data;
+
+    return response.data; // { usuario }
   } catch (error) {
+    if (error.response?.status === 401) {
+      console.info('[authService] No hay sesión activa');
+      return { usuario: null }; // ✅ CLAVE
+    }
+
     console.error(
-      '[authService] Error al obtener usuario:',
+      '[authService] Error inesperado:',
       error.response?.data || error.message
     );
-    throw error;
+
+    throw error; // solo errores reales
   }
 };

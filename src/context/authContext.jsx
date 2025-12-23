@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser, fetchUsuarioAutenticado } from '@services/authService';
+import useGlobalLoading from '@hooks/useGlobalLoading';
+import { fetchUsuarioAutenticado, loginUser } from '@services/authService';
 import registerUser from '@services/userService';
 import { estandarizarRol } from '@utils/formatters';
 import axios from 'axios';
-import useGlobalLoading from '@hooks/useGlobalLoading';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -112,6 +112,42 @@ export const AuthProvider = ({ children }) => {
     return rolesNormalizados.includes(userRole);
   };
 
+  const ensureAuth = async ({ autoLogin = false, email, password } = {}) => {
+    startLoading();
+
+    try {
+      // 1️⃣ ¿Ya hay sesión?
+      const { usuario: usuarioAutenticado } = await fetchUsuarioAutenticado();
+
+      if (usuarioAutenticado) {
+        console.info('[AUTH] Sesión ya activa');
+        setUsuario(usuarioAutenticado);
+        return usuarioAutenticado;
+      }
+
+      // 2️⃣ Autologin solo si está permitido
+      if (!autoLogin) {
+        console.warn('[AUTH] No hay sesión y autologin deshabilitado');
+        return null;
+      }
+
+      console.warn('[AUTH] No hay sesión, intentando autologin...');
+
+      const { usuario: usuarioLogueado } = await loginUser(email, password);
+
+      setUsuario(usuarioLogueado);
+      console.info('[AUTH] Autologin exitoso');
+
+      return usuarioLogueado;
+    } catch (err) {
+      console.error('[AUTH] ensureAuth error:', err);
+      return null;
+    } finally {
+      stopLoading();
+      setCargando(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -124,6 +160,7 @@ export const AuthProvider = ({ children }) => {
         cargando,
         loading,
         verificarSesion,
+        ensureAuth,
       }}
     >
       {children}

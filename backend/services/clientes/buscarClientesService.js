@@ -37,6 +37,7 @@ module.exports = async function buscarClientesService({
         message: 'ID inválido',
       });
     }
+
     const cliente = await Cliente.findById(id).lean();
     if (!cliente) {
       throw new ValidationError({
@@ -44,18 +45,21 @@ module.exports = async function buscarClientesService({
         message: 'Cliente no encontrado',
       });
     }
+
     return {
       count: 1,
       mode: 'lookup',
+      isNew: false,
       results: [cliente],
     };
   }
 
   // ✅ Validación de query
-  const qProvided = [dni, nombre, telefono, email].some(
+  const hasSearchIntent = [dni, nombre, telefono, email].some(
     (v) => v && v.length > 0
   );
-  if (!qProvided) {
+
+  if (!hasSearchIntent) {
     throw new ValidationError({
       code: 'SEARCH_NO_QUERY',
       message:
@@ -63,11 +67,12 @@ module.exports = async function buscarClientesService({
     });
   }
 
-  // ⚠️ Validación min chars
+  // ⚠️ Validación min chars (solo autocomplete)
   if (!isLookup) {
     const short = [dni, nombre, telefono, email].some(
-      (v) => v && v.length < MIN_CHARS && v.length > 0
+      (v) => v && v.length < MIN_CHARS
     );
+
     if (short) {
       throw new ValidationError({
         code: 'SEARCH_MIN_CHARS',
@@ -78,14 +83,17 @@ module.exports = async function buscarClientesService({
 
   // 🔎 Construcción de filtros
   const conditions = [];
+
   if (dni) {
     const onlyDigits = normalizeDigits(dni);
+
     if (!/^\d+$/.test(onlyDigits)) {
       throw new ValidationError({
         code: 'DNI_INVALID',
         message: 'El DNI solo debe contener dígitos.',
       });
     }
+
     if (isLookup) {
       if (onlyDigits.length !== 8) {
         throw new ValidationError({
@@ -95,20 +103,28 @@ module.exports = async function buscarClientesService({
       }
       conditions.push({ dni: onlyDigits });
     } else {
-      conditions.push({ dni: { $regex: '^' + onlyDigits, $options: 'i' } });
+      conditions.push({ dni: { $regex: '^' + onlyDigits } });
     }
   }
+
   if (telefono) {
     const phoneNorm = cleanPhone(telefono);
     conditions.push({ telefono: { $regex: phoneNorm } });
   }
+
   if (email) {
     const emailQ = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     conditions.push({ email: { $regex: emailQ, $options: 'i' } });
   }
+
   if (nombre) {
     const nombreQ = nombre.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    conditions.push({ nombre: { $regex: nombreQ, $options: 'i' } });
+    conditions.push({
+      $or: [
+        { nombres: { $regex: nombreQ, $options: 'i' } },
+        { apellidos: { $regex: nombreQ, $options: 'i' } },
+      ],
+    });
   }
 
   const query = conditions.length > 1 ? { $and: conditions } : conditions[0];
@@ -124,12 +140,20 @@ module.exports = async function buscarClientesService({
         direccion: 1,
         estado: 1,
       }
-    : { dni: 1, nombres: 1, apellidos: 1, telefono: 1, email: 1, direccion: 1 };
+    : {
+        dni: 1,
+        nombres: 1,
+        apellidos: 1,
+        telefono: 1,
+        email: 1,
+        direccion: 1,
+      };
 
   let docs = await Cliente.find(query, projection).limit(lim).lean();
 
-  // Post-procesamiento para autocomplete
+  // 🔧 Post-procesamiento autocomplete
   let clientes = docs;
+
   if (!isLookup) {
     if (nombre) {
       clientes = clientes
@@ -154,21 +178,13 @@ module.exports = async function buscarClientesService({
     }));
   }
 
-  // 👇 Detectar caso especial: DNI completo, válido y sin resultados
-  let isNew = false;
-  if (
-    !isLookup &&
-    dni &&
-    normalizeDigits(dni).length === 8 &&
-    clientes.length === 0
-  ) {
-    isNew = true;
-  }
+  // 🆕 Flag isNew: búsqueda válida sin resultados
+  const isNew = !isLookup && hasSearchIntent && clientes.length === 0;
 
   return {
     count: clientes.length,
     mode,
-    isNew, // 🚀 NUEVO FLAG
+    isNew,
     results: clientes,
   };
 };

@@ -6,6 +6,7 @@ module.exports = async (req, res) => {
   try {
     const {
       id,
+      query,
       texto,
       marca,
       tipo,
@@ -17,7 +18,7 @@ module.exports = async (req, res) => {
       limit,
     } = req.query;
 
-    const result = await buscarEquiposService({
+    const params = {
       id: id || null,
       texto: texto || null,
       marca: marca || null,
@@ -28,7 +29,28 @@ module.exports = async (req, res) => {
       macAddress: macAddress || null,
       mode: mode || 'autocomplete',
       limit: limit ? Number(limit) : undefined,
-    });
+    };
+
+    // 🔹 Resolver query genérico (input único)
+    if (
+      query &&
+      !texto &&
+      !marca &&
+      !tipo &&
+      !nroSerie &&
+      !sku &&
+      !imei &&
+      !macAddress
+    ) {
+      if (/^[0-9A-Fa-f:.-]+$/.test(query)) {
+        // Posible serie / MAC / IMEI
+        params.nroSerie = query;
+      } else {
+        params.texto = query;
+      }
+    }
+
+    const result = await buscarEquiposService(params);
 
     return sendSuccess(res, {
       message: 'Equipos obtenidos correctamente',

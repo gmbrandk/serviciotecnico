@@ -115,7 +115,11 @@ export default function FormIngreso({
   onCancel,
   role,
 }) {
-  if (!initialPayload) return null;
+  if (!initialPayload) {
+    throw new Error('FormIngreso requiere initialPayload válido');
+  }
+
+  console.log('🧩 [ROOT] initialPayload recibido por Provider', initialPayload);
 
   return (
     <ClientesProvider>

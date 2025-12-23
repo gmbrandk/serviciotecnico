@@ -3,15 +3,32 @@ const { sendSuccess, sendError } = require('@utils/httpResponse');
 
 module.exports = async (req, res) => {
   try {
-    const result = await buscarClientesService({
-      id: req.query.id || '', // ✅ agregar esto
-      dni: req.query.dni || '',
-      nombre: req.query.nombre || '',
-      telefono: req.query.telefono || '',
-      email: req.query.email || '',
-      mode: req.query.mode || 'autocomplete',
-      limit: req.query.limit,
-    });
+    const { query = '', dni, nombre, telefono, email, id, mode } = req.query;
+
+    const params = {
+      id: id || '',
+      dni: dni || '',
+      nombre: nombre || '',
+      telefono: telefono || '',
+      email: email || '',
+      mode: mode || 'autocomplete',
+    };
+
+    // 🔹 Resolver query genérico
+    if (query && !dni && !nombre && !telefono && !email) {
+      if (/^\d+$/.test(query)) {
+        // Solo números → DNI o teléfono
+        params.dni = query;
+      } else if (/^\S+@\S+\.\S+$/.test(query)) {
+        // Email
+        params.email = query;
+      } else {
+        // Texto → nombre
+        params.nombre = query;
+      }
+    }
+
+    const result = await buscarClientesService(params);
 
     return sendSuccess(res, {
       message: 'Clientes obtenidos correctamente',

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import FormIngreso from '@components/form-ingreso/FormIngreso';
+import { buildIngresoInitialState } from '@utils/form-ingreso/buildIngresoInitialState';
 import { buildOrdenPayload } from '@utils/form-ingreso/buildOrdenPayload';
 import { snapshotWizardPayload } from '@utils/form-ingreso/snapshotWizard';
 
@@ -45,27 +46,6 @@ const IngresoPage = () => {
     );
   }
 
-  // Wizard → snapshot
-  useEffect(() => {
-    if (!payloadFromWizard) return;
-
-    const snap = snapshotWizardPayload({
-      ...payloadFromWizard,
-      ordenServicioUuid: ordenServicioUuidRef.current,
-    });
-
-    setInitialData(snap);
-  }, [payloadFromWizard]);
-
-  // ⏳ Auth
-  if (cargando) {
-    return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
-  }
-
-  if (!usuario) {
-    return <p style={{ padding: '2rem', color: 'red' }}>❌ No hay usuario</p>;
-  }
-
   // ☠️ CANCELAR — muerte del UUID
   const handleCancel = useCallback(() => {
     const ok = window.confirm(
@@ -81,6 +61,38 @@ const IngresoPage = () => {
 
     navigate('/dashboard');
   }, [usuario._id, navigate]);
+
+  // 🧠 Inicialización unificada: Wizard o Panel
+  useEffect(() => {
+    if (payloadFromWizard) {
+      const snap = snapshotWizardPayload({
+        ...payloadFromWizard,
+        ordenServicioUuid: ordenServicioUuidRef.current,
+      });
+
+      setInitialData(snap);
+    } else {
+      const empty = buildIngresoInitialState({
+        mode: 'panel',
+        ordenServicioUuid: ordenServicioUuidRef.current,
+      });
+
+      setInitialData(empty);
+    }
+  }, [payloadFromWizard]);
+
+  // ⏳ Auth
+  if (cargando) {
+    return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
+  }
+
+  if (!usuario) {
+    return <p style={{ padding: '2rem', color: 'red' }}>❌ No hay usuario</p>;
+  }
+
+  if (!initialData) {
+    return <p style={{ padding: '2rem' }}>Inicializando formulario...</p>;
+  }
 
   return (
     <div className="formIngresoRoot" style={{ padding: '2rem' }}>

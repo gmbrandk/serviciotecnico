@@ -8,7 +8,7 @@ const ClientesContext = createContext(null);
 export function ClientesProvider({ children }) {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [ready, setReady] = useState(false);
   // ======================================================
   // 🔍 AUTOCOMPLETE — buscar por DNI / nombre parcial
   //     usa: service.buscarCliente(query)
@@ -41,6 +41,7 @@ export function ClientesProvider({ children }) {
       setClientes([]);
     } finally {
       setLoading(false);
+      setReady(true);
     }
   }, []);
 
@@ -55,6 +56,7 @@ export function ClientesProvider({ children }) {
 
       log('CTX:CLIENTES', 'Respuesta service.buscarClientePorId', res);
 
+      setReady(true);
       // Backend devuelve results también aquí
       if (res?.success && Array.isArray(res?.details?.results)) {
         return res.details.results[0] || null;
@@ -63,6 +65,7 @@ export function ClientesProvider({ children }) {
       return null;
     } catch (err) {
       console.error('[CTX:CLIENTES] Error en lookup por ID', err);
+      setReady(true);
       return null;
     }
   }, []);
@@ -72,6 +75,7 @@ export function ClientesProvider({ children }) {
       value={{
         clientes,
         loading,
+        ready,
         buscarClientes, // 🔍 autocomplete
         buscarClientePorId, // 📥 lookup para poblar formulario
       }}

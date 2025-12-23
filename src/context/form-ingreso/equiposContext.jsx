@@ -13,7 +13,11 @@ const EquiposContext = createContext(null);
 export function EquiposProvider({ children }) {
   const [equipos, setEquipos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
 
+  // ======================================================
+  // 🔍 AUTOCOMPLETE
+  // ======================================================
   const buscarEquipos = useCallback(async (query) => {
     log('CTX', 'EQUIPOS', 'buscar:start', { query });
 
@@ -37,9 +41,13 @@ export function EquiposProvider({ children }) {
       setEquipos([]);
     } finally {
       setLoading(false);
+      setReady(true); // 🔴 provider ya fue tocado
     }
   }, []);
 
+  // ======================================================
+  // 🔎 LOOKUP POR ID
+  // ======================================================
   const buscarEquipoPorId = useCallback(async (id) => {
     log('CTX', 'EQUIPOS', 'lookup:start', { id });
 
@@ -50,9 +58,11 @@ export function EquiposProvider({ children }) {
       const equipo = res?.details?.results?.[0] ?? null;
       log('CTX', 'EQUIPOS', 'lookup:normalized', equipo);
 
+      setReady(true); // 🔴 lookup exitoso o no, el provider ya respondió
       return equipo;
     } catch (err) {
       console.error('[CTX:EQUIPOS] lookup error', err);
+      setReady(true);
       return null;
     }
   }, []);
@@ -63,7 +73,13 @@ export function EquiposProvider({ children }) {
 
   return (
     <EquiposContext.Provider
-      value={{ equipos, loading, buscarEquipos, buscarEquipoPorId }}
+      value={{
+        equipos,
+        loading,
+        ready, // 🟢 EXPUESTO
+        buscarEquipos,
+        buscarEquipoPorId,
+      }}
     >
       {children}
     </EquiposContext.Provider>

@@ -195,14 +195,14 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
     initialPayload?.orden?.ordenServicioUuid ??
     null;
 
-  console.log('ordenServicioUuid', ordenServicioUuid);
+  //console.log('ordenServicioUuid', ordenServicioUuid);
 
   const autosaveKey = buildIngresoAutosaveKeyScoped({
     userId: usuario?._id,
     ordenServicioUuid,
   });
 
-  console.log('Key para Local Storage construido: ', autosaveKey);
+  //console.log('Key para Local Storage construido: ', autosaveKey);
   const {
     autosave,
     autosaveReady,
@@ -237,6 +237,14 @@ export function IngresoFormProvider({ children, initialPayload = null }) {
   // ---------------------------------------------------------
   useEffect(() => {
     if (!loaded) return;
+
+    console.log('🚀 loaded === true, estados actuales:', {
+      cliente,
+      equipo,
+      tecnico,
+      orden,
+      original: originalRef.current,
+    });
 
     const saved = loadAutosave();
     if (saved && saved.timestamp) {

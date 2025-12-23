@@ -37,10 +37,14 @@ function extractRecord(res) {
   ⭐ HOOK PRINCIPAL (DEPURADO)
 ────────────────────────────────────────────────*/
 export default function useIngresoInitialLoad({ initialPayload = null }) {
-  const { buscarClientePorId } = useClientes();
-  const { buscarEquipoPorId } = useEquipos();
-  const { buscarTecnicoPorId } = useTecnicos();
-  const { buscarTipoTrabajoPorId } = useTiposTrabajo();
+  const { buscarClientePorId, ready: clientesReady } = useClientes();
+  const { buscarEquipoPorId, ready: equiposReady } = useEquipos();
+  const { buscarTecnicoPorId, ready: tecnicosReady } = useTecnicos();
+  const { buscarTipoTrabajoPorId, ready: tiposTrabajoReady } =
+    useTiposTrabajo();
+
+  const providersReady =
+    clientesReady && equiposReady && tecnicosReady && tiposTrabajoReady;
 
   const [cliente, setCliente] = useState(null);
   const [equipo, setEquipo] = useState(null);
@@ -192,6 +196,12 @@ export default function useIngresoInitialLoad({ initialPayload = null }) {
           fechaIngreso: normalizedOrden.fechaIngreso,
         },
       };
+      console.log('✅ loadPayload terminado', {
+        cliente: !!clienteObj,
+        equipo: !!normalizedEquipo,
+        tecnico: !!tecnicoObj,
+        lineas: normalizedOrden.lineasServicio.length,
+      });
     } finally {
       loadingPayloadRef.current = false;
     }
@@ -201,24 +211,56 @@ export default function useIngresoInitialLoad({ initialPayload = null }) {
     🔥 PRIMER USE EFFECT — SIMPLE
   ───────────────────────────────────────────────*/
   useEffect(() => {
-    if (initOnce.current) return;
+    console.log('🧪 [INIT EFFECT] tick', {
+      initOnce: initOnce.current,
+      initialPayload,
+    });
+
+    if (initOnce.current) {
+      console.log('⛔ [INIT EFFECT] abortado → initOnce = true');
+      return;
+    }
+
     initOnce.current = true;
+    console.log('🚩 [INIT EFFECT] initOnce marcado TRUE');
 
     (async () => {
-      if (!initialPayload) {
-        // estado vacío
-        await loadPayload({});
-        setInitialSource('empty');
-        setLoaded(true);
-        return;
-      }
+      const payload = initialPayload ?? {};
 
-      // payload inicial real
-      await loadPayload(initialPayload);
-      setInitialSource('initialPayload');
+      console.log('📦 [INIT LOAD] payload recibido', payload);
+
+      console.log('⏳ [INIT LOAD] llamando loadPayload()');
+      await loadPayload(payload);
+      console.log('✅ [INIT LOAD] loadPayload() RESUELTO');
+
+      console.log('📍 [INIT LOAD] estados justo después de loadPayload', {
+        cliente,
+        equipo,
+        tecnico,
+        orden,
+        original: originalRef.current,
+      });
+
+      const source = initialPayload ? 'initialPayload' : 'empty';
+      setInitialSource(source);
+      console.log('🏷️ [INIT LOAD] initialSource set →', source);
+
+      console.log('🟢 [INIT LOAD] setLoaded(true) llamado');
       setLoaded(true);
     })();
   }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+
+    console.log('🎯 [POST-LOAD] estado FINAL comprometido', {
+      cliente,
+      equipo,
+      tecnico,
+      orden,
+      original: originalRef.current,
+    });
+  }, [loaded]);
 
   /*───────────────────────────────────────────────
     🎁 API PÚBLICA (SIN AUTOSAVE LEGACY)

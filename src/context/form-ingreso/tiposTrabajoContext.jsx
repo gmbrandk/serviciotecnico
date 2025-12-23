@@ -1,14 +1,17 @@
-// context/TiposTrabajoContext.jsx
-import { createContext, useContext, useEffect, useState } from 'react';
 import { getTiposTrabajoService } from '@services/form-ingreso/tiposTrabajo/tiposTrabajoService';
 import { log } from '@utils/form-ingreso/log';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const TiposTrabajoContext = createContext(null);
 
 export function TiposTrabajoProvider({ children }) {
   const [tiposTrabajo, setTiposTrabajo] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
 
+  // ============================================================
+  // 📦 CARGA INICIAL
+  // ============================================================
   useEffect(() => {
     const cargar = async () => {
       try {
@@ -28,6 +31,7 @@ export function TiposTrabajoProvider({ children }) {
         setTiposTrabajo([]);
       } finally {
         setLoading(false);
+        setReady(true); // 🔴 provider completamente inicializado
       }
     };
 
@@ -35,10 +39,8 @@ export function TiposTrabajoProvider({ children }) {
   }, []);
 
   // ============================================================
-  // 🔍 Lookup por ID — ahora con API REAL
+  // 🔍 Lookup por ID — híbrido memoria + API
   // ============================================================
-  // Si recibimos un string → buscar en lista
-  // Si NO está en lista → llamar API
   const buscarTipoTrabajoPorId = async (id) => {
     if (!id) {
       console.warn('[CTX:TIPOS] ID vacío o indefinido:', id);
@@ -55,12 +57,14 @@ export function TiposTrabajoProvider({ children }) {
       const result = await service.buscarTipoTrabajoPorId(id);
 
       if (result?.success && result.details) {
+        setReady(true); // 🔴 provider respondió a lookup
         return result.details;
       }
     } catch (error) {
       console.error('[CTX:TIPOS] Error buscando tipoTrabajo por ID', error);
     }
 
+    setReady(true);
     return null;
   };
 
@@ -69,7 +73,8 @@ export function TiposTrabajoProvider({ children }) {
       value={{
         tiposTrabajo,
         loading,
-        buscarTipoTrabajoPorId, // <-- aquí queda disponible para el form
+        ready, // 🟢 EXPUESTO
+        buscarTipoTrabajoPorId,
       }}
     >
       {children}

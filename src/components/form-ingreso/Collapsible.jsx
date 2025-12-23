@@ -12,38 +12,20 @@ export default function Collapsible({
   initMode = 'auto',
   index = 0,
   visualMode = null,
-  mode: explicitMode = null, //  ✔ MODO EXPLÍCITO
+  mode: explicitMode = null,
 }) {
   const group = useCollapsibleGroup();
   const isControlledByGroup = main;
 
-  /** -----------------------------------------------------------
-   *  UNIQUE ID
-   ------------------------------------------------------------ */
-  const idRef = useRef(
-    () =>
-      `${title.replace(/\s+/g, '-').toLowerCase()}-${index}-${Math.random()
-        .toString(36)
-        .slice(2, 9)}`
-  );
-  if (typeof idRef.current === 'function') idRef.current = idRef.current();
+  const idRef = useRef(`${title.replace(/\s+/g, '-').toLowerCase()}-${index}`);
 
-  /** -----------------------------------------------------------
-   *  SHOULD START OPEN
-   ------------------------------------------------------------ */
-  const shouldStartOpen = (() => {
-    return initMode === 'expanded'
+  const shouldStartOpen =
+    initMode === 'expanded'
       ? true
       : initMode === 'collapsed' || initMode === 'none'
       ? false
-      : initMode === 'auto'
-      ? main
       : main;
-  })();
 
-  /** -----------------------------------------------------------
-   *  useCollapsible
-   ------------------------------------------------------------ */
   const {
     isOpen,
     toggle,
@@ -58,32 +40,26 @@ export default function Collapsible({
   });
 
   /** -----------------------------------------------------------
-   *  MODE RESOLUTION (la prioridad correcta)
-   ------------------------------------------------------------ */
-  const mode =
-    explicitMode || // 1️⃣ si viene desde props → PRIORIDAD MÁXIMA
-    visualMode || // 2️⃣ modo visual opcional
-    (() => {
-      // 3️⃣ inferencia automática según título
-      const t = (title || '').toLowerCase();
-      if (t.includes('cliente')) return 'cliente';
-      if (t.includes('equipo')) return 'equipo';
-      if (t.includes('orden')) return 'orden';
-      if (t.includes('líneas') || t.includes('lineas')) return 'lineaServicio';
-      return 'auto';
-    })();
+   *  SYNC INIT MODE (reacciona a cambios reales, sin pisar al usuario)
+   * ------------------------------------------------------------ */
+  useEffect(() => {
+    // Si el usuario ya interactuó, no forzamos nada
+    if (openedByUser.current) return;
 
-  /** -----------------------------------------------------------
-   *  SUMMARY
-   ------------------------------------------------------------ */
-  const summary = useSummary({
-    containerRef: contentRef,
-    mode,
-  });
+    if (shouldStartOpen !== isOpen) {
+      console.log('🧭 [Collapsible] sync initMode → setOpenInstant', {
+        title,
+        shouldStartOpen,
+        isOpen,
+      });
 
-  /** -----------------------------------------------------------
-   *  REGISTER IN GROUP
-   ------------------------------------------------------------ */
+      setOpenInstant(shouldStartOpen);
+    }
+  }, [shouldStartOpen, isOpen, setOpenInstant, openedByUser, title]);
+
+  /* ======================================================
+     REGISTER IN GROUP
+  ====================================================== */
   useLayoutEffect(() => {
     if (!isControlledByGroup) return;
 
@@ -93,20 +69,11 @@ export default function Collapsible({
       main,
       index,
     });
-  }, [title, index, main, isControlledByGroup, group, setOpen, openedByUser]);
+  }, [group, index, main, isControlledByGroup, setOpen, openedByUser]);
 
-  /** -----------------------------------------------------------
-   *  SYNC INIT MODE (NO animación)
-   ------------------------------------------------------------ */
-  useEffect(() => {
-    if (shouldStartOpen !== isOpen) {
-      setOpenInstant(shouldStartOpen);
-    }
-  }, [initMode]);
-
-  /** -----------------------------------------------------------
-   *  REGISTER OPEN EVENTS
-   ------------------------------------------------------------ */
+  /* ======================================================
+     REGISTER OPEN EVENTS
+  ====================================================== */
   const didMount = useRef(false);
 
   useEffect(() => {
@@ -115,37 +82,28 @@ export default function Collapsible({
       return;
     }
 
-    if (isControlledByGroup && isOpen && openedByUser.current) {
+    if (isControlledByGroup && isOpen && openedByUser.current === true) {
+      console.log('📤 [Collapsible] apertura manual', title);
       group.registerOpen(idRef.current, index);
     }
-  }, [isOpen, isControlledByGroup, group, index]);
+  }, [isOpen, isControlledByGroup, group, index, title]);
 
-  /** -----------------------------------------------------------
-   *  AUTO-OPEN ON FOCUS (sin animación)
-   ------------------------------------------------------------ */
+  /* ======================================================
+     AUTO-OPEN ON FOCUS
+  ====================================================== */
   const handleFocusIn = () => {
     if (!main) return;
-
     if (!isOpen) setOpenInstant(true);
     if (isControlledByGroup) group.registerOpen(idRef.current, index);
   };
 
-  /** -----------------------------------------------------------
-   *  CLICK HANDLER ANTI-SPAM
-   ------------------------------------------------------------ */
-  let lastToggle = useRef(0);
-
+  /* ======================================================
+     CLICK HANDLER — SIN BLOQUEO JS
+  ====================================================== */
   const handleClick = () => {
-    const now = Date.now();
-    if (now - lastToggle.current < 350) return;
-    lastToggle.current = now;
-
-    if (!isAnimating()) toggle();
+    toggle();
   };
 
-  /** -----------------------------------------------------------
-   *  CLASSES
-   ------------------------------------------------------------ */
   const fieldsetClass = [
     fieldsetStyle.collapsible,
     isOpen ? fieldsetStyle.expanded : fieldsetStyle.collapsed,
@@ -161,9 +119,23 @@ export default function Collapsible({
     .filter(Boolean)
     .join(' ');
 
-  /** -----------------------------------------------------------
-   *  RENDER
-   ------------------------------------------------------------ */
+  const mode =
+    explicitMode ||
+    visualMode ||
+    (() => {
+      const t = (title || '').toLowerCase();
+      if (t.includes('cliente')) return 'cliente';
+      if (t.includes('equipo')) return 'equipo';
+      if (t.includes('orden')) return 'orden';
+      if (t.includes('líneas') || t.includes('lineas')) return 'lineaServicio';
+      return 'auto';
+    })();
+
+  const summary = useSummary({
+    containerRef: contentRef,
+    mode,
+  });
+
   return (
     <fieldset
       className={fieldsetClass}
