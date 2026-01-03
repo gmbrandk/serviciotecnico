@@ -46,6 +46,31 @@ const IngresoPage = () => {
     );
   }
 
+  const handleSubmitIngreso = useCallback(
+    async (formState) => {
+      const payload = buildOrdenPayload({
+        ...formState,
+        ordenServicioUuid: ordenServicioUuidRef.current,
+      });
+
+      const res = await crearOrdenServicio(payload);
+      if (!res?.success) return;
+
+      // ☠️ limpiar autosave al guardar OK
+      killOrdenServicioLocal({
+        userId: usuario._id,
+        ordenServicioUuid: ordenServicioUuidRef.current,
+      });
+
+      const ordenCreada = res.details?.orden;
+
+      navigate(`/dashboard/orden-servicio/${ordenCreada._id}`, {
+        state: { orden: ordenCreada },
+      });
+    },
+    [crearOrdenServicio, usuario?._id, navigate]
+  );
+
   // ☠️ CANCELAR — muerte del UUID
   const handleCancel = useCallback(() => {
     const ok = window.confirm(
@@ -81,6 +106,20 @@ const IngresoPage = () => {
     }
   }, [payloadFromWizard]);
 
+  //OJITO REVISAR AQUI PORQUE AUNQUE SALE MODO WIZARD NO SE ESTA RECIBIENDO LA DATA
+  // // 🧠 Inicialización unificada: Wizard o Panel
+  // useEffect(() => {
+  //   const mode = payloadFromWizard ? 'wizard' : 'panel';
+
+  //   const initial = buildIngresoInitialState({
+  //     mode,
+  //     payloadFromWizard,
+  //     ordenServicioUuid: ordenServicioUuidRef.current,
+  //   });
+
+  //   setInitialData(initial);
+  // }, [payloadFromWizard]);
+
   // ⏳ Auth
   if (cargando) {
     return <p style={{ padding: '2rem' }}>Cargando autenticación...</p>;
@@ -101,28 +140,7 @@ const IngresoPage = () => {
         ordenServicioUuid={ordenServicioUuidRef.current}
         role={usuario.role}
         onCancel={handleCancel}
-        onSubmit={async (data) => {
-          const payload = buildOrdenPayload({
-            ...data,
-            ordenServicioUuid: ordenServicioUuidRef.current,
-          });
-
-          const res = await crearOrdenServicio(payload);
-          if (!res.success) return;
-
-          // ☠️ MUERTE AL GUARDAR OK
-          killOrdenServicioLocal({
-            userId: usuario._id,
-            ordenServicioUuid: ordenServicioUuidRef.current,
-          });
-
-          const ordenCreada = res.details?.orden;
-
-          // 🚀 Navegar a la OS creada (el Context limpia autosave)
-          navigate(`/dashboard/orden-servicio/${ordenCreada._id}`, {
-            state: { orden: ordenCreada },
-          });
-        }}
+        onSubmit={handleSubmitIngreso}
       />
     </div>
   );

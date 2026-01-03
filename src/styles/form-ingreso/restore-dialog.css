@@ -1,0 +1,103 @@
+/* Overlay */
+.ingreso-restore-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 24px;
+}
+
+/* Modal */
+.ingreso-restore-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 500px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  animation: ingreso-pop-in 0.2s ease-out;
+}
+
+/* Header */
+.ingreso-restore-header {
+  padding: 20px 24px 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.ingreso-restore-header h3 {
+  margin: 0;
+}
+
+.ingreso-restore-header p {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #444;
+}
+
+/* Content */
+.ingreso-restore-content {
+  padding: 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ingreso-restore-content hr {
+  margin: 16px 0;
+}
+
+.ingreso-restore-diff {
+  margin: 10px 0 0 18px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Footer */
+.ingreso-restore-footer {
+  border-top: 1px solid #e5e5e5;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #fafafa;
+}
+
+.ingreso-diff-sublist {
+  margin-top: 6px;
+}
+
+/* Buttons */
+.ingreso-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.ingreso-btn-discard {
+  background: #d0d0d0;
+}
+
+.ingreso-btn-restore {
+  background: #4caf50;
+  color: #ffffff;
+}
+
+/* Animations */
+@keyframes ingreso-pop-in {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

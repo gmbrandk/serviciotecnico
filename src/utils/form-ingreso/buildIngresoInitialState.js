@@ -12,6 +12,7 @@ export function buildIngresoInitialState({
 
   // 🧱 Shape base REAL (alineado con backend)
   const baseState = {
+    mode,
     ordenServicioUuid,
     representanteId: null,
     equipoId: null,
@@ -26,6 +27,7 @@ export function buildIngresoInitialState({
   // 🧭 Wizard → adaptar sobre el mismo shape
   if (mode === 'wizard' && payloadFromWizard) {
     return snapshotWizardPayload({
+      mode,
       baseState,
       payloadFromWizard,
     });

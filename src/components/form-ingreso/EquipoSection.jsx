@@ -1,76 +1,47 @@
-// src\components\form-ingreso\EquipoSection.jsx
-import { Autocomplete } from '@components/form-ingreso/Autocomplete.jsx';
-import Collapsible from '@components/form-ingreso/Collapsible.jsx';
-import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext.jsx';
+import { Autocomplete } from '@components/form-ingreso/Autocomplete';
+import Collapsible from '@components/form-ingreso/Collapsible';
+import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext';
+import { useEquipoNroSerie } from '@hooks/form-ingreso/equipo/useEquipoNroSerie';
 import { useAutocompleteEquipo } from '@hooks/form-ingreso/useAutocompleteEquipo';
 import { inputsStyles as equipoSectionStyles } from '@styles/form-ingreso';
-import { useEffect } from 'react';
-
-/* ============================================================
-   LOG infra
-============================================================ */
-let __LOG_SEQ__ = 0;
-const log = (tag, who, why, payload = {}) => {
-  __LOG_SEQ__ += 1;
-  console.log(
-    `%c[${__LOG_SEQ__}] ${tag} | ${who} | ${why}`,
-    'color:#fc6;font-weight:bold',
-    payload
-  );
-};
 
 export function EquipoSection() {
   const { equipo, setEquipo } = useIngresoForm();
 
+  // 🧠 Dominio
+  const { nroSerie, onChangeNroSerie, setNroSerie, lastActionRef } =
+    useEquipoNroSerie();
+
+  // 🎨 UX
   const {
-    query,
     resultados,
-    selectedEquipo,
-    seleccionarEquipo,
-    onQueryChange,
+    isOpen,
     abrirResultados,
     cerrarResultados,
-    isOpen,
-  } = useAutocompleteEquipo(equipo);
+    seleccionarEquipo,
+  } = useAutocompleteEquipo({
+    query: nroSerie,
+    setQuery: setNroSerie,
+    sourceRef: lastActionRef,
+  });
 
-  /* ======================================================
-     Sync hook → provider (BLINDADO)
-  ====================================================== */
-  useEffect(() => {
-    log(
-      'SYNC',
-      'UI',
-      'propagate:json',
-      JSON.stringify(selectedEquipo, null, 2)
-    );
+  const handleSelect = async (item) => {
+    const full = await seleccionarEquipo(item);
+    if (!full?._id) return;
 
-    // 🚫 no propagar estados no seleccionados
-    if (!selectedEquipo?._id) {
-      log('SYNC', 'UI', 'skip-propagation');
-      return;
-    }
-
-    log(
-      'SYNC',
-      'UI',
-      'propagate:json',
-      JSON.stringify(selectedEquipo, null, 2)
-    );
-
-    setEquipo(selectedEquipo);
-  }, [selectedEquipo, setEquipo]);
-
-  /* ======================================================
-     Edición manual (solo local)
-  ====================================================== */
-  const handleChange = (field, value) => {
-    log('EDIT', 'UI', 'manual-field-change', { field, value });
-
-    // edición SOLO local → provider se entera vía effect
-    seleccionarEquipo({
-      ...selectedEquipo,
-      [field]: value,
+    setEquipo({
+      ...full,
+      isNew: false,
     });
+  };
+
+  const activeEquipo = equipo;
+
+  const updateField = (field, value) => {
+    setEquipo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   return (
@@ -78,16 +49,16 @@ export function EquipoSection() {
       <div className="row">
         {/* AUTOCOMPLETE DE EQUIPO */}
         <Autocomplete
-          label="N° de Serie (buscar equipo)"
-          placeholder="Ingresa N° de Serie, marca o modelo..."
+          label="N° de Serie"
+          placeholder="Buscar o crear equipo..."
           inputName="nroSerie"
-          query={query}
-          onChange={onQueryChange}
+          query={nroSerie}
+          onChange={onChangeNroSerie}
           resultados={resultados}
           isOpen={isOpen}
-          onSelect={seleccionarEquipo}
+          onFocus={abrirResultados}
           cerrarResultados={cerrarResultados}
-          abrirResultados={abrirResultados}
+          onSelect={handleSelect}
           renderItem={(e) => (
             <>
               <strong>{e.nroSerie}</strong>
@@ -103,8 +74,8 @@ export function EquipoSection() {
           <input
             type="text"
             name="tipo"
-            value={selectedEquipo?.tipo || ''}
-            onChange={(e) => handleChange('tipo', e.target.value)}
+            value={activeEquipo?.tipo || ''}
+            onChange={(e) => updateField('tipo', e.target.value)}
             className={equipoSectionStyles.inputField}
           />
         </div>
@@ -114,8 +85,8 @@ export function EquipoSection() {
           <input
             type="text"
             name="marca"
-            value={selectedEquipo?.marca || ''}
-            onChange={(e) => handleChange('marca', e.target.value)}
+            value={activeEquipo?.marca || ''}
+            onChange={(e) => updateField('tipo', e.target.value)}
             className={equipoSectionStyles.inputField}
           />
         </div>
@@ -127,8 +98,8 @@ export function EquipoSection() {
           <input
             type="text"
             name="modelo"
-            value={selectedEquipo?.modelo || ''}
-            onChange={(e) => handleChange('modelo', e.target.value)}
+            value={activeEquipo?.modelo || ''}
+            onChange={(e) => updateField('tipo', e.target.value)}
             className={equipoSectionStyles.inputField}
           />
         </div>
@@ -138,8 +109,8 @@ export function EquipoSection() {
           <input
             type="text"
             name="sku"
-            value={selectedEquipo?.sku || ''}
-            onChange={(e) => handleChange('sku', e.target.value)}
+            value={activeEquipo?.sku || ''}
+            onChange={(e) => updateField('tipo', e.target.value)}
             className={equipoSectionStyles.inputField}
           />
         </div>
@@ -149,8 +120,8 @@ export function EquipoSection() {
           <input
             type="text"
             name="macAddress"
-            value={selectedEquipo?.macAddress || ''}
-            onChange={(e) => handleChange('macAddress', e.target.value)}
+            value={activeEquipo?.macAddress || ''}
+            onChange={(e) => updateField('tipo', e.target.value)}
             className={equipoSectionStyles.inputField}
           />
         </div>
@@ -160,8 +131,8 @@ export function EquipoSection() {
           <input
             type="text"
             name="imei"
-            value={selectedEquipo?.imei || ''}
-            onChange={(e) => handleChange('imei', e.target.value)}
+            value={activeEquipo?.imei || ''}
+            onChange={(e) => updateField('tipo', e.target.value)}
             className={equipoSectionStyles.inputField}
           />
         </div>
@@ -180,8 +151,8 @@ export function EquipoSection() {
             <input
               type="text"
               name="procesador"
-              value={selectedEquipo?.procesador || ''}
-              onChange={(e) => handleChange('procesador', e.target.value)}
+              value={activeEquipo?.procesador || ''}
+              onChange={(e) => updateField('tipo', e.target.value)}
               className={equipoSectionStyles.inputField}
             />
           </div>
@@ -191,8 +162,8 @@ export function EquipoSection() {
             <input
               type="text"
               name="ram"
-              value={selectedEquipo?.ram || ''}
-              onChange={(e) => handleChange('ram', e.target.value)}
+              value={activeEquipo?.ram || ''}
+              onChange={(e) => updateField('tipo', e.target.value)}
               className={equipoSectionStyles.inputField}
             />
           </div>
@@ -206,8 +177,8 @@ export function EquipoSection() {
             <input
               type="text"
               name="almacenamiento"
-              value={selectedEquipo?.almacenamiento || ''}
-              onChange={(e) => handleChange('almacenamiento', e.target.value)}
+              value={activeEquipo?.almacenamiento || ''}
+              onChange={(e) => updateField('tipo', e.target.value)}
               className={equipoSectionStyles.inputField}
             />
           </div>
@@ -217,8 +188,8 @@ export function EquipoSection() {
             <input
               type="text"
               name="gpu"
-              value={selectedEquipo?.gpu || ''}
-              onChange={(e) => handleChange('gpu', e.target.value)}
+              value={activeEquipo?.gpu || ''}
+              onChange={(e) => updateField('tipo', e.target.value)}
               className={equipoSectionStyles.inputField}
             />
           </div>

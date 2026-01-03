@@ -1,69 +1,52 @@
 import { Autocomplete } from '@components/form-ingreso/Autocomplete';
 import { useIngresoForm } from '@context/form-ingreso/IngresoFormContext';
+import { useClienteDni } from '@hooks/form-ingreso/cliente/useClienteDni';
 import { useAutocompleteCliente } from '@hooks/form-ingreso/useAutocompleteCliente';
 import { inputsStyles as clienteSectionStyles } from '@styles/form-ingreso';
-import { useEffect } from 'react';
-
-let __LOG_SEQ__ = 0;
-const log = (tag, who, why, payload = {}) => {
-  __LOG_SEQ__ += 1;
-  console.log(
-    `%c[${__LOG_SEQ__}] ${tag} | ${who} | ${why}`,
-    'color:#f90;font-weight:bold',
-    payload
-  );
-};
+import { clienteLog } from '../../utils/debug/clienteLogger';
 
 export function ClienteSection() {
   const { cliente, setCliente } = useIngresoForm();
 
+  // 🧠 Dominio
+  const { dni, onChangeDni, setDni, lastActionRef } = useClienteDni();
+
+  // 🎨 UX
   const {
-    query,
     resultados,
-    selectedCliente,
-    seleccionarCliente,
     isOpen,
-    onQueryChange,
     abrirResultados,
     cerrarResultados,
-  } = useAutocompleteCliente(cliente);
+    seleccionarCliente,
+  } = useAutocompleteCliente({
+    query: dni,
+    setQuery: setDni,
+    sourceRef: lastActionRef,
+  });
 
-  // ============================================================
-  // Sync hook → provider
-  // ============================================================
-  useEffect(() => {
-    // 🚫 no propagar estados "no seleccionados"
-    if (!selectedCliente || !selectedCliente._id) return;
+  const handleSelect = async (item) => {
+    const full = await seleccionarCliente(item);
+    if (!full?._id) return;
 
-    setCliente(selectedCliente);
-  }, [selectedCliente, setCliente]);
-
-  const handleFieldChange = (field, value) => {
-    log('SELECTED', 'UI', 'manual-field-change', {
-      field,
-      value,
-    });
-
-    setCliente((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    clienteLog('CONFIRM', 'UI', 'cliente-existente', full);
+    setCliente(full);
   };
+
+  const activeCliente = cliente;
 
   return (
     <>
       <div className="row">
         <Autocomplete
           label="DNI"
-          placeholder="Buscar cliente por DNI o nombre..."
           inputName="dni"
-          query={query}
-          onChange={onQueryChange}
-          onFocus={abrirResultados}
+          query={dni}
+          onChange={onChangeDni}
           resultados={resultados}
           isOpen={isOpen}
-          onSelect={seleccionarCliente}
+          onFocus={abrirResultados}
           cerrarResultados={cerrarResultados}
+          onSelect={handleSelect}
           renderItem={(c) => (
             <>
               <strong>
@@ -78,8 +61,10 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Nombres</label>
           <input
-            value={selectedCliente.nombres}
-            onChange={(e) => handleFieldChange('nombres', e.target.value)}
+            value={activeCliente?.nombres ?? ''}
+            onChange={(e) =>
+              setCliente((prev) => ({ ...prev, nombres: e.target.value }))
+            }
             className={clienteSectionStyles.inputField}
           />
         </div>
@@ -87,8 +72,10 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Apellidos</label>
           <input
-            value={selectedCliente.apellidos}
-            onChange={(e) => handleFieldChange('apellidos', e.target.value)}
+            value={activeCliente?.apellidos ?? ''}
+            onChange={(e) =>
+              setCliente((prev) => ({ ...prev, apellidos: e.target.value }))
+            }
             className={clienteSectionStyles.inputField}
           />
         </div>
@@ -98,8 +85,10 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Teléfono</label>
           <input
-            value={selectedCliente.telefono}
-            onChange={(e) => handleFieldChange('telefono', e.target.value)}
+            value={activeCliente?.telefono ?? ''}
+            onChange={(e) =>
+              setCliente((prev) => ({ ...prev, telefono: e.target.value }))
+            }
             className={clienteSectionStyles.inputField}
           />
         </div>
@@ -107,8 +96,10 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Email</label>
           <input
-            value={selectedCliente.email}
-            onChange={(e) => handleFieldChange('email', e.target.value)}
+            value={activeCliente?.email ?? ''}
+            onChange={(e) =>
+              setCliente((prev) => ({ ...prev, email: e.target.value }))
+            }
             className={clienteSectionStyles.inputField}
           />
         </div>
@@ -116,8 +107,10 @@ export function ClienteSection() {
         <div className="col">
           <label className={clienteSectionStyles.inputLabel}>Dirección</label>
           <input
-            value={selectedCliente.direccion}
-            onChange={(e) => handleFieldChange('direccion', e.target.value)}
+            value={activeCliente?.direccion ?? ''}
+            onChange={(e) =>
+              setCliente((prev) => ({ ...prev, direccion: e.target.value }))
+            }
             className={clienteSectionStyles.inputField}
           />
         </div>

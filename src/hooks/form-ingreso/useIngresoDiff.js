@@ -28,6 +28,29 @@ export default function useIngresoDiff({
     return out;
   }
 
+  function buildEntityDiff({ actual, original, hasMeaningfulData }) {
+    if (!original && hasMeaningfulData(actual)) {
+      return {
+        isNew: true,
+        fields: Object.keys(actual).map((k) => ({
+          field: k,
+          old: undefined,
+          new: actual[k],
+        })),
+      };
+    }
+
+    const fields = diffObjectFields(actual ?? {}, original ?? {});
+    return fields.length > 0 ? { fields } : null;
+  }
+
+  function hasMeaningfulData(obj) {
+    if (!obj || typeof obj !== 'object') return false;
+    return Object.values(obj).some(
+      (v) => v !== null && v !== undefined && v !== ''
+    );
+  }
+
   function diffObjectFields(actual = {}, original = {}, opts = {}) {
     const out = [];
     const keys = new Set([
@@ -69,12 +92,57 @@ export default function useIngresoDiff({
   }
 
   const buildDiff = useCallback(() => {
+    console.groupCollapsed('[DIFF] buildDiff');
+    console.log('cliente actual:', cliente);
+    console.log('orig.cliente:', originalRef.current?.cliente);
+    console.log(
+      'orig.cliente === undefined?',
+      originalRef.current?.cliente === undefined
+    );
+    console.log(
+      'orig.cliente === null?',
+      originalRef.current?.cliente === null
+    );
+    console.log(
+      'orig.cliente keys:',
+      originalRef.current?.cliente
+        ? Object.keys(originalRef.current.cliente)
+        : 'n/a'
+    );
+    console.log('hasMeaningfulData(cliente):', hasMeaningfulData(cliente));
+
     const diff = {};
     const orig = originalRef.current || {};
 
     // cliente
-    const clienteFields = diffObjectFields(cliente ?? {}, orig.cliente ?? {});
-    if (clienteFields.length > 0) diff.cliente = { fields: clienteFields };
+    const origCliente = orig.cliente;
+
+    console.log('[DIFF][cliente] decision', {
+      origCliente: originalRef.current?.cliente,
+      isFalsy: !originalRef.current?.cliente,
+      isEmptyObject:
+        originalRef.current?.cliente &&
+        Object.keys(originalRef.current.cliente).length === 0,
+      hasMeaningfulData: hasMeaningfulData(cliente),
+    });
+
+    if (!origCliente && hasMeaningfulData(cliente)) {
+      diff.cliente = {
+        fields: Object.keys(cliente).map((k) => ({
+          field: k,
+          old: undefined,
+          new: cliente[k],
+        })),
+        isNew: true,
+      };
+    } else {
+      const clienteFields = diffObjectFields(cliente ?? {}, origCliente ?? {});
+      if (clienteFields.length > 0) {
+        diff.cliente = { fields: clienteFields };
+      }
+    }
+
+    console.log('[DIFF][cliente] diff result:', diff.cliente);
 
     // equipo
     const equipoFields = diffObjectFields(equipo ?? {}, orig.equipo ?? {});
@@ -163,6 +231,10 @@ export default function useIngresoDiff({
     }
 
     if (Object.keys(ordenDiff).length > 0) diff.orden = ordenDiff;
+
+    console.log('[DIFF] final diff keys:', Object.keys(diff));
+    console.log('[DIFF] final diff:', diff);
+    console.groupEnd();
 
     return diff;
   }, [cliente, equipo, tecnico, orden, originalRef, tiposTrabajo]);

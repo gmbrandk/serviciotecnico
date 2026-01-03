@@ -1,0 +1,240 @@
+<div class="flex w-full flex-col gap-1 empty:hidden first:pt-[1px]">
+  <div
+    class="markdown prose dark:prose-invert w-full break-words dark markdown-new-styling"
+  >
+    <p data-start="0" data-end="111">
+      Perfecto 👍 usando
+      <strong data-start="19" data-end="30">MongoDB</strong> (y casi seguro
+      <strong data-start="46" data-end="58">Mongoose</strong>), el patrón puede
+      quedar
+      <strong data-start="84" data-end="110">muy elegante y robusto</strong>.
+    </p>
+    <p data-start="113" data-end="203">
+      Te dejo la
+      <strong data-start="124" data-end="145">forma recomendada</strong> para
+      frontend <strong data-start="160" data-end="165">y</strong> cómo
+      consumirlo en backend sin dolor.
+    </p>
+    <hr data-start="205" data-end="208" />
+    <h2 data-start="210" data-end="238">✅ Patrón ideal para Mongo</h2>
+    <h3 data-start="240" data-end="249">Regla</h3>
+    <blockquote data-start="250" data-end="345">
+      <p data-start="252" data-end="345">
+        <strong data-start="252" data-end="291"
+          >Si viene un <code data-start="266" data-end="276">ObjectId</code> →
+          relacionar</strong
+        ><br data-start="291" data-end="294" />
+        <strong data-start="296" data-end="345"
+          >Si viene un objeto → crear y luego relacionar</strong
+        >
+      </p>
+    </blockquote>
+    <hr data-start="347" data-end="350" />
+    <h2 data-start="352" data-end="395">
+      1️⃣ Frontend (versión final recomendada)
+    </h2>
+    <h3 data-start="397" data-end="416">Helper genérico</h3>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="418"
+      data-end="644"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-comment">// utils/buildEntityPayload.js</span></span><span>
+</span><span><span class="hljs-keyword">export</span></span><span> </span><span><span class="hljs-keyword">function</span></span><span> </span><span><span class="hljs-title function_">buildEntityPayload</span></span><span>(</span><span><span class="hljs-params">entity</span></span><span>) {
+  </span><span><span class="hljs-keyword">if</span></span><span> (!entity) </span><span><span class="hljs-keyword">return</span></span><span> </span><span><span class="hljs-literal">null</span></span><span>;
+
+  </span><span><span class="hljs-comment">// Si ya existe en DB</span></span><span>
+  </span><span><span class="hljs-keyword">if</span></span><span> (entity.</span><span><span class="hljs-property">_id</span></span><span>) </span><span><span class="hljs-keyword">return</span></span><span> entity.</span><span><span class="hljs-property">_id</span></span><span>;
+
+  </span><span><span class="hljs-comment">// Si es nuevo</span></span><span>
+  </span><span><span class="hljs-keyword">return</span></span><span> {
+    ...entity,
+  };
+}
+</span></span></code></div></div></pre>
+    <h3 data-start="646" data-end="666">Payload de Orden</h3>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="668"
+      data-end="1435"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-keyword">export</span></span><span> </span><span><span class="hljs-keyword">function</span></span><span> </span><span><span class="hljs-title function_">buildOrdenPayload</span></span><span>(</span><span><span class="hljs-params">formState = {}</span></span><span>) {
+  </span><span><span class="hljs-keyword">const</span></span><span> { cliente, equipo, tecnico, orden = {} } = formState;
+
+  </span><span><span class="hljs-keyword">const</span></span><span> {
+    lineasServicio = [],
+    total = </span><span><span class="hljs-number">0</span></span><span>,
+    fechaIngreso = </span><span><span class="hljs-keyword">new</span></span><span> </span><span><span class="hljs-title class_">Date</span></span><span>().</span><span><span class="hljs-title function_">toISOString</span></span><span>(),
+    diagnosticoCliente = </span><span><span class="hljs-string">''</span></span><span>,
+    observaciones = </span><span><span class="hljs-string">''</span></span><span>,
+  } = orden;
+
+  </span><span><span class="hljs-keyword">return</span></span><span> {
+    </span><span><span class="hljs-attr">cliente</span></span><span>: </span><span><span class="hljs-title function_">buildEntityPayload</span></span><span>(cliente),
+    </span><span><span class="hljs-attr">equipo</span></span><span>: </span><span><span class="hljs-title function_">buildEntityPayload</span></span><span>(equipo),
+    </span><span><span class="hljs-attr">tecnico</span></span><span>: </span><span><span class="hljs-title function_">buildEntityPayload</span></span><span>(tecnico),
+
+    </span><span><span class="hljs-attr">lineasServicio</span></span><span>: lineasServicio.</span><span><span class="hljs-title function_">map</span></span><span>(</span><span><span class="hljs-function">(<span class="hljs-params">l</span></span></span><span>) =&gt; ({
+      </span><span><span class="hljs-attr">tipoTrabajo</span></span><span>: </span><span><span class="hljs-title function_">buildEntityPayload</span></span><span>(l?.</span><span><span class="hljs-property">tipoTrabajo</span></span><span>),
+      </span><span><span class="hljs-attr">descripcion</span></span><span>: l?.</span><span><span class="hljs-property">descripcion</span></span><span> ?? </span><span><span class="hljs-string">''</span></span><span>,
+      </span><span><span class="hljs-attr">precioUnitario</span></span><span>: </span><span><span class="hljs-title class_">Number</span></span><span>(l?.</span><span><span class="hljs-property">precioUnitario</span></span><span> ?? </span><span><span class="hljs-number">0</span></span><span>),
+      </span><span><span class="hljs-attr">cantidad</span></span><span>: </span><span><span class="hljs-title class_">Number</span></span><span>(l?.</span><span><span class="hljs-property">cantidad</span></span><span> ?? </span><span><span class="hljs-number">1</span></span><span>),
+    })),
+
+    </span><span><span class="hljs-attr">total</span></span><span>: </span><span><span class="hljs-title class_">Number</span></span><span>(total),
+    fechaIngreso,
+    diagnosticoCliente,
+    observaciones,
+  };
+}
+</span></span></code></div></div></pre>
+    <hr data-start="1437" data-end="1440" />
+    <h2 data-start="1442" data-end="1480">
+      2️⃣ Backend con Mongoose (clave 🔥)
+    </h2>
+    <h3 data-start="1482" data-end="1511">Helper para resolver refs</h3>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="1513"
+      data-end="1765"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-keyword">async</span></span><span> </span><span><span class="hljs-keyword">function</span></span><span> </span><span><span class="hljs-title function_">resolveRef</span></span><span>(</span><span><span class="hljs-params">Model, payload</span></span><span>) {
+  </span><span><span class="hljs-keyword">if</span></span><span> (!payload) </span><span><span class="hljs-keyword">return</span></span><span> </span><span><span class="hljs-literal">null</span></span><span>;
+
+  </span><span><span class="hljs-comment">// Ya existe</span></span><span>
+  </span><span><span class="hljs-keyword">if</span></span><span> (</span><span><span class="hljs-keyword">typeof</span></span><span> payload === </span><span><span class="hljs-string">'string'</span></span><span> || payload.</span><span><span class="hljs-property">_id</span></span><span>) {
+    </span><span><span class="hljs-keyword">return</span></span><span> payload;
+  }
+
+  </span><span><span class="hljs-comment">// Es nuevo</span></span><span>
+  </span><span><span class="hljs-keyword">const</span></span><span> doc = </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title class_">Model</span></span><span>.</span><span><span class="hljs-title function_">create</span></span><span>(payload);
+  </span><span><span class="hljs-keyword">return</span></span><span> doc.</span><span><span class="hljs-property">_id</span></span><span>;
+}
+</span></span></code></div></div></pre>
+    <hr data-start="1767" data-end="1770" />
+    <h2 data-start="1772" data-end="1800">3️⃣ Uso en el controlador</h2>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="1802"
+      data-end="2557"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-keyword">const</span></span><span> clienteId = </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title function_">resolveRef</span></span><span>(</span><span><span class="hljs-title class_">ClienteModel</span></span><span>, req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">cliente</span></span><span>);
+</span><span><span class="hljs-keyword">const</span></span><span> equipoId = </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title function_">resolveRef</span></span><span>(</span><span><span class="hljs-title class_">EquipoModel</span></span><span>, req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">equipo</span></span><span>);
+</span><span><span class="hljs-keyword">const</span></span><span> tecnicoId = </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title function_">resolveRef</span></span><span>(</span><span><span class="hljs-title class_">TecnicoModel</span></span><span>, req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">tecnico</span></span><span>);
+
+</span><span><span class="hljs-keyword">const</span></span><span> lineasServicio = </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title class_">Promise</span></span><span>.</span><span><span class="hljs-title function_">all</span></span><span>(
+  req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">lineasServicio</span></span><span>.</span><span><span class="hljs-title function_">map</span></span><span>(</span><span><span class="hljs-title function_">async</span></span><span> (l) =&gt; ({
+    </span><span><span class="hljs-attr">tipoTrabajo</span></span><span>: </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title function_">resolveRef</span></span><span>(</span><span><span class="hljs-title class_">TipoTrabajoModel</span></span><span>, l.</span><span><span class="hljs-property">tipoTrabajo</span></span><span>),
+    </span><span><span class="hljs-attr">descripcion</span></span><span>: l.</span><span><span class="hljs-property">descripcion</span></span><span>,
+    </span><span><span class="hljs-attr">precioUnitario</span></span><span>: l.</span><span><span class="hljs-property">precioUnitario</span></span><span>,
+    </span><span><span class="hljs-attr">cantidad</span></span><span>: l.</span><span><span class="hljs-property">cantidad</span></span><span>,
+  }))
+);
+
+</span><span><span class="hljs-keyword">const</span></span><span> orden = </span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title class_">OrdenModel</span></span><span>.</span><span><span class="hljs-title function_">create</span></span><span>({
+  </span><span><span class="hljs-attr">cliente</span></span><span>: clienteId,
+  </span><span><span class="hljs-attr">equipo</span></span><span>: equipoId,
+  </span><span><span class="hljs-attr">tecnico</span></span><span>: tecnicoId,
+  lineasServicio,
+  </span><span><span class="hljs-attr">total</span></span><span>: req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">total</span></span><span>,
+  </span><span><span class="hljs-attr">fechaIngreso</span></span><span>: req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">fechaIngreso</span></span><span>,
+  </span><span><span class="hljs-attr">diagnosticoCliente</span></span><span>: req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">diagnosticoCliente</span></span><span>,
+  </span><span><span class="hljs-attr">observaciones</span></span><span>: req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">observaciones</span></span><span>,
+});
+</span></span></code></div></div></pre>
+    <hr data-start="2559" data-end="2562" />
+    <h2 data-start="2564" data-end="2597">4️⃣ Esquema Mongoose (ejemplo)</h2>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="2599"
+      data-end="3110"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-keyword">const</span></span><span> </span><span><span class="hljs-title class_">OrdenSchema</span></span><span> = </span><span><span class="hljs-keyword">new</span></span><span> </span><span><span class="hljs-title class_">Schema</span></span><span>({
+  </span><span><span class="hljs-attr">cliente</span></span><span>: { </span><span><span class="hljs-attr">type</span></span><span>: </span><span><span class="hljs-title class_">Schema</span></span><span>.</span><span><span class="hljs-property">Types</span></span><span>.</span><span><span class="hljs-property">ObjectId</span></span><span>, </span><span><span class="hljs-attr">ref</span></span><span>: </span><span><span class="hljs-string">'Cliente'</span></span><span> },
+  </span><span><span class="hljs-attr">equipo</span></span><span>: { </span><span><span class="hljs-attr">type</span></span><span>: </span><span><span class="hljs-title class_">Schema</span></span><span>.</span><span><span class="hljs-property">Types</span></span><span>.</span><span><span class="hljs-property">ObjectId</span></span><span>, </span><span><span class="hljs-attr">ref</span></span><span>: </span><span><span class="hljs-string">'Equipo'</span></span><span> },
+  </span><span><span class="hljs-attr">tecnico</span></span><span>: { </span><span><span class="hljs-attr">type</span></span><span>: </span><span><span class="hljs-title class_">Schema</span></span><span>.</span><span><span class="hljs-property">Types</span></span><span>.</span><span><span class="hljs-property">ObjectId</span></span><span>, </span><span><span class="hljs-attr">ref</span></span><span>: </span><span><span class="hljs-string">'Tecnico'</span></span><span> },
+
+  </span><span><span class="hljs-attr">lineasServicio</span></span><span>: [
+    {
+      </span><span><span class="hljs-attr">tipoTrabajo</span></span><span>: { </span><span><span class="hljs-attr">type</span></span><span>: </span><span><span class="hljs-title class_">Schema</span></span><span>.</span><span><span class="hljs-property">Types</span></span><span>.</span><span><span class="hljs-property">ObjectId</span></span><span>, </span><span><span class="hljs-attr">ref</span></span><span>: </span><span><span class="hljs-string">'TipoTrabajo'</span></span><span> },
+      </span><span><span class="hljs-attr">descripcion</span></span><span>: </span><span><span class="hljs-title class_">String</span></span><span>,
+      </span><span><span class="hljs-attr">precioUnitario</span></span><span>: </span><span><span class="hljs-title class_">Number</span></span><span>,
+      </span><span><span class="hljs-attr">cantidad</span></span><span>: </span><span><span class="hljs-title class_">Number</span></span><span>,
+    },
+  ],
+
+  </span><span><span class="hljs-attr">total</span></span><span>: </span><span><span class="hljs-title class_">Number</span></span><span>,
+  </span><span><span class="hljs-attr">fechaIngreso</span></span><span>: </span><span><span class="hljs-title class_">Date</span></span><span>,
+  </span><span><span class="hljs-attr">diagnosticoCliente</span></span><span>: </span><span><span class="hljs-title class_">String</span></span><span>,
+  </span><span><span class="hljs-attr">observaciones</span></span><span>: </span><span><span class="hljs-title class_">String</span></span><span>,
+});
+</span></span></code></div></div></pre>
+    <hr data-start="3112" data-end="3115" />
+    <h2 data-start="3117" data-end="3148">5️⃣ Ventajas de este enfoque</h2>
+    <p data-start="3150" data-end="3303">
+      ✅ Payload simple<br data-start="3166" data-end="3169" />
+      ✅ Frontend desacoplado<br data-start="3191" data-end="3194" />
+      ✅ Backend decide crear o referenciar<br
+        data-start="3230"
+        data-end="3233"
+      />
+      ✅ Mongo-friendly<br data-start="3249" data-end="3252" />
+      ✅ Fácil de extender (ej: proveedor, sucursal, etc.)
+    </p>
+    <hr data-start="3305" data-end="3308" />
+    <h2 data-start="3310" data-end="3342">⚠️ Tip importante (seguridad)</h2>
+    <p data-start="3344" data-end="3356">Nunca hagas:</p>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="3358"
+      data-end="3390"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-title class_">Model</span></span><span>.</span><span><span class="hljs-title function_">create</span></span><span>(payload);
+</span></span></code></div></div></pre>
+    <p data-start="3392" data-end="3492">
+      sin <strong data-start="3396" data-end="3407">validar</strong> o
+      <strong data-start="3410" data-end="3420">sanear</strong> si viene del
+      frontend.<br data-start="3443" data-end="3446" />
+      Idealmente usa
+      <strong data-start="3461" data-end="3491"
+        >DTOs o schemas (Joi / Zod)</strong
+      >.
+    </p>
+    <hr data-start="3494" data-end="3497" />
+    <h2 data-start="3499" data-end="3531">🧠 Bonus: patrón reutilizable</h2>
+    <p data-start="3533" data-end="3586">
+      Este helper te sirve para
+      <strong data-start="3559" data-end="3576">cualquier ref</strong> en Mongo:
+    </p>
+    <pre
+      class="overflow-visible! px-0!"
+      data-start="3588"
+      data-end="3657"
+    ><div class="contain-inline-size rounded-2xl corner-superellipse/1.1 relative bg-token-sidebar-surface-primary"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between h-9 bg-token-sidebar-surface-primary select-none rounded-t-2xl corner-t-superellipse/1.1">js</div><div class="sticky top-[calc(--spacing(9)+var(--header-height))] @w-xl/main:top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"><button class="flex gap-1 items-center select-none py-1" aria-label="Copy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-i9agxugi.svg#ce3544" fill="currentColor"></use></svg>Copy code</button></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-js"><span><span><span class="hljs-keyword">await</span></span><span> </span><span><span class="hljs-title function_">resolveRef</span></span><span>(</span><span><span class="hljs-title class_">CualquierModelo</span></span><span>, req.</span><span><span class="hljs-property">body</span></span><span>.</span><span><span class="hljs-property">cualquierCampo</span></span><span>);
+</span></span></code></div></div></pre>
+    <hr data-start="3659" data-end="3662" />
+    <p data-start="3664" data-end="3681">Si quieres, dime:</p>
+    <ul data-start="3682" data-end="3770">
+      <li data-start="3682" data-end="3702">
+        <p data-start="3684" data-end="3702">
+          si usas <strong data-start="3692" data-end="3702">NestJS</strong>
+        </p>
+      </li>
+      <li data-start="3703" data-end="3723">
+        <p data-start="3705" data-end="3723">
+          o <strong data-start="3707" data-end="3723">Express puro</strong>
+        </p>
+      </li>
+      <li data-start="3724" data-end="3770">
+        <p data-start="3726" data-end="3770">
+          o si necesitas
+          <strong data-start="3741" data-end="3768"
+            >transacciones (session)</strong
+          >
+        </p>
+      </li>
+    </ul>
+    <p
+      data-start="3772"
+      data-end="3794"
+      data-is-last-node=""
+      data-is-only-node=""
+    >
+      y lo afinamos al 100%.
+    </p>
+  </div>
+</div>

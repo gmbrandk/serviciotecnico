@@ -4,11 +4,14 @@
 ├── .gitignore
 ├── MultiStepFormImplementacion.html
 ├── OSToDoList.html
+├── PersistenciaPayloadWizard.html
 ├── README.md
 ├── TODO LIST – Fix manejo de valores y carga inicial.html
+├── To-Do List — UUID y Autosave de Orden de Servicio.html
 ├── ToCheckEditarEquipoController.html
 ├── ToDoList.html
 ├── ToDoListEquiposFlujo.html
+├── TodoListFormNoWizarl.html
 ├── backend
 │   └── ... (contenido omitido)
 ├── eslint.config.js
@@ -62,32 +65,43 @@
 │   │   └── react.svg
 │   ├── codigoGeneracionMock.js
 │   ├── components
+│   │   ├── Accordion.jsx
 │   │   ├── CodigoAccesoItems.jsx
 │   │   ├── CrearClientes.jsx
 │   │   ├── CrearCodigo.jsx
 │   │   ├── DevLogPanel.jsx
 │   │   ├── Historial.jsx
+│   │   ├── InfoToolTip.jsx
 │   │   ├── ListaCodigosAcceso.jsx
 │   │   ├── OSPreview.jsx
 │   │   ├── OSPreviewPDF.jsx
 │   │   ├── OSPreviewPDFWrapper.jsx
+│   │   ├── OSPreviewPDFv0.jsx
 │   │   ├── OSPrintButton.jsx
 │   │   ├── PanelUsuarios.jsx
 │   │   ├── PersistenSwitch.jsx
+│   │   ├── PersonaCard.jsx
 │   │   ├── form-ingreso
 │   │   │   ├── Autocomplete.jsx
 │   │   │   ├── AutocompleteBase.jsx
+│   │   │   ├── ClienteDiffView.jsx
+│   │   │   ├── ClienteSection copy.jsx
 │   │   │   ├── ClienteSection.jsx
 │   │   │   ├── Collapsible.jsx
+│   │   │   ├── DiffViewer.jsx
 │   │   │   ├── EquipoSection.jsx
 │   │   │   ├── FichaTecnica.jsx
 │   │   │   ├── FormIngreso.jsx
 │   │   │   ├── IngresoFormContent.jsx
+│   │   │   ├── IngresoFormGuardsBoundary.jsx
 │   │   │   ├── LineaServicio.jsx
 │   │   │   ├── OrdenServicioSection.jsx
+│   │   │   ├── RestoreDraftDialog.jsx
 │   │   │   ├── SelectAutocomplete.jsx
 │   │   │   ├── TecnicoSection.jsx
 │   │   │   └── index.js
+│   │   ├── navigation
+│   │   │   └── exitConfirmDialog.jsx
 │   │   ├── pages
 │   │   │   ├── Dashboard
 │   │   │   │   ├── DashboardHome.jsx
@@ -161,23 +175,34 @@
 │   │   ├── exampleInitialData.js
 │   │   └── tabla
 │   │       └── columnasCodigos.js
+│   ├── debug
+│   │   └── SelfCheckLineaServicio.jsx
 │   ├── docs
 │   │   └── form-ingreso.md
 │   ├── helpers
 │   │   └── generateUniqueId.js
 │   ├── hooks
 │   │   ├── form-ingreso
+│   │   │   ├── useAutocompleteCliente copy.js
 │   │   │   ├── useAutocompleteCliente.js
 │   │   │   ├── useAutocompleteEquipo.js
 │   │   │   ├── useAutocompleteTecnico.js
 │   │   │   ├── useAutocompleteTipoTrabajo.js
 │   │   │   ├── useCollapsible.js
+│   │   │   ├── useFormRouteGuard.js
+│   │   │   ├── useIngresoAutosave.js
+│   │   │   ├── useIngresoDiff.js
+│   │   │   ├── useIngresoInitialLoad.js
+│   │   │   ├── useIngresoLineas.js
 │   │   │   ├── useLineasServicio.js
 │   │   │   ├── useLookupUniversal.js
 │   │   │   └── useSummary.js
+│   │   ├── navigation
+│   │   │   └── useDirtyNavigationGuard.js
 │   │   ├── useAutosave.js
 │   │   ├── useClipboard.js
 │   │   ├── useCodigosAcceso.js
+│   │   ├── useConfirmLeave.js
 │   │   ├── useEsMovil.js
 │   │   ├── useGlobalLoading.js
 │   │   ├── useIsFirstRender.js
@@ -314,7 +339,9 @@
 │   │   ├── OrdenServicioPage.jsx
 │   │   ├── RegisterPage.jsx
 │   │   ├── TestingPage.jsx
+│   │   ├── TestingPagev2.jsx
 │   │   └── form-ingreso
+│   │       ├── CrearOrdenServicioPage.jsx
 │   │       ├── DevPage.jsx
 │   │       ├── IngresoPage.jsx
 │   │       ├── PayloadPage.jsx
@@ -389,6 +416,7 @@
 │   │   │   ├── Buttons.module.css
 │   │   │   ├── Fieldset.module.css
 │   │   │   ├── FormIngresoPage.module.css
+│   │   │   ├── IngresoRestoreDialog.css
 │   │   │   ├── Inputs.module.css
 │   │   │   ├── LineaServicio.module.css
 │   │   │   ├── autocomplete.css
@@ -400,6 +428,7 @@
 │   │   │   ├── inputs.css
 │   │   │   ├── layout.css
 │   │   │   ├── linea-servicio.css
+│   │   │   ├── restore-dialog.css
 │   │   │   └── telefono.css
 │   │   ├── forms.module.css
 │   │   ├── general
@@ -407,6 +436,7 @@
 │   │   │   ├── BotonAccion.module.css
 │   │   │   ├── Buttons.module.css
 │   │   │   ├── CopyInput.module.css
+│   │   │   ├── ExitConfirmDialog.module.css
 │   │   │   ├── Paginador.module.css
 │   │   │   ├── PaginadorDefault.module.css
 │   │   │   ├── RwdPaginador.module.css
@@ -420,28 +450,38 @@
 │   │   └── testing
 │   │       └── TestingPage.module.css
 │   └── utils
+│       ├── debug
+│       │   └── clienteLogger.js
 │       ├── form-ingreso
 │       │   ├── LogBuffer.js
 │       │   ├── autoSave.js
+│       │   ├── autoSaveKey.js
+│       │   ├── buildIngresoInitialState.js
 │       │   ├── buildOrdenPayload.js
 │       │   ├── deepEqual.js
 │       │   ├── diffLineaServicio.js
 │       │   ├── ensureAuth.js
+│       │   ├── formatValue.js
 │       │   ├── log.js
 │       │   ├── normalizarEquipo.js
 │       │   ├── normalizarTecnico.js
 │       │   ├── normalizeOrdenPayload.js
-│       │   └── roles.js
+│       │   ├── roles.js
+│       │   └── snapshotWizard.js
 │       ├── formatters
 │       │   ├── estandarizarFecha.js
 │       │   ├── estandarizarNombre.js
 │       │   ├── estandarizarRol.js
 │       │   ├── index.js
 │       │   └── normalizedId.js
+│       ├── orden-servicio
+│       │   ├── ordenServicioLifeCycle.js
+│       │   └── ordenServicioUuid.js
 │       ├── reducirValores.js
 │       ├── responseFormatter.js
-│       └── tabla
-│           ├── crearRenderAcciones.js
-│           ├── crearRowEnhancer.js
-│           └── createRowClassNameCallback.js
+│       ├── tabla
+│       │   ├── crearRenderAcciones.js
+│       │   ├── crearRowEnhancer.js
+│       │   └── createRowClassNameCallback.js
+│       └── uidLinea.js
 └── vite.config.js

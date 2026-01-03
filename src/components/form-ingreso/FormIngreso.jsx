@@ -17,6 +17,9 @@ import { OrdenServicio } from '@components/form-ingreso/OrdenServicioSection.jsx
 
 import { buttonsStyles, formIngresoPageStyles } from '@styles/form-ingreso';
 import { ROLES_PERMITIDOS_EDITAR_TECNICO } from '@utils/form-ingreso/roles.js';
+import { normalizeEquipoForSubmit } from '@domain/equipo/normalizeEquipoForSubmit';
+
+import IngresoFormGuardsBoundary from './IngresoFormGuardsBoundary';
 
 function IngresoFormContent({ onSubmit, onCancel, role }) {
   const {
@@ -32,12 +35,14 @@ function IngresoFormContent({ onSubmit, onCancel, role }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const normalizedEquipo = normalizeEquipoForSubmit(equipo);
+
     const canEditTecnico = ROLES_PERMITIDOS_EDITAR_TECNICO.includes(role);
     const originalTecnico = originalRef.current?.tecnico ?? null;
 
     const formState = {
       cliente,
-      equipo,
+      equipo: normalizedEquipo,
       tecnico: canEditTecnico ? tecnico : originalTecnico,
       orden,
     };
@@ -47,9 +52,11 @@ function IngresoFormContent({ onSubmit, onCancel, role }) {
 
     try {
       await onSubmit?.(formState);
+      alert('Enviar al backend');
       discardAutosave();
     } catch (err) {
       // ❌ si falla, volvemos a proteger
+      alert('Enviar al backend');
       setNavigationAllowed(false);
       throw err;
     }
@@ -127,11 +134,13 @@ export default function FormIngreso({
         <TecnicosProvider>
           <TiposTrabajoProvider>
             <IngresoFormProvider initialPayload={initialPayload}>
-              <IngresoFormContent
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                role={role}
-              />
+              <IngresoFormGuardsBoundary>
+                <IngresoFormContent
+                  onSubmit={onSubmit}
+                  onCancel={onCancel}
+                  role={role}
+                />
+              </IngresoFormGuardsBoundary>
             </IngresoFormProvider>
           </TiposTrabajoProvider>
         </TecnicosProvider>
